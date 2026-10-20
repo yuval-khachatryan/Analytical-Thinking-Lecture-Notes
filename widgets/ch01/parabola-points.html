@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>מנקודות לגרף: הפרבולה</title>
+<style>
+  html, body { margin: 0; padding: 0; background: transparent; }
+  body { font: 15px/1.45 Arial, "Helvetica Neue", sans-serif; color: #1f2937; }
+  .w { border: 1px solid #9ca3af; background: #fff; padding: 0.7rem 0.8rem 0.9rem; }
+  canvas { display: block; width: 100%; height: auto; }
+  .row { display: flex; align-items: center; flex-wrap: wrap; gap: 0.8rem; margin-top: 0.6rem; }
+  .row input[type=range] { flex: 1 1 200px; }
+  .num { direction: ltr; unicode-bidi: isolate; font-weight: 700; min-width: 2.5em; display: inline-block; text-align: center; }
+  .hint { margin-top: 0.5rem; color: #475569; font-size: 14px; }
+</style>
+</head>
+<body>
+<div class="w">
+  <canvas id="cv" width="720" height="400"></canvas>
+  <div class="row">
+    <label for="n">מספר הנקודות:</label>
+    <input type="range" id="n" min="3" max="61" step="2" value="5">
+    <span class="num" id="nval">5</span>
+  </div>
+  <div class="row">
+    <label><input type="checkbox" id="lines" checked> לחבר את הנקודות בקווים ישרים</label>
+    <label><input type="checkbox" id="curve"> להציג את הגרף של <span class="num">y = x²</span></label>
+  </div>
+  <div class="hint">מחשבים את <span class="num">f(x) = x²</span> בכמה נקודות במרווחים שווים בין <span class="num">−3</span> ל-<span class="num">3</span>, ומסמנים את הנקודות <span class="num">(x, f(x))</span>. הגדילו את מספר הנקודות: הקו השבור שמחבר אותן הולך ונעשה חלק, ומתקרב לגרף של הפרבולה.</div>
+</div>
+<script src="../shared/autosize.js"></script>
+<script>
+(function () {
+  "use strict";
+  var cv = document.getElementById("cv"), ctx = cv.getContext("2d");
+  var nIn = document.getElementById("n"), nVal = document.getElementById("nval");
+  var linesIn = document.getElementById("lines"), curveIn = document.getElementById("curve");
+  var X0 = -3.4, X1 = 3.4, Y0 = -0.8, Y1 = 9.8;
+  var W = cv.width, H = cv.height, PAD = 28;
+  function sx(x) { return PAD + (x - X0) / (X1 - X0) * (W - 2 * PAD); }
+  function sy(y) { return H - PAD - (y - Y0) / (Y1 - Y0) * (H - 2 * PAD); }
+  function f(x) { return x * x; }
+
+  function axes() {
+    ctx.strokeStyle = "#eef2f7"; ctx.lineWidth = 1;
+    for (var gx = -3; gx <= 3; gx++) { ctx.beginPath(); ctx.moveTo(sx(gx), sy(Y0)); ctx.lineTo(sx(gx), sy(Y1)); ctx.stroke(); }
+    for (var gy = 0; gy <= 9; gy++) { ctx.beginPath(); ctx.moveTo(sx(X0), sy(gy)); ctx.lineTo(sx(X1), sy(gy)); ctx.stroke(); }
+    ctx.strokeStyle = "#0f172a"; ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.moveTo(sx(X0), sy(0)); ctx.lineTo(sx(X1), sy(0)); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(sx(0), sy(Y0)); ctx.lineTo(sx(0), sy(Y1)); ctx.stroke();
+    ctx.fillStyle = "#334155"; ctx.font = "13px Arial"; ctx.direction = "ltr";
+    ctx.textAlign = "center"; ctx.textBaseline = "top";
+    for (var tx = -3; tx <= 3; tx++) if (tx) ctx.fillText(String(tx).replace("-", "−"), sx(tx), sy(0) + 4);
+    ctx.textAlign = "right"; ctx.textBaseline = "middle";
+    for (var ty = 2; ty <= 9; ty += 2) ctx.fillText(String(ty), sx(0) - 6, sy(ty));
+  }
+
+  function draw() {
+    var n = +nIn.value;
+    nVal.textContent = n;
+    ctx.clearRect(0, 0, W, H);
+    axes();
+    if (curveIn.checked) {
+      ctx.strokeStyle = "#94a3b8"; ctx.lineWidth = 2; ctx.setLineDash([6, 5]);
+      ctx.beginPath();
+      for (var i = 0; i <= 300; i++) {
+        var x = -3 + 6 * i / 300;
+        if (i) ctx.lineTo(sx(x), sy(f(x))); else ctx.moveTo(sx(x), sy(f(x)));
+      }
+      ctx.stroke(); ctx.setLineDash([]);
+    }
+    var pts = [];
+    for (var k = 0; k < n; k++) { var xk = -3 + 6 * k / (n - 1); pts.push([xk, f(xk)]); }
+    if (linesIn.checked) {
+      ctx.strokeStyle = "#4f46e5"; ctx.lineWidth = 2.4;
+      ctx.beginPath();
+      pts.forEach(function (p, j) { if (j) ctx.lineTo(sx(p[0]), sy(p[1])); else ctx.moveTo(sx(p[0]), sy(p[1])); });
+      ctx.stroke();
+    }
+    var r = n > 30 ? 2.6 : 4.5;
+    ctx.fillStyle = "#ea580c";
+    pts.forEach(function (p) { ctx.beginPath(); ctx.arc(sx(p[0]), sy(p[1]), r, 0, 2 * Math.PI); ctx.fill(); });
+  }
+
+  [nIn, linesIn, curveIn].forEach(function (el) { el.addEventListener("input", draw); el.addEventListener("change", draw); });
+  draw();
+})();
+</script>
+</body>
+</html>
