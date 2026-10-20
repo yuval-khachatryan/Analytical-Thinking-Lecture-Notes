@@ -542,11 +542,111 @@ def fig_inverse_trig():
     save(fig, "inverse-trig")
 
 
+
+# ---------------------------------------------------------------- §1: sqrt(2) on the line
+def fig_sqrt2():
+    fig, ax = plt.subplots(figsize=(6.4, 3.6))
+    s2 = np.sqrt(2)
+    number_line(ax, -0.6, 2.6)
+    for k in (0, 1, 2):
+        ax.plot([k, k], [-0.05, 0.05], color=INK, lw=1)
+        ax.text(k, -0.1, f"${k}$", ha="center", va="top", fontsize=13)
+    ax.add_patch(plt.Rectangle((0, 0), 1, 1, fc=C1, alpha=0.10, ec=C1, lw=1.6))
+    ax.plot([0, 1], [0, 1], color=C2, lw=2.4)
+    ax.text(0.42, 0.58, r"$\sqrt{2}$", color=C2, fontsize=15, ha="right")
+    ax.text(0.5, 1.04, "$1$", ha="center", va="bottom", fontsize=13)
+    ax.text(1.04, 0.5, "$1$", ha="left", va="center", fontsize=13)
+    t = np.linspace(np.pi / 4, 0, 100)
+    ax.plot(s2 * np.cos(t), s2 * np.sin(t), color=C2, lw=1.4, ls="--")
+    ax.plot([s2], [0], "o", color=C2, ms=7, zorder=6)
+    ax.text(s2, -0.1, r"$\sqrt{2}$", color=C2, ha="center", va="top", fontsize=14)
+    ax.set_xlim(-0.7, 2.7)
+    ax.set_ylim(-0.4, 1.35)
+    ax.set_aspect("equal")
+    ax.axis("off")
+    save(fig, "sqrt2")
+
+
+# ---------------------------------------------------------------- §4: graphs of simple functions
+def fig_function_examples():
+    fig, axs = plt.subplots(2, 2, figsize=(8.6, 7.2))
+    x = np.linspace(-3, 3, 400)
+
+    ax = axs[0, 0]
+    axes_through_origin(ax, (-3.2, 3.2), (-6, 8))
+    ax.plot(x, 3 * x + 1, color=C1, lw=2.2)
+    for xp in (-1, 0, 2):
+        ax.plot([xp], [3 * xp + 1], "o", color=C2, ms=6, zorder=6)
+    ax.set_title(r"$f(x)=3x+1$")
+
+    ax = axs[0, 1]
+    axes_through_origin(ax, (-3.2, 3.2), (-1, 9.5))
+    ax.plot(x, x ** 2, color=C1, lw=2.2)
+    for xp in (-3, -2, -1, 0, 1, 2, 3):
+        ax.plot([xp], [xp ** 2], "o", color=C2, ms=6, zorder=6)
+    ax.set_title(r"$f(x)=x^2$")
+
+    ax = axs[1, 0]
+    axes_through_origin(ax, (-3.2, 3.2), (-1, 3.5))
+    ax.plot(x, np.abs(x), color=C1, lw=2.2)
+    for xp in (-2, 0, 2):
+        ax.plot([xp], [abs(xp)], "o", color=C2, ms=6, zorder=6)
+    ax.set_title(r"$f(x)=|x|$")
+
+    ax = axs[1, 1]
+    axes_through_origin(ax, (-3.2, 3.2), (-2.5, 9.5))
+    xl = np.linspace(-3, 0, 200)
+    xr = np.linspace(0, 3, 200)
+    ax.plot(xl, xl + 1, color=C1, lw=2.2)
+    ax.plot(xr, xr ** 2, color=C1, lw=2.2)
+    dot(ax, 0, 1, False, C1)
+    dot(ax, 0, 0, True, C1)
+    ax.set_title(r"$x+1\ \ (x<0), \qquad x^2\ \ (x\geq 0)$", fontsize=13)
+    for a in axs.flat:
+        a.xaxis.set_major_locator(MaxNLocator(integer=True, nbins=6))
+        a.yaxis.set_major_locator(MaxNLocator(integer=True, nbins=6))
+    fig.tight_layout()
+    save(fig, "function-examples")
+
+
+# ---------------------------------------------------------------- §4: a point in the plane
+def fig_plane_point():
+    fig, ax = plt.subplots(figsize=(4.6, 3.8))
+    axes_through_origin(ax, (-1.2, 4.2), (-1.2, 3.2))
+    ax.plot([3, 3], [0, 2], color=C1, ls="--", lw=1.4)
+    ax.plot([0, 3], [2, 2], color=C3, ls="--", lw=1.4)
+    ax.plot([3], [2], "o", color=C2, ms=8, zorder=6)
+    ax.text(3.1, 2.1, "$(3,2)$", color=C2, fontsize=14)
+    ax.plot([-1], [1], "o", color=C4, ms=7, zorder=6)
+    ax.text(-1.05, 1.15, "$(-1,1)$", color=C4, fontsize=13, ha="center", va="bottom")
+    ax.text(4.15, -0.12, "$x$", ha="right", va="top")
+    ax.text(-0.12, 3.15, "$y$", ha="right", va="top")
+    ax.set_xticks([-1, 1, 2, 3])
+    ax.set_yticks([-1, 1, 2])
+    save(fig, "plane-point")
+
+
+# ---------------------------------------------------------------- §4: from points to a parabola (print stand-in for the widget)
+def fig_parabola_points():
+    fig, axs = plt.subplots(1, 3, figsize=(10.5, 3.6))
+    xx = np.linspace(-3, 3, 300)
+    for ax, n in zip(axs, (5, 9, 41)):
+        axes_through_origin(ax, (-3.3, 3.3), (-0.8, 9.6))
+        xs = np.linspace(-3, 3, n)
+        ax.plot(xx, xx ** 2, color=GREY, lw=1.2, ls="--")
+        ax.plot(xs, xs ** 2, color=C1, lw=2.0)
+        ax.plot(xs, xs ** 2, "o", color=C2, ms=6 if n < 20 else 3, zorder=6)
+        ax.set_title(f"$n={n}$")
+        ax.set_yticks([3, 6, 9])
+    fig.tight_layout()
+    save(fig, "parabola-points")
+
 FIGURES = [
     fig_real_line, fig_intervals, fig_distance, fig_square, fig_not_functions,
     fig_even_odd, fig_sqrt_family, fig_polynomials, fig_unit_circle, fig_sin_cos,
     fig_tan, fig_exponentials, fig_horizontal_line, fig_exp_ln, fig_powers_roots,
     fig_rational, fig_sgn_floor, fig_inverse_trig,
+    fig_sqrt2, fig_function_examples, fig_plane_point, fig_parabola_points,
 ]
 
 if __name__ == "__main__":

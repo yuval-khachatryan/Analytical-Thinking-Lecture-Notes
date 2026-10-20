@@ -8,7 +8,7 @@ project:
     - widgets/**
 
 book:
-  title: "חשיבה אנליטית — הערות הרצאה"
+  title: "חשיבה אנליטית — סיכומי הרצאה"
   site-url: "https://yuval-khachatryan.github.io/Analytical-Thinking-Lecture-Notes"
   repo-url: "https://github.com/yuval-khachatryan/Analytical-Thinking-Lecture-Notes"
   author: "ד״ר יובל חצ׳טריאן-רזיאל"

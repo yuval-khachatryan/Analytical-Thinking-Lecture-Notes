@@ -5,7 +5,7 @@ dir: rtl
 
 # פתח דבר {.unnumbered}
 
-הערות הרצאה לקורס **חשיבה אנליטית** (7771160-1), סמסטר א׳, תשפ״ז. בית הספר למדעי המחשב, המחלקה למדעי הנתונים ובינה מלאכותית, אוניברסיטת אריאל.
+סיכומי הרצאה לקורס **חשיבה אנליטית** (7771160-1), סמסטר א׳, תשפ״ז. בית הספר למדעי המחשב, המחלקה למדעי הנתונים ובינה מלאכותית, אוניברסיטת אריאל.
 
 **מרצה:** ד״ר יובל חצ׳טריאן-רזיאל
 
@@ -14,11 +14,11 @@ dir: rtl
 **היקף:** 4 שעות הרצאה ו-2 שעות תרגול בשבוע. **ציון סופי:** 20% מטלות ו-80% בחינה.
 
 ::: {.content-visible when-format="html"}
-[הורדת הערות ההרצאה כקובץ PDF](Analytical-Thinking-Lecture-Notes.pdf)
+[הורדת סיכומי ההרצאה כקובץ PDF](Analytical-Thinking-Lecture-Notes.pdf)
 :::
 
 ::: {.content-visible when-format="pdf"}
-הגרסה המקוונת של הערות ההרצאה זמינה בכתובת:
+הגרסה המקוונת של סיכומי ההרצאה זמינה בכתובת:
 
 {{< var book.url >}}
 :::
@@ -40,11 +40,8 @@ dir: rtl
 
 ## מקורות {.unnumbered}
 
-המקור העיקרי של הערות ההרצאה הוא הספר של Stewart, ממנו נלקחו רבות מההגדרות והדוגמאות (לעיתים בשינויים). הספר זמין בספריית האוניברסיטה.
-
 - James Stewart, Daniel K. Clegg and Saleem Watson, *Calculus: Early Transcendentals*, 9th edition, Cengage, 2021.
 - Joel R. Hass, Christopher E. Heil and Maurice D. Weir, *Thomas' Calculus*, 14th edition, Pearson, 2018.
 - Mark Ryan, *Calculus for Dummies*, 2nd edition, Wiley, 2016.
-- James Stewart, *Essential Calculus: Early Transcendentals*, 2nd edition, Cengage, 2012.
 
 **הערות ותיקונים** — נא לשלוח למייל של המרצה, כפי שמופיע באתר הקורס, או לפתוח issue ב-GitHub.
