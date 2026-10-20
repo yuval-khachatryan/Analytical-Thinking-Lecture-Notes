@@ -372,7 +372,7 @@ def fig_exponentials():
     axes_through_origin(ax, (-3, 3), (-0.5, 8))
     x = np.linspace(-3, 3, 400)
     for f, lab, c in ((lambda x: 2 ** x, r"$2^x$", C1),
-                      (np.exp, r"$e^x$", C3),
+                      (lambda x: 3 ** x, r"$3^x$", C3),
                       (lambda x: 10 ** x, r"$10^x$", C2),
                       (lambda x: 0.5 ** x, r"$\left(\frac{1}{2}\right)^x$", C4)):
         ax.plot(x, f(x), color=c, lw=2.2, label=lab)
@@ -408,10 +408,10 @@ def fig_horizontal_line():
 def fig_exp_ln():
     fig, ax = plt.subplots(figsize=(5.2, 5.2))
     axes_through_origin(ax, (-3, 5), (-3, 5))
-    x = np.linspace(-3, 1.65, 300)
-    ax.plot(x, np.exp(x), color=C1, lw=2.2, label=r"$e^x$")
-    x = np.linspace(0.04, 5, 300)
-    ax.plot(x, np.log(x), color=C2, lw=2.2, label=r"$\ln x$")
+    x = np.linspace(-3, np.log2(5), 300)
+    ax.plot(x, 2 ** x, color=C1, lw=2.2, label=r"$2^x$")
+    x = np.linspace(0.11, 5, 300)
+    ax.plot(x, np.log2(x), color=C2, lw=2.2, label=r"$\log_2 x$")
     x = np.linspace(-3, 5, 10)
     ax.plot(x, x, color=GREY, ls="--", lw=1.2, label="$y=x$")
     ax.plot([0, 1], [1, 0], "o", color=INK, ms=5, zorder=6)
@@ -419,7 +419,7 @@ def fig_exp_ln():
     ax.text(1.05, -0.35, "$(1,0)$", fontsize=11)
     ax.set_aspect("equal")
     ax.legend(loc="lower right", fontsize=12, framealpha=1)
-    save(fig, "exp-ln")
+    save(fig, "exp-log")
 
 
 # ---------------------------------------------------------------- §14 powers and roots
@@ -641,12 +641,43 @@ def fig_parabola_points():
     fig.tight_layout()
     save(fig, "parabola-points")
 
+
+# ---------------------------------------------------------------- §9: a periodic function x - floor(x)
+def fig_frac_part():
+    fig, ax = plt.subplots(figsize=(7.5, 2.8))
+    axes_through_origin(ax, (-2.3, 3.3), (-0.4, 1.4))
+    for k in range(-2, 3):
+        x = np.linspace(k, k + 1, 50)
+        ax.plot(x, x - k, color=C1, lw=2.2)
+        dot(ax, k, 0, True, C1)
+        dot(ax, k + 1, 1, False, C1)
+    ax.set_yticks([1], [""])
+    ax.text(0.1, 1.12, "$1$", ha="left", va="bottom", fontsize=13)
+    ax.set_xticks([-2, -1, 1, 2, 3])
+    save(fig, "frac-part")
+
+
+# ---------------------------------------------------------------- §10: 2^x through its rational points
+def fig_exp_rational_points():
+    from fractions import Fraction
+    fig, ax = plt.subplots(figsize=(6, 4))
+    axes_through_origin(ax, (-2.2, 2.2), (-0.3, 4.6))
+    pts = sorted({Fraction(p, q) for q in (1, 2, 3, 4, 6, 8) for p in range(-2 * q, 2 * q + 1)})
+    xs = np.array([float(t) for t in pts])
+    xx = np.linspace(-2, 2, 400)
+    ax.plot(xx, 2 ** xx, color=GREY, lw=1.4, ls="--")
+    ax.plot(xs, 2 ** xs, "o", color=C2, ms=3.5, zorder=6)
+    ax.set_xticks([-2, -1, 1, 2])
+    ax.set_yticks([1, 2, 3, 4])
+    save(fig, "exp-rational-points")
+
 FIGURES = [
     fig_real_line, fig_intervals, fig_distance, fig_square, fig_not_functions,
     fig_even_odd, fig_sqrt_family, fig_polynomials, fig_unit_circle, fig_sin_cos,
     fig_tan, fig_exponentials, fig_horizontal_line, fig_exp_ln, fig_powers_roots,
     fig_rational, fig_sgn_floor, fig_inverse_trig,
     fig_sqrt2, fig_function_examples, fig_plane_point, fig_parabola_points,
+    fig_frac_part, fig_exp_rational_points,
 ]
 
 if __name__ == "__main__":
