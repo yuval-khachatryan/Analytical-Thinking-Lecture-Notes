@@ -1,0 +1,120 @@
+project:
+  type: book
+  output-dir: _book
+  # The visualisers are standalone HTML pages under widgets/<chapter>/ pulled
+  # into the page with an <iframe>. Quarto only copies files it knows about, so
+  # the folder has to be declared here or the iframes 404 in _book/.
+  resources:
+    - widgets/**
+
+book:
+  title: "חשיבה אנליטית — הערות הרצאה"
+  site-url: "https://yuval-khachatryan.github.io/Analytical-Thinking-Lecture-Notes"
+  repo-url: "https://github.com/yuval-khachatryan/Analytical-Thinking-Lecture-Notes"
+  author: "ד״ר יובל חצ׳טריאן-רזיאל"
+  output-file: "Analytical-Thinking-Lecture-Notes"
+  search: true
+  reader-mode: true
+  # adds a download button for the print edition to the HTML sidebar
+  downloads: [pdf]
+  chapters:
+    - index.qmd
+    - 01-Introduction.qmd
+
+lang: he
+dir: rtl
+number-sections: true
+number-depth: 3
+
+crossref:
+  chapters: true
+  def-title: "הגדרה"
+  exm-title: "דוגמה"
+  thm-title: "משפט"
+  prp-title: "טענה"
+
+language:
+  crossref-prp-prefix: "טענה"
+
+filters:
+  - theorem-numbering.lua
+  - quarto
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 4
+    toc-title: "תוכן העניינים"
+    toc-expand: true
+    code-fold: true
+    include-in-header: _styles.html
+  pdf:
+    pdf-engine: xelatex
+    keep-tex: true
+    include-in-header:
+      text: |
+        % Quarto renders callouts as an `enhanced` tcolorbox, which is broken in
+        % RTL (bidi): a diagonal line appears and every page after it shifts left.
+        % Render callout content as a plain block instead. (HTML is unaffected.)
+        % Guarded, because Quarto loads tcolorbox ONLY when the document actually
+        % contains a callout: renewing it unconditionally makes a callout-free book
+        % fail with "Environment tcolorbox undefined". No callouts => nothing to fix.
+        \makeatletter
+        \AtBeginDocument{%
+          \@ifundefined{tcolorbox}{}{%
+            \renewenvironment{tcolorbox}[1][]{\par\smallskip}{\par\smallskip}}%
+        }
+        \makeatother
+        % RTL (babel bidi=basic) + xelatex: the `pdf:eann` special that CLOSES the
+        % last table-of-contents link is lost in bidi reordering, so that link is
+        % never terminated. Every line of every following page then becomes a
+        % clickable hotspot jumping to the final section — 477 stray annotations
+        % in a 24-page build, on top of the 8 real ones. `hidelinks` only removed
+        % their colour; the annotations were still there.
+        % Closing the annotation explicitly right after the TOC cuts the bleed and
+        % takes the count 485 -> 8, one per contents entry, all correct.
+        % Known cost: the LAST TOC entry is the one whose annotation gets consumed,
+        % so it alone is not clickable. Every other entry works.
+        \AtBeginDocument{\hypersetup{hidelinks}}
+        \makeatletter
+        \AtBeginDocument{%
+          \let\qv@origtoc\tableofcontents
+          \def\tableofcontents{\qv@origtoc\special{pdf:eann}}%
+        }
+        \makeatother
+        % Math inside an UNNUMBERED heading: Quarto emits a bare \addcontentsline
+        % carrying the raw math (no \texorpdfstring), and hyperref then tries to turn
+        % it into a PDF-bookmark string. Under unicode-math \pi is \mitpi — a
+        % \Umathchardef token — which errors with "Improper alphabetic constant".
+        % Give hyperref plain-text stand-ins for the math that can show up there.
+        \AtBeginDocument{%
+          \pdfstringdefDisableCommands{%
+            \def\({}\def\){}%
+            \def\,{}\def\;{}\def\!{}\def\quad{ }\def\qquad{ }%
+            \def\pi{π}\def\varepsilon{ε}\def\epsilon{ε}\def\delta{δ}%
+            \def\alpha{α}\def\beta{β}\def\gamma{γ}\def\lambda{λ}%
+            \def\theta{θ}\def\sigma{σ}\def\varphi{φ}\def\infty{∞}%
+            \def\to{→}\def\leq{≤}\def\geq{≥}\def\neq{≠}%
+            \def\mathbb#1{#1}\def\mathrm#1{#1}\def\mathbf#1{#1}\def\text#1{#1}%
+            \def\frac#1#2{#1/#2}\def\dfrac#1#2{#1/#2}%
+            \def\sqrt#1{√(#1)}%
+          }%
+        }
+        % optional-reading blocks: a coloured label, deliberately NOT a framed box
+        % (framed/tcolorbox environments re-trigger the RTL breakage above).
+        % .foldable blocks: collapsed in HTML, but print cannot fold — so show them and
+        % flag them as skippable. Rules, not a frame (framed envs break RTL, see above).
+        \definecolor{foldaccent}{HTML}{64748B}
+        \newenvironment{foldablebox}[1]{\par\medskip\noindent{\color{foldaccent}\rule{\linewidth}{0.6pt}}\par\smallskip\noindent{\bfseries\color{foldaccent}#1}\ {\color{foldaccent}(אפשר לדלג)}\par\smallskip}{\par\smallskip\noindent{\color{foldaccent}\rule{\linewidth}{0.6pt}}\par\medskip}
+        \definecolor{optionalaccent}{HTML}{9A7B1F}
+        \newenvironment{optionalbox}{\par\medskip\noindent{\color{optionalaccent}\rule{\linewidth}{1.2pt}}\par\smallskip\noindent{\bfseries\color{optionalaccent}קריאת רשות}\par\smallskip}{\par\smallskip\noindent{\color{optionalaccent}\rule{\linewidth}{1.2pt}}\par\medskip}
+    mainfont: Arial
+    sansfont: Arial
+    monofont: "Courier New"
+    mathfont: "XITSMath-Regular.otf"
+    code-overflow: wrap
+    geometry:
+      - margin=2.5cm
+
+jupyter: python3

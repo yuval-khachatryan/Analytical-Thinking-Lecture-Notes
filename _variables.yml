@@ -1,0 +1,4 @@
+# Values reusable from any .qmd via the {{< var ... >}} shortcode.
+# The published address is written once, here.
+book:
+  url: "https://yuval-khachatryan.github.io/Analytical-Thinking-Lecture-Notes"
