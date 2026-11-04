@@ -649,8 +649,16 @@ a.xref-open { background: #ede9fe; border-radius: 3px; }
    This has to run before the MathJax script does. That script carries `defer`,
    so it runs after parsing, while this inline script runs during parsing --
    hence anywhere in the head is early enough.
+
+   The colour package is loaded up front. interactive.js colours the values the
+   reader filled in (\color{#15803d}) and typesets synchronously. Left to the
+   autoloader, the first \color triggers a download; a second typeset while it
+   is still on its way finds \color undefined and stops at the "#" ("You can't
+   use 'macro parameter character #' in math mode").
    --------------------------------------------------------------------------- */
 window.MathJax = {
+  loader: { load: ["[tex]/color"] },
+  tex: { packages: { "[+]": ["color"] } },
   output: {
     displayOverflow: "scroll",
     linebreaks: { inline: false }
@@ -924,7 +932,7 @@ window.Quarto = {
 };
 </script>
 
-<script id="book-toc-data" type="application/json">[{"file":"01-Introduction.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#מערכות-המספרים-מהטבעיים-אל-הממשיים\" id=\"toc-מערכות-המספרים-מהטבעיים-אל-הממשיים\" class=\"nav-link active\" data-scroll-target=\"#מערכות-המספרים-מהטבעיים-אל-הממשיים\">\u003cspan class=\"header-section-number\">1.1\u003c/span> מערכות המספרים: מהטבעיים אל הממשיים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#ספירה-המספרים-הטבעיים-השלמים-והרציונליים\" id=\"toc-ספירה-המספרים-הטבעיים-השלמים-והרציונליים\" class=\"nav-link\" data-scroll-target=\"#ספירה-המספרים-הטבעיים-השלמים-והרציונליים\">ספירה: המספרים הטבעיים, השלמים והרציונליים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מדידה-המספרים-האי-רציונליים\" id=\"toc-מדידה-המספרים-האי-רציונליים\" class=\"nav-link\" data-scroll-target=\"#מדידה-המספרים-האי-רציונליים\">מדידה: המספרים האי-רציונליים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הישר-הממשי\" id=\"toc-הישר-הממשי\" class=\"nav-link\" data-scroll-target=\"#הישר-הממשי\">הישר הממשי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים\" id=\"toc-תרגילים\" class=\"nav-link\" data-scroll-target=\"#תרגילים\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#קבוצות-וקטעים\" id=\"toc-קבוצות-וקטעים\" class=\"nav-link\" data-scroll-target=\"#קבוצות-וקטעים\">\u003cspan class=\"header-section-number\">1.2\u003c/span> קבוצות וקטעים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#רישום-של-קבוצות\" id=\"toc-רישום-של-קבוצות\" class=\"nav-link\" data-scroll-target=\"#רישום-של-קבוצות\">רישום של קבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#שוויון-קבוצות\" id=\"toc-שוויון-קבוצות\" class=\"nav-link\" data-scroll-target=\"#שוויון-קבוצות\">שוויון קבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הכלה\" id=\"toc-הכלה\" class=\"nav-link\" data-scroll-target=\"#הכלה\">הכלה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#פעולות-על-קבוצות\" id=\"toc-פעולות-על-קבוצות\" class=\"nav-link\" data-scroll-target=\"#פעולות-על-קבוצות\">פעולות על קבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#קטעים\" id=\"toc-קטעים\" class=\"nav-link\" data-scroll-target=\"#קטעים\">קטעים\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#סרטוט-קטעים\" id=\"toc-סרטוט-קטעים\" class=\"nav-link\" data-scroll-target=\"#סרטוט-קטעים\">סרטוט קטעים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-1\" id=\"toc-תרגילים-1\" class=\"nav-link\" data-scroll-target=\"#תרגילים-1\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#ערך-מוחלט\" id=\"toc-ערך-מוחלט\" class=\"nav-link\" data-scroll-target=\"#ערך-מוחלט\">\u003cspan class=\"header-section-number\">1.3\u003c/span> ערך מוחלט\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#כללי-אי-שוויונים\" id=\"toc-כללי-אי-שוויונים\" class=\"nav-link\" data-scroll-target=\"#כללי-אי-שוויונים\">כללי אי-שוויונים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#ערך-מוחלט-מרחק-וקטעים\" id=\"toc-ערך-מוחלט-מרחק-וקטעים\" class=\"nav-link\" data-scroll-target=\"#ערך-מוחלט-מרחק-וקטעים\">ערך מוחלט, מרחק וקטעים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-2\" id=\"toc-תרגילים-2\" class=\"nav-link\" data-scroll-target=\"#תרגילים-2\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-וגרפים\" id=\"toc-פונקציות-וגרפים\" class=\"nav-link\" data-scroll-target=\"#פונקציות-וגרפים\">\u003cspan class=\"header-section-number\">1.4\u003c/span> פונקציות וגרפים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#המישור-מכפלה-קרטזית\" id=\"toc-המישור-מכפלה-קרטזית\" class=\"nav-link\" data-scroll-target=\"#המישור-מכפלה-קרטזית\">המישור: מכפלה קרטזית\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרף-של-פונקציה\" id=\"toc-הגרף-של-פונקציה\" class=\"nav-link\" data-scroll-target=\"#הגרף-של-פונקציה\">הגרף של פונקציה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציית-הסימן-והערך-השלם\" id=\"toc-פונקציית-הסימן-והערך-השלם\" class=\"nav-link\" data-scroll-target=\"#פונקציית-הסימן-והערך-השלם\">פונקציית הסימן והערך השלם\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מה-אינו-פונקציה\" id=\"toc-מה-אינו-פונקציה\" class=\"nav-link\" data-scroll-target=\"#מה-אינו-פונקציה\">מה אינו פונקציה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תחום-ההגדרה-הטבעי\" id=\"toc-תחום-ההגדרה-הטבעי\" class=\"nav-link\" data-scroll-target=\"#תחום-ההגדרה-הטבעי\">תחום ההגדרה הטבעי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-3\" id=\"toc-תרגילים-3\" class=\"nav-link\" data-scroll-target=\"#תרגילים-3\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-זוגיות-ואי-זוגיות\" id=\"toc-פונקציות-זוגיות-ואי-זוגיות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-זוגיות-ואי-זוגיות\">\u003cspan class=\"header-section-number\">1.5\u003c/span> פונקציות זוגיות ואי-זוגיות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-4\" id=\"toc-תרגילים-4\" class=\"nav-link\" data-scroll-target=\"#תרגילים-4\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הזזה-ומתיחה-של-גרפים\" id=\"toc-הזזה-ומתיחה-של-גרפים\" class=\"nav-link\" data-scroll-target=\"#הזזה-ומתיחה-של-גרפים\">\u003cspan class=\"header-section-number\">1.6\u003c/span> הזזה ומתיחה של גרפים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-5\" id=\"toc-תרגילים-5\" class=\"nav-link\" data-scroll-target=\"#תרגילים-5\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הרכבת-פונקציות\" id=\"toc-הרכבת-פונקציות\" class=\"nav-link\" data-scroll-target=\"#הרכבת-פונקציות\">\u003cspan class=\"header-section-number\">1.7\u003c/span> הרכבת פונקציות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-6\" id=\"toc-תרגילים-6\" class=\"nav-link\" data-scroll-target=\"#תרגילים-6\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פולינומים-ושורשיהם\" id=\"toc-פולינומים-ושורשיהם\" class=\"nav-link\" data-scroll-target=\"#פולינומים-ושורשיהם\">\u003cspan class=\"header-section-number\">1.8\u003c/span> פולינומים ושורשיהם\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-7\" id=\"toc-תרגילים-7\" class=\"nav-link\" data-scroll-target=\"#תרגילים-7\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הפונקציות-הטריגונומטריות\" id=\"toc-הפונקציות-הטריגונומטריות\" class=\"nav-link\" data-scroll-target=\"#הפונקציות-הטריגונומטריות\">\u003cspan class=\"header-section-number\">1.9\u003c/span> הפונקציות הטריגונומטריות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#רדיאנים\" id=\"toc-רדיאנים\" class=\"nav-link\" data-scroll-target=\"#רדיאנים\">רדיאנים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#ההגדרה-הגאומטרית\" id=\"toc-ההגדרה-הגאומטרית\" class=\"nav-link\" data-scroll-target=\"#ההגדרה-הגאומטרית\">ההגדרה הגאומטרית\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מה-רואים-בציור\" id=\"toc-מה-רואים-בציור\" class=\"nav-link\" data-scroll-target=\"#מה-רואים-בציור\">מה רואים בציור\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#ערכים-מיוחדים\" id=\"toc-ערכים-מיוחדים\" class=\"nav-link\" data-scroll-target=\"#ערכים-מיוחדים\">ערכים מיוחדים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרפים\" id=\"toc-הגרפים\" class=\"nav-link\" data-scroll-target=\"#הגרפים\">הגרפים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#טנגנס\" id=\"toc-טנגנס\" class=\"nav-link\" data-scroll-target=\"#טנגנס\">טנגנס\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הזזה-ומתיחה-של-פונקציות-טריגונומטריות\" id=\"toc-הזזה-ומתיחה-של-פונקציות-טריגונומטריות\" class=\"nav-link\" data-scroll-target=\"#הזזה-ומתיחה-של-פונקציות-טריגונומטריות\">הזזה ומתיחה של פונקציות טריגונומטריות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-8\" id=\"toc-תרגילים-8\" class=\"nav-link\" data-scroll-target=\"#תרגילים-8\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הפונקציה-המעריכית\" id=\"toc-הפונקציה-המעריכית\" class=\"nav-link\" data-scroll-target=\"#הפונקציה-המעריכית\">\u003cspan class=\"header-section-number\">1.10\u003c/span> הפונקציה המעריכית\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#חזקות-עם-מעריך-שאינו-טבעי\" id=\"toc-חזקות-עם-מעריך-שאינו-טבעי\" class=\"nav-link\" data-scroll-target=\"#חזקות-עם-מעריך-שאינו-טבעי\">חזקות עם מעריך שאינו טבעי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרפים-1\" id=\"toc-הגרפים-1\" class=\"nav-link\" data-scroll-target=\"#הגרפים-1\">הגרפים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-9\" id=\"toc-תרגילים-9\" class=\"nav-link\" data-scroll-target=\"#תרגילים-9\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-הפוכות\" id=\"toc-פונקציות-הפוכות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-הפוכות\">\u003cspan class=\"header-section-number\">1.11\u003c/span> פונקציות הפוכות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-10\" id=\"toc-תרגילים-10\" class=\"nav-link\" data-scroll-target=\"#תרגילים-10\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-נוספות\" id=\"toc-פונקציות-נוספות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-נוספות\">\u003cspan class=\"header-section-number\">1.12\u003c/span> פונקציות נוספות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#לוגריתמים\" id=\"toc-לוגריתמים\" class=\"nav-link\" data-scroll-target=\"#לוגריתמים\">לוגריתמים\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#חוקי-הלוגריתמים\" id=\"toc-חוקי-הלוגריתמים\" class=\"nav-link\" data-scroll-target=\"#חוקי-הלוגריתמים\">חוקי הלוגריתמים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרף\" id=\"toc-הגרף\" class=\"nav-link\" data-scroll-target=\"#הגרף\">הגרף\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#חזקות-ושורשים\" id=\"toc-חזקות-ושורשים\" class=\"nav-link\" data-scroll-target=\"#חזקות-ושורשים\">חזקות ושורשים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-רציונליות\" id=\"toc-פונקציות-רציונליות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-רציונליות\">פונקציות רציונליות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הפונקציות-הטריגונומטריות-ההפוכות\" id=\"toc-הפונקציות-הטריגונומטריות-ההפוכות\" class=\"nav-link\" data-scroll-target=\"#הפונקציות-הטריגונומטריות-ההפוכות\">הפונקציות הטריגונומטריות ההפוכות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-11\" id=\"toc-תרגילים-11\" class=\"nav-link\" data-scroll-target=\"#תרגילים-11\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"},{"file":"02-Sequences.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#סדרות\" id=\"toc-סדרות\" class=\"nav-link active\" data-scroll-target=\"#סדרות\">\u003cspan class=\"header-section-number\">2.1\u003c/span> סדרות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים\" id=\"toc-תרגילים\" class=\"nav-link\" data-scroll-target=\"#תרגילים\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#גבול-של-סדרה\" id=\"toc-גבול-של-סדרה\" class=\"nav-link\" data-scroll-target=\"#גבול-של-סדרה\">\u003cspan class=\"header-section-number\">2.2\u003c/span> גבול של סדרה\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#שאיפה-לאינסוף\" id=\"toc-שאיפה-לאינסוף\" class=\"nav-link\" data-scroll-target=\"#שאיפה-לאינסוף\">שאיפה לאינסוף\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-1\" id=\"toc-תרגילים-1\" class=\"nav-link\" data-scroll-target=\"#תרגילים-1\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#סדרות-סטנדרטיות\" id=\"toc-סדרות-סטנדרטיות\" class=\"nav-link\" data-scroll-target=\"#סדרות-סטנדרטיות\">\u003cspan class=\"header-section-number\">2.3\u003c/span> סדרות סטנדרטיות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-2\" id=\"toc-תרגילים-2\" class=\"nav-link\" data-scroll-target=\"#תרגילים-2\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#משפטי-גבולות-בסיסיים\" id=\"toc-משפטי-גבולות-בסיסיים\" class=\"nav-link\" data-scroll-target=\"#משפטי-גבולות-בסיסיים\">\u003cspan class=\"header-section-number\">2.4\u003c/span> משפטי גבולות בסיסיים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#כלל-הסנדוויץ\" id=\"toc-כלל-הסנדוויץ\" class=\"nav-link\" data-scroll-target=\"#כלל-הסנדוויץ\">כלל הסנדוויץ’\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-3\" id=\"toc-תרגילים-3\" class=\"nav-link\" data-scroll-target=\"#תרגילים-3\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"},{"file":"index.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#פתח-דבר\" id=\"toc-פתח-דבר\" class=\"nav-link active\" data-scroll-target=\"#פתח-דבר\">פתח דבר\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#על-הקורס\" id=\"toc-על-הקורס\" class=\"nav-link\" data-scroll-target=\"#על-הקורס\">על הקורס\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#איך-לקרוא-את-המערכים\" id=\"toc-איך-לקרוא-את-המערכים\" class=\"nav-link\" data-scroll-target=\"#איך-לקרוא-את-המערכים\">איך לקרוא את המערכים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תוכנית-הקורס\" id=\"toc-תוכנית-הקורס\" class=\"nav-link\" data-scroll-target=\"#תוכנית-הקורס\">תוכנית הקורס\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מקורות\" id=\"toc-מקורות\" class=\"nav-link\" data-scroll-target=\"#מקורות\">מקורות\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"}]</script>
+<script id="book-toc-data" type="application/json">[{"file":"01-Introduction.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#מערכות-המספרים-מהטבעיים-אל-הממשיים\" id=\"toc-מערכות-המספרים-מהטבעיים-אל-הממשיים\" class=\"nav-link active\" data-scroll-target=\"#מערכות-המספרים-מהטבעיים-אל-הממשיים\">\u003cspan class=\"header-section-number\">1.1\u003c/span> מערכות המספרים: מהטבעיים אל הממשיים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#ספירה-המספרים-הטבעיים-השלמים-והרציונליים\" id=\"toc-ספירה-המספרים-הטבעיים-השלמים-והרציונליים\" class=\"nav-link\" data-scroll-target=\"#ספירה-המספרים-הטבעיים-השלמים-והרציונליים\">ספירה: המספרים הטבעיים, השלמים והרציונליים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מדידה-המספרים-האי-רציונליים\" id=\"toc-מדידה-המספרים-האי-רציונליים\" class=\"nav-link\" data-scroll-target=\"#מדידה-המספרים-האי-רציונליים\">מדידה: המספרים האי-רציונליים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הישר-הממשי\" id=\"toc-הישר-הממשי\" class=\"nav-link\" data-scroll-target=\"#הישר-הממשי\">הישר הממשי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים\" id=\"toc-תרגילים\" class=\"nav-link\" data-scroll-target=\"#תרגילים\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#קבוצות-וקטעים\" id=\"toc-קבוצות-וקטעים\" class=\"nav-link\" data-scroll-target=\"#קבוצות-וקטעים\">\u003cspan class=\"header-section-number\">1.2\u003c/span> קבוצות וקטעים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#רישום-של-קבוצות\" id=\"toc-רישום-של-קבוצות\" class=\"nav-link\" data-scroll-target=\"#רישום-של-קבוצות\">רישום של קבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#שוויון-קבוצות\" id=\"toc-שוויון-קבוצות\" class=\"nav-link\" data-scroll-target=\"#שוויון-קבוצות\">שוויון קבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הכלה\" id=\"toc-הכלה\" class=\"nav-link\" data-scroll-target=\"#הכלה\">הכלה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#פעולות-על-קבוצות\" id=\"toc-פעולות-על-קבוצות\" class=\"nav-link\" data-scroll-target=\"#פעולות-על-קבוצות\">פעולות על קבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#קטעים\" id=\"toc-קטעים\" class=\"nav-link\" data-scroll-target=\"#קטעים\">קטעים\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#סרטוט-קטעים\" id=\"toc-סרטוט-קטעים\" class=\"nav-link\" data-scroll-target=\"#סרטוט-קטעים\">סרטוט קטעים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-1\" id=\"toc-תרגילים-1\" class=\"nav-link\" data-scroll-target=\"#תרגילים-1\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#ערך-מוחלט\" id=\"toc-ערך-מוחלט\" class=\"nav-link\" data-scroll-target=\"#ערך-מוחלט\">\u003cspan class=\"header-section-number\">1.3\u003c/span> ערך מוחלט\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#כללי-אי-שוויונים\" id=\"toc-כללי-אי-שוויונים\" class=\"nav-link\" data-scroll-target=\"#כללי-אי-שוויונים\">כללי אי-שוויונים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#ערך-מוחלט-מרחק-וקטעים\" id=\"toc-ערך-מוחלט-מרחק-וקטעים\" class=\"nav-link\" data-scroll-target=\"#ערך-מוחלט-מרחק-וקטעים\">ערך מוחלט, מרחק וקטעים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-2\" id=\"toc-תרגילים-2\" class=\"nav-link\" data-scroll-target=\"#תרגילים-2\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-וגרפים\" id=\"toc-פונקציות-וגרפים\" class=\"nav-link\" data-scroll-target=\"#פונקציות-וגרפים\">\u003cspan class=\"header-section-number\">1.4\u003c/span> פונקציות וגרפים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#המישור-מכפלה-קרטזית\" id=\"toc-המישור-מכפלה-קרטזית\" class=\"nav-link\" data-scroll-target=\"#המישור-מכפלה-קרטזית\">המישור: מכפלה קרטזית\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרף-של-פונקציה\" id=\"toc-הגרף-של-פונקציה\" class=\"nav-link\" data-scroll-target=\"#הגרף-של-פונקציה\">הגרף של פונקציה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציית-הסימן-והערך-השלם\" id=\"toc-פונקציית-הסימן-והערך-השלם\" class=\"nav-link\" data-scroll-target=\"#פונקציית-הסימן-והערך-השלם\">פונקציית הסימן והערך השלם\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מה-אינו-פונקציה\" id=\"toc-מה-אינו-פונקציה\" class=\"nav-link\" data-scroll-target=\"#מה-אינו-פונקציה\">מה אינו פונקציה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תחום-ההגדרה-הטבעי\" id=\"toc-תחום-ההגדרה-הטבעי\" class=\"nav-link\" data-scroll-target=\"#תחום-ההגדרה-הטבעי\">תחום ההגדרה הטבעי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-3\" id=\"toc-תרגילים-3\" class=\"nav-link\" data-scroll-target=\"#תרגילים-3\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-זוגיות-ואי-זוגיות\" id=\"toc-פונקציות-זוגיות-ואי-זוגיות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-זוגיות-ואי-זוגיות\">\u003cspan class=\"header-section-number\">1.5\u003c/span> פונקציות זוגיות ואי-זוגיות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-4\" id=\"toc-תרגילים-4\" class=\"nav-link\" data-scroll-target=\"#תרגילים-4\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הזזה-ומתיחה-של-גרפים\" id=\"toc-הזזה-ומתיחה-של-גרפים\" class=\"nav-link\" data-scroll-target=\"#הזזה-ומתיחה-של-גרפים\">\u003cspan class=\"header-section-number\">1.6\u003c/span> הזזה ומתיחה של גרפים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-5\" id=\"toc-תרגילים-5\" class=\"nav-link\" data-scroll-target=\"#תרגילים-5\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הרכבת-פונקציות\" id=\"toc-הרכבת-פונקציות\" class=\"nav-link\" data-scroll-target=\"#הרכבת-פונקציות\">\u003cspan class=\"header-section-number\">1.7\u003c/span> הרכבת פונקציות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-6\" id=\"toc-תרגילים-6\" class=\"nav-link\" data-scroll-target=\"#תרגילים-6\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פולינומים-ושורשיהם\" id=\"toc-פולינומים-ושורשיהם\" class=\"nav-link\" data-scroll-target=\"#פולינומים-ושורשיהם\">\u003cspan class=\"header-section-number\">1.8\u003c/span> פולינומים ושורשיהם\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-7\" id=\"toc-תרגילים-7\" class=\"nav-link\" data-scroll-target=\"#תרגילים-7\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הפונקציות-הטריגונומטריות\" id=\"toc-הפונקציות-הטריגונומטריות\" class=\"nav-link\" data-scroll-target=\"#הפונקציות-הטריגונומטריות\">\u003cspan class=\"header-section-number\">1.9\u003c/span> הפונקציות הטריגונומטריות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#רדיאנים\" id=\"toc-רדיאנים\" class=\"nav-link\" data-scroll-target=\"#רדיאנים\">רדיאנים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#ההגדרה-הגאומטרית\" id=\"toc-ההגדרה-הגאומטרית\" class=\"nav-link\" data-scroll-target=\"#ההגדרה-הגאומטרית\">ההגדרה הגאומטרית\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מה-רואים-בציור\" id=\"toc-מה-רואים-בציור\" class=\"nav-link\" data-scroll-target=\"#מה-רואים-בציור\">מה רואים בציור\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#ערכים-מיוחדים\" id=\"toc-ערכים-מיוחדים\" class=\"nav-link\" data-scroll-target=\"#ערכים-מיוחדים\">ערכים מיוחדים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרפים\" id=\"toc-הגרפים\" class=\"nav-link\" data-scroll-target=\"#הגרפים\">הגרפים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#טנגנס\" id=\"toc-טנגנס\" class=\"nav-link\" data-scroll-target=\"#טנגנס\">טנגנס\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הזזה-ומתיחה-של-פונקציות-טריגונומטריות\" id=\"toc-הזזה-ומתיחה-של-פונקציות-טריגונומטריות\" class=\"nav-link\" data-scroll-target=\"#הזזה-ומתיחה-של-פונקציות-טריגונומטריות\">הזזה ומתיחה של פונקציות טריגונומטריות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-8\" id=\"toc-תרגילים-8\" class=\"nav-link\" data-scroll-target=\"#תרגילים-8\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הפונקציה-המעריכית\" id=\"toc-הפונקציה-המעריכית\" class=\"nav-link\" data-scroll-target=\"#הפונקציה-המעריכית\">\u003cspan class=\"header-section-number\">1.10\u003c/span> הפונקציה המעריכית\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#חזקות-עם-מעריך-שאינו-טבעי\" id=\"toc-חזקות-עם-מעריך-שאינו-טבעי\" class=\"nav-link\" data-scroll-target=\"#חזקות-עם-מעריך-שאינו-טבעי\">חזקות עם מעריך שאינו טבעי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרפים-1\" id=\"toc-הגרפים-1\" class=\"nav-link\" data-scroll-target=\"#הגרפים-1\">הגרפים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-9\" id=\"toc-תרגילים-9\" class=\"nav-link\" data-scroll-target=\"#תרגילים-9\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-הפוכות\" id=\"toc-פונקציות-הפוכות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-הפוכות\">\u003cspan class=\"header-section-number\">1.11\u003c/span> פונקציות הפוכות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-10\" id=\"toc-תרגילים-10\" class=\"nav-link\" data-scroll-target=\"#תרגילים-10\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-נוספות\" id=\"toc-פונקציות-נוספות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-נוספות\">\u003cspan class=\"header-section-number\">1.12\u003c/span> פונקציות נוספות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#לוגריתמים\" id=\"toc-לוגריתמים\" class=\"nav-link\" data-scroll-target=\"#לוגריתמים\">לוגריתמים\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#חוקי-הלוגריתמים\" id=\"toc-חוקי-הלוגריתמים\" class=\"nav-link\" data-scroll-target=\"#חוקי-הלוגריתמים\">חוקי הלוגריתמים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרף\" id=\"toc-הגרף\" class=\"nav-link\" data-scroll-target=\"#הגרף\">הגרף\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#חזקות-ושורשים\" id=\"toc-חזקות-ושורשים\" class=\"nav-link\" data-scroll-target=\"#חזקות-ושורשים\">חזקות ושורשים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-רציונליות\" id=\"toc-פונקציות-רציונליות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-רציונליות\">פונקציות רציונליות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הפונקציות-הטריגונומטריות-ההפוכות\" id=\"toc-הפונקציות-הטריגונומטריות-ההפוכות\" class=\"nav-link\" data-scroll-target=\"#הפונקציות-הטריגונומטריות-ההפוכות\">הפונקציות הטריגונומטריות ההפוכות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-11\" id=\"toc-תרגילים-11\" class=\"nav-link\" data-scroll-target=\"#תרגילים-11\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"},{"file":"02-Sequences.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#סדרות\" id=\"toc-סדרות\" class=\"nav-link active\" data-scroll-target=\"#סדרות\">\u003cspan class=\"header-section-number\">2.1\u003c/span> סדרות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים\" id=\"toc-תרגילים\" class=\"nav-link\" data-scroll-target=\"#תרגילים\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#גבול-של-סדרה\" id=\"toc-גבול-של-סדרה\" class=\"nav-link\" data-scroll-target=\"#גבול-של-סדרה\">\u003cspan class=\"header-section-number\">2.2\u003c/span> גבול של סדרה\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#שאיפה-לאינסוף\" id=\"toc-שאיפה-לאינסוף\" class=\"nav-link\" data-scroll-target=\"#שאיפה-לאינסוף\">שאיפה לאינסוף\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מה-עושים-עם-גבול\" id=\"toc-מה-עושים-עם-גבול\" class=\"nav-link\" data-scroll-target=\"#מה-עושים-עם-גבול\">מה עושים עם גבול\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-1\" id=\"toc-תרגילים-1\" class=\"nav-link\" data-scroll-target=\"#תרגילים-1\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#סדרות-סטנדרטיות\" id=\"toc-סדרות-סטנדרטיות\" class=\"nav-link\" data-scroll-target=\"#סדרות-סטנדרטיות\">\u003cspan class=\"header-section-number\">2.3\u003c/span> סדרות סטנדרטיות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-2\" id=\"toc-תרגילים-2\" class=\"nav-link\" data-scroll-target=\"#תרגילים-2\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#חשבון-גבולות-סנדוויץ-והשוואה\" id=\"toc-חשבון-גבולות-סנדוויץ-והשוואה\" class=\"nav-link\" data-scroll-target=\"#חשבון-גבולות-סנדוויץ-והשוואה\">\u003cspan class=\"header-section-number\">2.4\u003c/span> חשבון גבולות, סנדוויץ’ והשוואה\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#כלל-הסנדוויץ\" id=\"toc-כלל-הסנדוויץ\" class=\"nav-link\" data-scroll-target=\"#כלל-הסנדוויץ\">כלל הסנדוויץ’\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#השוואה\" id=\"toc-השוואה\" class=\"nav-link\" data-scroll-target=\"#השוואה\">השוואה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-3\" id=\"toc-תרגילים-3\" class=\"nav-link\" data-scroll-target=\"#תרגילים-3\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#קיום-ואי-קיום-של-גבול\" id=\"toc-קיום-ואי-קיום-של-גבול\" class=\"nav-link\" data-scroll-target=\"#קיום-ואי-קיום-של-גבול\">\u003cspan class=\"header-section-number\">2.5\u003c/span> קיום ואי-קיום של גבול\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#סדרות-מונוטוניות\" id=\"toc-סדרות-מונוטוניות\" class=\"nav-link\" data-scroll-target=\"#סדרות-מונוטוניות\">סדרות מונוטוניות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#המספר-e\" id=\"toc-המספר-e\" class=\"nav-link\" data-scroll-target=\"#המספר-e\">המספר e\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מתי-אין-גבול\" id=\"toc-מתי-אין-גבול\" class=\"nav-link\" data-scroll-target=\"#מתי-אין-גבול\">מתי אין גבול\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-4\" id=\"toc-תרגילים-4\" class=\"nav-link\" data-scroll-target=\"#תרגילים-4\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"},{"file":"index.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#פתח-דבר\" id=\"toc-פתח-דבר\" class=\"nav-link active\" data-scroll-target=\"#פתח-דבר\">פתח דבר\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#על-הקורס\" id=\"toc-על-הקורס\" class=\"nav-link\" data-scroll-target=\"#על-הקורס\">על הקורס\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#איך-לקרוא-את-המערכים\" id=\"toc-איך-לקרוא-את-המערכים\" class=\"nav-link\" data-scroll-target=\"#איך-לקרוא-את-המערכים\">איך לקרוא את המערכים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תוכנית-הקורס\" id=\"toc-תוכנית-הקורס\" class=\"nav-link\" data-scroll-target=\"#תוכנית-הקורס\">תוכנית הקורס\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מקורות\" id=\"toc-מקורות\" class=\"nav-link\" data-scroll-target=\"#מקורות\">מקורות\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"}]</script>
 </head>
 
 <body class="nav-sidebar floating quarto-light">
@@ -1000,16 +1008,25 @@ window.Quarto = {
   <li><a href="#גבול-של-סדרה" id="toc-גבול-של-סדרה" class="nav-link" data-scroll-target="#גבול-של-סדרה"><span class="header-section-number">2.2</span> גבול של סדרה</a>
   <ul>
   <li><a href="#שאיפה-לאינסוף" id="toc-שאיפה-לאינסוף" class="nav-link" data-scroll-target="#שאיפה-לאינסוף">שאיפה לאינסוף</a></li>
+  <li><a href="#מה-עושים-עם-גבול" id="toc-מה-עושים-עם-גבול" class="nav-link" data-scroll-target="#מה-עושים-עם-גבול">מה עושים עם גבול</a></li>
   <li><a href="#תרגילים-1" id="toc-תרגילים-1" class="nav-link" data-scroll-target="#תרגילים-1">תרגילים</a></li>
   </ul></li>
   <li><a href="#סדרות-סטנדרטיות" id="toc-סדרות-סטנדרטיות" class="nav-link" data-scroll-target="#סדרות-סטנדרטיות"><span class="header-section-number">2.3</span> סדרות סטנדרטיות</a>
   <ul>
   <li><a href="#תרגילים-2" id="toc-תרגילים-2" class="nav-link" data-scroll-target="#תרגילים-2">תרגילים</a></li>
   </ul></li>
-  <li><a href="#משפטי-גבולות-בסיסיים" id="toc-משפטי-גבולות-בסיסיים" class="nav-link" data-scroll-target="#משפטי-גבולות-בסיסיים"><span class="header-section-number">2.4</span> משפטי גבולות בסיסיים</a>
+  <li><a href="#חשבון-גבולות-סנדוויץ-והשוואה" id="toc-חשבון-גבולות-סנדוויץ-והשוואה" class="nav-link" data-scroll-target="#חשבון-גבולות-סנדוויץ-והשוואה"><span class="header-section-number">2.4</span> חשבון גבולות, סנדוויץ’ והשוואה</a>
   <ul>
   <li><a href="#כלל-הסנדוויץ" id="toc-כלל-הסנדוויץ" class="nav-link" data-scroll-target="#כלל-הסנדוויץ">כלל הסנדוויץ’</a></li>
+  <li><a href="#השוואה" id="toc-השוואה" class="nav-link" data-scroll-target="#השוואה">השוואה</a></li>
   <li><a href="#תרגילים-3" id="toc-תרגילים-3" class="nav-link" data-scroll-target="#תרגילים-3">תרגילים</a></li>
+  </ul></li>
+  <li><a href="#קיום-ואי-קיום-של-גבול" id="toc-קיום-ואי-קיום-של-גבול" class="nav-link" data-scroll-target="#קיום-ואי-קיום-של-גבול"><span class="header-section-number">2.5</span> קיום ואי-קיום של גבול</a>
+  <ul>
+  <li><a href="#סדרות-מונוטוניות" id="toc-סדרות-מונוטוניות" class="nav-link" data-scroll-target="#סדרות-מונוטוניות">סדרות מונוטוניות</a></li>
+  <li><a href="#המספר-e" id="toc-המספר-e" class="nav-link" data-scroll-target="#המספר-e">המספר e</a></li>
+  <li><a href="#מתי-אין-גבול" id="toc-מתי-אין-גבול" class="nav-link" data-scroll-target="#מתי-אין-גבול">מתי אין גבול</a></li>
+  <li><a href="#תרגילים-4" id="toc-תרגילים-4" class="nav-link" data-scroll-target="#תרגילים-4">תרגילים</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -1323,12 +1340,42 @@ window.Quarto = {
 <p><strong>שימו לב — אינסוף אינו גבול.</strong></p>
 <p>סדרה ששואפת לאינסוף היא סדרה <strong>מתבדרת</strong>: אין מספר שהיא מתקרבת אליו. הסימון <span class="math inline">\(\lim\limits_{n\to\infty} a_n = \infty\)</span> רק מתאר <strong>איך</strong> היא מתבדרת.</p>
 </div>
+</section>
+<section id="מה-עושים-עם-גבול" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="מה-עושים-עם-גבול">מה עושים עם גבול</h3>
+<p>כשפוגשים סדרה, המשימה היא אחת משלוש:</p>
+<div class="thmbox thmbox-key-point thmicon-idea" data-icon="idea" title="שלוש משימות">
+<p><strong>חשוב לזכור — שלוש משימות.</strong></p>
+<ol type="1">
+<li><strong>לחשב את הגבול.</strong> בעזרת כמה גבולות שכדאי לזכור, וכללי חישוב פשוטים.</li>
+<li><strong>להראות שיש גבול</strong>, גם בלי לדעת מהו. למשל, כשהסדרה עולה כל הזמן ובכל זאת נשארת מתחת למספר קבוע.</li>
+<li><strong>להראות שאין גבול.</strong> למשל, כשהאיברים מתרחקים מאפס בלי סוף, או כשחלק מהאיברים מתקרבים למספר אחד וחלק למספר אחר.</li>
+</ol>
+</div>
+<div class="thmbox thmbox-key-point thmicon-idea" data-icon="idea" title="לא תמיד אפשר לחשב">
+<p><strong>חשוב לזכור — לא תמיד אפשר לחשב.</strong></p>
+<p>לפעמים יודעים שיש גבול, אבל אין דרך לכתוב אותו בעזרת המספרים שאנחנו מכירים. כך קורה עם הסדרה <span class="math inline">\(:\left(1 + \frac{1}{n}\right)^n\)</span> יש לה גבול, אבל שום חישוב פשוט לא נותן אותו. בהמשך הפרק נראה למה יש לה גבול, ונקרא לו <span class="math inline">\(.e\)</span></p>
+</div>
+<div class="thmbox thmbox-self-check">
+<p><strong>בדיקה עצמית.</strong></p>
+<p>איזו משימה מתאימה לסדרה <span class="math inline">\(?(-1)^n\)</span></p>
+<div class="tf-quiz" data-correct="3">
+<button type="button" class="tf-opt" data-val="1">לחשב את הגבול</button>
+<button type="button" class="tf-opt" data-val="2">להראות שיש גבול</button>
+<button type="button" class="tf-opt" data-val="3">להראות שאין גבול</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p>האיברים קופצים בין <span class="math inline">\(-1\)</span> ל-<span class="math inline">\(1\)</span> ולא מתייצבים, ולכן המשימה היא להראות שאין לה גבול: חלק מהאיברים (במקומות הזוגיים) שווים <span class="math inline">\(,1\)</span> והשאר שווים <span class="math inline">\(.{-}1\)</span></p>
+</div>
+</div>
+</div>
 <div class="thmbox thmbox-summary">
 <p><strong>סיכום.</strong></p>
 <ul>
 <li><span class="math inline">\(a_n \to L\)</span> אם לכל שגיאה מותרת <span class="math inline">\(\varepsilon &gt; 0\)</span> יש מקום שממנו והלאה כל האיברים מקיימים <span class="math inline">\(.|a_n - L| &lt; \varepsilon\)</span></li>
 <li>רק הזנב קובע את הגבול, ולסדרה יש לכל היותר גבול אחד.</li>
 <li><span class="math inline">\(a_n \to \infty\)</span> אם לכל מספר <span class="math inline">\(M\)</span> יש מקום שממנו והלאה כל האיברים גדולים מ-<span class="math inline">\(.M\)</span> זו סדרה מתבדרת.</li>
+<li>על סדרה יש שלוש משימות: לחשב את הגבול, להראות שהוא קיים, או להראות שאינו קיים. לא תמיד אפשר לחשב אותו.</li>
 </ul>
 </div>
 </section>
@@ -1472,7 +1519,7 @@ window.Quarto = {
 <section id="סדרות-סטנדרטיות" class="level2" data-number="2.3">
 <h2 data-number="2.3" class="anchored" data-anchor-id="סדרות-סטנדרטיות"><span class="header-section-number">2.3</span> סדרות סטנדרטיות</h2>
 <div class="lead">
-<p><strong>מה עושים כאן?</strong> את הגבולות של כמה סדרות פשוטות כדאי לזכור בעל פה. מהן נחשב גבולות של סדרות מסובכות יותר.</p>
+<p><strong>מה עושים כאן?</strong> את הגבולות של כמה סדרות פשוטות כדאי לזכור בעל פה. הן אבני הבניין של כל חישוב: מהן, בעזרת חשבון הגבולות, נחשב גבולות של סדרות מסובכות יותר.</p>
 </div>
 <div id="box-thm-standard" class="thmbox thmbox-theorem" title="גבולות של סדרות סטנדרטיות">
 <p><strong>משפט 2.3.1 — גבולות של סדרות סטנדרטיות.</strong></p>
@@ -1624,10 +1671,10 @@ window.Quarto = {
 </div>
 </section>
 </section>
-<section id="משפטי-גבולות-בסיסיים" class="level2" data-number="2.4">
-<h2 data-number="2.4" class="anchored" data-anchor-id="משפטי-גבולות-בסיסיים"><span class="header-section-number">2.4</span> משפטי גבולות בסיסיים</h2>
+<section id="חשבון-גבולות-סנדוויץ-והשוואה" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="חשבון-גבולות-סנדוויץ-והשוואה"><span class="header-section-number">2.4</span> חשבון גבולות, סנדוויץ’ והשוואה</h2>
 <div class="lead">
-<p><strong>מה עושים כאן?</strong> נחשב גבולות של סכומים, מכפלות ומנות בעזרת הסדרות הסטנדרטיות, נראה מתי זה לא עובד, ונכיר את כלל הסנדוויץ’.</p>
+<p><strong>מה עושים כאן?</strong> נחשב גבולות של סכומים, מכפלות ומנות בעזרת הסדרות הסטנדרטיות, נראה מתי זה לא עובד, ונכיר שני כלים נוספים: כלל הסנדוויץ’ והשוואה בין סדרות.</p>
 </div>
 <div id="box-thm-limit-arithmetic" class="thmbox thmbox-theorem" title="חשבון גבולות">
 <p><strong>משפט 2.4.1 — חשבון גבולות.</strong></p>
@@ -1809,19 +1856,78 @@ window.Quarto = {
 <li>והגורם השני חייב לשאוף לאפס: <span class="math inline">\((-1)^n \cdot 1\)</span> מתבדרת.</li>
 </ul>
 </div>
+</section>
+<section id="השוואה" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="השוואה">השוואה</h3>
+<p>אי-שוויון בין האיברים של שתי סדרות עובר גם לגבולות שלהן. בעיקר משתמשים בזה כדי להראות שסדרה שואפת לאינסוף: מספיק למצוא סדרה <strong>קטנה</strong> ממנה ששואפת לאינסוף.</p>
+<div id="box-thm-compare" class="thmbox thmbox-theorem" title="השוואת גבולות">
+<p><strong>משפט 2.4.6 — השוואת גבולות.</strong></p>
+<p>נניח ש-<span class="math inline">\(a_n \le b_n\)</span> ממקום מסוים והלאה.</p>
+<p>(א) אם <span class="math inline">\(a_n \to A\)</span> ו-<span class="math inline">\(,b_n \to B\)</span> אז <span class="math inline">\(.A \le B\)</span></p>
+<p>(ב) אם <span class="math inline">\(,a_n \to \infty\)</span> אז גם <span class="math inline">\(.b_n \to \infty\)</span></p>
+<p>(ג) אם <span class="math inline">\(,b_n \to -\infty\)</span> אז גם <span class="math inline">\(.a_n \to -\infty\)</span></p>
+</div>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>מאיפה זה בא?</summary>
+<div class="lecture-answer" title="מאיפה זה בא?">
+<p>בסעיף (ב): לכל מספר <span class="math inline">\(M\)</span> יש מקום שממנו והלאה <span class="math inline">\(,a_n &gt; M\)</span> ויש מקום שממנו והלאה <span class="math inline">\(.b_n \ge a_n\)</span> מהמאוחר מבין שני המקומות <span class="math inline">\(,b_n \ge a_n &gt; M\)</span> כלומר גם <span class="math inline">\(b_n\)</span> גדולים מ-<span class="math inline">\(.M\)</span> סעיף (ג) הוא אותו נימוק בכיוון ההפוך.</p>
+</div>
+</details>
+<div class="thmbox thmbox-warning" title="מה ההשוואה לא אומרת">
+<p><strong>שימו לב — מה ההשוואה לא אומרת.</strong></p>
+<ul>
+<li>בסעיף (א), גם אם <span class="math inline">\(a_n &lt; b_n\)</span> <strong>לכל</strong> <span class="math inline">\(,n\)</span> אפשר להסיק רק <span class="math inline">\(.A \le B\)</span> למשל, <span class="math inline">\(0 &lt; \frac{1}{n}\)</span> לכל <span class="math inline">\(,n\)</span> אבל לשתי הסדרות אותו גבול, <span class="math inline">\(.0\)</span></li>
+<li>בסעיף (ב) הכיוון חשוב: סדרה <strong>קטנה</strong> מסדרה ששואפת לאינסוף לא בהכרח שואפת לאינסוף. למשל, <span class="math inline">\(1 \le n\)</span> ו-<span class="math inline">\(,n \to \infty\)</span> אבל הסדרה הקבועה <span class="math inline">\(1\)</span> אינה שואפת לאינסוף.</li>
+</ul>
+</div>
+<div id="box-exm-compare" class="thmbox thmbox-example" title="מראים שסדרה שואפת לאינסוף">
+<p><strong>דוגמה 2.4.7 — מראים שסדרה שואפת לאינסוף.</strong></p>
+<p>הראו שהסדרות שואפות לאינסוף.</p>
+<p><strong>(א)</strong> <span class="math inline">\(n + \sin n\)</span></p>
+<div class="fill">
+<p>מכיוון ש-<span class="math inline">\(,\sin n \ge -1\)</span> מתקיים</p>
+<div class="eqline">
+<p><span class="fill-ltr"><span class="math inline">\(n + \sin n \ge n -{}\)</span> <span class="blank" data-ans="1"><span class="math inline">\(1\)</span></span></span></p>
+</div>
+<p>ולכן <span class="fill-ltr"><span class="math inline">\(n + \sin n \to\)</span> <span class="blank" data-ans="inf"><span class="math inline">\(\infty\)</span></span></span></p>
+<div class="explain">
+<p><strong>(א)</strong> הסדרה <span class="math inline">\(n - 1\)</span> שואפת לאינסוף, כי <span class="math inline">\(n \to \infty\)</span> ו-<span class="math inline">\(.\infty - 1 = \infty\)</span> הסדרה <span class="math inline">\(n + \sin n\)</span> גדולה ממנה, ולכן לפי סעיף (ב) ב-<a href="#box-thm-compare">משפט 2.4.6</a> גם <span class="math inline">\(.n + \sin n \to \infty\)</span> שימו לב שחשבון הגבולות לבדו לא עוזר כאן, כי ל-<span class="math inline">\(\sin n\)</span> אין גבול.</p>
+</div>
+</div>
+<p><strong>(ב)</strong> <span class="math inline">\(\frac{n}{2} + 3(-1)^n\)</span></p>
+<div class="fill">
+<p>מכיוון ש-<span class="math inline">\(,(-1)^n \ge -1\)</span> מתקיים</p>
+<div class="eqline">
+<p><span class="fill-ltr"><span class="math inline">\(\frac{n}{2} + 3(-1)^n \ge \frac{n}{2} -{}\)</span> <span class="blank" data-ans="3"><span class="math inline">\(3\)</span></span></span></p>
+</div>
+<p>ולכן <span class="fill-ltr"><span class="math inline">\(\frac{n}{2} + 3(-1)^n \to\)</span> <span class="blank" data-ans="inf"><span class="math inline">\(\infty\)</span></span></span></p>
+<div class="explain">
+<p><strong>(ב)</strong> <span class="math display">\[\begin{aligned} (-1)^n &amp;\ge -1 \\ 3(-1)^n &amp;\ge -3 \\ \tfrac{n}{2} + 3(-1)^n &amp;\ge \tfrac{n}{2} - 3 \end{aligned}\]</span> הסדרה <span class="math inline">\(\frac{n}{2} - 3\)</span> שואפת לאינסוף, ולכן לפי סעיף (ב) ב-<a href="#box-thm-compare">משפט 2.4.6</a> גם <span class="math inline">\(.\frac{n}{2} + 3(-1)^n \to \infty\)</span></p>
+</div>
+</div>
+</div>
+<div class="thmbox thmbox-key-point thmicon-calc" data-icon="calc" title="איך מחשבים גבול">
+<p><strong>שיטת חישוב — איך מחשבים גבול.</strong></p>
+<ol type="1">
+<li>מפרקים את הסדרה לסדרות סטנדרטיות, ומחשבים לפי חשבון הגבולות.</li>
+<li>אם מתקבלת צורה לא מוגדרת, קודם משנים את הביטוי, כמו בתיבה “מה עושים עם צורה לא מוגדרת”.</li>
+<li>אם יש בסדרה גורם חסום שאין לו גבול (כמו <span class="math inline">\(\sin n\)</span> או <span class="math inline">\((-1)^n\)</span>), משתמשים בכלל הסנדוויץ’ או ב”חסומה כפול שואפת לאפס”.</li>
+<li>אם נראה שהסדרה שואפת לאינסוף אבל יש בה גורם כזה, משתמשים בהשוואה.</li>
+</ol>
+</div>
 <div class="thmbox thmbox-summary">
 <p><strong>סיכום.</strong></p>
 <ul>
 <li>סכום, מכפלה ומנה של סדרות מתכנסות מתכנסים לסכום, למכפלה ולמנה של הגבולות (במנה: אם הגבול במכנה אינו <span class="math inline">\(0\)</span>).</li>
 <li>לצורות <span class="math inline">\(\infty - \infty\)</span> ו-<span class="math inline">\(\frac{\infty}{\infty}\)</span> ו-<span class="math inline">\(0 \cdot \infty\)</span> ו-<span class="math inline">\(\frac{0}{0}\)</span> אין תשובה קבועה: קודם משנים את הביטוי. במנה של פולינומים מחלקים בחזקה הגבוהה ביותר במכנה.</li>
 <li>כלל הסנדוויץ’: סדרה שכלואה בין שתי סדרות עם אותו גבול שואפת אליו. בפרט, מכפלה של סדרה חסומה בסדרה ששואפת לאפס שואפת לאפס.</li>
+<li>השוואה: אי-שוויון בין סדרות עובר לגבולות (אי-שוויון חזק הופך לחלש), וסדרה שגדולה מסדרה ששואפת לאינסוף שואפת לאינסוף.</li>
 </ul>
 </div>
 </section>
 <section id="תרגילים-3" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="תרגילים-3">תרגילים</h3>
 <div id="box-q-undetermined" class="thmbox thmbox-question" title="מוגדר או לא?">
-<p><strong>שאלה 2.4.6 — מוגדר או לא?</strong></p>
+<p><strong>שאלה 2.4.8 — מוגדר או לא?</strong></p>
 <p>איזה מהביטויים הבאים הוא צורה לא מוגדרת?</p>
 <div class="tf-quiz" data-correct="3">
 <button type="button" class="tf-opt" data-val="1">\(\frac{5}{\infty}\)</button>
@@ -1835,7 +1941,7 @@ window.Quarto = {
 </div>
 </div>
 <div id="box-q-lim-rational" class="thmbox thmbox-question" title="מנות של פולינומים">
-<p><strong>שאלה 2.4.7 — מנות של פולינומים.</strong></p>
+<p><strong>שאלה 2.4.9 — מנות של פולינומים.</strong></p>
 <p>חשבו צעד אחר צעד.</p>
 <p><strong>(א)</strong> <span class="math inline">\(\lim\limits_{n\to\infty} \frac{4n - 1}{2n + 7}\)</span></p>
 <div class="derive" data-limit="n" start="(4n-1)/(2n+7)">
@@ -1884,7 +1990,7 @@ window.Quarto = {
 </div>
 </div>
 <div id="box-q-lim-powers" class="thmbox thmbox-question" title="עם חזקות">
-<p><strong>שאלה 2.4.8 — עם חזקות.</strong></p>
+<p><strong>שאלה 2.4.10 — עם חזקות.</strong></p>
 <p>חשבו צעד אחר צעד: <span class="math inline">\(\lim\limits_{n\to\infty} \frac{5 \cdot 2^n + 4^n}{4^n}\)</span></p>
 <div class="derive" data-limit="n" start="(5*2^n+4^n)/4^n">
 <div class="step" data-line="5([1/2])^n+[1]">
@@ -1902,7 +2008,7 @@ window.Quarto = {
 </div>
 </div>
 <div id="box-q-lim-bounded" class="thmbox thmbox-question" title="חסומה כפול שואפת לאפס">
-<p><strong>שאלה 2.4.9 — חסומה כפול שואפת לאפס.</strong></p>
+<p><strong>שאלה 2.4.11 — חסומה כפול שואפת לאפס.</strong></p>
 <p>חשבו צעד אחר צעד.</p>
 <p><strong>(א)</strong> <span class="math inline">\(\lim\limits_{n\to\infty} \frac{\cos n}{n^2}\)</span></p>
 <div class="derive" data-limit="n" start="cos(n)/n^2">
@@ -1926,6 +2032,425 @@ window.Quarto = {
 </div>
 <div class="hint">
 <p>פרקו את השבר לשני שברים.</p>
+</div>
+</div>
+</div>
+<div id="box-q-compare" class="thmbox thmbox-question" title="השוואה">
+<p><strong>שאלה 2.4.12 — השוואה.</strong></p>
+<p><strong>(א)</strong> הראו ש-<span class="math inline">\(.n^2 - 5\cos n \to \infty\)</span></p>
+<div class="fill">
+<p>מכיוון ש-<span class="math inline">\(,\cos n \le 1\)</span> מתקיים</p>
+<div class="eqline">
+<p><span class="fill-ltr"><span class="math inline">\(n^2 - 5\cos n \ge n^2 -{}\)</span> <span class="blank" data-ans="5"><span class="math inline">\(5\)</span></span></span></p>
+</div>
+<p>ולכן <span class="fill-ltr"><span class="math inline">\(n^2 - 5\cos n \to\)</span> <span class="blank" data-ans="inf"><span class="math inline">\(\infty\)</span></span></span></p>
+<div class="explain">
+<p><strong>(א)</strong> <span class="math display">\[\begin{aligned} \cos n &amp;\le 1 \\ -5\cos n &amp;\ge -5 \\ n^2 - 5\cos n &amp;\ge n^2 - 5 \end{aligned}\]</span> בשורה השנייה כפלנו ב-<span class="math inline">\((-5)\)</span> (שלילי, ולכן הכיוון התהפך), ובשלישית הוספנו <span class="math inline">\(.n^2\)</span> הסדרה <span class="math inline">\(n^2 - 5\)</span> שואפת לאינסוף, ולכן לפי <a href="#box-thm-compare">משפט 2.4.6</a> גם <span class="math inline">\(.n^2 - 5\cos n \to \infty\)</span></p>
+</div>
+</div>
+<p><strong>(ב)</strong> נניח ש-<span class="math inline">\(a_n &lt; 3\)</span> לכל <span class="math inline">\(n\)</span> וש-<span class="math inline">\(.a_n \to A\)</span> מה בטוח נכון?</p>
+<div class="tf-quiz" data-correct="2">
+<button type="button" class="tf-opt" data-val="1">\(A &lt; 3\)</button>
+<button type="button" class="tf-opt" data-val="2">\(A \le 3\)</button>
+<button type="button" class="tf-opt" data-val="3">\(A = 3\)</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p>לפי סעיף (א) ב-<a href="#box-thm-compare">משפט 2.4.6</a> מתקיים <span class="math inline">\(.A \le 3\)</span> אי אפשר לומר יותר. הסדרה <span class="math inline">\(3 - \frac{1}{n}\)</span> קטנה מ-<span class="math inline">\(3\)</span> לכל <span class="math inline">\(,n\)</span> והגבול שלה <span class="math inline">\(,3\)</span> כלומר לא בהכרח <span class="math inline">\(.A &lt; 3\)</span> וגם הסדרה הקבועה <span class="math inline">\(0\)</span> קטנה מ-<span class="math inline">\(,3\)</span> אבל הגבול שלה <span class="math inline">\(,0\)</span> כלומר לא בהכרח <span class="math inline">\(.A = 3\)</span></p>
+</div>
+</div>
+<p><strong>(ג)</strong> נניח ש-<span class="math inline">\(a_n \le n\)</span> לכל <span class="math inline">\(.n\)</span> האם בהכרח <span class="math inline">\(?a_n \to \infty\)</span></p>
+<div class="tf-quiz" data-correct="2">
+<button type="button" class="tf-opt" data-val="1">כן</button>
+<button type="button" class="tf-opt" data-val="2">לא בהכרח</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p>לא בהכרח. השוואה עם סדרה ששואפת לאינסוף עובדת רק כשהסדרה שלנו <strong>גדולה</strong> ממנה. למשל, הסדרה <span class="math inline">\(a_n = 0\)</span> מקיימת <span class="math inline">\(0 \le n\)</span> ושואפת ל-<span class="math inline">\(.0\)</span></p>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="קיום-ואי-קיום-של-גבול" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="קיום-ואי-קיום-של-גבול"><span class="header-section-number">2.5</span> קיום ואי-קיום של גבול</h2>
+<div class="lead">
+<p><strong>מה עושים כאן?</strong> נכיר כלים לשתי המשימות הנוספות: להראות שיש גבול גם כשאי אפשר לחשב אותו, ולהראות שאין גבול.</p>
+</div>
+<section id="סדרות-מונוטוניות" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="סדרות-מונוטוניות">סדרות מונוטוניות</h3>
+<p>סדרה שעולה כל הזמן, אבל אף פעם לא עוברת מספר מסוים, חייבת להתייצב ליד מספר כלשהו. כדי לומר את זה במדויק נגדיר:</p>
+<div id="box-def-monotone" class="thmbox thmbox-definition" title="סדרה מונוטונית">
+<p><strong>הגדרה 2.5.1 — סדרה מונוטונית.</strong></p>
+<p>נאמר שהסדרה <span class="math inline">\(a_n\)</span> <span class="term"><strong>עולה</strong></span> אם <span class="math inline">\(a_n \le a_{n+1}\)</span> לכל <span class="math inline">\(,n\)</span> ו-<span class="term"><strong>יורדת</strong></span> אם <span class="math inline">\(a_n \ge a_{n+1}\)</span> לכל <span class="math inline">\(.n\)</span> סדרה עולה או יורדת נקראת <span class="term"><strong>מונוטונית</strong></span>.</p>
+</div>
+<div class="thmbox thmbox-key-point thmicon-calc" data-icon="calc" title="איך בודקים אם סדרה עולה או יורדת">
+<p><strong>שיטת חישוב — איך בודקים אם סדרה עולה או יורדת.</strong></p>
+<p>מחשבים את ההפרש <span class="math inline">\(a_{n+1} - a_n\)</span> ומפשטים.</p>
+<ul>
+<li>אם <span class="math inline">\(a_{n+1} - a_n \ge 0\)</span> לכל <span class="math inline">\(,n\)</span> הסדרה עולה.</li>
+<li>אם <span class="math inline">\(a_{n+1} - a_n \le 0\)</span> לכל <span class="math inline">\(,n\)</span> היא יורדת.</li>
+<li>אם הסימן של ההפרש מתחלף, היא אינה מונוטונית.</li>
+</ul>
+</div>
+<div id="box-exm-monotone" class="thmbox thmbox-example" title="עולה או יורדת?">
+<p><strong>דוגמה 2.5.2 — עולה או יורדת?</strong></p>
+<p><strong>(א)</strong> <span class="math inline">\(a_n = 3 - \frac{1}{n}\)</span> <span>(שבר כותבים עם קו נטוי, למשל <code>2/(n+3)</code>.)</span></p>
+<div class="fill">
+<div class="eqline">
+<p><span class="fill-ltr"><span class="math inline">\(a_{n+1} - a_n =\)</span> <span class="blank" data-ans="1/(n(n+1))" data-vars="n" data-w="12"><span class="math inline">\(\frac{1}{n(n+1)}\)</span></span></span></p>
+</div>
+<div class="hint">
+<p><span class="math inline">\(.a_{n+1} - a_n = \left(3 - \frac{1}{n+1}\right) - \left(3 - \frac{1}{n}\right)\)</span> ה-<span class="math inline">\(3\)</span> מתבטלים.</p>
+</div>
+<div class="explain">
+<p><strong>(א)</strong> <span class="math display">\[\begin{aligned} a_{n+1} - a_n &amp;= \left(3 - \tfrac{1}{n+1}\right) - \left(3 - \tfrac{1}{n}\right) \\ &amp;= \tfrac{1}{n} - \tfrac{1}{n+1} \\ &amp;= \tfrac{(n+1) - n}{n(n+1)} \\ &amp;= \tfrac{1}{n(n+1)} \end{aligned}\]</span> ההפרש חיובי לכל <span class="math inline">\(,n\)</span> ולכן הסדרה עולה.</p>
+</div>
+</div>
+<p><strong>(ב)</strong> <span class="math inline">\(a_n = \frac{(-1)^n}{n}\)</span></p>
+<div class="tf-quiz" data-correct="3">
+<button type="button" class="tf-opt" data-val="1">עולה</button>
+<button type="button" class="tf-opt" data-val="2">יורדת</button>
+<button type="button" class="tf-opt" data-val="3">לא מונוטונית</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p>האיברים הם <span class="math inline">\(-1, \frac{1}{2}, -\frac{1}{3}, \frac{1}{4}\)</span> וכן הלאה: פעם עולים ופעם יורדים. לכן הסדרה אינה מונוטונית, אף שהיא מתכנסת ל-<span class="math inline">\(.0\)</span></p>
+</div>
+</div>
+</div>
+<div id="box-thm-monotone-bounded" class="thmbox thmbox-theorem" title="מונוטונית וחסומה מתכנסת">
+<p><strong>משפט 2.5.3 — מונוטונית וחסומה מתכנסת.</strong></p>
+<p>סדרה מונוטונית וחסומה מתכנסת.</p>
+</div>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>מאיפה זה בא?</summary>
+<div class="lecture-answer" title="מאיפה זה בא?">
+<p>נצייר סדרה עולה וחסומה על הישר הממשי. כל איבר נמצא מימין לקודם (או במקומו), אבל אף איבר אינו עובר את החסם. לאיברים אין לאן לברוח, ולכן הם מצטופפים ליד מספר אחד, והוא הגבול.</p>
+</div>
+</details>
+<div class="thmbox thmbox-warning" title="צריך את שני התנאים">
+<p><strong>שימו לב — צריך את שני התנאים.</strong></p>
+<ul>
+<li>מונוטונית ולא חסומה: <span class="math inline">\(n\)</span> עולה ושואפת לאינסוף.</li>
+<li>חסומה ולא מונוטונית: <span class="math inline">\((-1)^n\)</span> חסומה, ואין לה גבול.</li>
+</ul>
+</div>
+<div class="thmbox thmbox-warning" title="המשפט לא אומר מהו הגבול">
+<p><strong>שימו לב — המשפט לא אומר מהו הגבול.</strong></p>
+<p>המשפט אומר <strong>שיש</strong> גבול, אבל לא <strong>מהו</strong>. הגבול אינו בהכרח המספר שחוסם את הסדרה: <span class="math inline">\(1 - \frac{1}{n}\)</span> עולה וקטנה מ-<span class="math inline">\(,5\)</span> אבל הגבול שלה <span class="math inline">\(.1\)</span></p>
+</div>
+</section>
+<section id="המספר-e" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="המספר-e">המספר e</h3>
+<div id="box-exm-e-sequence" class="thmbox thmbox-example" title="הסדרה $\left(1 + \frac{1}{n}\right)^n$">
+<p><strong>דוגמה 2.5.4 — הסדרה <span class="math inline">\(\left(1 + \frac{1}{n}\right)^n\)</span>.</strong></p>
+<p>נחשב כמה איברים של <span class="math inline">\(.a_n = \left(1 + \frac{1}{n}\right)^n\)</span></p>
+<div class="fill">
+<p><span class="fill-ltr"><span class="math inline">\(a_1 =\)</span> <span class="blank" data-ans="2"><span class="math inline">\(2\)</span></span></span>, <span class="fill-ltr"><span class="math inline">\(a_2 =\)</span> <span class="blank" data-ans="9/4"><span class="math inline">\(\frac{9}{4}\)</span></span></span></p>
+<div class="explain">
+<p><span class="math display">\[\begin{aligned} a_1 &amp;= (1 + 1)^1 \\ &amp;= 2 \end{aligned}\]</span> <span class="math display">\[\begin{aligned} a_2 &amp;= \left(1 + \tfrac{1}{2}\right)^2 \\ &amp;= \left(\tfrac{3}{2}\right)^2 \\ &amp;= \tfrac{9}{4} = 2.25 \end{aligned}\]</span></p>
+</div>
+</div>
+<p>ועם מחשבון:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;"><span class="math inline">\(n\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(1\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(2\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(10\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(100\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(1000\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(a_n\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(2\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(2.25\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(2.5937\ldots\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(2.7048\ldots\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(2.7169\ldots\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>האיברים עולים ונשארים בין <span class="math inline">\(2\)</span> ל-<span class="math inline">\(.3\)</span> אפשר להראות שזה נכון לכל <span class="math inline">\(,n\)</span> כלומר הסדרה עולה וחסומה, ולכן לפי <a href="#box-thm-monotone-bounded">משפט 2.5.3</a> יש לה גבול.</p>
+</div>
+<div id="box-def-e" class="thmbox thmbox-definition" title="המספר $e$">
+<p><strong>הגדרה 2.5.5 — המספר <span class="math inline">\(e\)</span>.</strong></p>
+<p>את הגבול של הסדרה <span class="math inline">\(\left(1 + \frac{1}{n}\right)^n\)</span> נסמן ב-<span class="term"><strong><span class="math inline">\(e\)</span></strong></span>: <span class="math display">\[.\lim_{n\to\infty} \left(1 + \frac{1}{n}\right)^n = e \approx 2.718\]</span> מעכשיו זו עוד סדרה סטנדרטית, ומשתמשים בה בחשבון גבולות כמו בכל האחרות.</p>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/ch02-monotone-e.png" class="img-fluid figure-img" style="width:75.0%" alt="נקודות שעולות ומתקרבות לקו אופקי שמסומן e, מתחת לקו מקווקו בגובה שלוש"></p>
+<figcaption>האיברים של <span class="math inline">\(\left(1 + \frac{1}{n}\right)^n\)</span> עולים, נשארים מתחת ל-<span class="math inline">\(3\)</span> ומתקרבים ל-<span class="math inline">\(.e\)</span></figcaption>
+</figure>
+</div>
+<div class="thmbox thmbox-warning" title="$1^\infty$ היא צורה לא מוגדרת">
+<p><strong>שימו לב — <span class="math inline">\(1^\infty\)</span> היא צורה לא מוגדרת.</strong></p>
+<p>הבסיס <span class="math inline">\(1 + \frac{1}{n}\)</span> שואף ל-<span class="math inline">\(1\)</span> והמעריך <span class="math inline">\(n\)</span> שואף לאינסוף. הצבה של הגבולות נותנת <span class="math inline">\(,1^\infty\)</span> ונדמה ש”אחת בכל חזקה היא אחת”, אבל הגבול הוא <span class="math inline">\(,e\)</span> ולא <span class="math inline">\(.1\)</span> לעומת זאת, <span class="math inline">\(1^n = 1\)</span> שואפת ל-<span class="math inline">\(.1\)</span> אותה צורה נותנת תשובות שונות, ולכן גם <span class="math inline">\(1^\infty\)</span> היא צורה לא מוגדרת, כמו <span class="math inline">\(\frac{\infty}{\infty}\)</span> ו-<span class="math inline">\(.\infty - \infty\)</span></p>
+</div>
+<div id="box-exm-e-arith" class="thmbox thmbox-example" title="חשבון גבולות עם $e$">
+<p><strong>דוגמה 2.5.6 — חשבון גבולות עם <span class="math inline">\(e\)</span>.</strong></p>
+<p>חשבו את <span class="math inline">\(.\lim\limits_{n\to\infty} \left(3\left(1 + \frac{1}{n}\right)^n - \frac{2}{n}\right)\)</span> <span>(את <span class="math inline">\(e\)</span> כותבים <code>e</code>, למשל <code>5e</code>.)</span></p>
+<div class="derive" data-limit="n" start="3(1+1/n)^n-2/n">
+<div class="step" data-line="3[e]-[0]">
+<p>מחליפים כל סדרה סטנדרטית בגבול שלה, וגם את <span class="math inline">\(\left(1 + \frac{1}{n}\right)^n\)</span> ב-<span class="math inline">\(.e\)</span></p>
+</div>
+<div class="step" data-line="[3e]">
+<p>מחשבים.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="מתי-אין-גבול" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="מתי-אין-גבול">מתי אין גבול</h3>
+<p>כדי להראות שאין גבול, מחפשים אחד מהסימנים הבאים.</p>
+<div class="thmbox thmbox-key-point thmicon-rule" data-icon="rule" title="שלושה סימנים שאין גבול">
+<p><strong>כלל — שלושה סימנים שאין גבול.</strong></p>
+<ol type="1">
+<li><strong>הסדרה אינה חסומה.</strong> כל סדרה מתכנסת חסומה (<a href="#box-def-bounded">הגדרה 2.4.5</a>), ולכן לסדרה שאינה חסומה אין גבול. היא יכולה לשאוף לאינסוף או למינוס אינסוף, ויכולה גם לא לשאוף לשום דבר.</li>
+<li><strong>סכום של סדרה מתכנסת וסדרה מתבדרת מתבדר.</strong> אם <span class="math inline">\(a_n\)</span> מתכנסת ו-<span class="math inline">\(b_n\)</span> מתבדרת, אז <span class="math inline">\(a_n + b_n\)</span> מתבדרת: אילו <span class="math inline">\(a_n + b_n\)</span> הייתה מתכנסת, גם ההפרש <span class="math inline">\((a_n + b_n) - a_n\)</span> היה מתכנס, וההפרש הזה הוא <span class="math inline">\(.b_n\)</span></li>
+<li><strong>שני חלקים של הסדרה, כל אחד עם אינסוף איברים, מתקרבים למספרים שונים.</strong> למשל, האיברים במקומות הזוגיים מתקרבים למספר אחד, ואלה שבמקומות האי-זוגיים למספר אחר. בסדרה מתכנסת <strong>כל</strong> האיברים, ממקום מסוים והלאה, קרובים לאותו גבול.</li>
+</ol>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/ch02-subsequences.png" class="img-fluid figure-img" style="width:75.0%" alt="נקודות כחולות שיורדות לעבר אחת ונקודות כתומות שיורדות לעבר מינוס אחת"></p>
+<figcaption>בסדרה <span class="math inline">\((-1)^n + \frac{1}{n}\)</span> האיברים במקומות הזוגיים (בכחול) מתקרבים ל-<span class="math inline">\(,1\)</span> ואלה שבמקומות האי-זוגיים (בכתום) ל-<span class="math inline">\(.{-}1\)</span> לכן אין לה גבול.</figcaption>
+</figure>
+</div>
+<div id="box-exm-no-limit" class="thmbox thmbox-example" title="אין גבול">
+<p><strong>דוגמה 2.5.7 — אין גבול.</strong></p>
+<p>בכל אחד מהסעיפים (א)–(ג) הראו שאין גבול, ואמרו איזה סימן מראה זאת.</p>
+<p><strong>(א)</strong> <span class="math inline">\((-2)^n\)</span></p>
+<div class="fill">
+<p><span class="fill-ltr"><span class="math inline">\(|(-2)^n| = 2^n \to\)</span> <span class="blank" data-ans="inf"><span class="math inline">\(\infty\)</span></span></span></p>
+<div class="explain">
+<p><strong>(א)</strong> הערך המוחלט של האיברים גדל בלי סוף, ולכן הסדרה אינה חסומה (סימן 1), ואין לה גבול. היא גם אינה שואפת לאינסוף או למינוס אינסוף, כי הסימן של האיברים מתחלף.</p>
+</div>
+</div>
+<p><strong>(ב)</strong> <span class="math inline">\((-1)^n + \frac{3n}{n + 1}\)</span></p>
+<div class="fill">
+<p><span class="fill-ltr"><span class="math inline">\(\frac{3n}{n + 1} \to\)</span> <span class="blank" data-ans="3"><span class="math inline">\(3\)</span></span></span></p>
+<div class="explain">
+<p><strong>(ב)</strong> <span class="math display">\[\begin{aligned} \frac{3n}{n + 1} &amp;= \frac{3}{1 + \frac{1}{n}} \\ &amp;\to \frac{3}{1 + 0} \\ &amp;= 3 \end{aligned}\]</span> בשורה הראשונה חילקנו את המונה ואת המכנה ב-<span class="math inline">\(.n\)</span> הסדרה <span class="math inline">\(\frac{3n}{n + 1}\)</span> מתכנסת ו-<span class="math inline">\((-1)^n\)</span> מתבדרת, ולכן הסכום מתבדר (סימן 2).</p>
+</div>
+</div>
+<p><strong>(ג)</strong> <span class="math inline">\((-1)^n + \frac{1}{n}\)</span></p>
+<div class="fill">
+<p>האיברים במקומות הזוגיים מתקרבים למספר <span class="blank" data-ans="1"><span class="math inline">\(1\)</span></span>, ואלה שבמקומות האי-זוגיים מתקרבים למספר <span class="blank" data-ans="-1"><span class="math inline">\(-1\)</span></span></p>
+<div class="explain">
+<p><strong>(ג)</strong> כש-<span class="math inline">\(n\)</span> זוגי, <span class="math inline">\((-1)^n = 1\)</span> והאיבר הוא <span class="math inline">\(.1 + \frac{1}{n} \to 1\)</span> כש-<span class="math inline">\(n\)</span> אי-זוגי, <span class="math inline">\((-1)^n = -1\)</span> והאיבר הוא <span class="math inline">\(.{-}1 + \frac{1}{n} \to -1\)</span> שני החלקים מתקרבים למספרים שונים, ולכן אין גבול (סימן 3). גם סימן 2 עובד כאן: <span class="math inline">\((-1)^n\)</span> מתבדרת ו-<span class="math inline">\(\frac{1}{n}\)</span> מתכנסת.</p>
+</div>
+</div>
+<p><strong>(ד)</strong> מה אפשר לומר על <span class="math inline">\(?n + (-1)^n\)</span></p>
+<div class="tf-quiz" data-correct="2">
+<button type="button" class="tf-opt" data-val="1">מתכנסת</button>
+<button type="button" class="tf-opt" data-val="2">שואפת לאינסוף</button>
+<button type="button" class="tf-opt" data-val="3">מתבדרת ואינה שואפת לאינסוף</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p>הסדרה אינה חסומה, ולכן אין לה גבול. אבל היא כן שואפת לאינסוף: <span class="math inline">\(,n + (-1)^n \ge n - 1\)</span> ולפי <a href="#box-thm-compare">משפט 2.4.6</a> גם <span class="math inline">\(.n + (-1)^n \to \infty\)</span> “אין גבול” ו”שואפת לאינסוף” אינם סותרים.</p>
+</div>
+</div>
+</div>
+<div class="thmbox thmbox-key-point thmicon-idea" data-icon="idea" title="ארגז הכלים">
+<p><strong>חשוב לזכור — ארגז הכלים.</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">המשימה</th>
+<th style="text-align: left;">הכלים</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">לחשב גבול</td>
+<td style="text-align: left;">סדרות סטנדרטיות, חשבון גבולות, כלל הסנדוויץ’</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">להראות שיש גבול</td>
+<td style="text-align: left;">מונוטונית וחסומה, וגם כל חישוב של הגבול</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">להראות שהסדרה שואפת לאינסוף</td>
+<td style="text-align: left;">השוואה עם סדרה קטנה ממנה ששואפת לאינסוף</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">להראות שאין גבול</td>
+<td style="text-align: left;">אינה חסומה, מתכנסת ועוד מתבדרת, שני חלקים שמתקרבים למספרים שונים</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="thmbox thmbox-summary">
+<p><strong>סיכום.</strong></p>
+<ul>
+<li>סדרה <strong>מונוטונית וחסומה</strong> מתכנסת. כך מראים שיש גבול גם כשאי אפשר לחשב אותו.</li>
+<li><span class="math inline">\(\left(1 + \frac{1}{n}\right)^n \to e \approx 2.718\)</span> ו-<span class="math inline">\(1^\infty\)</span> היא צורה לא מוגדרת.</li>
+<li>אין גבול אם הסדרה אינה חסומה, אם היא סכום של סדרה מתכנסת ומתבדרת, או אם שני חלקים שלה מתקרבים למספרים שונים.</li>
+</ul>
+</div>
+</section>
+<section id="תרגילים-4" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="תרגילים-4">תרגילים</h3>
+<div id="box-q-monotone-kind" class="thmbox thmbox-question" title="עולה, יורדת או לא מונוטונית?">
+<p><strong>שאלה 2.5.8 — עולה, יורדת או לא מונוטונית?</strong></p>
+<p><strong>(א)</strong> <span class="math inline">\(\frac{n}{n + 1}\)</span></p>
+<div class="tf-quiz" data-correct="1">
+<button type="button" class="tf-opt" data-val="1">עולה</button>
+<button type="button" class="tf-opt" data-val="2">יורדת</button>
+<button type="button" class="tf-opt" data-val="3">לא מונוטונית</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p><span class="math display">\[\begin{aligned} a_{n+1} - a_n &amp;= \frac{n + 1}{n + 2} - \frac{n}{n + 1} \\ &amp;= \frac{(n + 1)^2 - n(n + 2)}{(n + 1)(n + 2)} \\ &amp;= \frac{n^2 + 2n + 1 - n^2 - 2n}{(n + 1)(n + 2)} \\ &amp;= \frac{1}{(n + 1)(n + 2)} \end{aligned}\]</span> ההפרש חיובי, ולכן הסדרה עולה.</p>
+</div>
+</div>
+<p><strong>(ב)</strong> <span class="math inline">\(\frac{1}{n^2}\)</span></p>
+<div class="tf-quiz" data-correct="2">
+<button type="button" class="tf-opt" data-val="1">עולה</button>
+<button type="button" class="tf-opt" data-val="2">יורדת</button>
+<button type="button" class="tf-opt" data-val="3">לא מונוטונית</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p>כש-<span class="math inline">\(n\)</span> גדל, המכנה <span class="math inline">\(n^2\)</span> גדל, ולכן השבר קטן: <span class="math inline">\(.\frac{1}{(n + 1)^2} &lt; \frac{1}{n^2}\)</span> הסדרה יורדת.</p>
+</div>
+</div>
+<p><strong>(ג)</strong> <span class="math inline">\((-1)^n n\)</span></p>
+<div class="tf-quiz" data-correct="3">
+<button type="button" class="tf-opt" data-val="1">עולה</button>
+<button type="button" class="tf-opt" data-val="2">יורדת</button>
+<button type="button" class="tf-opt" data-val="3">לא מונוטונית</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p>האיברים הם <span class="math inline">\(-1, 2, -3, 4\)</span> וכן הלאה: פעם עולים ופעם יורדים, ולכן הסדרה אינה מונוטונית.</p>
+</div>
+</div>
+</div>
+<div id="box-q-monotone-bounded" class="thmbox thmbox-question" title="מונוטונית וחסומה">
+<p><strong>שאלה 2.5.9 — מונוטונית וחסומה.</strong></p>
+<p>תהי <span class="math inline">\(.a_n = 5 - \frac{2}{n}\)</span></p>
+<div class="fill">
+<p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\(a_{n+1} - a_n =\)</span> <span class="blank" data-ans="2/(n(n+1))" data-vars="n" data-w="12"><span class="math inline">\(\frac{2}{n(n+1)}\)</span></span></span></p>
+<div class="explain">
+<p><strong>(א)</strong> <span class="math display">\[\begin{aligned} a_{n+1} - a_n &amp;= \left(5 - \tfrac{2}{n+1}\right) - \left(5 - \tfrac{2}{n}\right) \\ &amp;= \tfrac{2}{n} - \tfrac{2}{n+1} \\ &amp;= \tfrac{2(n+1) - 2n}{n(n+1)} \\ &amp;= \tfrac{2}{n(n+1)} \end{aligned}\]</span> ההפרש חיובי, ולכן הסדרה עולה.</p>
+</div>
+</div>
+<div class="fill">
+<p><strong>(ב)</strong> הסדרה עולה (סעיף (א)), וכל האיברים בין <span class="math inline">\(a_1 = 3\)</span> ל-<span class="math inline">\(,5\)</span> ולכן היא חסומה ויש לה גבול. הגבול הוא <span class="blank" data-ans="5"><span class="math inline">\(5\)</span></span></p>
+<div class="explain">
+<p><strong>(ב)</strong> לפי <a href="#box-thm-monotone-bounded">משפט 2.5.3</a> יש גבול, והפעם אפשר גם לחשב אותו: <span class="math inline">\(.5 - \frac{2}{n} \to 5 - 0 = 5\)</span></p>
+</div>
+</div>
+</div>
+<div id="box-q-e-limits" class="thmbox thmbox-question" title="גבולות עם $e$">
+<p><strong>שאלה 2.5.10 — גבולות עם <span class="math inline">\(e\)</span>.</strong></p>
+<p><span>(את <span class="math inline">\(e\)</span> כותבים <code>e</code>, למשל <code>e/2</code> או <code>5e</code>.)</span></p>
+<div class="fill">
+<p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\(\lim\limits_{n\to\infty} 2\left(1 + \frac{1}{n}\right)^n =\)</span> <span class="blank" data-ans="2e"><span class="math inline">\(2e\)</span></span></span></p>
+<p><strong>(ב)</strong> <span class="fill-ltr"><span class="math inline">\(\lim\limits_{n\to\infty} \left(1 + \frac{1}{n}\right)^{2n} =\)</span> <span class="blank" data-ans="e^2"><span class="math inline">\(e^2\)</span></span></span></p>
+<p><strong>(ג)</strong> <span class="fill-ltr"><span class="math inline">\(\lim\limits_{n\to\infty} \left(\left(1 + \frac{1}{n}\right)^n + \frac{5}{n^2}\right) =\)</span> <span class="blank" data-ans="e"><span class="math inline">\(e\)</span></span></span></p>
+<div class="hint">
+<p>ב-(ב): <span class="math inline">\(.\left(1 + \frac{1}{n}\right)^{2n} = \left(\left(1 + \frac{1}{n}\right)^n\right)^2\)</span></p>
+</div>
+<div class="explain">
+<p><strong>(א)</strong> כפל בקבוע: <span class="math inline">\(.2\left(1 + \frac{1}{n}\right)^n \to 2e\)</span></p>
+<p><strong>(ב)</strong> <span class="math display">\[\begin{aligned} \left(1 + \tfrac{1}{n}\right)^{2n} &amp;= \left(\left(1 + \tfrac{1}{n}\right)^n\right)^2 \\ &amp;\to e^2 \end{aligned}\]</span> לפי חוקי החזקות ולפי חשבון הגבולות (חזקה של סדרה מתכנסת).</p>
+<p><strong>(ג)</strong> <span class="math inline">\(.\left(1 + \frac{1}{n}\right)^n + \frac{5}{n^2} \to e + 0 = e\)</span></p>
+</div>
+</div>
+</div>
+<div id="box-q-has-limit" class="thmbox thmbox-question" title="יש גבול?">
+<p><strong>שאלה 2.5.11 — יש גבול?</strong></p>
+<p><strong>(א)</strong> <span class="math inline">\((-1)^n n\)</span></p>
+<div class="tf-quiz" data-correct="2">
+<button type="button" class="tf-opt" data-val="1">יש גבול</button>
+<button type="button" class="tf-opt" data-val="2">אין גבול</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p>אין גבול: <span class="math inline">\(,|(-1)^n n| = n\)</span> ולכן הסדרה אינה חסומה (סימן 1).</p>
+</div>
+</div>
+<p><strong>(ב)</strong> <span class="math inline">\(\frac{\sin n}{n} + (-1)^n\)</span></p>
+<div class="tf-quiz" data-correct="2">
+<button type="button" class="tf-opt" data-val="1">יש גבול</button>
+<button type="button" class="tf-opt" data-val="2">אין גבול</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p>אין גבול: הסדרה <span class="math inline">\(\frac{\sin n}{n}\)</span> מתכנסת (לאפס), ו-<span class="math inline">\((-1)^n\)</span> מתבדרת, ולכן הסכום מתבדר (סימן 2).</p>
+</div>
+</div>
+<p><strong>(ג)</strong> <span class="math inline">\(2 + \frac{(-1)^n}{n}\)</span></p>
+<div class="tf-quiz" data-correct="1">
+<button type="button" class="tf-opt" data-val="1">יש גבול</button>
+<button type="button" class="tf-opt" data-val="2">אין גבול</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p>יש גבול: <span class="math inline">\(\frac{(-1)^n}{n} \to 0\)</span> (חסומה כפול שואפת לאפס), ולכן הסדרה שואפת ל-<span class="math inline">\(.2\)</span></p>
+</div>
+</div>
+<p><strong>(ד)</strong> <span class="math inline">\(\cos(n\pi)\)</span></p>
+<div class="tf-quiz" data-correct="2">
+<button type="button" class="tf-opt" data-val="1">יש גבול</button>
+<button type="button" class="tf-opt" data-val="2">אין גבול</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p>אין גבול: כש-<span class="math inline">\(n\)</span> זוגי, <span class="math inline">\(n\pi\)</span> הוא מספר שלם של סיבובים ו-<span class="math inline">\(,\cos(n\pi) = 1\)</span> וכש-<span class="math inline">\(n\)</span> אי-זוגי <span class="math inline">\(.\cos(n\pi) = -1\)</span> שני חלקים עם גבולות שונים (סימן 3). למעשה <span class="math inline">\(.\cos(n\pi) = (-1)^n\)</span></p>
+</div>
+</div>
+</div>
+<div id="box-q-even-odd" class="thmbox thmbox-question" title="זוגיים ואי-זוגיים">
+<p><strong>שאלה 2.5.12 — זוגיים ואי-זוגיים.</strong></p>
+<p>תהי <span class="math inline">\(.a_n = \frac{n + (-1)^n n}{n + 1}\)</span></p>
+<div class="fill">
+<p><strong>(א)</strong> האיברים במקומות הזוגיים מתקרבים ל-<span class="blank" data-ans="2"><span class="math inline">\(2\)</span></span></p>
+<p><strong>(ב)</strong> האיברים במקומות האי-זוגיים מתקרבים ל-<span class="blank" data-ans="0"><span class="math inline">\(0\)</span></span></p>
+<div class="explain">
+<p><strong>(א)</strong> כש-<span class="math inline">\(n\)</span> זוגי, <span class="math inline">\(:(-1)^n = 1\)</span> <span class="math display">\[\begin{aligned} a_n &amp;= \frac{n + n}{n + 1} \\ &amp;= \frac{2n}{n + 1} \\ &amp;= \frac{2}{1 + \frac{1}{n}} \\ &amp;\to \frac{2}{1 + 0} = 2 \end{aligned}\]</span> בשורה השלישית חילקנו את המונה ואת המכנה ב-<span class="math inline">\(.n\)</span></p>
+<p><strong>(ב)</strong> כש-<span class="math inline">\(n\)</span> אי-זוגי, <span class="math inline">\(:(-1)^n = -1\)</span> <span class="math display">\[a_n = \frac{n - n}{n + 1} = 0\]</span> שני החלקים מתקרבים למספרים שונים, ולכן לסדרה אין גבול.</p>
+</div>
+</div>
+</div>
+<div id="box-q-which-tool" class="thmbox thmbox-question" title="בוחרים כלי">
+<p><strong>שאלה 2.5.13 — בוחרים כלי.</strong></p>
+<p><strong>(א)</strong> איזה כלי מראה ש-<span class="math inline">\(?\frac{\cos n}{n} \to 0\)</span></p>
+<div class="tf-quiz" data-correct="1">
+<button type="button" class="tf-opt" data-val="1">כלל הסנדוויץ'</button>
+<button type="button" class="tf-opt" data-val="2">מונוטונית וחסומה</button>
+<button type="button" class="tf-opt" data-val="3">השוואה לאינסוף</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p>כלל הסנדוויץ’: <span class="math inline">\(,-\frac{1}{n} \le \frac{\cos n}{n} \le \frac{1}{n}\)</span> ושתי הסדרות מהצדדים שואפות ל-<span class="math inline">\(.0\)</span> (אפשר גם לומר: חסומה כפול שואפת לאפס.) “מונוטונית וחסומה” לא היה עוזר: הוא מראה רק שיש גבול, ולא שהגבול <span class="math inline">\(,0\)</span> וממילא הסדרה אינה מונוטונית, כי <span class="math inline">\(\cos n\)</span> מחליף סימן.</p>
+</div>
+</div>
+<p><strong>(ב)</strong> איזה כלי מראה ש-<span class="math inline">\(?n^2 + \sin n \to \infty\)</span></p>
+<div class="tf-quiz" data-correct="3">
+<button type="button" class="tf-opt" data-val="1">כלל הסנדוויץ'</button>
+<button type="button" class="tf-opt" data-val="2">מונוטונית וחסומה</button>
+<button type="button" class="tf-opt" data-val="3">השוואה לאינסוף</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p>השוואה לאינסוף: <span class="math inline">\(,n^2 + \sin n \ge n^2 - 1\)</span> והסדרה <span class="math inline">\(n^2 - 1\)</span> שואפת לאינסוף. לפי <a href="#box-thm-compare">משפט 2.4.6</a> גם <span class="math inline">\(.n^2 + \sin n \to \infty\)</span></p>
+</div>
+</div>
+<p><strong>(ג)</strong> נניח ש-<span class="math inline">\(a_n\)</span> עולה וש-<span class="math inline">\(a_n &lt; 5\)</span> לכל <span class="math inline">\(.n\)</span> מה בטוח נכון?</p>
+<div class="tf-quiz" data-correct="2">
+<button type="button" class="tf-opt" data-val="1">\(a_n \to 5\)</button>
+<button type="button" class="tf-opt" data-val="2">\(a_n\) מתכנסת לגבול שאינו גדול מ-\(5\)</button>
+<button type="button" class="tf-opt" data-val="3">\(a_n \to \infty\)</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p>הסדרה עולה, ולכן כל האיברים בין <span class="math inline">\(a_1\)</span> ל-<span class="math inline">\(,5\)</span> והיא חסומה. סדרה עולה וחסומה מתכנסת (<a href="#box-thm-monotone-bounded">משפט 2.5.3</a>), ולפי סעיף (א) ב-<a href="#box-thm-compare">משפט 2.4.6</a> הגבול אינו גדול מ-<span class="math inline">\(.5\)</span> הוא לא בהכרח <span class="math inline">\(:5\)</span> למשל, <span class="math inline">\(2 - \frac{1}{n}\)</span> עולה, קטנה מ-<span class="math inline">\(5\)</span> ושואפת ל-<span class="math inline">\(.2\)</span></p>
 </div>
 </div>
 </div>

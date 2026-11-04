@@ -983,7 +983,7 @@ function checkValue(kind, ans, input, vars, opts) {
     if (isNaN(b)) return { ok: false, msg: "הביטוי שכתבתם אינו מוגדר (למשל חילוק באפס, או שורש של מספר שלילי)." };
     if (close(a, b, 1e-9)) return { ok: true };
     if (close(a, -b, 1e-9) && a !== 0) return { ok: false, msg: "כמעט! בדקו את הסימן." };
-    if (Math.abs(a - b) <= 0.006 * Math.max(1, Math.abs(a))) return { ok: false, near: true, msg: "קרוב מאוד, אבל זה קירוב. כתבו ערך מדויק (שבר, שורש או \\(\\pi\\))." };
+    if (Math.abs(a - b) <= 0.006 * Math.max(1, Math.abs(a))) return { ok: false, near: true, msg: "קרוב מאוד, אבל זה קירוב. כתבו ערך מדויק (שבר, שורש, \\(\\pi\\) או \\(e\\))." };
     if (a !== 0 && close(a * b, 1, 1e-9)) return { ok: false, msg: "קיבלתם את ההופכי של התשובה." };
     return { ok: false, msg: "לא נכון. נסו שוב." };
   }
@@ -1726,7 +1726,12 @@ function typeset(node, tries) {
     if (MJ.typesetClear) MJ.typesetClear([node]);
     MJ.typeset([node]);
   } catch (e) {
-    if (tries < 60) setTimeout(function () { typeset(node, tries + 1); }, 250);
+    // an extension is being downloaded: wait for it (e.retry), not for a fixed time,
+    // or the second attempt finds its macros half-registered
+    if (tries >= 60) return;
+    var again = function () { typeset(node, tries + 1); };
+    if (e && e.retry && typeof e.retry.then === "function") e.retry.then(again, function () { setTimeout(again, 250); });
+    else setTimeout(again, 250);
   }
 }
 // Inline math we insert gets the same wrapper Pandoc gives the page's own math, so the
@@ -2082,6 +2087,14 @@ function initDerive(box) {
     }) };
     steps.push(S);
   });
+  // with solve="x" a box holds x (or a step) in terms of the other variables: check it in the
+  // variables of its own answer, so that "5x-2" for x = (y+2)/5 is told "use y", not a random point
+  if (attr(box, "solve")) steps.forEach(function (S) {
+    S.boxes.forEach(function (b) {
+      if (b.sign) return;
+      try { var bv = Object.keys(varsOf(parseExpr(b.ans))).sort(); if (bv.length) b.vars = bv; } catch (e) { /* keep vars */ }
+    });
+  });
   var shown = 0, lastInput = null;
 
   // the TeX of a line, with its boxes empty (?), filled by the reader (green) or filled in (blue)
@@ -2098,7 +2111,10 @@ function initDerive(box) {
       else {
         var pre = first ? "" : "= ";
         // a line with n (also inside a box) is still a sequence: it carries "lim"
-        out = "\\(" + pre + (seq && hasVar(S && S.whole || node, seq) ? LIM : "") + tex(node) + "\\)";
+        var withLim = seq && hasVar(S && S.whole || node, seq), body = tex(node);
+        // lim of a sum or a difference needs brackets: lim (a - b), not (lim a) - b
+        if (withLim && (node.t === "add" || node.t === "sub" || node.t === "neg")) body = "\\left(" + body + "\\right)";
+        out = "\\(" + pre + (withLim ? LIM : "") + body + "\\)";
       }
     } finally { PHTEX = null; }
     return out;
@@ -2121,7 +2137,12 @@ function initDerive(box) {
     bHint.textContent = "רמז (" + h + "/" + hints.length + ")"; bHint.disabled = h >= hints.length;
   }) : null;
   var anyExpr = steps.some(function (S) { return S.boxes.some(function (b) { return b.kind === "expr"; }); });
-  var keys = keyRow(seq ? KEYSETS.lim : anyExpr ? KEYSETS.expr.concat([["log", "log_()"]]) : KEYSETS.num.concat([["^", "^"], ["log", "log_()"]]),
+  // the variable keys are the variables the boxes are written in (y when solving for x)
+  var keyVars = {};
+  steps.forEach(function (S) { S.boxes.forEach(function (b) { if (b.kind === "expr") (b.vars || vars).forEach(function (v) { keyVars[v] = 1; }); }); });
+  var exprKeys = Object.keys(keyVars).sort().map(function (v) { return [v, v]; })
+    .concat(KEYSETS.expr.filter(function (k) { return k[0] !== "x"; }), [["log", "log_()"]]);
+  var keys = keyRow(seq ? KEYSETS.lim : anyExpr ? exprKeys : KEYSETS.num.concat([["^", "^"], ["log", "log_()"]]),
     function () { return lastInput; });
   keys.classList.add("dv-keys");
   var bar = el("div", { class: "ix-bar dv-bar" }, [bNext, bFill, bAll, bReset, bHint]);
@@ -2200,7 +2221,7 @@ function initDerive(box) {
     var results = {};
     open.forEach(function (k) {
       var b = S.boxes[k], r;
-      try { r = checkAnswer(b.kind, b.ans, vals[k], vars, {}); } catch (e) { r = { ok: false, msg: errMsg(e) }; }
+      try { r = checkAnswer(b.kind, b.ans, vals[k], b.vars || vars, {}); } catch (e) { r = { ok: false, msg: errMsg(e) }; }
       results[k] = r;
     });
     var allOk = open.every(function (k) { return results[k].ok; });
