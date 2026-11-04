@@ -398,6 +398,20 @@ span.blank:not(.blank-ready) { text-decoration: underline; text-underline-offset
   box-sizing: content-box;
 }
 .blank-input:focus { border-color: #4f46e5; }
+/* MathLive fields are the input itself, not a preview below an ASCII field. */
+math-field.blank-input { display: inline-block; max-width: 100%; min-height: 2.4rem; font-size: 1.12em; vertical-align: middle; box-sizing: border-box; padding: .15rem .35rem; border-radius: 8px; --caret-color: #4f46e5; --selection-background-color: #e0e7ff; --placeholder-color: #64748b; --contains-highlight-background-color: #eef2ff; }
+math-field.blank-input[hidden] { display: none !important; }
+math-field.blank-input:focus-within { border-color: #4f46e5; outline: 3px solid #fbbf24; outline-offset: 2px; }
+math-field.blank-input[aria-invalid="true"] { border-color: #b91c1c; }
+math-field::part(menu-toggle) { display: none; }
+math-field::part(virtual-keyboard-toggle) { color: #64748b; }
+.pw math-field.pw-input { width: 100%; min-width: 0; }
+.ix-frac { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; font-size: .78em; line-height: 1.1; }
+.ix-frac > :first-child { border-bottom: 1px solid currentColor; padding: 0 .3em; }
+.ix-frac > :last-child { padding: 0 .3em; }
+.pw > .ix-keys { display: none; }
+.pw:focus-within > .ix-keys { display: flex; }
+.ix-key:focus-visible { outline: 3px solid #fbbf24; outline-offset: 2px; }
 td .blank-input, th .blank-input { min-width: 2.4em; padding: .05rem .2rem; }
 .fill table { margin-inline: auto; }
 span.blank.ok .blank-input { border-color: #16a34a; background: #f0fdf4; }
@@ -433,6 +447,21 @@ span.blank.warn .blank-mark { color: #b45309; }
 .ix-msg.ix-info { border-color: #1d4ed8; background: #dbeafe; }
 /* Under an input: what has been typed so far, as a formula (no words). Dimmed while
    the input is still unfinished and only its beginning can be read. */
+.thmbox-terminology { border-color: #0369a1; background: #f0f9ff; }
+.thmbox-terminology > p:first-child > strong { color: #075985; }
+.thmbox-terminology > p:first-child > strong::before { content: "📖"; display: inline-block; margin-inline-end: .4em; }
+.pw-paper { margin: .5rem 0; background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; }
+.pw-row { padding: .5rem; border-bottom: 1px solid #e2e8f0; }
+.pw-row:last-child { border-bottom: 0; }
+.pw-entry { display: flex; gap: .4rem; direction: ltr; }
+.pw-entry .pw-input { flex: 1; min-width: 0; width: 100%; text-align: left; }
+.pw-preview { overflow-x: auto; margin-top: .2rem; color: #475569; }
+.pw-preview:empty { display: none; }
+.pw-start, .pw-example { direction: ltr; text-align: center; overflow-x: auto; padding: .4rem; }
+.pw-solution { margin-top: .6rem; }
+.pw-solution summary { cursor: pointer; color: #4338ca; }
+.pw-solution > .step { margin: .3rem 0 .8rem; }
+.pw-hints:not(:empty) { background: #fffbeb; border-inline-start: 3px solid #d97706; padding: .5rem; }
 .ix-preview:empty { display: none; }
 .ix-preview { font-size: 1.05em; color: #1e293b; margin: .25rem 0; }
 .ix-preview.ix-preview-partial { opacity: .5; }
@@ -466,7 +495,8 @@ span.blank.warn .blank-mark { color: #b45309; }
 .dv-check { min-height: 32px; padding: .1rem .7rem; font-size: .9em; }
 .dv-msg { margin: .2rem 0 0; font-size: .9em; direction: rtl; text-align: right; }
 .dv-done .dv-f { color: #0f172a; }
-.dv-keys { margin: .4rem 0 .1rem; }
+.dv-keys { margin: .4rem 0 .1rem; display: none; }
+.dv:focus-within > .dv-keys { display: flex; }
 @media (max-width: 600px) {
   .dv-row { grid-template-columns: minmax(0, 1fr); }
   .dv-math { grid-column: 1; grid-row: 1; }
@@ -545,6 +575,8 @@ a.xref-open { background: #ede9fe; border-radius: 3px; }
 @media (prefers-reduced-motion: reduce) { .toc-disclosure-arrow { transition: none; } }
 </style>
 <script src="assets/navigation.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/mathlive@0.111.4/mathlive.min.js" defer></script>
+<script src="assets/math-input.js" defer></script>
 <script src="assets/interactive.js" defer></script>
 <script>
 /* ---------------------------------------------------------------------------

@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>בונים קבוצות על הישר</title>
+<style>
+body{margin:0;font:15px/1.5 Arial,sans-serif;color:#1e293b;background:white}.workspace{padding:12px;border:1px solid #cbd5e1;border-radius:10px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0}button,select,input{font:inherit;padding:6px 9px;border:1px solid #94a3b8;border-radius:7px;background:white;color:inherit}button{cursor:pointer}button:hover{background:#eef2ff}button:disabled{opacity:.45;cursor:default}:focus-visible{outline:3px solid #f59e0b;outline-offset:2px}input{width:5em;direction:ltr}.main{background:#4f46e5;color:white;border-color:#4f46e5}
+svg{display:block;width:100%;height:auto;touch-action:none}svg text{font:14px Arial;direction:ltr}svg .end{cursor:ew-resize}svg .tick{cursor:pointer}.math{direction:ltr;unicode-bidi:isolate;display:inline-block}.formula{overflow-wrap:anywhere}#pieces{display:flex;flex-wrap:wrap;gap:8px}.piece{padding:6px;border:1px solid #cbd5e1;border-radius:7px;background:#f8fafc}.piece button{margin:2px;font-size:13px}#msg:not(:empty){padding:8px;border-inline-start:4px solid #6366f1;background:#eef2ff}#msg.good{border-color:#15803d;background:#f0fdf4}.help{color:#475569;font-size:14px}summary{cursor:pointer}#drawing{overflow:hidden}.selected{font-weight:bold}.legend{font-size:14px}.empty{color:#64748b}
+</style>
+<div class="workspace">
+  <div class="row"><label>דוגמה: <select id="preset"><option value="overlap">קטעים חופפים</option><option value="touch">נפגשים בקצה</option><option value="rays">קרניים והפרש</option><option value="pieces">כמה חלקים</option><option value="empty">דף ריק</option></select></label>
+  <label>תצוגה: <select id="scale"><option value="scaled">קנה מידה אחיד</option><option value="order">סדר בלבד</option></select></label></div>
+  <div class="row"><label>עורכים: <select id="active"><option value="A">A</option><option value="B">B</option><option value="R" selected>התוצאה שלי</option></select></label>
+  <label>כלי: <select id="tool"><option value="interval">קטע</option><option value="right">קרן ימינה</option><option value="left">קרן שמאלה</option><option value="point">נקודה</option><option value="all">כל הישר</option></select></label>
+  <label><input type="checkbox" id="closedA" checked style="width:auto"> קצה שמאלי מלא</label><label><input type="checkbox" id="closedB" checked style="width:auto"> קצה ימני מלא</label></div>
+  <div class="row"><label>מספר לסימון: <input id="number" value="0" aria-label="מספר לסימון"></label><button id="mark">סימון</button><button id="place">בחירת המספר בכלי</button><span class="help">אפשר גם שבר, למשל 3/2.</span></div>
+  <p class="help" id="instruction">בחרו שני מספרים להוספת קטע. גררו קצה להזזה; לחצו עליו להחלפה בין מלא לריק.</p>
+  <div id="drawing"><svg id="plot" viewBox="0 0 760 330" role="img" aria-label="הקבוצות A ו־B והתוצאה על שלושה ישרים; הערכים מופיעים גם מתחת לציור"></svg></div>
+  <div class="legend" id="notations"></div>
+  <div class="row"><label>בונים את: <select id="operation"><option value="intersection">A ∩ B — חיתוך</option><option value="union">A ∪ B — איחוד</option><option value="difference">A ∖ B — הפרש</option></select></label><button class="main" id="check">בדיקה</button><button id="hint">רמז</button><button id="show">הצגת התוצאה</button></div>
+  <div id="msg" aria-live="polite"></div>
+  <details><summary>החלקים בקבוצה הנערכת</summary><div id="pieces"></div></details>
+  <div class="row"><button id="undo">ביטול צעד</button><button id="clear">ניקוי הקבוצה הנערכת</button><button id="reset">איפוס הדוגמה</button></div>
+</div>
+<script src="../shared/intervals.js"></script><script src="../shared/autosize.js"></script>
+<script>
+(function(){
+'use strict';
+const I=Intervals,$=id=>document.getElementById(id),ns='http://www.w3.org/2000/svg';
+const colors={A:'#2563eb',B:'#9333ea',R:'#0f766e'},ys={A:65,B:155,R:245};
+let sets, marks, pending=null, history=[], reveal=false, drag=null;
+const part=(a,b,ac=true,bc=true)=>({a,b,ac,bc});
+function snapshot(){history.push({sets:structuredClone(sets),marks:marks.slice()});if(history.length>100)history.shift();}
+function changed(){pending=null;reveal=false;$('show').textContent='הצגת התוצאה';say('');draw();}
+function say(s,good=false){$('msg').textContent=s;$('msg').className=good?'good':'';}
+function reset(){
+ const examples={overlap:{A:[part(-2,3,true,false)],B:[part(1,5,false,true)]},touch:{A:[part(-2,1)],B:[part(1,4)]},rays:{A:[part(-Infinity,2,false,true)],B:[part(-1,Infinity,false,false)]},pieces:{A:[part(-3,-1),part(1,4,false,true)],B:[part(-2,2,false,false)]},empty:{A:[],B:[]}};
+ sets={...structuredClone(examples[$('preset').value]),R:[]};marks=[-3,-2,-1,0,1,2,3,4,5];history=[];changed();
+}
+function ticks(){return [...new Set(marks.concat(...Object.values(sets).map(s=>s.flatMap(p=>[p.a,p.b]).filter(Number.isFinite))))].sort((a,b)=>a-b);}
+function x(v){const t=ticks();return $('scale').value==='order'?65+630*(t.indexOf(v)+1)/(t.length+1):65+630*(v-t[0]+1)/(t[t.length-1]-t[0]+2);}
+function svg(tag,attrs,text){const n=document.createElementNS(ns,tag);Object.entries(attrs).forEach(([k,v])=>n.setAttribute(k,v));if(text!==undefined)n.textContent=text;$('plot').appendChild(n);return n;}
+function line(a,b,y,color,width=5,dash=false){svg('line',{x1:a,x2:b,y1:y,y2:y,stroke:color,'stroke-width':width,...(dash?{'stroke-dasharray':'7 5'}:{})});}
+function plotSet(S,key,ghost=false){const y=ys[key]+(ghost?20:0),c=ghost?'#d97706':colors[key];
+ S.forEach((p,index)=>{
+  const a=isFinite(p.a)?x(p.a):45,b=isFinite(p.b)?x(p.b):715;
+  line(a,b,y,c,ghost?3:5,ghost);
+  ['a','b'].forEach(end=>{
+   if(!isFinite(p[end])){const v=end==='a'?45:715,d=end==='a'?8:-8;svg('path',{d:`M ${v+d} ${y-5} L ${v} ${y} L ${v+d} ${y+5}`,stroke:c,fill:'none','stroke-width':3});return;}
+   const n=svg('circle',{cx:x(p[end]),cy:y,r:6,fill:p[end+'c']?c:'white',stroke:c,'stroke-width':2,class:ghost?'':'end'});
+   if(!ghost)n.addEventListener('pointerdown',e=>{e.preventDefault();snapshot();drag={key,index,end,pointer:e.pointerId,original:p[end],moved:false};$('plot').setPointerCapture(e.pointerId);});
+  });
+ });
+}
+function draw(){
+ $('plot').replaceChildren();const t=ticks();
+ for(const key of ['A','B','R']){
+  const y=ys[key];line(45,715,y,'#cbd5e1',1);
+  svg('text',{x:730,y:y-15,fill:colors[key],'text-anchor':'end'},key==='R'?'התוצאה שלי':key);
+  t.forEach(v=>{svg('line',{x1:x(v),x2:x(v),y1:y-5,y2:y+5,stroke:'#cbd5e1'});const n=svg('g',{class:'tick'}); // transparent hit area keeps small labels selectable
+   const hit=document.createElementNS(ns,'rect');Object.entries({x:x(v)-12,y:y+8,width:24,height:30,fill:'transparent'}).forEach(([k,a])=>hit.setAttribute(k,a));n.appendChild(hit);
+   const label=document.createElementNS(ns,'text');Object.entries({x:x(v),y:y+28,'text-anchor':'middle',fill:pending===v?'#d97706':'#475569'}).forEach(([k,a])=>label.setAttribute(k,a));label.textContent=I.label(v);n.appendChild(label);n.addEventListener('click',()=>{if($('active').value!==key){pending=null;$('active').value=key;}choose(v);});
+  });plotSet(sets[key],key);
+ }
+ if(reveal)plotSet(answer(),'R',true);
+ $('notations').replaceChildren();
+ for(const key of ['A','B','R']){const p=document.createElement('div');p.className='formula';p.style.color=colors[key];p.textContent=(key==='R'?'התוצאה שלי: ':key+' = ');const m=document.createElement('span');m.className='math';m.textContent=I.notation(sets[key]);p.appendChild(m);$('notations').appendChild(p);}
+ $('undo').disabled=!history.length;pieces();
+}
+function choose(v){
+ const key=$('active').value,tool=$('tool').value;
+ if(tool==='interval' && pending===null){pending=v;say('נבחר '+I.label(v)+'. בחרו את הקצה השני.');draw();return;}
+ snapshot();const ac=$('closedA').checked,bc=$('closedB').checked;
+ let p=tool==='point'?part(v,v):tool==='left'?part(-Infinity,v,false,bc):tool==='right'?part(v,Infinity,ac,false):tool==='all'?part(-Infinity,Infinity,false,false):part(Math.min(v,pending),Math.max(v,pending),ac,bc);
+ if(p.a===p.b && !(p.ac&&p.bc)){say('קטע עם קצוות שווים מכיל נקודה רק כששני הקצוות מלאים.');history.pop();pending=null;return;}
+ sets[key].push(p);changed();
+}
+function pieces(){const box=$('pieces');box.replaceChildren();const key=$('active').value;
+ if(!sets[key].length){box.textContent='הקבוצה ריקה.';return;}
+ sets[key].forEach((p,i)=>{
+  const d=document.createElement('div');d.className='piece';const label=document.createElement('span');label.className='math';label.textContent=I.notation([p]);d.appendChild(label);
+  ['a','b'].forEach(e=>{if(!isFinite(p[e])||p.a===p.b)return;const b=document.createElement('button');b.textContent=(e==='a'?'שמאל: ':'ימין: ')+(p[e+'c']?'●':'○');b.setAttribute('aria-label',(e==='a'?'קצה שמאלי':'קצה ימני')+(p[e+'c']?' מלא; לחצו לפתוח':' ריק; לחצו לסגור'));b.onclick=()=>{snapshot();p[e+'c']=!p[e+'c'];changed();};d.appendChild(b);});
+  const remove=document.createElement('button');remove.textContent='מחיקה';remove.onclick=()=>{snapshot();sets[key].splice(i,1);changed();};d.appendChild(remove);box.appendChild(d);
+ });
+}
+function answer(){return I.operation(sets.A,sets.B,$('operation').value);}
+function mark(){const v=I.number($('number').value);if(!isFinite(v)){say('כתבו מספר או שבר עם מכנה שאינו אפס.');return null;}if(!marks.includes(v)){snapshot();marks.push(v);changed();}return v;}
+$('mark').onclick=mark;$('place').onclick=()=>{const v=mark();if(v!==null)choose(v);};
+$('check').onclick=()=>{const expected=answer(),w=I.witness(expected,sets.R);if(w===null)say('✓ הקבוצה שבניתם נכונה.',true);else say('בדקו את '+I.label(w)+': הוא '+(I.contains(expected,w)?'צריך להשתייך לתוצאה, אבל אינו מסומן בה.':'מסומן בתוצאה, אבל אינו שייך אליה.'));};
+$('hint').onclick=()=>{const op=$('operation').value;say(op==='intersection'?'לכל מספר: האם הוא שייך גם ל־A וגם ל־B? בדקו בנפרד את הקצוות.':op==='union'?'לכל מספר: האם הוא שייך לפחות לאחת הקבוצות? קצה מלא באחת מהן נשאר באיחוד.':'שומרים רק מספרים ששייכים ל־A ואינם שייכים ל־B. שימו לב: הסרת קצה מלא משאירה חור.');};
+$('show').onclick=()=>{reveal=!reveal;$('show').textContent=reveal?'הסתרת התוצאה':'הצגת התוצאה';say(reveal?'התוצאה הנכונה מסומנת בקו כתום מקווקו: '+I.notation(answer()):'');draw();};
+$('clear').onclick=()=>{snapshot();sets[$('active').value]=[];changed();};$('reset').onclick=reset;$('preset').onchange=reset;
+$('undo').onclick=()=>{if(history.length){const old=history.pop();sets=old.sets;marks=old.marks;changed();}};
+$('scale').onchange=draw;$('active').onchange=()=>{pending=null;draw();};$('operation').onchange=changed;
+$('tool').onchange=()=>{pending=null;$('instruction').textContent=$('tool').value==='interval'?'בחרו שני מספרים להוספת קטע. גררו קצה להזזה; לחצו עליו להחלפה בין מלא לריק.':'בחרו מספר על הישר, או הקלידו מספר ולחצו ״בחירת המספר בכלי״.';};
+$('number').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('place').click();}});
+$('plot').addEventListener('pointermove',e=>{
+ if(!drag||e.pointerId!==drag.pointer)return;const r=$('plot').getBoundingClientRect(),px=(e.clientX-r.left)*760/r.width;
+ const v=ticks().reduce((a,b)=>Math.abs(x(a)-px)<Math.abs(x(b)-px)?a:b),p=sets[drag.key][drag.index];
+ if(p.a===p.b){p.a=p.b=v;}else if(drag.end==='a'&&v<p.b)p.a=v;else if(drag.end==='b'&&v>p.a)p.b=v;
+ if(p[drag.end]!==drag.original)drag.moved=true;
+ reveal=false;$('show').textContent='הצגת התוצאה';say('');draw();
+});
+$('plot').addEventListener('pointerup',()=>{if(drag){const p=sets[drag.key][drag.index];if(!drag.moved&&p.a!==p.b)p[drag.end+'c']=!p[drag.end+'c'];drag=null;changed();}});
+$('plot').addEventListener('pointercancel',()=>{if(drag){const old=history.pop();sets=old.sets;marks=old.marks;drag=null;changed();}});reset();
+})();
+</script>
+</html>

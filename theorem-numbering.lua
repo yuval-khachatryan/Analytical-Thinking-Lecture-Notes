@@ -85,6 +85,8 @@ local BOX = {
 
 -- Labelled but UNNUMBERED (see the header).
 local UNNUMBERED = {
+  thmanalogy = { word = "דימוי",       css = "key-point" },
+  thmterm    = { word = "מונחים",      css = "terminology" },
   thmwarn    = { word = "שימו לב",     css = "warning"    },
   thmkey     = { word = "חשוב לזכור",  css = "key-point"  },
   thmchk     = { word = "בדיקה עצמית", css = "self-check" },
