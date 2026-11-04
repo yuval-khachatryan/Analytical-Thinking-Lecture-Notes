@@ -14,6 +14,7 @@ import numpy as np
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+import matplotlib.patches
 
 FIGDIR = Path(__file__).resolve().parent / "figures"
 
@@ -390,6 +391,133 @@ def fig_radians():
     ax.text(1.04, -0.06, "$(1,0)$", fontsize=11, va="top")
     ax.set_xticks([]); ax.set_yticks([]); ax.set_aspect("equal")
     save(fig, "radians")
+
+
+# ---------------------------------------------------------------- §9: why each property of sin/cos holds
+VIOLET = "#7c3aed"
+
+
+def circle_base(ax, lim=1.62):
+    axes_through_origin(ax, (-lim, lim), (-lim, lim), grid=False)
+    t = np.linspace(0, 2 * np.pi, 600)
+    ax.plot(np.cos(t), np.sin(t), color=GREY, lw=1.3)
+    ax.set_xticks([]); ax.set_yticks([]); ax.set_aspect("equal")
+
+
+def walk(ax, a0, a1, color, r=1.0, lw=3.6, head=True):
+    """An arc of the circle of radius r from angle a0 to a1, with an arrow head at a1."""
+    t = np.linspace(a0, a1, 200)
+    ax.plot(r * np.cos(t), r * np.sin(t), color=color, lw=lw, solid_capstyle="round", zorder=3)
+    if head:
+        d = np.sign(a1 - a0) * 0.06
+        ax.annotate("", xy=(r * np.cos(a1), r * np.sin(a1)), xytext=(r * np.cos(a1 - d), r * np.sin(a1 - d)),
+                    arrowprops=dict(arrowstyle="-|>", color=color, lw=lw * 0.6, mutation_scale=14), zorder=4)
+
+
+def pt(ax, x, y, color, label=None, dx=0.06, dy=0.06, ha="left", va="bottom", fs=13):
+    ax.plot([x], [y], "o", color=color, ms=7.5, zorder=6)
+    if label:
+        ax.text(x + dx, y + dy, label, color=INK, fontsize=fs, ha=ha, va=va, zorder=7,
+                bbox=dict(fc="white", ec="none", pad=0.6, alpha=0.85))
+
+
+def start_point(ax):
+    ax.plot([1], [0], "o", color=INK, ms=4.5, zorder=6)
+
+
+def fig_trig_props():
+    th = 0.6
+    c, s_ = np.cos(th), np.sin(th)
+    P = r"$(\cos\theta,\ \sin\theta)$"
+
+    # (a) one more full turn returns to the same point
+    fig, ax = plt.subplots(figsize=(4, 4)); circle_base(ax); start_point(ax)
+    walk(ax, 0, th, C2)
+    walk(ax, th, th + 2 * np.pi - 0.12, VIOLET, r=1.2, lw=2.2)
+    ax.text(-1.32 * np.cos(np.pi / 4), -1.32 * np.sin(np.pi / 4), r"$+2\pi$", color=VIOLET, fontsize=15, ha="right", va="top")
+    ax.text(1.06 * np.cos(th / 2), 1.06 * np.sin(th / 2) - 0.02, r"$\theta$", color=C2, fontsize=15, ha="left", va="center")
+    assert abs(np.cos(th + 2 * np.pi) - c) < 1e-12 and abs(np.sin(th + 2 * np.pi) - s_) < 1e-12
+    pt(ax, c, s_, C1, P, dx=-0.1, dy=0.0, ha="right", va="center")
+    save(fig, "trig-period")
+
+    # (b) the circle lies in the square [-1,1] x [-1,1]
+    fig, ax = plt.subplots(figsize=(4, 4)); circle_base(ax)
+    ax.plot([-1, 1, 1, -1, -1], [-1, -1, 1, 1, -1], color=C4, ls="--", lw=1.4)
+    for v, lab in ((1, "$1$"), (-1, "$-1$")):
+        ax.text(v + (0.06 if v > 0 else -0.06), -0.08, lab, fontsize=13, ha="left" if v > 0 else "right", va="top")
+        ax.text(-0.08, v + (0.05 if v > 0 else -0.05), lab, fontsize=13, ha="right", va="bottom" if v > 0 else "top")
+    t = 2.3
+    ax.plot([np.cos(t), np.cos(t)], [0, np.sin(t)], color=C1, ls="--", lw=1.4)
+    ax.plot([0, np.cos(t)], [np.sin(t), np.sin(t)], color=C3, ls="--", lw=1.4)
+    pt(ax, np.cos(t), np.sin(t), C1)
+    assert all(abs(np.cos(u)) <= 1 and abs(np.sin(u)) <= 1 for u in np.linspace(0, 7, 300))
+    save(fig, "trig-bounded")
+
+    # (c) the right triangle with legs cos, sin and hypotenuse 1
+    t = 0.8
+    ct, st = np.cos(t), np.sin(t)
+    fig, ax = plt.subplots(figsize=(4, 4)); circle_base(ax)
+    ax.fill([0, ct, ct], [0, 0, st], color=C1, alpha=0.1)
+    ax.plot([0, ct, ct, 0], [0, 0, st, 0], color=C1, lw=1.8)
+    q = 0.08
+    ax.plot([ct - q, ct - q, ct], [0, q, q], color=INK, lw=1)
+    ax.text(ct / 2, -0.06, r"$\cos\theta$", fontsize=14, ha="center", va="top")
+    ax.text(ct + 0.06, st / 2, r"$\sin\theta$", fontsize=14, ha="left", va="center")
+    ax.text(ct / 2 - 0.08, st / 2 + 0.06, "$1$", fontsize=15, ha="right", va="bottom")
+    pt(ax, ct, st, C1)
+    assert abs(ct ** 2 + st ** 2 - 1) < 1e-12
+    save(fig, "trig-pythagoras")
+
+    # (d) -theta: the same walk clockwise, the mirror image in the x-axis
+    fig, ax = plt.subplots(figsize=(4, 4)); circle_base(ax); start_point(ax)
+    walk(ax, 0, th, C2); walk(ax, 0, -th, C3)
+    ax.text(1.07 * np.cos(th / 2), 1.07 * np.sin(th / 2), r"$\theta$", color=C2, fontsize=15, ha="left", va="center")
+    ax.text(1.07 * np.cos(th / 2), -1.07 * np.sin(th / 2), r"$-\theta$", color=C3, fontsize=15, ha="left", va="center")
+    ax.plot([c, c], [s_, -s_], color=GREY, ls="--", lw=1.2)
+    pt(ax, c, s_, C1, P, dx=-0.05, dy=0.1, ha="center")
+    pt(ax, c, -s_, C3, r"$(\cos\theta,\ -\sin\theta)$", dx=-0.05, dy=-0.1, ha="center", va="top")
+    assert abs(np.cos(-th) - c) < 1e-12 and abs(np.sin(-th) + s_) < 1e-12
+    save(fig, "trig-even")
+
+    # (e) half a turn more: the opposite point
+    fig, ax = plt.subplots(figsize=(4, 4)); circle_base(ax); start_point(ax)
+    walk(ax, 0, th, C2); walk(ax, th, th + np.pi, VIOLET, r=1.0, lw=2.6)
+    ax.text(1.07 * np.cos(th / 2), 1.07 * np.sin(th / 2), r"$\theta$", color=C2, fontsize=15, ha="left", va="center")
+    m = th + np.pi / 2
+    ax.text(1.12 * np.cos(m), 1.12 * np.sin(m), r"$+\pi$", color=VIOLET, fontsize=15, ha="right", va="bottom")
+    ax.plot([c, -c], [s_, -s_], color=GREY, ls="--", lw=1.2)
+    pt(ax, c, s_, C1, P, dx=0.0, dy=0.1, ha="left")
+    pt(ax, -c, -s_, VIOLET, r"$(-\cos\theta,\ -\sin\theta)$", dx=0.0, dy=-0.12, ha="center", va="top")
+    assert abs(np.cos(th + np.pi) + c) < 1e-12 and abs(np.sin(th + np.pi) + s_) < 1e-12
+    save(fig, "trig-half-turn")
+
+    # (f) pi - theta: walk half a turn, then theta back; the mirror image in the y-axis
+    fig, ax = plt.subplots(figsize=(4, 4)); circle_base(ax); start_point(ax)
+    walk(ax, 0, th, C2); walk(ax, np.pi, np.pi - th, C3)
+    ax.plot([-1], [0], "o", color=INK, ms=4.5, zorder=6)
+    ax.text(1.07 * np.cos(th / 2), 1.07 * np.sin(th / 2), r"$\theta$", color=C2, fontsize=15, ha="left", va="center")
+    ax.text(-1.07 * np.cos(th / 2), 1.07 * np.sin(th / 2), r"$\theta$", color=C3, fontsize=15, ha="right", va="center")
+    ax.plot([c, -c], [s_, s_], color=GREY, ls="--", lw=1.2)
+    pt(ax, c, s_, C1, P, dx=0.02, dy=0.12, ha="center")
+    pt(ax, -c, s_, C3, r"$(-\cos\theta,\ \sin\theta)$", dx=-0.02, dy=0.12, ha="center")
+    assert abs(np.cos(np.pi - th) + c) < 1e-12 and abs(np.sin(np.pi - th) - s_) < 1e-12
+    save(fig, "trig-reflect-y")
+
+    # (g) pi/2 - theta: theta back from the top point; the mirror image in the line y = x
+    t = 0.5
+    ct, st = np.cos(t), np.sin(t)
+    fig, ax = plt.subplots(figsize=(4.4, 4.4)); circle_base(ax); start_point(ax)
+    ax.plot([-1.45, 1.45], [-1.45, 1.45], color=GREY, lw=1.1)
+    ax.text(1.45, 1.38, "$y=x$", color=GREY, fontsize=13, ha="left", va="top")
+    ax.plot([0], [1], "o", color=INK, ms=4.5, zorder=6)
+    walk(ax, 0, t, C2); walk(ax, np.pi / 2, np.pi / 2 - t, C3)
+    ax.text(0.8 * np.cos(t / 2), 0.8 * np.sin(t / 2), r"$\theta$", color=C2, fontsize=15, ha="center", va="center")
+    ax.text(0.8 * np.sin(t / 2), 0.8 * np.cos(t / 2), r"$\theta$", color=C3, fontsize=15, ha="center", va="center")
+    ax.plot([ct, st], [st, ct], color=GREY, ls="--", lw=1.2)
+    pt(ax, ct, st, C1, P, dx=0.1, dy=0.0, ha="left", va="center")
+    pt(ax, st, ct, C3, r"$(\sin\theta,\ \cos\theta)$", dx=0.06, dy=0.1, ha="left", va="bottom")
+    assert abs(np.cos(np.pi / 2 - t) - st) < 1e-12 and abs(np.sin(np.pi / 2 - t) - ct) < 1e-12
+    save(fig, "trig-complement")
 
 
 def fig_sin_cos():
@@ -989,6 +1117,73 @@ def fig_transformations_lab():
     save(fig, "transformations-lab")
 
 
+# ------------------------------------------- §11: the inverse swaps the roles of the axes
+def fig_inverse_swap():
+    """Read right to left (as the Hebrew caption does):
+    (1) y = x^2, x >= 0, read from x to y: f(2) = 4;
+    (2) the same curve with the axes swapped (y horizontal, x vertical): from 4 back to 2;
+    (3) renamed: y = sqrt(x), the mirror image of x^2 in y = x; (2,4) <-> (4,2)."""
+    fig, axs = plt.subplots(1, 3, figsize=(12.6, 4.5))
+    lim = (-0.6, 5.3)
+    t = np.linspace(0, np.sqrt(5.1), 300)
+    a, fa = 2.0, 4.0
+    assert a ** 2 == fa and np.sqrt(fa) == a          # f(2) = 4 and f^{-1}(4) = 2
+    assert np.allclose(np.sqrt(t ** 2), t)            # the swapped curve (t^2, t) is y = sqrt(x)
+    LIGHT = "#a5b4fc"
+
+    def frame(ax, hname, vname):
+        axes_through_origin(ax, lim, lim)
+        ax.set_aspect("equal")
+        ax.set_xticks([1, 2, 3, 4, 5])
+        ax.set_yticks([1, 2, 3, 4, 5])
+        ax.text(lim[1] - 0.05, 0.3, f"${hname}$", fontsize=17, ha="right", va="bottom")
+        ax.text(0.22, lim[1] - 0.05, f"${vname}$", fontsize=17, ha="left", va="top")
+
+    def guides(ax, foot, p, side, color):
+        # foot (on the horizontal axis) -> p -> side (on the vertical axis), with arrowheads
+        for s, e in ((foot, p), (p, side)):
+            ax.annotate("", xy=e, xytext=s, arrowprops=dict(arrowstyle="-|>", color=INK, lw=1.3,
+                        ls=(0, (4, 3)), shrinkA=0, shrinkB=6, mutation_scale=13))
+        ax.plot(*p, "o", color=color, ms=8, zorder=6, mec="white", mew=1.2)
+
+    # (1) rightmost: the graph of f
+    ax = axs[2]
+    frame(ax, "x", "y")
+    ax.plot(t, t ** 2, color=C1, lw=2.6)
+    guides(ax, (a, 0), (a, fa), (0, fa), C1)
+    ax.text(a + 0.18, fa - 0.1, "$(2,4)$", color=C1, fontsize=14, va="top")
+    ax.set_title(r"$y=f(x)=x^2$", fontsize=15)
+    # (2) middle: the axes swap roles
+    ax = axs[1]
+    frame(ax, "y", "x")
+    ax.plot(t ** 2, t, color=C2, lw=2.6)
+    guides(ax, (fa, 0), (fa, a), (0, a), C2)
+    ax.text(fa + 0.05, a + 0.3, "$(4,2)$", color=C2, fontsize=14, ha="center")
+    ax.set_title(r"$x=f^{-1}(y)$", fontsize=15)
+    # (3) leftmost: rename the axes; the mirror image in y = x
+    ax = axs[0]
+    frame(ax, "x", "y")
+    d = np.linspace(lim[0], lim[1], 10)
+    ax.plot(d, d, color=GREY, ls="--", lw=1.3)
+    ax.plot(t, t ** 2, color=LIGHT, lw=2.2, ls=(0, (6, 4)))
+    ax.plot(t ** 2, t, color=C2, lw=2.6)
+    ax.plot([a, fa], [fa, a], ls=":", color=INK, lw=1.3)
+    ax.plot([a], [fa], "o", color=LIGHT, ms=7, zorder=6, mec="white", mew=1.2)
+    ax.plot([fa], [a], "o", color=C2, ms=8, zorder=6, mec="white", mew=1.2)
+    ax.text(fa + 0.05, a + 0.3, "$(4,2)$", color=C2, fontsize=14, ha="center")
+    ax.text(a - 0.2, fa + 0.05, "$(2,4)$", color="#6366f1", fontsize=14, ha="right")
+    ax.text(4.55, 4.95, "$y=x$", color=GREY, fontsize=13, ha="right")
+    ax.set_title(r"$y=f^{-1}(x)=\sqrt{x}$", fontsize=15)
+    fig.tight_layout(w_pad=4.2)
+    # arrows between the panels, pointing left (the reading order of the caption)
+    for right, left in ((axs[2], axs[1]), (axs[1], axs[0])):
+        r, l = right.get_position(), left.get_position()
+        y = (r.y0 + r.y1) / 2
+        fig.add_artist(matplotlib.patches.FancyArrowPatch((r.x0 - 0.008, y), (l.x1 + 0.012, y), transform=fig.transFigure,
+                       arrowstyle="-|>", mutation_scale=22, lw=2.2, color=INK))
+    save(fig, "inverse-swap-axes")
+
+
 # ------------------------------------------- §9: print stand-in for the unit-circle walk
 def fig_unit_circle_walk():
     """Circle with the point at theta = 2pi/3, and sin traced on [0, theta] beside it."""
@@ -1024,7 +1219,7 @@ def fig_unit_circle_walk():
 
 FIGURES = [
     fig_real_line, fig_intervals, fig_distance, fig_square, fig_not_functions,
-    fig_even_odd, fig_sqrt_family, fig_polynomials, fig_unit_circle, fig_radians, fig_sin_cos,
+    fig_even_odd, fig_sqrt_family, fig_polynomials, fig_unit_circle, fig_radians, fig_trig_props, fig_sin_cos,
     fig_tan, fig_exponentials, fig_horizontal_line, fig_onto, fig_exp_ln, fig_powers_roots,
     fig_rational, fig_sgn_floor, fig_inverse_trig,
     fig_sqrt2, fig_function_examples, fig_plane_point, fig_parabola_points,
@@ -1032,7 +1227,7 @@ FIGURES = [
     fig_triangle_1m, fig_circle_r1, fig_coin_sets, fig_subset_venn, fig_union_boxes,
     fig_intersection_venn, fig_rays, fig_triangle_inequality, fig_ineq_solutions,
     fig_half_open, fig_transformations_lab, fig_unit_circle_walk,
-    fig_order_line,
+    fig_order_line, fig_inverse_swap,
 ]
 
 if __name__ == "__main__":

@@ -34,8 +34,3 @@ while ((m = re.exec(src))) {
   if (a.miss) a.miss.split('||').forEach(p => { const v = p.split('::')[0].trim(); try { M.checkAnswer(kind, v, v, vars, {}); } catch (e) { bad++; console.log('MISS PARSE', v); } });
 }
 console.log(n, 'blanks,', bad, 'problems');
-// step builders: start parses
-const sre = /\{\.steps (?:limit="[^"]*" )?start="([^"]*)"([^}]*)\}/g;
-while ((m = sre.exec(src))) {
-  try { M.parseRelation(m[1]); console.log('steps ok:', m[1]); } catch (e) { console.log('STEPS START FAIL', m[1]); }
-}

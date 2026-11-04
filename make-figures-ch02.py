@@ -117,6 +117,72 @@ def fig_squeeze():
     save(fig, "ch02-squeeze")
 
 
+def number_line(ax, lo, hi, ticks):
+    """A bare horizontal real line from lo to hi with labelled ticks (no frame)."""
+    ax.axhline(0, color=INK, lw=1.1, zorder=1)
+    for t, lab in ticks:
+        ax.plot([t, t], [-0.05, 0.05], color=INK, lw=1, zorder=2)
+        ax.text(t, -0.13, lab, ha="center", va="top", fontsize=12)
+    ax.set_xlim(lo, hi)
+    ax.set_ylim(-0.35, 0.45)
+    ax.axis("off")
+
+
+def tag(ax, x, text, color, h=0.2):
+    ax.annotate(text, xy=(x, 0.04), xytext=(x, h), ha="center", va="bottom", fontsize=12, color=color,
+                arrowprops=dict(arrowstyle="-", color=color, lw=0.7, shrinkA=1, shrinkB=1))
+
+
+def fig_seq_line():
+    """The same kind of sequences, drawn as dots on the real line (no index axis)."""
+    fig, axs = plt.subplots(3, 1, figsize=(8.6, 4.4))
+    n = np.arange(1, 61)
+    ax = axs[0]
+    a = 1 / n
+    number_line(ax, -0.15, 1.15, [(0, "$0$"), (1, "$1$")])
+    ax.plot(a, 0 * a, "o", color=C1, ms=5, alpha=0.75, zorder=4)
+    for k, lab in ((1, "$a_1$"), (2, "$a_2$"), (3, "$a_3$")):
+        tag(ax, 1 / k, lab, C1)
+    ax.set_title(r"$a_n=\frac{1}{n}$", loc="left", fontsize=13)
+    assert all(np.diff(a) < 0) and a[-1] < 0.02                # caption: the dots crowd near 0
+    ax = axs[1]
+    b = (-1.0) ** n
+    number_line(ax, -1.4, 1.4, [(-1, "$-1$"), (0, "$0$"), (1, "$1$")])
+    ax.plot([-1, 1], [0, 0], "o", color=C2, ms=7, zorder=4)
+    tag(ax, -1, r"$a_1, a_3, a_5, \ldots$", C2); tag(ax, 1, r"$a_2, a_4, a_6, \ldots$", C2)
+    ax.set_title(r"$a_n=(-1)^n$", loc="left", fontsize=13)
+    assert set(b) == {-1.0, 1.0}                               # caption: only two points
+    ax = axs[2]
+    c = 1 + (-1.0) ** n / n
+    number_line(ax, -0.15, 1.65, [(0, "$0$"), (1, "$1$")])
+    ax.plot(c, 0 * c, "o", color=C3, ms=5, alpha=0.75, zorder=4)
+    for k in (1, 2, 3):
+        tag(ax, 1 + (-1) ** k / k, f"$a_{k}$", C3)
+    ax.set_title(r"$a_n=1+\frac{(-1)^n}{n}$", loc="left", fontsize=13)
+    assert (c[::2] < 1).all() and (c[1::2] > 1).all() and abs(c[-1] - 1) < 0.02   # caption: both sides of 1
+    fig.tight_layout(h_pad=0.6)
+    save(fig, "ch02-seq-line")
+
+
+def fig_limit_line():
+    """Convergence on the real line: all terms but finitely many lie in (L - eps, L + eps)."""
+    fig, ax = plt.subplots(figsize=(8.2, 1.9))
+    n = np.arange(1, 81)
+    a = 1 + (-1.0) ** n / n
+    L, eps = 1.0, 0.3
+    out = np.abs(a - L) >= eps
+    assert list(n[out]) == [1, 2, 3]                            # caption: only a_1, a_2, a_3 are outside
+    number_line(ax, -0.15, 1.65, [(L - eps, r"$L-\varepsilon$"), (L, "$L$"), (L + eps, r"$L+\varepsilon$")])
+    ax.fill_between([L - eps, L + eps], -0.09, 0.09, color=C1, alpha=0.13, lw=0, zorder=0)
+    for x, s in ((L - eps, "("), (L + eps, ")")):
+        ax.text(x, 0, s, ha="center", va="center", fontsize=15, color=C1, zorder=6)
+    ax.plot(a[~out], 0 * a[~out], "o", color=C1, ms=4.5, alpha=0.7, zorder=4)
+    ax.plot(a[out], 0 * a[out], "o", color=C4, ms=6.5, zorder=5)
+    for k in n[out]:
+        tag(ax, a[k - 1], f"$a_{k}$", C4)
+    save(fig, "ch02-limit-line")
+
+
 def fig_monotone_e():
     fig, ax = plt.subplots(figsize=(7.5, 3.6))
     n = np.arange(1, 31)
@@ -144,9 +210,8 @@ def fig_subsequences():
     save(fig, "ch02-subsequences")
 
 
-# fig_monotone_e and fig_subsequences are for the later sections (monotone sequences and e,
-# subsequences); they are not built until those sections are written.
-FIGURES = [fig_seq_points, fig_to_infinity, fig_geometric, fig_squeeze]
+FIGURES = [fig_seq_points, fig_seq_line, fig_limit_line, fig_to_infinity, fig_geometric, fig_squeeze,
+           fig_monotone_e, fig_subsequences]
 
 if __name__ == "__main__":
     for f in FIGURES:

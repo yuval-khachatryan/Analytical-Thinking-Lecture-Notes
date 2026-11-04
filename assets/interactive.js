@@ -127,6 +127,12 @@ function tokenize(src) {
     if ("+-*/^".indexOf(c) >= 0) { t.push({ k: "op", v: c }); i++; continue; }
     if ("()[]{},|_\\;".indexOf(c) >= 0) { t.push({ k: c }); i++; continue; }
     if (c === "!") { t.push({ k: "!" }); i++; continue; }   // n! ("!=" was read above)
+    if (c === "§") {                                         // a box of a guided derivation
+      var pm = /^§(R?)(\d+)/.exec(s.slice(i));
+      if (!pm) throw new ParseError("סימן לא מוכר.");
+      t.push(pm[1] ? { k: "rel", v: "§" + pm[2] } : { k: "ph", v: +pm[2] });
+      i += pm[0].length; continue;
+    }
     throw new ParseError("הסימן ״" + c + "״ אינו מוכר כאן.");
   }
   return t;
@@ -152,7 +158,7 @@ Parser.prototype.atEnd = function () { return this.i >= this.t.length; };
 
 Parser.prototype.startsPrimary = function (p) {
   if (!p) return false;
-  if (p.k === "num" || p.k === "var" || p.k === "pi" || p.k === "e" || p.k === "fn" || p.k === "(") return true;
+  if (p.k === "num" || p.k === "var" || p.k === "pi" || p.k === "e" || p.k === "fn" || p.k === "(" || p.k === "ph") return true;
   if (p.k === "|") return this.abs === 0;
   return false;
 };
@@ -198,6 +204,7 @@ Parser.prototype.primary = function () {
   if (p.k === "var") return { t: "var", n: p.v };
   if (p.k === "pi") return { t: "pi" };
   if (p.k === "e") return { t: "e" };
+  if (p.k === "ph") return { t: "ph", i: p.v };
   if (p.k === "inf") return { t: "inf" };
   if (p.k === "(") { var e = this.expr(); this.expect(")"); return e; }
   if (p.k === "|") {
@@ -289,6 +296,19 @@ function parseRelation(src) {
   }
   return r;
 }
+// A derivation line with boxes: [..] holds a value to fill, [<] a relation sign.
+var SIGNS = { "<": "<", ">": ">", "<=": "<=", ">=": ">=", "=": "=", "≤": "<=", "≥": ">=" };
+function prepLine(src) {
+  var boxes = [];
+  var text = String(src).replace(/\[([^\]]*)\]/g, function (_, inner) {
+    var k = boxes.length, sign = SIGNS[inner.trim()];
+    boxes.push(sign ? { sign: sign } : { ans: inner.trim() });
+    return " " + (sign ? "§R" : "§") + k + " ";
+  });
+  // the line with the answers in the boxes; a value goes in brackets, so that 2^[2x] is 2^(2x)
+  var full = String(src).replace(/\[([^\]]*)\]/g, function (_, inner) { return SIGNS[inner.trim()] ? inner : "(" + inner + ")"; });
+  return { text: text, boxes: boxes, full: full };
+}
 function isRelation(r) { return r.disj.some(function (d) { return d.ops.length > 0; }); }
 
 /* ======================================================================== */
@@ -321,6 +341,7 @@ function ev(n, env) {
   var a, b;
   switch (n.t) {
     case "num": return n.v;
+    case "ph": return NaN;
     case "var": return env && env[n.n] !== undefined ? env[n.n] : NaN;
     case "pi": return Math.PI;
     case "e": return Math.E;
@@ -397,10 +418,12 @@ function hasAbs(n) {
 var PREC = { add: 1, sub: 1, neg: 1.5, mul: 2, pow: 4 };
 function prec(n) { return PREC[n.t] || 9; }
 function wrap(s, need) { return need ? "\\left(" + s + "\\right)" : s; }
+var PHTEX = null;   // while a derivation line is drawn: i -> TeX for box i (and "§i" for a sign box)
 function tex(n, parent) {
   parent = parent || 0;
   var s;
   switch (n.t) {
+    case "ph": s = PHTEX ? PHTEX(n.i) : "\\boxed{?}"; break;
     case "num": s = n.s !== undefined ? n.s : fmtNum(n.v); break;
     case "var": s = n.n; break;
     case "pi": s = "\\pi"; break;
@@ -445,7 +468,10 @@ function tex(n, parent) {
 var OPTEX = { "<": "<", "<=": "\\le", ">": ">", ">=": "\\ge", "=": "=", "!=": "\\ne" };
 function texChain(d) {
   var s = tex(d.parts[0]);
-  for (var i = 0; i < d.ops.length; i++) s += " " + OPTEX[d.ops[i]] + " " + tex(d.parts[i + 1]);
+  for (var i = 0; i < d.ops.length; i++) {
+    var op = d.ops[i];
+    s += " " + (op.charAt(0) === "§" ? (PHTEX ? PHTEX(op) : "\\boxed{?}") : OPTEX[op]) + " " + tex(d.parts[i + 1]);
+  }
   return s;
 }
 // HTML (not TeX) for a relation: the disjuncts joined by the Hebrew word.
@@ -896,9 +922,35 @@ function checkForm(form, ans, input) {
   if (form === "simple") return nodes(n) <= nodes(parseExpr(ans)) ? null : FORM_MSG.simple;
   return null;
 }
+// The terms of a list, written with commas: "1, 1, 2, 3" (kind="list", for the first terms
+// of a sequence). The order matters; each term is any number expression.
+function splitList(src) {
+  return String(src).split(",").map(function (t) { return t.trim(); }).filter(function (t, i, all) { return t || i < all.length - 1; });
+}
 function checkValue(kind, ans, input, vars, opts) {
   input = String(input || "").trim();
   if (!input) return { ok: false, empty: true, msg: "עוד לא כתבתם תשובה." };
+  if (kind === "list") {
+    var want = splitList(ans).map(function (t) { return ev(parseExpr(t), {}); }), gotL = [];
+    var parts = splitList(input);
+    for (var li = 0; li < parts.length; li++) {
+      var gvL;
+      try { gvL = ev(parseExpr(parts[li]), {}); } catch (e) {
+        return { ok: false, msg: (parts[li] ? "את האיבר ה-" + (li + 1) + " לא הצלחתי לקרוא. " : "יש כאן פסיק בלי איבר. ") +
+          "כותבים את האיברים מופרדים בפסיקים, למשל <code>1, 2, 3</code>." };
+      }
+      if (isNaN(gvL)) return { ok: false, msg: "האיבר ה-" + (li + 1) + " אינו מספר." };
+      gotL.push(gvL);
+    }
+    for (var lj = 0; lj < Math.min(want.length, gotL.length); lj++) {
+      if (!close(want[lj], gotL[lj], 1e-9)) {
+        return { ok: false, msg: "האיבר ה-" + (lj + 1) + " אינו נכון." + (lj ? " כל האיברים שלפניו נכונים." : "") };
+      }
+    }
+    if (gotL.length < want.length) return { ok: false, partial: true, msg: "עד כאן נכון, אבל צריך " + want.length + " איברים, וכתבתם " + gotL.length + "." };
+    if (gotL.length > want.length) return { ok: false, msg: "כתבתם " + gotL.length + " איברים, וצריך רק " + want.length + "." };
+    return { ok: true };
+  }
   if (kind === "set") {
     var A = parseSet(ans), G;
     try { G = parseSet(input); } catch (e) { return { ok: false, msg: errMsg(e) + " כתבו למשל <code>(-2,3]</code> או <code>[1,inf)</code> או <code>{1,2}</code>." }; }
@@ -931,7 +983,7 @@ function checkValue(kind, ans, input, vars, opts) {
     if (isNaN(b)) return { ok: false, msg: "הביטוי שכתבתם אינו מוגדר (למשל חילוק באפס, או שורש של מספר שלילי)." };
     if (close(a, b, 1e-9)) return { ok: true };
     if (close(a, -b, 1e-9) && a !== 0) return { ok: false, msg: "כמעט! בדקו את הסימן." };
-    if (Math.abs(a - b) <= 0.006 * Math.max(1, Math.abs(a))) return { ok: false, near: true, msg: "קרוב מאוד, אבל זה קירוב. כתבו ערך מדויק (שבר, שורש או \\(\\pi\\))." };
+    if (Math.abs(a - b) <= 0.006 * Math.max(1, Math.abs(a))) return { ok: false, near: true, msg: "קרוב מאוד, אבל זה קירוב. כתבו ערך מדויק (שבר, שורש, \\(\\pi\\) או \\(e\\))." };
     if (a !== 0 && close(a * b, 1, 1e-9)) return { ok: false, msg: "קיבלתם את ההופכי של התשובה." };
     return { ok: false, msg: "לא נכון. נסו שוב." };
   }
@@ -1637,7 +1689,7 @@ if (typeof document === "undefined") {
     parseExpr: parseExpr, parseRelation: parseRelation, parseSet: parseSet, ev: ev, tex: tex, texChain: texChain,
     setTex: setTex, solveSet: solveSet, checkAnswer: checkAnswer, guessKind: guessKind, judgeStep: judgeStep,
     classifyStep: classifyStep, isSolved: isSolved, fmtNum: fmtNum, nodes: nodes, ParseError: ParseError,
-    parsedSoFar: parsedSoFar, limOf: limOf, judgeLimStep: judgeLimStep, limDone: limDone, LIMRULES: LIMRULES
+    parsedSoFar: parsedSoFar, prepLine: prepLine, limOf: limOf, judgeLimStep: judgeLimStep, limDone: limDone, LIMRULES: LIMRULES
   };
   return;
 }
@@ -1674,7 +1726,12 @@ function typeset(node, tries) {
     if (MJ.typesetClear) MJ.typesetClear([node]);
     MJ.typeset([node]);
   } catch (e) {
-    if (tries < 60) setTimeout(function () { typeset(node, tries + 1); }, 250);
+    // an extension is being downloaded: wait for it (e.retry), not for a fixed time,
+    // or the second attempt finds its macros half-registered
+    if (tries >= 60) return;
+    var again = function () { typeset(node, tries + 1); };
+    if (e && e.retry && typeof e.retry.then === "function") e.retry.then(again, function () { setTimeout(again, 250); });
+    else setTimeout(again, 250);
   }
 }
 // Inline math we insert gets the same wrapper Pandoc gives the page's own math, so the
@@ -1739,7 +1796,75 @@ function showParsed(pv, html, whole) {
 function debounce(f, ms) { var h; return function () { var a = arguments, me = this; clearTimeout(h); h = setTimeout(function () { f.apply(me, a); }, ms); }; }
 
 /* ---------------- 6a. Fill-in blanks ---------------- */
+/* A .fill with several parts (paragraphs that open with a bold "(א)", "(ב)", ...) is split
+   into one group per part, so each part is checked and revealed on its own. Paragraphs of
+   the ::: explain that open with a part label go with that part; an explain without labels
+   is shown once every part is done. The hints keep one shared button. */
+var PART_RE = /^\(([\u05D0-\u05EA])\)$/;
+function partLabel(node) {
+  if (!node || node.tagName !== "P") return null;
+  var f = node.firstChild;
+  while (f && f.nodeType === 3 && !f.textContent.trim()) f = f.nextSibling;
+  if (!f || f.nodeType !== 1 || f.tagName !== "STRONG") return null;
+  var m = PART_RE.exec(f.textContent.trim());
+  return m ? m[1] : null;
+}
+function splitParts(fill) {
+  var kids = Array.prototype.slice.call(fill.children);
+  var marks = kids.filter(function (k) { return partLabel(k); });
+  if (marks.length < 2) return;
+  var hints = childDivs(fill, "hint"), explain = childDivs(fill, "explain");
+  var parts = [], cur = null;
+  kids.forEach(function (k) {
+    if (k.classList.contains("hint") || k.classList.contains("explain")) return;
+    var lab = partLabel(k);
+    if (lab) {
+      cur = el("div", { class: "fill fill-part" });
+      if (attr(fill, "keys")) cur.setAttribute("data-keys", attr(fill, "keys"));
+      cur.dataset.part = lab;
+      fill.insertBefore(cur, k);
+      parts.push(cur);
+    }
+    if (cur) cur.appendChild(k);
+  });
+  // explain paragraphs that name a part go to that part
+  var shared = [];
+  function partExplain(p) { return p.querySelector(":scope > .explain") || p.appendChild(el("div", { class: "explain" })); }
+  explain.forEach(function (ex) {
+    var exKids = Array.prototype.slice.call(ex.children), owner = null, lead = [];
+    exKids.forEach(function (k) {
+      var lab = partLabel(k);
+      if (lab) owner = parts.filter(function (p) { return p.dataset.part === lab; })[0] || owner;
+      if (owner) partExplain(owner).appendChild(k); else lead.push(k);
+    });
+    if (lead.length === exKids.length) { shared.push(ex); return; }
+    // lines before the first label open the explanation of the first part
+    var first = partExplain(parts[0]);
+    lead.reverse().forEach(function (k) { first.insertBefore(k, first.firstChild); });
+    ex.remove();
+  });
+  // a part counts as done when it is right or revealed; a shared explain waits for all of them
+  var doneParts = {};
+  shared.forEach(function (x) { x.classList.add("ix-hidden"); });
+  fill.addEventListener("fill-part", function (e) {
+    doneParts[e.detail.part] = e.detail.done;
+    var all = parts.every(function (p) { return doneParts[p.dataset.part]; });
+    shared.forEach(function (x) { x.classList.toggle("ix-hidden", !all); if (all) typeset(x); });
+  });
+  if (hints.length) {
+    var h = 0;
+    hints.forEach(function (x) { x.classList.add("ix-hidden"); });
+    var bHint = el("button", { type: "button", class: "ix-btn", onclick: function () {
+      if (h < hints.length) { hints[h].classList.remove("ix-hidden"); typeset(hints[h]); h++; }
+      bHint.textContent = "רמז (" + h + "/" + hints.length + ")"; bHint.disabled = h >= hints.length;
+    } }, ["רמז (0/" + hints.length + ")"]);
+    fill.insertBefore(el("div", { class: "ix-bar fill-hints" }, [bHint]), hints[0]);
+  }
+  fill.classList.add("fill-split");
+}
+
 function initBlanks() {
+  document.querySelectorAll(".fill").forEach(splitParts);
   var blanks = Array.prototype.slice.call(document.querySelectorAll("span.blank"));
   var groups = [];
   blanks.forEach(function (sp) {
@@ -1831,6 +1956,13 @@ function initGroup(G) {
     previewLater(it, v);
   }
   var previewLater = debounce(function (it, v) {
+    if (it.kind === "list") {
+      var terms = [], all = true;
+      splitList(v).forEach(function (t) { var g = t ? parsedSoFar(t, parseExpr) : null; if (g) { terms.push(tex(g.node)); if (!g.whole) all = false; } else all = false; });
+      if (!terms.length) { pv.innerHTML = ""; return; }
+      showParsed(pv, "\\(" + terms.join(", \\ ") + "\\)", all);
+      return;
+    }
     var set = it.kind === "set", got = parsedSoFar(v, set ? parseSet : parseExpr);
     if (!got) { pv.innerHTML = ""; return; }
     showParsed(pv, "\\(" + (set ? setTex(got.node) : tex(got.node)) + "\\)", got.whole);
@@ -1875,6 +2007,11 @@ function initGroup(G) {
   function done() {
     say(msg, items.length > 1 ? "✓ כל התשובות נכונות!" : "✓ נכון!", "good");
     explain.forEach(function (x) { x.classList.remove("ix-hidden"); typeset(x); });
+    tellPart(true);
+  }
+  function tellPart(isDone) {
+    if (box.dataset && box.dataset.part)
+      box.parentNode.dispatchEvent(new CustomEvent("fill-part", { detail: { part: box.dataset.part, done: isDone } }));
   }
   function showAll() {
     items.forEach(function (it) {
@@ -1884,6 +2021,7 @@ function initGroup(G) {
     say(msg, "");
     pv.innerHTML = "";
     bShow.hidden = true; bReset.hidden = false;
+    tellPart(true);
   }
   function reset() {
     items.forEach(function (it) {
@@ -1893,6 +2031,7 @@ function initGroup(G) {
     explain.forEach(function (x) { x.classList.add("ix-hidden"); });
     say(msg, "");
     bShow.hidden = false; bReset.hidden = true;
+    tellPart(false);
   }
 }
 function parseMiss(s) {
@@ -1903,311 +2042,259 @@ function parseMiss(s) {
   }).filter(Boolean);
 }
 
-/* ---------------- 6b. Step builder: a solution ledger ----------------
-   Laid out like the directed proofs of the Ramat Gan notes (their proof and
-   argument editors): the goal and the starting line on top, then one
-   fieldset per step: "מה עושים בצעד הזה?" (the rule) and the new line. A step
-   that checks out folds into one line (label | new line | rule | עריכה), and
-   the next step opens. "סיימתי — בדקו" checks everything; the last line gets
-   a ✓ once the variable stands alone (or the expression is simple enough). */
-var STEP_HELP = {
-  rel: [
-    "בכל צעד בחרו מהרשימה מה עושים, וכתבו את השורה שמתקבלת. אחר כך לחצו על ״בדיקת הצעד״ (או Enter).",
-    "כל שורה צריכה להיות <b>שקולה</b> לשורה שלפניה, כלומר עם אותה קבוצת פתרונות. הבודק בודק גם שהפעולה שבחרתם היא באמת מה שעשיתם.",
-    "בכל צעד פעולה אחת. שורה נכונה שמשלבת שתי פעולות תקבל ״נכון, אבל פצלו לשני צעדים״.",
-    "צעד שאושר מוצג כשורה קצרה עם הפעולה שלו, והצעד הבא נפתח. אפשר לערוך צעד, למחוק אותו או לחזור לצעד האחרון.",
-    "מסיימים כשהמשתנה לבד באחד האגפים. כדאי לכתוב את הפתרון גם על דף, עם הפעולה לצד כל שורה."
-  ],
-  lim: [
-    "כל שורה היא שלב בחישוב הגבול. כל עוד יש בשורה \\(n\\), היא סדרה שעוד לא עברנו לגבול שלה, והיא חייבת להיות <b>שווה</b> לשורה הקודמת לכל \\(n\\).",
-    "כשאפשר, עוברים לגבול: מחליפים כל סדרה סטנדרטית בגבול שלה (למשל \\(\\frac{1}{n} \\to 0\\)) ומחשבים לפי חשבון הגבולות. אם יוצאת צורה לא מוגדרת, כמו \\(\\frac{\\infty}{\\infty}\\), הבודק יעצור ויציע מה לעשות קודם.",
-    "את \\(\\infty\\) כותבים <code>inf</code>. ״רמז לצעד״ בוחר את הפעולה, אחר כך משלים חלק מהשורה, ובסוף כותב אותה כולה.",
-    "צעד שאושר מוצג כשורה קצרה, והצעד הבא נפתח. אפשר לערוך צעד, למחוק אותו או לחזור לצעד האחרון."
-  ],
-  expr: [
-    "בכל צעד כתבו את השלב הבא בחישוב" + " (ואם יש רשימה, בחרו בה מה עשיתם). אחר כך לחצו על ״בדיקת הצעד״ (או Enter).",
-    "כל שלב צריך להיות <b>שווה</b> לקודם, לכל ערך של המשתנה.",
-    "צעד שאושר מוצג כשורה קצרה, והצעד הבא נפתח. אפשר לערוך צעד, למחוק אותו או לחזור לצעד האחרון.",
-    "מסיימים כשהביטוי פשוט. כדאי לכתוב את החישוב גם על דף."
-  ]
-};
-var stepSerial = 0;
-function initSteps(box) {
+/* ---------------- 6b. Guided derivations (.derive) ----------------
+   A worked solution, revealed one line at a time, the way it is written on the board:
+
+     ::::: {.derive start="3-2x<7"}             (limit="n": a limit computation;
+     ::: {.step line="-2x < [4]"}                a start without a relation: a computation)
+     חיסרנו $3$ משני האגפים.                    <- the note beside the line
+     :::
+     ::: {.step line="x [>] [-2]"}
+     ...
+     :::::
+
+   [..] in a line is a box the reader fills (a number or an expression, checked by value);
+   [<] is a relation sign, picked with a click. A line without boxes is just shown.
+   "הצעד הבא" reveals the next line; a line filled correctly opens the next one by itself.
+   "השלמת הצעד" and "כל הפתרון" fill the answers in (for the lecture). ::: hint children are
+   revealed by "רמז". tests/derive.test.js checks that every line follows from the previous. */
+var SUB = "₀₁₂₃₄₅₆₇₈₉";
+var SIGN_TEX = { "<": "<", ">": ">", "<=": "\\le", ">=": "\\ge", "=": "=" };
+var SIGN_TXT = { "<": "<", ">": ">", "<=": "≤", ">=": "≥", "=": "=" };
+function initDerive(box) {
   var startSrc = attr(box, "start");
   if (!startSrc) return;
-  var vars = (attr(box, "vars") || "").split(",").map(function (s) { return s.trim(); }).filter(Boolean);
-  var positive = (attr(box, "positive") || "").split(",").map(function (s) { return s.trim(); }).filter(Boolean);
-  var start, mode, seqVar = attr(box, "limit");
+  var seq = attr(box, "limit"), mode, start;
   try {
-    if (seqVar) { start = parseExpr(startSrc); mode = "lim"; vars = [seqVar]; }
-    else {
-      start = parseRelation(startSrc);
-      mode = isRelation(start) ? "rel" : "expr";
-      if (mode === "expr") start = parseExpr(startSrc);
-    }
+    if (seq) { mode = "lim"; start = parseExpr(startSrc); }
+    else { start = parseRelation(startSrc); mode = isRelation(start) ? "rel" : "expr"; if (mode === "expr") start = parseExpr(startSrc); }
   } catch (e) { box.appendChild(el("p", { class: "ix-msg ix-bad", text: "שגיאה בהגדרת התרגיל: " + errMsg(e) })); return; }
-  if (!vars.length) vars = Object.keys(varsOf(start)).sort();
-  if (!vars.length) vars = ["x"];
-  var solveVar = attr(box, "solve") || (vars.indexOf("x") >= 0 ? "x" : vars[0]);
-  var goalSrc = attr(box, "goal"), goal = null;
-  if (goalSrc) { try { goal = parseExpr(goalSrc); } catch (e) { goal = null; } }
-  var ruleKeys = (attr(box, "rules") || "").split("|").map(function (s) { return s.trim(); }).filter(Boolean);
-  var lim = mode === "lim", TABLE = lim ? LIMRULES : RULES;
-  var verify = mode !== "expr" && ruleKeys.length > 0 && ruleKeys.every(function (k) { return TABLE[k]; });
-  var labels = ruleKeys.map(function (k) { return lim ? (LIMRULES[k] ? LIMRULES[k].label : k) : (RULES[k] || k); });
-  var cfg = { vars: vars, solve: solveVar, positive: positive, verify: verify, mode: mode, seq: seqVar };
+  var vars = (attr(box, "vars") || "").split(",").map(function (s) { return s.trim(); }).filter(Boolean);
+  if (!vars.length) vars = seq ? [seq] : Object.keys(varsOf(start)).sort();
   var rel = mode === "rel";
-  var keyset = rel ? KEYSETS.rel : lim ? KEYSETS.lim : KEYSETS.expr.concat([["log", "log_()"]]);
-  // The model solution, for the hints of a single step: "line :: rule || line :: rule".
-  // [..] in a line marks what the second hint level leaves as a blank square.
-  var model = (attr(box, "model") || "").split("||").map(function (st) {
-    var parts = st.split("::").map(function (x) { return x.trim(); });
-    if (!parts[0]) return null;
-    return { full: parts[0].replace(/[\[\]]/g, ""), partial: /\[/.test(parts[0]) ? parts[0].replace(/\[[^\]]*\]/g, "▢") : null, rule: parts[1] || "" };
-  }).filter(Boolean);
+  var LIM = seq ? "\\lim\\limits_{" + seq + " \\to \\infty} " : "";
+  var hints = childDivs(box, "hint"), h = 0;
+  hints.forEach(function (x) { x.classList.add("ix-hidden"); });
+  var steps = [];
+  childDivs(box, "step").forEach(function (d) {
+    var P = prepLine(attr(d, "line") || ""), node;
+    var whole = null;
+    try { node = rel ? parseRelation(P.text) : parseExpr(P.text); } catch (e) { node = null; }
+    try { whole = rel ? null : parseExpr(P.full); } catch (e) { whole = null; }
+    var S = { div: d, node: node, whole: whole, text: P.text, full: P.full, boxes: P.boxes.map(function (b) {
+      return { sign: b.sign, ans: b.ans, state: "empty", input: null,
+        kind: b.sign ? "sign" : /^\s*-?\s*inf\s*$/.test(b.ans) ? "num" : guessKind(b.ans) };
+    }) };
+    steps.push(S);
+  });
+  // with solve="x" a box holds x (or a step) in terms of the other variables: check it in the
+  // variables of its own answer, so that "5x-2" for x = (y+2)/5 is told "use y", not a random point
+  if (attr(box, "solve")) steps.forEach(function (S) {
+    S.boxes.forEach(function (b) {
+      if (b.sign) return;
+      try { var bv = Object.keys(varsOf(parseExpr(b.ans))).sort(); if (bv.length) b.vars = bv; } catch (e) { /* keep vars */ }
+    });
+  });
+  var shown = 0, lastInput = null;
 
-  var hints = childDivs(box, "hint"), sols = childDivs(box, "solution");
-  hints.concat(sols).forEach(function (x) { x.classList.add("ix-hidden"); });
-  var rows = [], accepted = 0, h = 0;
-
+  // the TeX of a line, with its boxes empty (?), filled by the reader (green) or filled in (blue)
+  function lineHtml(S, node, first) {
+    PHTEX = function (i) {
+      var k = typeof i === "string" ? +i.slice(1) : i, b = S ? S.boxes[k] : null;
+      if (!b || b.state === "empty") return "\\boxed{\\,?" + (S && S.boxes.length > 1 ? "_{" + (k + 1) + "}" : "") + "\\,}";
+      var v = b.sign ? SIGN_TEX[b.sign] : tex(parseExpr(b.ans));
+      return "{\\color{" + (b.state === "ok" ? "#15803d" : "#1d4ed8") + "}{" + v + "}}";
+    };
+    var out;
+    try {
+      if (rel) out = htmlRel(node);
+      else {
+        var pre = first ? "" : "= ";
+        // a line with n (also inside a box) is still a sequence: it carries "lim"
+        var withLim = seq && hasVar(S && S.whole || node, seq), body = tex(node);
+        // lim of a sum or a difference needs brackets: lim (a - b), not (lim a) - b
+        if (withLim && (node.t === "add" || node.t === "sub" || node.t === "neg")) body = "\\left(" + body + "\\right)";
+        out = "\\(" + pre + (withLim ? LIM : "") + body + "\\)";
+      }
+    } finally { PHTEX = null; }
+    return out;
+  }
   function button(text, cls, action) {
     return el("button", { type: "button", class: "ix-btn" + (cls ? " " + cls : ""), onclick: action }, [text]);
   }
-  var LIMTEX = "\\lim\\limits_{" + seqVar + " \\to \\infty} ";
-  function lineHtml(node) {
-    if (rel) return htmlRel(node);
-    return "\\(" + (lim && hasVar(node, seqVar) ? LIMTEX : "") + tex(node) + "\\)";
-  }
-  var goalText = rel
-    ? "המטרה: להגיע לשורה שבה \\(" + solveVar + "\\) לבד באחד האגפים."
-    : lim ? "המטרה: לחשב את הגבול."
-    : goal ? "המטרה: לפשט עד \\(" + tex(goal) + "\\)." : "המטרה: לפשט את הביטוי.";
-  var startRow = el("div", { class: "st-given" }, [
-    el("span", { class: "given-label", text: "נקודת המוצא" }),
-    el("div", { class: "st-formula", html: mx(lineHtml(start)) })
-  ]);
-  var list = el("div", { class: "proof-steps" });
-  var ledger = el("section", { class: "proof-ledger", "aria-label": "הפתרון" }, [
-    el("div", { class: "proof-start st-goal", html: mx(goalText) }), startRow, list
-  ]);
-  var summary = el("div", { class: "ix-msg", "aria-live": "polite" });
-  var bAdd = button("הוספת צעד", "", function () { addRow(true); });
-  var bUndo = button("חזרה לצעד האחרון", "ix-quiet", undo);
-  var bDone = button("סיימתי — בדקו", "ix-main", function () { check(rows.length - 1, true); });
+  var rows = el("div", { class: "dv-rows" });
+  rows.appendChild(el("div", { class: "dv-row dv-start" }, [
+    el("div", { class: "dv-math" }, [el("div", { class: "dv-f", html: mx(lineHtml(null, start, true)) })]),
+    el("div", { class: "dv-note" })
+  ]));
+  var msg = el("div", { class: "ix-msg", "aria-live": "polite" });
+  var bNext = button("הצעד הראשון", "ix-main", next);
+  var bFill = button("השלמת הצעד", "", fillCurrent);
+  var bAll = button("כל הפתרון", "ix-quiet", all);
+  var bReset = button("מההתחלה", "ix-quiet", reset);
   var bHint = hints.length ? button("רמז (0/" + hints.length + ")", "", function () {
     if (h < hints.length) { hints[h].classList.remove("ix-hidden"); typeset(hints[h]); h++; }
     bHint.textContent = "רמז (" + h + "/" + hints.length + ")"; bHint.disabled = h >= hints.length;
   }) : null;
-  var bSol = sols.length ? button("הצגת פתרון מלא", "ix-quiet", function () {
-    sols.forEach(function (x) { x.classList.toggle("ix-hidden"); typeset(x); });
-    bSol.textContent = sols[0].classList.contains("ix-hidden") ? "הצגת פתרון מלא" : "הסתרת הפתרון";
-  }) : null;
-  var help = el("details", { class: "activity-help" }, [
-    el("summary", { text: rel ? "איך כותבים ובודקים פתרון כאן?" : "איך כותבים ובודקים חישוב כאן?" }),
-    el("ol", {}, STEP_HELP[mode].map(function (t) { return el("li", { html: mx(t) }); }))
-  ]);
-  var ui = el("div", { class: "st-ui" }, [
-    help, ledger, el("div", { class: "ix-bar st-controls" }, [bAdd, bUndo, bDone]), summary,
-    (bHint || bSol) ? el("div", { class: "ix-bar" }, [bHint, bSol]) : null
-  ]);
-  box.insertBefore(ui, hints[0] || sols[0] || null);
-  box.classList.add("steps-ready");
+  var anyExpr = steps.some(function (S) { return S.boxes.some(function (b) { return b.kind === "expr"; }); });
+  // the variable keys are the variables the boxes are written in (y when solving for x)
+  var keyVars = {};
+  steps.forEach(function (S) { S.boxes.forEach(function (b) { if (b.kind === "expr") (b.vars || vars).forEach(function (v) { keyVars[v] = 1; }); }); });
+  var exprKeys = Object.keys(keyVars).sort().map(function (v) { return [v, v]; })
+    .concat(KEYSETS.expr.filter(function (k) { return k[0] !== "x"; }), [["log", "log_()"]]);
+  var keys = keyRow(seq ? KEYSETS.lim : anyExpr ? exprKeys : KEYSETS.num.concat([["^", "^"], ["log", "log_()"]]),
+    function () { return lastInput; });
+  keys.classList.add("dv-keys");
+  var bar = el("div", { class: "ix-bar dv-bar" }, [bNext, bFill, bAll, bReset, bHint]);
+  var ui = el("div", { class: "dv" }, [rows, keys, bar, msg]);
+  box.insertBefore(ui, hints[0] || null);
+  steps.forEach(function (S) { S.div.remove(); });
+  box.classList.add("derive-ready");
   typeset(ui);
-  addRow(false);
+  sync();
 
-  function isBlank(R) { return !R.input.value.trim() && !(R.select && R.select.value); }
-  function addRow(focus) {
-    if (rows.length >= 20) return;
-    var fbId = "st-msg-" + (++stepSerial);
-    var legend = el("legend");
-    var label = el("span", { class: "step-label", "aria-hidden": "true" });
-    var select = labels.length ? el("select", { class: "proof-rule" },
-      [el("option", { value: "", text: "בחרו מהרשימה…" })].concat(ruleKeys.map(function (k, i) {
-        return el("option", { value: k, text: labels[i] });
-      }))) : null;
-    var input = el("input", { type: "text", class: "st-in", dir: "ltr", autocomplete: "off", spellcheck: "false",
-      "aria-describedby": fbId, placeholder: rel ? "כתבו כאן את השורה שמתקבלת" : "כתבו כאן את השלב הבא" });
-    var pv = el("div", { class: "ix-preview" });
-    var fb = el("div", { id: fbId, class: "ix-msg", "aria-live": "polite" });
-    var R = {};
-    var editor = el("div", { class: "step-editor" }, [
-      select ? el("label", { class: "proof-field" }, [el("span", { text: "מה עושים בצעד הזה?" }), select]) : null,
-      el("label", { class: "proof-field" }, [el("span", { text: rel ? "השורה שמתקבלת" : "השלב הבא בחישוב" }), input]),
-      keyRow(keyset, function () { return input; }), pv, fb,
-      el("div", { class: "ix-bar" }, [
-        button("בדיקת הצעד", "", function () { check(rows.indexOf(R), false); }),
-        model.length ? (R.hintBtn = button("רמז לצעד", "", function () { stepHint(R); })) : null,
-        button("מחיקת הצעד", "ix-quiet", function () { removeRow(R); })
-      ])
-    ]);
-    // As in the Ramat Gan equivalence proofs: the new line, and under it the rule.
-    var formula = el("div", { class: "st-formula" });
-    var words = el("div", { class: "step-compact-reason" });
-    var statement = el("div", { class: "step-statement" }, [formula]);
-    var edit = button("עריכה", "step-edit", function () { invalidate(rows.indexOf(R)); focusRow(R); });
-    var qed = el("span", { class: "proof-qed", text: "✓ סוף הפתרון" });
-    var compact = el("div", { class: "step-compact" }, [statement, words, edit, qed]);
-    compact.hidden = true; qed.hidden = true;
-    var fs = el("fieldset", { class: "proof-step side-labelled" }, [legend, label, compact, editor]);
-    R.fs = fs; R.legend = legend; R.label = label; R.select = select; R.input = input; R.pv = pv; R.fb = fb;
-    R.editor = editor; R.compact = compact; R.formula = formula; R.words = words; R.statement = statement; R.qed = qed;
-    input.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); check(rows.indexOf(R), false); } });
-    input.addEventListener("input", function () { invalidate(rows.indexOf(R)); showPreview(R); });
-    if (select) select.addEventListener("change", function () { invalidate(rows.indexOf(R)); });
-    rows.push(R);
-    list.appendChild(fs);
-    renumber();
-    if (focus) focusRow(R);
-    return R;
-  }
-  function renumber() {
-    rows.forEach(function (R, i) {
-      R.legend.textContent = "צעד " + (i + 1);
-      R.label.textContent = "צעד " + (i + 1);
-      R.input.setAttribute("aria-label", "השורה בצעד " + (i + 1));
-      if (R.select) R.select.setAttribute("aria-label", "מה עושים בצעד " + (i + 1));
-    });
-    bAdd.disabled = rows.length >= 20;
-    bUndo.disabled = !accepted;
-  }
-  function focusRow(R) {
-    if (!R) return;
-    (R.select && !R.select.value ? R.select : R.input).focus();
-  }
-  var showPreview = debounce(function (R) {
-    var v = R.input.value.trim();
-    if (!v) { R.pv.innerHTML = ""; return; }
-    // a hint's blank squares are read as a placeholder letter and shown as squares
-    var sq = v.indexOf("▢") >= 0;
-    var got = parsedSoFar(sq ? v.replace(/▢/g, "Z") : v, rel ? parseRelation : parseExpr);
-    if (!got) { R.pv.innerHTML = ""; return; }
-    var html = rel ? htmlRel(got.node) : lineHtml(got.node);
-    if (sq) html = html.replace(/z/g, "\\square ");
-    showParsed(R.pv, html, got.whole && !sq);
-  }, 350);
-
-  // A hint for one step, in up to three levels: the rule, the line with blank squares,
-  // the whole line. It follows the model solution from the line the reader is at, when that
-  // line is in the model; otherwise it goes by the step number.
-  function keyOf(node) { return rel ? htmlRel(node) : tex(node); }
-  function stepHint(R) {
-    var i = rows.indexOf(R), before = start, j = i, note = "";
-    if (i > 0) { try { before = parseLine(rows[i - 1].input.value.replace(/\u200e/g, "")); } catch (e) { before = null; } }
-    if (i === 0) j = 0;
-    else if (before) {
-      var k = before ? keyOf(before) : null, found = -1;
-      model.forEach(function (m, idx) { try { if (keyOf(parseLine(m.full)) === k) found = idx; } catch (e) {} });
-      if (found >= 0) j = found + 1; else note = " (הדרך שלכם שונה מהפתרון לדוגמה, ולכן הרמז הולך לפי מספר הצעד.)";
-    }
-    var m = model[j];
-    if (!m) { say(R.fb, "לפי הפתרון לדוגמה, כבר הגעתם לסוף. לחצו על ״סיימתי — בדקו״.", "info"); return; }
-    var levels = [];
-    if (R.select && m.rule) levels.push("rule");
-    if (m.partial) levels.push("partial");
-    levels.push("full");
-    R.hl = R.hlFor === j ? Math.min(R.hl + 1, levels.length) : 1; R.hlFor = j;
-    var what = levels[R.hl - 1];
-    if (what === "rule") {
-      R.select.value = m.rule; R.select.dispatchEvent(new Event("change", { bubbles: true }));
-      say(R.fb, "רמז: בצעד הזה — " + R.select.options[R.select.selectedIndex].text + "." + note, "info");
-    } else {
-      if (R.select && m.rule && !R.select.value) { R.select.value = m.rule; R.select.dispatchEvent(new Event("change", { bubbles: true })); }
-      R.input.value = what === "partial" ? m.partial : m.full;
-      R.input.dispatchEvent(new Event("input", { bubbles: true }));
-      say(R.fb, what === "partial" ? "רמז: השלימו את המשבצות ▢ ובדקו." + note : "זו השורה מהפתרון לדוגמה. לחצו על ״בדיקת הצעד״." + note, "info");
-      R.input.focus();
-    }
-    R.hintBtn.textContent = "רמז לצעד (" + R.hl + "/" + levels.length + ")";
-  }
-  function acceptRow(R, line) {
-    R.formula.innerHTML = mx(rel ? "\\(\\iff\\) " + htmlRel(line) : "\\(= " + (lim && hasVar(line, seqVar) ? LIMTEX : "") + tex(line) + "\\)");
-    var rule = R.select ? R.select.options[R.select.selectedIndex].text : "";
-    R.words.textContent = rule; R.words.hidden = !rule;
-    R.compact.hidden = false; R.editor.hidden = true; R.qed.hidden = true;
-    R.fs.classList.add("step-accepted");
-    R.input.removeAttribute("aria-invalid");
-    say(R.fb, "");
-    typeset(R.formula);
-  }
-  function expandRow(R) {
-    R.compact.hidden = true; R.editor.hidden = false; R.qed.hidden = true;
-    R.fs.classList.remove("step-accepted");
-  }
-  // Steps from `from` on depend on what changed: open them again for checking.
-  function invalidate(from) {
-    if (from < 0) return;
-    accepted = Math.min(accepted, from);
-    rows.forEach(function (R, i) {
-      if (i < from) return;
-      expandRow(R); say(R.fb, ""); R.input.removeAttribute("aria-invalid");
-    });
-    say(summary, "");
-    bUndo.disabled = !accepted;
-  }
-  function removeRow(R) {
-    var i = rows.indexOf(R);
-    rows.splice(i, 1); R.fs.remove();
-    if (!rows.length) addRow(false);
-    invalidate(Math.min(i, rows.length - 1));
-    renumber();
-    focusRow(rows[Math.min(i, rows.length - 1)]);
-  }
-  function undo() {
-    if (!accepted) return;
-    var i = accepted - 1;
-    while (rows.length > i + 1 && isBlank(rows[rows.length - 1])) rows.pop().fs.remove();
-    invalidate(i);
-    renumber();
-    focusRow(rows[i]);
-  }
-  function parseLine(v) { return rel ? parseRelation(v) : parseExpr(v); }
-  function stop(R, html, kind, target) {
-    say(R.fb, html, kind);
-    if (kind === "bad") R.input.setAttribute("aria-invalid", "true");
-    (target || R.input).focus();
-  }
-  function check(last, finishing) {
-    if (finishing) while (last > 0 && isBlank(rows[last])) last--;
-    invalidate(0);
-    var prev = start, bad = -1;
-    for (var i = 0; i <= last; i++) {
-      var R = rows[i], v = R.input.value.trim(), line;
-      if (!v) { stop(R, rel ? "כתבו כאן את השורה שמתקבלת." : "כתבו כאן את השלב הבא.", "info"); bad = i; break; }
-      if (v.indexOf("▢") >= 0) { stop(R, "השלימו את המשבצות ▢ לפני הבדיקה.", "info"); bad = i; break; }
-      try { line = parseLine(v); } catch (e) { stop(R, errMsg(e), "bad"); bad = i; break; }
-      if (R.select && !R.select.value) { stop(R, "בחרו מהרשימה מה עושים בצעד הזה.", "info", R.select); bad = i; break; }
-      var j = judgeStep(prev, line, R.select ? R.select.value : null, cfg);
-      if (!j.ok) { stop(R, j.msg, j.partial ? "warn" : "bad"); bad = i; break; }
-      acceptRow(R, line);
-      prev = line; accepted = i + 1;
-    }
-    bUndo.disabled = !accepted;
-    if (bad >= 0) {
-      rows.slice(bad + 1).forEach(function (R) { if (!isBlank(R)) say(R.fb, "ממתין לתיקון הצעד הקודם.", "info"); });
-      say(summary, "צריך לתקן את צעד " + (bad + 1) + "." + (bad ? " הצעדים שלפניו נכונים." : "") +
-        (rows.length > bad + 1 ? " הצעדים שאחריו עדיין לא נבדקו." : ""), "bad");
-      return;
-    }
-    var done = accepted > 0 && (rel ? isSolved(prev, solveVar) : lim ? limDone(prev, seqVar) : (goal ? nodes(prev) <= nodes(goal) : false));
-    if (done) {
-      while (rows.length > accepted && isBlank(rows[rows.length - 1])) rows.pop().fs.remove();
-      renumber();
-      if (rows.length > accepted) {
-        say(summary, "המטרה כבר הושגה בצעד " + accepted + ". מחקו את הצעדים שאחריו.", "info");
-        return;
+  function rowOf(S) {
+    if (S.row) return S.row;
+    var f = el("div", { class: "dv-f" });
+    var ins = el("div", { class: "dv-in" });
+    var note = el("div", { class: "dv-note" });
+    while (S.div.firstChild) note.appendChild(S.div.firstChild);
+    var sm = el("div", { class: "ix-msg dv-msg", "aria-live": "polite" });
+    S.f = f; S.ins = ins; S.msg = sm;
+    S.row = el("div", { class: "dv-row" }, [el("div", { class: "dv-math" }, [f, ins, sm]), note]);
+    S.boxes.forEach(function (b, k) {
+      var label = "?" + (S.boxes.length > 1 ? SUB.charAt(k + 1) : "");
+      var cell = el("span", { class: "dv-box" }, [el("span", { class: "dv-lab", text: label + " =" })]);
+      if (b.sign) {
+        ["<", ">", "<=", ">=", "="].forEach(function (sg) {
+          cell.appendChild(el("button", { type: "button", class: "ix-key dv-sign", text: SIGN_TXT[sg],
+            onclick: function () { checkSign(S, k, sg); } }));
+        });
+      } else {
+        b.input = el("input", { type: "text", class: "blank-input dv-input", dir: "ltr", autocomplete: "off", spellcheck: "false",
+          size: String(Math.min(16, Math.max(4, b.ans.length + 2))), "aria-label": "התשובה בתיבה " + label });
+        b.input.addEventListener("focus", function () { lastInput = b.input; });
+        b.input.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); checkStep(S); } });
+        cell.appendChild(b.input);
       }
-      rows[accepted - 1].qed.hidden = false;
-      say(summary, rel ? "✓ הפתרון הושלם! \\(" + solveVar + "\\) לבד, וכל צעד נכון."
-        : lim ? "✓ החישוב הושלם: \\(" + LIMTEX + tex(start) + " = " + tex(prev) + "\\)."
-        : "✓ סיימתם! כל צעד נכון, והגעתם לביטוי פשוט.", "good");
+      b.cell = cell;
+      ins.appendChild(cell);
+    });
+    if (S.boxes.some(function (b) { return !b.sign; })) ins.appendChild(button("בדיקה", "dv-check", function () { checkStep(S); }));
+    draw(S);
+    typeset(note);     // the note was taken out of the page before MathJax ran
+    return S.row;
+  }
+  function draw(S) {
+    S.f.innerHTML = mx(S.node ? lineHtml(S, S.node, false) : "\\(?\\)");
+    typeset(S.f);
+    S.boxes.forEach(function (b) { if (b.cell) b.cell.hidden = b.state !== "empty"; });
+    var open = S.boxes.some(function (b) { return b.state === "empty"; });
+    S.ins.hidden = !open;
+    S.row.classList.toggle("dv-done", !open);
+  }
+  function stepDone(S) { return S.boxes.every(function (b) { return b.state !== "empty"; }); }
+  // the line with the reader's values in the boxes: does it say the same as the model line?
+  function sameLine(S, vals) {
+    var src = S.text.replace(/§(R?)(\d+)/g, function (_, r, k) {
+      var b = S.boxes[+k];
+      return r ? (b.sign) : "(" + (vals[+k] !== undefined ? vals[+k] : b.ans) + ")";
+    });
+    try {
+      if (rel) {
+        var A = parseRelation(S.full), B = parseRelation(src), sv = attr(box, "solve") || (vars.indexOf("x") >= 0 ? "x" : vars[0]);
+        return relSets(A, B, sv, vars.filter(function (x) { return x !== sv; }), []).ok;
+      }
+      var a = parseExpr(S.full), b2 = parseExpr(src);
+      return seq ? seqSame(a, b2, seq).ok : compareExpr(a, b2, vars.length ? vars : ["x"], []).ok;
+    } catch (e) { return false; }
+  }
+  function checkStep(S) {
+    var bad = null, vals = {}, open = [];
+    S.boxes.forEach(function (b, k) {
+      if (b.sign || b.state !== "empty") return;
+      var v = b.input.value.replace(/‎/g, "").trim();
+      if (!v) { if (!bad) bad = { k: k, msg: "מלאו את התיבה." }; return; }
+      vals[k] = v; open.push(k);
+    });
+    if (bad) { draw(S); say(S.msg, bad.msg, "info"); S.boxes[bad.k].input.focus(); return; }
+    var results = {};
+    open.forEach(function (k) {
+      var b = S.boxes[k], r;
+      try { r = checkAnswer(b.kind, b.ans, vals[k], b.vars || vars, {}); } catch (e) { r = { ok: false, msg: errMsg(e) }; }
+      results[k] = r;
+    });
+    var allOk = open.every(function (k) { return results[k].ok; });
+    var waitSign = S.boxes.some(function (b) { return b.sign && b.state === "empty"; });
+    if (!allOk && !waitSign && open.length > 1 && sameLine(S, vals)) {
+      // the same line in another order, e.g. (x-3)(x-2) for (x-2)(x-3): keep the reader's values
+      open.forEach(function (k) { S.boxes[k].ans = vals[k]; S.boxes[k].state = "ok"; });
+    } else {
+      open.forEach(function (k) {
+        if (results[k].ok) S.boxes[k].state = "ok";
+        else if (!bad) bad = { k: k, msg: results[k].msg || "לא נכון. נסו שוב." };
+      });
+    }
+    draw(S);
+    if (bad) {
+      var lab = "?" + (S.boxes.length > 1 ? SUB.charAt(bad.k + 1) : "");
+      say(S.msg, (S.boxes.length > 1 ? "בתיבה " + lab + ": " : "") + bad.msg, "bad");
+      if (S.boxes[bad.k].input) S.boxes[bad.k].input.focus();
       return;
     }
-    say(summary, finishing
-      ? (rel ? "כל הצעדים נכונים, אבל \\(" + solveVar + "\\) עדיין לא לבד. המשיכו."
-        : lim ? "כל הצעדים נכונים, אבל עוד לא הגעתם למספר. המשיכו." : "כל הצעדים נכונים, אבל אפשר לפשט עוד. המשיכו.")
-      : "הצעדים שנבדקו נכונים. המשיכו לצעד הבא, או לחצו על ״סיימתי — בדקו״.", "info");
-    if (rows.length === accepted) addRow(false);
-    focusRow(rows[accepted]);
+    say(S.msg, "");
+    if (stepDone(S)) advance(S);
+  }
+  function checkSign(S, k, sg) {
+    var b = S.boxes[k];
+    if (sg === b.sign) { b.state = "ok"; say(S.msg, ""); draw(S); if (stepDone(S)) advance(S); }
+    else say(S.msg, "זה לא הסימן הנכון כאן. מה קרה לכיוון בצעד הזה?", "bad");
+  }
+  // a line completed by the reader opens the next one
+  function advance(S) {
+    if (steps.indexOf(S) === shown - 1 && shown < steps.length) next();
+    else sync();
+  }
+  function next() {
+    if (shown >= steps.length) return;
+    var S = steps[shown++];
+    rows.appendChild(rowOf(S));
+    sync();
+    var first = S.boxes.filter(function (b) { return b.input && b.state === "empty"; })[0];
+    if (first) first.input.focus({ preventScroll: false });
+  }
+  function fillCurrent() {
+    if (!shown) next();
+    var S = steps[shown - 1];
+    S.boxes.forEach(function (b) { if (b.state === "empty") b.state = "shown"; });
+    say(S.msg, "");
+    draw(S); sync();
+  }
+  function all() {
+    while (shown < steps.length) next();
+    steps.forEach(function (S) { S.boxes.forEach(function (b) { if (b.state === "empty") b.state = "shown"; }); say(S.msg, ""); draw(S); });
+    sync();
+  }
+  function reset() {
+    steps.forEach(function (S) {
+      if (S.row) S.row.remove();
+      S.boxes.forEach(function (b) { b.state = "empty"; if (b.input) b.input.value = ""; });
+      if (S.msg) say(S.msg, "");
+      if (S.row) draw(S);
+    });
+    shown = 0; say(msg, ""); sync();
+  }
+  function sync() {
+    bNext.textContent = shown ? "הצעד הבא" : "הצעד הראשון";
+    bNext.disabled = shown >= steps.length;
+    var cur = shown ? steps[shown - 1] : null;
+    bFill.disabled = !cur || stepDone(cur);
+    bAll.disabled = shown >= steps.length && steps.every(stepDone);
+    bReset.hidden = !shown;
+    var open = steps.slice(0, shown).some(function (S) { return S.boxes.some(function (b) { return b.input && b.state === "empty"; }); });
+    keys.hidden = !open;
+    var done = shown === steps.length && steps.every(stepDone);
+    say(msg, done ? "✓ סוף הפתרון." : "", done ? "good" : null);
   }
 }
 
@@ -2308,7 +2395,7 @@ function initOrder(box) {
    is copied; _styles.html sizes every widget frame). Ids are removed so none repeat. */
 function staticCopy(box) {
   var c = box.cloneNode(true);
-  c.querySelectorAll(".ix-panel, .st-ui, .ord-ui, .solve-bar, .tf-opt, .tf-feedback, .fill > .hint, .steps > .hint")
+  c.querySelectorAll(".ix-panel, .dv-bar, .dv-in, .dv-keys, .dv-msg, .ord-ui, .solve-bar, .tf-opt, .tf-feedback, .fill > .hint, .derive > .hint")
     .forEach(function (n) { n.remove(); });
   c.querySelectorAll(".blank-input, .blank-mark").forEach(function (n) { n.remove(); });
   c.querySelectorAll(".blank-answer").forEach(function (n) { n.hidden = false; });
@@ -2366,11 +2453,11 @@ function init() {
   // capture phase: the mark is in place before any widget reads the value
   document.addEventListener("input", function (e) {
     var t = e.target;
-    if (t && t.matches && t.matches(".st-in, .blank-input")) markOr(t);
+    if (t && t.matches && t.matches(".blank-input")) markOr(t);
   }, true);
   initRefs();
   initBlanks();
-  document.querySelectorAll(".steps").forEach(initSteps);
+  document.querySelectorAll(".derive").forEach(initDerive);
   document.querySelectorAll(".order").forEach(initOrder);
 }
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>מחליפים את הצירים</title>
+<!--
+  The inverse function as a swap of the axes.
+  First panel (on the right in RTL): the graph of f, a point (a, f(a)) with arrows a -> f(a), and the
+  horizontal line through the point.
+  Second panel: the same picture on a sheet. "החלפת הצירים" turns the sheet over about the diagonal
+  y = x, so the x-axis becomes vertical and the y-axis horizontal; the arrows now go f(a) -> a.
+  "החלפת השמות" then calls the horizontal axis x again: the curve is y = f^{-1}(x), the mirror image
+  of f (shown dashed) in y = x.
+  For x^2 on all of R the turned picture fails the vertical line test (the horizontal line through
+  the point became a vertical line meeting it twice): no inverse, and the renaming step is blocked.
+  A turn about the diagonal: (x, y) = s(1,1) + d(1,-1) with s = (x+y)/2, d = (x-y)/2; seen from the
+  front, at angle pi*t the d part shrinks to d*cos(pi*t), so t = 1 gives (y, x).
+-->
+<style>
+  html, body { margin: 0; padding: 0; background: transparent; }
+  body { font: 15px/1.45 Arial, "Helvetica Neue", sans-serif; color: #1f2937; }
+  .w { border: 1px solid #9ca3af; background: #fff; padding: 0.6rem 0.8rem 0.8rem; }
+  .row { display: flex; align-items: center; flex-wrap: wrap; gap: 0.45rem 0.9rem; margin-top: 0.5rem; }
+  .fns label { white-space: nowrap; cursor: pointer; }
+  .m { direction: ltr; unicode-bidi: isolate; display: inline-block; font: 18px "Cambria Math", "Times New Roman", serif; }
+  .m i { font-style: italic; }
+  .fr { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; font-size: .85em; line-height: 1.1; margin: 0 .08em; }
+  .fr > span:first-child { border-bottom: 1px solid currentColor; padding: 0 .12em; }
+  .sq { border-top: 1px solid currentColor; padding: 0 .1em; }
+  .panels { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.5rem; }
+  .panel { flex: 1 1 210px; margin: 0; }
+  .panel figcaption { text-align: center; min-height: 2.2em; display: flex; align-items: center; justify-content: center; gap: 0.3em; color: #3730a3; }
+  .panel.g figcaption { color: #9a3412; }
+  canvas { display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; border: 1px solid #e2e8f0; border-radius: 6px; }
+  .sl { display: flex; align-items: center; gap: 0.5rem; flex: 1 1 300px; }
+  .sl input[type=range] { flex: 1; }
+  .val { min-width: 3em; text-align: center; font-weight: 700; }
+  button { font: inherit; font-size: 14px; padding: 0.3rem 0.8rem; border: 1px solid #94a3b8; border-radius: 8px; background: #fff; color: #1e293b; cursor: pointer; }
+  button:hover:not(:disabled) { background: #f1f5f9; }
+  button:disabled { opacity: 0.45; cursor: default; }
+  button.main { background: #4f46e5; border-color: #4f46e5; color: #fff; font-weight: 700; }
+  button.main:hover:not(:disabled) { background: #4338ca; }
+  .key { color: #475569; font-size: 13.5px; }
+  .line { display: inline-block; width: 1.6em; vertical-align: middle; }
+  .msg { margin-top: 0.5rem; padding: 0.35rem 0.6rem; border-radius: 8px; border-inline-start: 4px solid #64748b; background: #f8fafc; }
+  .msg.bad { background: #fff1f2; border-color: #be123c; }
+  .msg.good { background: #f0fdf4; border-color: #15803d; }
+</style>
+</head>
+<body>
+<div class="w">
+  <div class="row fns" role="radiogroup" aria-label="הפונקציה">
+    <span>הפונקציה:</span>
+    <label><input type="radio" name="fn" value="lin" checked> <span class="m">2<i>x</i> + 1</span></label>
+    <label><input type="radio" name="fn" value="cube"> <span class="m"><i>x</i><sup>3</sup></span></label>
+    <label><input type="radio" name="fn" value="half"> <span class="m"><i>x</i><sup>2</sup></span> עבור <span class="m"><i>x</i> ≥ 0</span></label>
+    <label><input type="radio" name="fn" value="sq"> <span class="m"><i>x</i><sup>2</sup></span> על כל <span class="m">ℝ</span></label>
+    <label><input type="radio" name="fn" value="recip"> <span class="m"><span class="fr"><span>1</span><span><i>x</i></span></span></span></label>
+  </div>
+  <div class="panels">
+    <figure class="panel f"><figcaption id="capF"></figcaption><canvas id="cvF" width="480" height="480" aria-label="הגרף של f"></canvas></figure>
+    <figure class="panel g"><figcaption id="capG"></figcaption><canvas id="cvG" width="480" height="480" aria-label="אותו גרף אחרי החלפת הצירים"></canvas></figure>
+  </div>
+  <div class="row key">
+    <span><span class="line" style="border-top:3px solid #4f46e5"></span> הגרף של <span class="m"><i>f</i></span></span>
+    <span><span class="line" style="border-top:3px solid #ea580c"></span> אותו גרף על הדף שמתהפך</span>
+    <span><span class="line" style="border-top:2px dashed #94a3b8"></span> הישר <span class="m"><i>y</i> = <i>x</i></span> (ציר ההיפוך)</span>
+    <span><span class="line" style="border-top:2px dashed #e11d48"></span> הקו האופקי דרך הנקודה</span>
+  </div>
+  <div class="row">
+    <div class="sl"><span>הנקודה: <span class="m"><i>a</i> =</span></span><input type="range" id="a" dir="ltr" aria-label="a"><span class="m val" id="av"></span></div>
+  </div>
+  <div class="row">
+    <button type="button" class="main" id="go">החלפת הצירים</button>
+    <button type="button" id="back">מההתחלה</button>
+  </div>
+  <div class="msg" id="msg" aria-live="polite"></div>
+</div>
+<script src="../shared/autosize.js"></script>
+<script>
+(function () {
+  "use strict";
+  function fr(a, b) { return "<span class='fr'><span>" + a + "</span><span>" + b + "</span></span>"; }
+  function m(s) { return "<span class='m'>" + s + "</span>"; }
+  var X = "<i>x</i>", Y = "<i>y</i>", F = "<i>f</i>", FI = "<i>f</i><sup>−1</sup>";
+  // lo, hi, step and start of the slider for a
+  var FN = {
+    lin:   { f: function (x) { return 2 * x + 1; }, lo: -2.5, hi: 1.5, step: 0.25, a0: 1,
+             fx: "2" + X + " + 1", inv: fr(X + " − 1", "2"), pre: function (y) { return [(y - 1) / 2]; } },
+    cube:  { f: function (x) { return x * x * x; }, lo: -1.5, hi: 1.5, step: 0.25, a0: 1.5,
+             fx: X + "<sup>3</sup>", inv: "∛<span class='sq'>" + X + "</span>", pre: function (y) { return [Math.cbrt(y)]; } },
+    half:  { f: function (x) { return x * x; }, from: 0, lo: 0, hi: 2, step: 0.25, a0: 2,
+             fx: X + "<sup>2</sup>", cond: X + " ≥ 0", inv: "√<span class='sq'>" + X + "</span>", pre: function (y) { return [Math.sqrt(y)]; } },
+    sq:    { f: function (x) { return x * x; }, lo: -2, hi: 2, step: 0.25, a0: 2,
+             fx: X + "<sup>2</sup>", inv: null, pre: function (y) { return y > 0 ? [Math.sqrt(y), -Math.sqrt(y)] : [0]; } },
+    recip: { f: function (x) { return 1 / x; }, lo: -4, hi: 4, step: 0.25, a0: 2, skip0: true,
+             fx: fr("1", X), inv: fr("1", X), pre: function (y) { return [1 / y]; } }
+  };
+  var L = 4.5;                       // the window is [-L, L] x [-L, L]: square, so the turn is a true mirror
+  var key = "lin", fn = FN[key], a = fn.a0;
+  var t = 0, step = 0, busy = false; // step 0: as drawn; 1: axes swapped; 2: renamed
+
+  // the canvases are drawn at their displayed size (in CSS pixels), so text and lines keep their
+  // size however wide the page is
+  function Cv(id) {
+    var cv = document.getElementById(id), P = 10;
+    var C = { cv: cv, ctx: cv.getContext("2d"), W: cv.width,
+      sx: function (x) { return P + (x + L) / (2 * L) * (C.W - 2 * P); },
+      sy: function (y) { return C.W - P - (y + L) / (2 * L) * (C.W - 2 * P); } };
+    return C;
+  }
+  function fit(C) {
+    var css = C.cv.clientWidth || 300, px = Math.round(css * (window.devicePixelRatio || 1));
+    if (C.cv.width !== px) { C.cv.width = px; C.cv.height = px; }
+    C.ctx.setTransform(px / css, 0, 0, px / css, 0, 0);
+    C.W = css;
+  }
+  var CF = Cv("cvF"), CG = Cv("cvG");
+
+  // the turn about y = x, seen from the front
+  function turn(p, tt) {
+    var s = (p[0] + p[1]) / 2, d = (p[0] - p[1]) / 2 * Math.cos(Math.PI * tt);
+    return [s + d, s - d];
+  }
+  function fmt(v) {
+    var r = Math.round(v * 1000) / 1000;
+    return String(r).replace("-", "−");
+  }
+  function samples() {
+    var pts = [], N = 1600, x0 = fn.from !== undefined ? fn.from : -L - 0.5, prev = null;
+    for (var i = 0; i <= N; i++) {
+      var x = x0 + (L + 0.5 - x0) * i / N;
+      if (fn.skip0 && Math.abs(x) < 1e-3) { pts.push(null); prev = null; continue; }
+      var y = fn.f(x);
+      if (!isFinite(y) || Math.abs(y) > 3 * L || (prev !== null && Math.abs(y - prev) > 2 * L)) { pts.push(null); prev = isFinite(y) ? y : null; continue; }
+      pts.push([x, y]); prev = y;
+    }
+    return pts;
+  }
+  function path(C, pts, tt, color, width, dash) {
+    var c = C.ctx;
+    c.strokeStyle = color; c.lineWidth = width; c.setLineDash(dash || []);
+    c.beginPath();
+    var pen = false;
+    pts.forEach(function (p) {
+      if (!p) { pen = false; return; }
+      var q = turn(p, tt);
+      if (pen) c.lineTo(C.sx(q[0]), C.sy(q[1])); else c.moveTo(C.sx(q[0]), C.sy(q[1]));
+      pen = true;
+    });
+    c.stroke(); c.setLineDash([]);
+  }
+  function seg(C, p0, p1, tt, color, width, dash, head) {
+    var c = C.ctx, q0 = turn(p0, tt), q1 = turn(p1, tt);
+    var x0 = C.sx(q0[0]), y0 = C.sy(q0[1]), x1 = C.sx(q1[0]), y1 = C.sy(q1[1]);
+    c.strokeStyle = color; c.lineWidth = width; c.setLineDash(dash || []);
+    c.beginPath(); c.moveTo(x0, y0); c.lineTo(x1, y1); c.stroke(); c.setLineDash([]);
+    if (head && Math.hypot(x1 - x0, y1 - y0) > 14) {
+      // the head sits in the middle of the segment, pointing along it
+      var ang = Math.atan2(y1 - y0, x1 - x0), mx = (x0 + x1) / 2, my = (y0 + y1) / 2, h = 7.5;
+      c.fillStyle = color; c.beginPath();
+      c.moveTo(mx + h * Math.cos(ang), my + h * Math.sin(ang));
+      c.lineTo(mx - h * Math.cos(ang - 0.45), my - h * Math.sin(ang - 0.45));
+      c.lineTo(mx - h * Math.cos(ang + 0.45), my - h * Math.sin(ang + 0.45));
+      c.closePath(); c.fill();
+    }
+  }
+  function text(C, p, tt, s, font, color, halo) {
+    var c = C.ctx, q = turn(p, tt);
+    c.font = font; c.direction = "ltr"; c.textAlign = "center"; c.textBaseline = "middle";
+    if (halo) { c.strokeStyle = "#fff"; c.lineWidth = 3.5; c.strokeText(s, C.sx(q[0]), C.sy(q[1])); }
+    c.fillStyle = color; c.fillText(s, C.sx(q[0]), C.sy(q[1]));
+  }
+  function dot(C, p, tt, color, r) {
+    var c = C.ctx, q = turn(p, tt);
+    c.fillStyle = color; c.beginPath(); c.arc(C.sx(q[0]), C.sy(q[1]), r || 5, 0, 2 * Math.PI); c.fill();
+    c.strokeStyle = "#fff"; c.lineWidth = 1.5; c.stroke();
+  }
+
+  // one panel: the sheet turned by tt; names = [name of the original x-axis, of the original y-axis]
+  function panel(C, tt, color, names, ghost, arrowsBack) {
+    fit(C);
+    var c = C.ctx, W = C.W, small = W < 330;
+    c.clearRect(0, 0, W, W);
+    // the sheet (its back is tinted once it has turned past the edge)
+    var corners = [[-L, -L], [L, -L], [L, L], [-L, L]].map(function (p) { return turn(p, tt); });
+    c.fillStyle = Math.cos(Math.PI * tt) < 0 ? "#fff7ed" : "#ffffff";
+    c.strokeStyle = "#cbd5e1"; c.lineWidth = 1;
+    c.beginPath();
+    corners.forEach(function (q, i) { if (i) c.lineTo(C.sx(q[0]), C.sy(q[1])); else c.moveTo(C.sx(q[0]), C.sy(q[1])); });
+    c.closePath(); c.fill(); if (tt > 0 && tt < 1) c.stroke();
+    for (var k = -4; k <= 4; k++) {
+      seg(C, [k, -L], [k, L], tt, "#eef2f7", 1);
+      seg(C, [-L, k], [L, k], tt, "#eef2f7", 1);
+    }
+    // the hinge y = x does not move
+    seg(C, [-L, -L], [L, L], 0, "#94a3b8", 1.4, [6, 5]);
+    // axes with arrowheads at the positive ends, names and ticks travelling with them
+    seg(C, [-L, 0], [L - 0.05, 0], tt, "#0f172a", 1.2);
+    seg(C, [0, -L], [0, L - 0.05], tt, "#0f172a", 1.2);
+    [[[L - 0.35, 0], [L - 0.02, 0]], [[0, L - 0.35], [0, L - 0.02]]].forEach(function (s) {
+      var q0 = turn(s[0], tt), q1 = turn(s[1], tt), x0 = C.sx(q0[0]), y0 = C.sy(q0[1]), x1 = C.sx(q1[0]), y1 = C.sy(q1[1]);
+      if (Math.hypot(x1 - x0, y1 - y0) < 4) return;
+      var ang = Math.atan2(y1 - y0, x1 - x0), h = 8;
+      c.fillStyle = "#0f172a"; c.beginPath(); c.moveTo(x1, y1);
+      c.lineTo(x1 - h * Math.cos(ang - 0.4), y1 - h * Math.sin(ang - 0.4));
+      c.lineTo(x1 - h * Math.cos(ang + 0.4), y1 - h * Math.sin(ang + 0.4)); c.closePath(); c.fill();
+    });
+    text(C, [L - 0.3, 0.5], tt, names[0], "italic 19px 'Times New Roman', serif", "#0f172a", true);
+    text(C, [0.5, L - 0.3], tt, names[1], "italic 19px 'Times New Roman', serif", "#0f172a", true);
+    for (k = -4; k <= 4; k++) {
+      if (!k || (small && k % 2)) continue;
+      text(C, [k, -0.42], tt, String(k).replace("-", "−"), "11px Arial", "#64748b");
+      text(C, [-0.42, k], tt, String(k).replace("-", "−"), "11px Arial", "#64748b");
+    }
+    var pts = samples();
+    if (ghost) path(C, pts, 0, "#a5b4fc", 2, [7, 5]);
+    // the horizontal line through the point, and every point of the curve on it
+    var fa = fn.f(a);
+    seg(C, [-L, fa], [L, fa], tt, "rgba(225,29,72,.75)", 1.3, [5, 4]);
+    path(C, pts, tt, color, 2.6);
+    fn.pre(fa).forEach(function (x) { if (Math.abs(x - a) > 1e-9) dot(C, [x, fa], tt, "#e11d48", 5); });
+    // a -> f(a) along the guides (reversed once the axes are swapped)
+    var A = [a, 0], P = [a, fa], B = [0, fa], still = tt === 0 || tt === 1;
+    if (arrowsBack) { seg(C, B, P, tt, "#334155", 1.4, [4, 3], still); seg(C, P, A, tt, "#334155", 1.4, [4, 3], still); }
+    else { seg(C, A, P, tt, "#334155", 1.4, [4, 3], still); seg(C, P, B, tt, "#334155", 1.4, [4, 3], still); }
+    dot(C, P, tt, color, 6);
+    if (still) {
+      var q = turn(P, tt), lab = tt === 1 ? "(" + fmt(fa) + ", " + fmt(a) + ")" : "(" + fmt(a) + ", " + fmt(fa) + ")";
+      // the label goes to the right of the point (left near the edge), above it (below near the top)
+      var dx = small ? 1.3 : 1, lp = [q[0] + (q[0] > L - 2 ? -dx : dx), q[1] + (q[1] > L - 1 ? -0.55 : 0.55)];
+      text(C, lp, 0, lab, "bold 12.5px Arial", color, true);
+    }
+  }
+
+  var msg = document.getElementById("msg"), go = document.getElementById("go"), back = document.getElementById("back");
+  function say(html, cls) { msg.innerHTML = html; msg.className = "msg" + (cls ? " " + cls : ""); }
+  function draw() {
+    panel(CF, 0, "#4f46e5", ["x", "y"], false, false);
+    panel(CG, t, "#ea580c", step === 2 ? ["y", "x"] : ["x", "y"], t > 0, t === 1);
+    var fx = m(Y + " = " + fn.fx) + (fn.cond ? " עבור " + m(fn.cond) : "");
+    document.getElementById("capF").innerHTML = "הגרף של " + m(F) + ": " + fx;
+    var fa = fn.f(a), cap;
+    if (step === 0) cap = t === 0 ? "אותו גרף, על דף שאפשר להפוך" : "הדף מתהפך סביב הישר " + m(Y + " = " + X);
+    else if (step === 1) cap = fn.inv ? m(X + " = " + FI + "(" + Y + ")") : "זה אינו גרף של פונקציה";
+    else cap = m(Y + " = " + FI + "(" + X + ") = " + fn.inv);
+    document.getElementById("capG").innerHTML = cap;
+    document.getElementById("av").textContent = fmt(a);
+    go.textContent = step === 0 ? "החלפת הצירים" : "החלפת השמות";
+    go.disabled = busy || step === 2 || (step === 1 && !fn.inv);
+    back.disabled = busy || (step === 0 && t === 0);
+    var A = m(fmt(a)), FA = m(fmt(fa));
+    if (busy) return;
+    if (step === 0) say("לחצו על \"החלפת הצירים\": הדף מתהפך סביב הישר " + m(Y + " = " + X) + " (המקווקו), וציר " + m(X) + " וציר " + m(Y) + " מחליפים מקומות. "
+      + "לפני ההיפוך " + m(F) + " שולחת את " + A + " אל " + FA + ".");
+    else if (step === 1 && fn.inv) say("הצירים התחלפו: הקלט, על הציר האופקי, הוא עכשיו " + m(Y) + " (הפלט של " + m(F) + "), והפלט, על הציר האנכי, הוא " + m(X) + ". "
+      + "החצים הולכים מ-" + FA + " חזרה אל " + A + ": זו הפונקציה ההפוכה. לחצו על \"החלפת השמות\" כדי לקרוא לציר האופקי שוב " + m(X) + ".");
+    else if (step === 1) say((Math.abs(a) > 1e-9
+      ? "הקו האופקי דרך הנקודה נעשה אנכי, והוא פוגש את הצורה בשתי נקודות: " + m("(" + fmt(fa) + ", " + fmt(a) + ")") + " ו-" + m("(" + fmt(fa) + ", " + fmt(-a) + ")") + ". "
+      : "הזיזו את הנקודה: כל קו אנכי מימין לציר פוגש את הצורה בשתי נקודות. ")
+      + "לכן זה אינו גרף של פונקציה, ול-" + m(X + "<sup>2</sup>") + " על כל " + m("ℝ") + " אין הפוכה. נסו את " + m(X + "<sup>2</sup>") + " עבור " + m(X + " ≥ 0") + ".", "bad");
+    else say("החלפנו את השמות: הציר האופקי נקרא שוב " + m(X) + ". הכתום הוא הגרף של " + m(Y + " = " + FI + "(" + X + ")") + ", השיקוף של הגרף של " + m(F)
+      + " (המקווקו הכחול) ביחס לישר " + m(Y + " = " + X) + ". הנקודה " + m("(" + fmt(a) + ", " + fmt(fa) + ")") + " עברה אל " + m("(" + fmt(fa) + ", " + fmt(a) + ")") + ".", "good");
+  }
+  function animate(to, done) {
+    var from = t, t0 = Date.now(), dur = 1300;
+    busy = true; draw();
+    function frame() {
+      var u = Math.min(1, (Date.now() - t0) / dur), e = u < 0.5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2;
+      t = from + (to - from) * e;
+      if (u >= 1) { t = to; busy = false; done(); draw(); return; }
+      draw();
+      setTimeout(frame, 16);
+    }
+    setTimeout(frame, 16);
+  }
+  go.addEventListener("click", function () {
+    if (step === 0) animate(1, function () { step = 1; });
+    else if (step === 1 && fn.inv) { step = 2; draw(); }
+  });
+  back.addEventListener("click", function () { step = 0; animate(0, function () {}); });
+  var slider = document.getElementById("a");
+  function setRange() {
+    slider.min = fn.lo; slider.max = fn.hi; slider.step = fn.step; slider.value = a;
+  }
+  slider.addEventListener("input", function () {
+    a = +slider.value;
+    if (fn.skip0 && Math.abs(a) < 1e-9) a = fn.step;
+    draw();
+  });
+  document.querySelectorAll("input[name=fn]").forEach(function (r) {
+    r.addEventListener("change", function () {
+      key = r.value; fn = FN[key]; a = fn.a0; setRange();
+      if (step === 2 && !fn.inv) step = 1;
+      draw();
+    });
+  });
+  window.addEventListener("resize", draw);
+  setRange(); draw();
+})();
+</script>
+</body>
+</html>
