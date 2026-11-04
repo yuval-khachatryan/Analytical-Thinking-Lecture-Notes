@@ -1074,34 +1074,37 @@ window.Quarto = {
 </header>
 
 
-<p>בפרק הזה נלמד מהי סדרה ומהו הגבול שלה, ונכיר את הכלים הבסיסיים לחישוב גבולות.</p>
 <section id="סדרות" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="סדרות"><span class="header-section-number">2.1</span> סדרות</h2>
 <div class="lead">
-<p><strong>מה עושים כאן?</strong> סדרה היא רשימה אינסופית של מספרים, אחד אחרי השני. נראה איך כותבים סדרה, ונכיר כמה סדרות מפורסמות.</p>
+<p><strong>מה עושים כאן?</strong> נגדיר מהי סדרה, נראה שתי דרכים לתאר אותה, ונכיר כמה סדרות מפורסמות.</p>
 </div>
-<p>בהרצאה 1 ראינו ש-<span class="math inline">\(\sqrt{2}\)</span> אינו רציונלי, ולכן אין לו פיתוח עשרוני סופי. מחשבון מציג אחד מהקירובים <span class="math display">\[,1, \quad 1.4, \quad 1.41, \quad 1.414, \quad 1.4142, \quad \ldots\]</span> וכל קירוב מוסיף ספרה אחת. רשימה כזו, שיש בה סדר ואין לה סוף, היא סדרה.</p>
+<p>בהרצאה 1 ראינו ש-<span class="math inline">\(\sqrt{2}\)</span> אינו רציונלי, ולכן הכתיבה העשרונית שלו לא נגמרת. אפשר רק לקרב אותו, ספרה אחר ספרה:</p>
+<p><span class="math display">\[1, \quad 1.4, \quad 1.41, \quad 1.414, \quad 1.4142, \quad \ldots\]</span></p>
+<p>רשימה כזו, שיש בה סדר ואין לה סוף, היא סדרה.</p>
 <div id="box-def-sequence" class="thmbox thmbox-definition" title="סדרה">
 <p><strong>הגדרה 2.1.1 — סדרה.</strong></p>
-<p><span class="term"><strong>סדרה</strong></span> היא רשימה אינסופית של מספרים ממשיים לפי סדר: <span class="math display">\[.a_1, \ a_2, \ a_3, \ \ldots\]</span> המספר <span class="math inline">\(a_n\)</span> נקרא <span class="term"><strong>האיבר</strong></span> שבמקום <span class="math inline">\(,n\)</span> ו-<span class="math inline">\(n\)</span> נקרא <span class="term"><strong>האינדקס</strong></span>. את הסדרה כולה מסמנים <span class="math inline">\(a_n\)</span> או <span class="math inline">\(.(a_n)\)</span></p>
+<p><span class="term"><strong>סדרה</strong></span> היא רשימה אינסופית ומסודרת של מספרים ממשיים:</p>
+<p><span class="math display">\[a_1, \quad a_2, \quad a_3, \quad \ldots\]</span></p>
+<p>המספר <span class="math inline">\(a_n\)</span> נקרא <span class="term"><strong>האיבר</strong></span> שבמקום <span class="math inline">\(,n\)</span> ו-<span class="math inline">\(n\)</span> נקרא <span class="term"><strong>האינדקס</strong></span>. נסמן את הסדרה כולה ב-<span class="math inline">\(a_n\)</span> או ב-<span class="math inline">\(.(a_n)\)</span></p>
 <p>במונחים של הרצאה 1: סדרה היא פונקציה שתחום ההגדרה שלה הוא <span class="math inline">\(,\mathbb{N}\)</span> ו-<span class="math inline">\(a_n\)</span> הוא הערך שלה ב-<span class="math inline">\(.n\)</span></p>
 </div>
 <div class="thmbox thmbox-key-point thmicon-idea" data-icon="idea" title="שתי דרכים לתאר סדרה">
 <p><strong>חשוב לזכור — שתי דרכים לתאר סדרה.</strong></p>
 <ul>
-<li><strong>נוסחה:</strong> כלל שמחשב את <span class="math inline">\(a_n\)</span> ישירות מ-<span class="math inline">\(.n\)</span> למשל, <span class="math inline">\(a_n = 2n - 1\)</span> נותנת <span class="math inline">\(.1, 3, 5, 7, \ldots\)</span></li>
-<li><strong>רקורסיה:</strong> נותנים את האיבר הראשון (או כמה ראשונים), וכלל שמחשב כל איבר מהקודמים לו. למשל, <span class="math inline">\(a_1 = 1\)</span> ו-<span class="math inline">\(a_{n+1} = 2a_n\)</span> נותנים <span class="math inline">\(.1, 2, 4, 8, \ldots\)</span></li>
+<li><strong>נוסחה:</strong> כלל שמחשב את <span class="math inline">\(a_n\)</span> ישירות מ-<span class="math inline">\(.n\)</span> למשל, הנוסחה <span class="math inline">\(a_n = 2n - 1\)</span> נותנת את הסדרה <span class="math inline">\(1, 3, 5, 7, \ldots\)</span> של המספרים האי-זוגיים.</li>
+<li><strong>רקורסיה:</strong> נותנים את האיבר הראשון (או כמה ראשונים), וכלל שמחשב כל איבר מהקודמים לו. למשל, <span class="math inline">\(a_1 = 1\)</span> ו-<span class="math inline">\(a_{n+1} = 2a_n\)</span> נותנים את הסדרה <span class="math inline">\(1, 2, 4, 8, \ldots\)</span> של חזקות <span class="math inline">\(2\)</span>.</li>
 </ul>
 </div>
 <div id="box-def-famous" class="thmbox thmbox-definition" title="סדרות מפורסמות">
 <p><strong>הגדרה 2.1.2 — סדרות מפורסמות.</strong></p>
 <ul>
-<li><span class="term"><strong>הסדרה הקבועה</strong></span> <span class="math inline">\(:a_n = c\)</span> <span class="math inline">\(.c, c, c, \ldots\)</span></li>
-<li><span class="term"><strong>הסדרה ההרמונית</strong></span> <span class="math inline">\(:a_n = \frac{1}{n}\)</span> <span class="math inline">\(.1, \frac{1}{2}, \frac{1}{3}, \frac{1}{4}, \ldots\)</span></li>
-<li><span class="term"><strong>סדרה מתחלפת</strong></span>, למשל <span class="math inline">\(:a_n = (-1)^n\)</span> <span class="math inline">\(.{-}1, 1, -1, 1, \ldots\)</span></li>
+<li><span class="term"><strong>הסדרה הקבועה</strong></span> <span class="math inline">\(a_n = c\)</span> נותנת <span class="math inline">\(c, c, c, \ldots\)</span> בכל מקום.</li>
+<li><span class="term"><strong>הסדרה ההרמונית</strong></span> <span class="math inline">\(a_n = \frac{1}{n}\)</span> נותנת <span class="math inline">\(1, \frac{1}{2}, \frac{1}{3}, \frac{1}{4}, \ldots\)</span> בזה אחר זה.</li>
+<li><span class="term"><strong>סדרה מתחלפת</strong></span> היא סדרה שהסימנים של איבריה מתחלפים. למשל, <span class="math inline">\(a_n = (-1)^n\)</span> נותנת <span class="math inline">\(-1, 1, -1, 1, \ldots\)</span> לסירוגין.</li>
 <li><span class="term"><strong>סדרה חשבונית</strong></span>: בכל צעד מוסיפים אותו מספר <span class="math inline">\(d\)</span> (ההפרש), ולכן <span class="math inline">\(.a_n = a_1 + (n - 1)d\)</span></li>
 <li><span class="term"><strong>סדרה הנדסית</strong></span>: בכל צעד כופלים באותו מספר <span class="math inline">\(q\)</span> (המנה), ולכן <span class="math inline">\(.a_n = a_1 q^{n-1}\)</span></li>
-<li><span class="term"><strong>סדרת פיבונאצ’י</strong></span>: <span class="math inline">\(,a_1 = a_2 = 1\)</span> וכל איבר הוא סכום שני הקודמים לו, <span class="math inline">\(.a_{n+2} = a_{n+1} + a_n\)</span> מתקבל <span class="math inline">\(.1, 1, 2, 3, 5, 8, 13, \ldots\)</span></li>
+<li><span class="term"><strong>סדרת פיבונאצ’י</strong></span>: שני האיברים הראשונים הם <span class="math inline">\(,1\)</span> וכל איבר הוא סכום שני הקודמים לו: <span class="math inline">\(.a_{n+2} = a_{n+1} + a_n\)</span></li>
 </ul>
 </div>
 <p>את הסדרה מציירים כנקודות <span class="math inline">\(,(n, a_n)\)</span> בלי לחבר ביניהן: בין <span class="math inline">\(n = 1\)</span> ל-<span class="math inline">\(n = 2\)</span> אין איבר.</p>
@@ -1115,28 +1118,34 @@ window.Quarto = {
 <p><strong>דוגמה 2.1.3 — מחשבים איברים.</strong></p>
 <p><span>(שבר כותבים עם קו נטוי, למשל <code>3/2</code>. חזקה כותבים עם <code>^</code>, למשל <code>2^(n-1)</code>.)</span></p>
 <div class="fill">
-<p><strong>(א)</strong> עבור <span class="fill-ltr"><span class="math inline">\(:a_n = \frac{n + 1}{n}\)</span> <span class="math inline">\(a_1 =\)</span> <span class="blank" data-ans="2"><span class="math inline">\(2\)</span></span></span>, <span class="fill-ltr"><span class="math inline">\(a_2 =\)</span> <span class="blank" data-ans="3/2"><span class="math inline">\(\frac{3}{2}\)</span></span></span>, <span class="fill-ltr"><span class="math inline">\(a_{10} =\)</span> <span class="blank" data-ans="11/10"><span class="math inline">\(\frac{11}{10}\)</span></span></span></p>
-<p><strong>(ב)</strong> בסדרת פיבונאצ’י: <span class="fill-ltr"><span class="math inline">\(a_8 =\)</span> <span class="blank" data-ans="21"><span class="math inline">\(21\)</span></span></span>, <span class="fill-ltr"><span class="math inline">\(a_{10} =\)</span> <span class="blank" data-ans="55"><span class="math inline">\(55\)</span></span></span></p>
-<p><strong>(ג)</strong> הסדרה החשבונית <span class="fill-ltr"><span class="math inline">\(:4, 7, 10, 13, \ldots\)</span> <span class="math inline">\(a_n =\)</span> <span class="blank" data-ans="3n+1" data-vars="n"><span class="math inline">\(3n + 1\)</span></span></span>, <span class="fill-ltr"><span class="math inline">\(a_{20} =\)</span> <span class="blank" data-ans="61"><span class="math inline">\(61\)</span></span></span></p>
-<p><strong>(ד)</strong> הסדרה ההנדסית <span class="fill-ltr"><span class="math inline">\(:3, 6, 12, 24, \ldots\)</span> <span class="math inline">\(a_n =\)</span> <span class="blank" data-ans="3*2^(n-1)" data-vars="n"><span class="math inline">\(3 \cdot 2^{n-1}\)</span></span></span></p>
+<p><strong>(א)</strong> הסדרה <span class="math inline">\(a_n = \frac{n + 1}{n}\)</span></p>
+<p><span class="fill-ltr"><span class="math inline">\(a_1 =\)</span> <span class="blank" data-ans="2"><span class="math inline">\(2\)</span></span></span>, <span class="fill-ltr"><span class="math inline">\(a_2 =\)</span> <span class="blank" data-ans="3/2"><span class="math inline">\(\frac{3}{2}\)</span></span></span>, <span class="fill-ltr"><span class="math inline">\(a_{10} =\)</span> <span class="blank" data-ans="11/10"><span class="math inline">\(\frac{11}{10}\)</span></span></span></p>
+<p><strong>(ב)</strong> שמונת האיברים הראשונים של סדרת פיבונאצ’י:</p>
+<div class="eqline">
+<p><span class="fill-ltr"><span class="blank" data-ans="1"><span class="math inline">\(1\)</span></span><span class="math inline">\(,\;\)</span><span class="blank" data-ans="1"><span class="math inline">\(1\)</span></span><span class="math inline">\(,\;\)</span><span class="blank" data-ans="2"><span class="math inline">\(2\)</span></span><span class="math inline">\(,\;\)</span><span class="blank" data-ans="3"><span class="math inline">\(3\)</span></span><span class="math inline">\(,\;\)</span><span class="blank" data-ans="5"><span class="math inline">\(5\)</span></span><span class="math inline">\(,\;\)</span><span class="blank" data-ans="8"><span class="math inline">\(8\)</span></span><span class="math inline">\(,\;\)</span><span class="blank" data-ans="13"><span class="math inline">\(13\)</span></span><span class="math inline">\(,\;\)</span><span class="blank" data-ans="21"><span class="math inline">\(21\)</span></span></span></p>
+</div>
+<p><strong>(ג)</strong> הסדרה החשבונית שמתחילה ב-<span class="math inline">\(4, 7, 10, 13\)</span></p>
+<p><span class="fill-ltr"><span class="math inline">\(a_n =\)</span> <span class="blank" data-ans="3n+1" data-vars="n"><span class="math inline">\(3n + 1\)</span></span></span>, <span class="fill-ltr"><span class="math inline">\(a_{20} =\)</span> <span class="blank" data-ans="61"><span class="math inline">\(61\)</span></span></span></p>
+<p><strong>(ד)</strong> הסדרה ההנדסית שמתחילה ב-<span class="math inline">\(3, 6, 12, 24\)</span></p>
+<p><span class="fill-ltr"><span class="math inline">\(a_n =\)</span> <span class="blank" data-ans="3*2^(n-1)" data-vars="n"><span class="math inline">\(3 \cdot 2^{n-1}\)</span></span></span></p>
 <div class="hint">
-<p>ב-(ג) ההפרש הוא <span class="math inline">\(,d = 3\)</span> וב-(ד) המנה היא <span class="math inline">\(.q = 2\)</span></p>
+<p>ב-(ב) כל איבר הוא סכום שני הקודמים לו. ב-(ג) ההפרש הוא <span class="math inline">\(,d = 3\)</span> וב-(ד) המנה היא <span class="math inline">\(.q = 2\)</span></p>
 </div>
 <div class="explain">
 <p><strong>(א)</strong> <span class="math inline">\(,a_1 = \frac{2}{1} = 2\)</span> <span class="math inline">\(,a_2 = \frac{3}{2}\)</span> <span class="math inline">\(.a_{10} = \frac{11}{10}\)</span></p>
-<p><strong>(ב)</strong> ממשיכים את <span class="math inline">\(1, 1, 2, 3, 5, 8, 13\)</span> בסכום שני הקודמים: <span class="math inline">\(,a_8 = 8 + 13 = 21\)</span> <span class="math inline">\(,a_9 = 13 + 21 = 34\)</span> <span class="math inline">\(.a_{10} = 21 + 34 = 55\)</span></p>
-<p><strong>(ג)</strong> <span class="math inline">\(,a_n = 4 + (n - 1) \cdot 3 = 3n + 1\)</span> ולכן <span class="math inline">\(.a_{20} = 61\)</span></p>
-<p><strong>(ד)</strong> <span class="math inline">\(.a_n = 3 \cdot 2^{n-1}\)</span></p>
+<p><strong>(ב)</strong> <span class="math inline">\(,1 + 1 = 2\)</span> <span class="math inline">\(,1 + 2 = 3\)</span> <span class="math inline">\(,2 + 3 = 5\)</span> <span class="math inline">\(,3 + 5 = 8\)</span> <span class="math inline">\(5 + 8 = 13\)</span> ו-<span class="math inline">\(.8 + 13 = 21\)</span></p>
+<p><strong>(ג)</strong> <span class="math inline">\(a_1 = 4\)</span> ו-<span class="math inline">\(,d = 3\)</span> ולכן <span class="math display">\[\begin{aligned} a_n &amp;= 4 + (n - 1) \cdot 3 \\ &amp;= 3n + 1 \\ a_{20} &amp;= 3 \cdot 20 + 1 = 61 \end{aligned}\]</span></p>
+<p><strong>(ד)</strong> <span class="math inline">\(,a_1 = 3\)</span> ובכל צעד כופלים ב-<span class="math inline">\(,2\)</span> ולכן <span class="math inline">\(.a_n = 3 \cdot 2^{n-1}\)</span></p>
 </div>
 </div>
 </div>
 <div class="thmbox thmbox-warning" title="כמה איברים ראשונים לא קובעים סדרה">
 <p><strong>שימו לב — כמה איברים ראשונים לא קובעים סדרה.</strong></p>
-<p>איך ממשיכים את <span class="math inline">\(?2, 4, 8, \ldots\)</span> אולי <span class="math inline">\(16\)</span> (חזקות של <span class="math inline">\(2\)</span>), ואולי <span class="math inline">\(14\)</span> (ההפרשים <span class="math inline">\(2, 4, 6, \ldots\)</span>). לכן סדרה נותנים בנוסחה או ברקורסיה, ולא בכמה איברים ראשונים ושלוש נקודות.</p>
+<p>איך ממשיכים את <span class="math inline">\(2, 4, 8\)</span> ואחריהם שלוש נקודות? אולי <span class="math inline">\(16\)</span> (חזקות של <span class="math inline">\(2\)</span>), ואולי <span class="math inline">\(14\)</span> (ההפרשים <span class="math inline">\(2, 4, 6\)</span> גדלים ב-<span class="math inline">\(2\)</span>). לכן מתארים סדרה בנוסחה או ברקורסיה. כשמבקשים “נוסחה לפי האיברים הראשונים”, הכוונה לנוסחה הפשוטה ביותר שמתאימה להם.</p>
 </div>
 <div class="thmbox thmbox-self-check">
 <p><strong>בדיקה עצמית.</strong></p>
-<p><strong>(א)</strong> האם <span class="math inline">\(1, 1, 1, \ldots\)</span> היא סדרה?</p>
+<p><strong>(א)</strong> האם הרשימה שבה כל האיברים שווים ל-<span class="math inline">\(1\)</span> היא סדרה?</p>
 <div class="tf-quiz" data-correct="1">
 <button type="button" class="tf-opt" data-val="1">כן</button>
 <button type="button" class="tf-opt" data-val="2">לא</button>
@@ -1151,14 +1160,14 @@ window.Quarto = {
 <button type="button" class="tf-opt" data-val="2">\(-5\)</button>
 <div class="tf-feedback" aria-live="polite"></div>
 <div class="tf-why">
-<p><span class="math inline">\(.a_5 = (-1)^5 \cdot 5 = -5\)</span> החזקה האי-זוגית של <span class="math inline">\(-1\)</span> היא <span class="math inline">\(.{-}1\)</span></p>
+<p><span class="math inline">\(.a_5 = (-1)^5 \cdot 5 = -5\)</span> חזקה אי-זוגית של <span class="math inline">\(-1\)</span> שווה <span class="math inline">\(.{-}1\)</span></p>
 </div>
 </div>
 </div>
 <div class="thmbox thmbox-summary">
 <p><strong>סיכום.</strong></p>
 <ul>
-<li>סדרה היא רשימה אינסופית <span class="math inline">\(a_1, a_2, a_3, \ldots\)</span> ו-<span class="math inline">\(a_n\)</span> הוא האיבר שבמקום <span class="math inline">\(.n\)</span></li>
+<li>סדרה היא רשימה אינסופית <span class="math inline">\(a_1, a_2, a_3\)</span> וכן הלאה, ו-<span class="math inline">\(a_n\)</span> הוא האיבר שבמקום <span class="math inline">\(.n\)</span></li>
 <li>מתארים סדרה בנוסחה או ברקורסיה, ולא בכמה איברים ראשונים.</li>
 <li>סדרות מפורסמות: קבועה, הרמונית, מתחלפת, חשבונית, הנדסית, פיבונאצ’י.</li>
 </ul>
@@ -1167,15 +1176,19 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="תרגילים">תרגילים</h3>
 <div id="box-q-seq-terms" class="thmbox thmbox-question" title="איברים מנוסחה">
 <p><strong>שאלה 2.1.4 — איברים מנוסחה.</strong></p>
+<p>חשבו.</p>
 <div class="fill">
-<p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\(:a_n = n^2 - n\)</span> <span class="math inline">\(a_3 =\)</span> <span class="blank" data-ans="6"><span class="math inline">\(6\)</span></span></span></p>
-<p><strong>(ב)</strong> <span class="fill-ltr"><span class="math inline">\(:a_n = \frac{(-1)^n}{n}\)</span> <span class="math inline">\(a_4 =\)</span> <span class="blank" data-ans="1/4"><span class="math inline">\(\frac{1}{4}\)</span></span></span>, <span class="fill-ltr"><span class="math inline">\(a_5 =\)</span> <span class="blank" data-ans="-1/5"><span class="math inline">\(-\frac{1}{5}\)</span></span></span></p>
-<p><strong>(ג)</strong> <span class="fill-ltr"><span class="math inline">\(:a_n = \frac{2^n}{n}\)</span> <span class="math inline">\(a_3 =\)</span> <span class="blank" data-ans="8/3"><span class="math inline">\(\frac{8}{3}\)</span></span></span></p>
+<p><strong>(א)</strong> <span class="math inline">\(a_n = n^2 - n\)</span></p>
+<p><span class="fill-ltr"><span class="math inline">\(a_3 =\)</span> <span class="blank" data-ans="6"><span class="math inline">\(6\)</span></span></span></p>
+<p><strong>(ב)</strong> <span class="math inline">\(a_n = \frac{(-1)^n}{n}\)</span></p>
+<p><span class="fill-ltr"><span class="math inline">\(a_4 =\)</span> <span class="blank" data-ans="1/4"><span class="math inline">\(\frac{1}{4}\)</span></span></span>, <span class="fill-ltr"><span class="math inline">\(a_5 =\)</span> <span class="blank" data-ans="-1/5"><span class="math inline">\(-\frac{1}{5}\)</span></span></span></p>
+<p><strong>(ג)</strong> <span class="math inline">\(a_n = \frac{2^n}{n}\)</span></p>
+<p><span class="fill-ltr"><span class="math inline">\(a_3 =\)</span> <span class="blank" data-ans="8/3"><span class="math inline">\(\frac{8}{3}\)</span></span></span></p>
 </div>
 </div>
 <div id="box-q-seq-recursion" class="thmbox thmbox-question" title="איברים מרקורסיה">
 <p><strong>שאלה 2.1.5 — איברים מרקורסיה.</strong></p>
-<p><span class="math inline">\(a_1 = 2\)</span> ו-<span class="math inline">\(.a_{n+1} = 3a_n - 1\)</span></p>
+<p>הסדרה נתונה ברקורסיה: <span class="math inline">\(a_1 = 2\)</span> ו-<span class="math inline">\(.a_{n+1} = 3a_n - 1\)</span> חשבו:</p>
 <div class="fill">
 <p><span class="fill-ltr"><span class="math inline">\(a_2 =\)</span> <span class="blank" data-ans="5"><span class="math inline">\(5\)</span></span></span>, <span class="fill-ltr"><span class="math inline">\(a_3 =\)</span> <span class="blank" data-ans="14"><span class="math inline">\(14\)</span></span></span>, <span class="fill-ltr"><span class="math inline">\(a_4 =\)</span> <span class="blank" data-ans="41"><span class="math inline">\(41\)</span></span></span></p>
 <div class="explain">
@@ -1183,48 +1196,65 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<div id="box-q-seq-formula" class="thmbox thmbox-question" title="נוסחה מאיברים">
-<p><strong>שאלה 2.1.6 — נוסחה מאיברים.</strong></p>
-<p>מצאו נוסחה לכל סדרה.</p>
+<div id="box-q-seq-geometric" class="thmbox thmbox-question" title="סדרה הנדסית עם מנה שלילית">
+<p><strong>שאלה 2.1.6 — סדרה הנדסית עם מנה שלילית.</strong></p>
+<p><span class="math inline">\(a_1 = 2\)</span> והמנה היא <span class="math inline">\(.q = -3\)</span> השלימו את חמשת האיברים הראשונים.</p>
 <div class="fill">
-<p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\(:7, 12, 17, 22, \ldots\)</span> <span class="math inline">\(a_n =\)</span> <span class="blank" data-ans="5n+2" data-vars="n"><span class="math inline">\(5n + 2\)</span></span></span></p>
-<p><strong>(ב)</strong> <span class="fill-ltr"><span class="math inline">\(:1, 4, 9, 16, \ldots\)</span> <span class="math inline">\(a_n =\)</span> <span class="blank" data-ans="n^2" data-vars="n"><span class="math inline">\(n^2\)</span></span></span></p>
-<p><strong>(ג)</strong> <span class="fill-ltr"><span class="math inline">\(:\frac{1}{2}, \frac{1}{4}, \frac{1}{8}, \frac{1}{16}, \ldots\)</span> <span class="math inline">\(a_n =\)</span> <span class="blank" data-ans="1/2^n" data-vars="n"><span class="math inline">\(\frac{1}{2^n}\)</span></span></span></p>
+<div class="eqline">
+<p><span class="fill-ltr"><span class="blank" data-ans="2"><span class="math inline">\(2\)</span></span><span class="math inline">\(,\;\)</span><span class="blank" data-ans="-6"><span class="math inline">\(-6\)</span></span><span class="math inline">\(,\;\)</span><span class="blank" data-ans="18"><span class="math inline">\(18\)</span></span><span class="math inline">\(,\;\)</span><span class="blank" data-ans="-54"><span class="math inline">\(-54\)</span></span><span class="math inline">\(,\;\)</span><span class="blank" data-ans="162"><span class="math inline">\(162\)</span></span></span></p>
+</div>
 <div class="explain">
-<p><strong>(א)</strong> חשבונית עם <span class="math inline">\(a_1 = 7\)</span> ו-<span class="math inline">\(:d = 5\)</span> <span class="math inline">\(.a_n = 7 + 5(n - 1) = 5n + 2\)</span> <strong>(ב)</strong> ריבועים. <strong>(ג)</strong> הנדסית עם <span class="math inline">\(a_1 = \frac{1}{2}\)</span> ו-<span class="math inline">\(.q = \frac{1}{2}\)</span></p>
+<p>בכל צעד כופלים ב-<span class="math inline">\(,{-}3\)</span> ולכן הסימן מתחלף: זו גם סדרה מתחלפת.</p>
+</div>
+</div>
+</div>
+<div id="box-q-seq-formula" class="thmbox thmbox-question" title="נוסחה מאיברים">
+<p><strong>שאלה 2.1.7 — נוסחה מאיברים.</strong></p>
+<p>מצאו את הנוסחה הפשוטה ביותר שמתאימה לאיברים הראשונים.</p>
+<div class="fill">
+<p><strong>(א)</strong> <span class="math inline">\(7, 12, 17, 22\)</span></p>
+<p><span class="fill-ltr"><span class="math inline">\(a_n =\)</span> <span class="blank" data-ans="5n+2" data-vars="n"><span class="math inline">\(5n + 2\)</span></span></span></p>
+<p><strong>(ב)</strong> <span class="math inline">\(1, 4, 9, 16\)</span></p>
+<p><span class="fill-ltr"><span class="math inline">\(a_n =\)</span> <span class="blank" data-ans="n^2" data-vars="n"><span class="math inline">\(n^2\)</span></span></span></p>
+<p><strong>(ג)</strong> <span class="math inline">\(\frac{1}{2}, \frac{1}{4}, \frac{1}{8}, \frac{1}{16}\)</span></p>
+<p><span class="fill-ltr"><span class="math inline">\(a_n =\)</span> <span class="blank" data-ans="1/2^n" data-vars="n"><span class="math inline">\(\frac{1}{2^n}\)</span></span></span></p>
+<div class="explain">
+<p><strong>(א)</strong> חשבונית עם <span class="math inline">\(a_1 = 7\)</span> ו-<span class="math inline">\(:d = 5\)</span> <span class="math inline">\(.a_n = 7 + 5(n - 1) = 5n + 2\)</span></p>
+<p><strong>(ב)</strong> אלה הריבועים <span class="math inline">\(,1^2, 2^2, 3^2, 4^2\)</span> ולכן <span class="math inline">\(.a_n = n^2\)</span></p>
+<p><strong>(ג)</strong> הנדסית עם <span class="math inline">\(a_1 = \frac{1}{2}\)</span> ו-<span class="math inline">\(,q = \frac{1}{2}\)</span> ולכן <span class="math inline">\(.a_n = \frac{1}{2}\left(\frac{1}{2}\right)^{n-1} = \frac{1}{2^n}\)</span></p>
 </div>
 </div>
 </div>
 <div id="box-q-seq-kind" class="thmbox thmbox-question" title="חשבונית או הנדסית?">
-<p><strong>שאלה 2.1.7 — חשבונית או הנדסית?</strong></p>
-<p><strong>(א)</strong> <span class="math inline">\(5, 2, -1, -4, \ldots\)</span></p>
+<p><strong>שאלה 2.1.8 — חשבונית או הנדסית?</strong></p>
+<p><strong>(א)</strong> הסדרה שמתחילה ב-<span class="math inline">\(5, 2, -1, -4\)</span></p>
 <div class="tf-quiz" data-correct="1">
 <button type="button" class="tf-opt" data-val="1">חשבונית</button>
 <button type="button" class="tf-opt" data-val="2">הנדסית</button>
 <button type="button" class="tf-opt" data-val="3">אף אחת</button>
 <div class="tf-feedback" aria-live="polite"></div>
 <div class="tf-why">
-<p>בכל צעד מוסיפים <span class="math inline">\(.{-}3\)</span></p>
+<p>חשבונית: בכל צעד מוסיפים <span class="math inline">\(.{-}3\)</span></p>
 </div>
 </div>
-<p><strong>(ב)</strong> <span class="math inline">\(2, -6, 18, -54, \ldots\)</span></p>
+<p><strong>(ב)</strong> הסדרה שמתחילה ב-<span class="math inline">\(2, -6, 18, -54\)</span></p>
 <div class="tf-quiz" data-correct="2">
 <button type="button" class="tf-opt" data-val="1">חשבונית</button>
 <button type="button" class="tf-opt" data-val="2">הנדסית</button>
 <button type="button" class="tf-opt" data-val="3">אף אחת</button>
 <div class="tf-feedback" aria-live="polite"></div>
 <div class="tf-why">
-<p>בכל צעד כופלים ב-<span class="math inline">\(.{-}3\)</span></p>
+<p>הנדסית: בכל צעד כופלים ב-<span class="math inline">\(.{-}3\)</span></p>
 </div>
 </div>
-<p><strong>(ג)</strong> <span class="math inline">\(1, 2, 4, 7, 11, \ldots\)</span></p>
+<p><strong>(ג)</strong> הסדרה שמתחילה ב-<span class="math inline">\(1, 2, 4, 7, 11\)</span></p>
 <div class="tf-quiz" data-correct="3">
 <button type="button" class="tf-opt" data-val="1">חשבונית</button>
 <button type="button" class="tf-opt" data-val="2">הנדסית</button>
 <button type="button" class="tf-opt" data-val="3">אף אחת</button>
 <div class="tf-feedback" aria-live="polite"></div>
 <div class="tf-why">
-<p>ההפרשים הם <span class="math inline">\(,1, 2, 3, 4\)</span> ולא קבועים, וגם המנות אינן קבועות.</p>
+<p>אף אחת: ההפרשים <span class="math inline">\(1, 2, 3, 4\)</span> אינם קבועים, וגם המנות אינן קבועות.</p>
 </div>
 </div>
 </div>
@@ -1235,69 +1265,77 @@ window.Quarto = {
 <div class="lead">
 <p><strong>מה עושים כאן?</strong> נגדיר מה פירוש “הסדרה מתקרבת למספר”, ונראה סדרות שמתקרבות לגבול וסדרות שלא.</p>
 </div>
-<p>הקירובים העשרוניים מתקרבים אל <span class="math inline">\(\sqrt{2}\)</span> כמה שרוצים, ואילו <span class="math inline">\((-1)^n\)</span> קופצת בין <span class="math inline">\(-1\)</span> ל-<span class="math inline">\(1\)</span> ולא מתייצבת. התיאור הרגיל של התקרבות: אפשר להביא את <span class="math inline">\(a_n\)</span> קרוב ל-<span class="math inline">\(L\)</span> כמה שרוצים, אם לוקחים <span class="math inline">\(n\)</span> גדול מספיק.</p>
-<p>כדי לבדוק “קרוב כמה שרוצים” מדברים על <strong>שגיאה</strong>: המרחק <span class="math inline">\(|a_n - L|\)</span> בין האיבר לגבול. מישהו קובע שגיאה מותרת, מספר חיובי <span class="math inline">\(\varepsilon\)</span> (למשל <span class="math inline">\(0.1\)</span> או <span class="math inline">\(,0.001\)</span>) ואנחנו צריכים להראות שמנקודה מסוימת והלאה <strong>כל</strong> האיברים בשגיאה קטנה ממנה.</p>
+<p>הקירובים העשרוניים מתקרבים אל <span class="math inline">\(\sqrt{2}\)</span> כמה שרוצים, ואילו <span class="math inline">\((-1)^n\)</span> קופצת בין <span class="math inline">\(-1\)</span> ל-<span class="math inline">\(1\)</span> ולא מתייצבת. במילים: <span class="math inline">\(a_n\)</span> מתקרבת ל-<span class="math inline">\(L\)</span> אם <span class="math inline">\(a_n\)</span> קרוב ל-<span class="math inline">\(L\)</span> כמה שרוצים, בתנאי ש-<span class="math inline">\(n\)</span> גדול מספיק.</p>
+<p>כדי לבדוק “קרוב כמה שרוצים” מדברים על <span class="term"><strong>שגיאה</strong></span>: המרחק <span class="math inline">\(|a_n - L|\)</span> בין האיבר לגבול. בוחרים <span class="term"><strong>שגיאה מותרת</strong></span>, מספר חיובי <span class="math inline">\(\varepsilon\)</span> (למשל <span class="math inline">\(0.1\)</span> או <span class="math inline">\(0.001\)</span>), וצריך להראות שממקום מסוים והלאה השגיאה של <strong>כל</strong> האיברים קטנה מ-<span class="math inline">\(.\varepsilon\)</span></p>
 <div id="box-def-limit" class="thmbox thmbox-definition" title="גבול של סדרה">
 <p><strong>הגדרה 2.2.1 — גבול של סדרה.</strong></p>
-<p>נאמר שהסדרה <span class="math inline">\(a_n\)</span> <span class="term"><strong>מתכנסת</strong></span> ל-<span class="math inline">\(,L\)</span> ונסמן <span class="math inline">\(\lim\limits_{n\to\infty} a_n = L\)</span> או <span class="math inline">\(,a_n \to L\)</span> אם לכל שגיאה מותרת <span class="math inline">\(\varepsilon &gt; 0\)</span> יש מקום בסדרה שממנו והלאה כל האיברים מקיימים <span class="math display">\[.|a_n - L| &lt; \varepsilon\]</span> המספר <span class="math inline">\(L\)</span> נקרא <span class="term"><strong>הגבול</strong></span> של הסדרה. סדרה שאין לה גבול נקראת <span class="term"><strong>מתבדרת</strong></span>.</p>
+<p>נאמר שהסדרה <span class="math inline">\(a_n\)</span> <span class="term"><strong>מתכנסת</strong></span> ל-<span class="math inline">\(,L\)</span> ונסמן <span class="math inline">\(\lim\limits_{n\to\infty} a_n = L\)</span> או <span class="math inline">\(,a_n \to L\)</span> אם לכל שגיאה מותרת <span class="math inline">\(\varepsilon &gt; 0\)</span> יש מקום בסדרה שממנו והלאה כל האיברים מקיימים</p>
+<p><span class="math display">\[.|a_n - L| &lt; \varepsilon\]</span></p>
+<p>המספר <span class="math inline">\(L\)</span> נקרא <span class="term"><strong>הגבול</strong></span> של הסדרה, ונאמר גם ש-<span class="math inline">\(a_n\)</span> <span class="term"><strong>שואפת</strong></span> ל-<span class="math inline">\(.L\)</span> סדרה שיש לה גבול נקראת מתכנסת, וסדרה שאין לה גבול נקראת <span class="term"><strong>מתבדרת</strong></span>.</p>
 </div>
 <div id="box-sim-error-band" class="thmbox thmbox-simulation" title="שגיאה מותרת ורצועה סביב הגבול">
 <p><strong>סימולציה 2.2.2 — שגיאה מותרת ורצועה סביב הגבול.</strong></p>
 <iframe class="widget-frame" src="widgets/ch02/error-band.html" loading="lazy" title="שגיאה מותרת ורצועה סביב הגבול"></iframe>
-<p>בחרו סדרה והקטינו את השגיאה <span class="math inline">\(.\varepsilon\)</span> הרצועה היא כל המספרים שהמרחק שלהם מ-<span class="math inline">\(L\)</span> קטן מ-<span class="math inline">\(.\varepsilon\)</span> ככל שהשגיאה קטנה, המקום שממנו כל האיברים בתוך הרצועה מתרחק, אבל עבור סדרה מתכנסת הוא תמיד קיים. עבור <span class="math inline">\((-1)^n\)</span> אין מקום כזה.</p>
+<p>בחרו סדרה והקטינו את השגיאה המותרת <span class="math inline">\(.\varepsilon\)</span> הרצועה היא כל המספרים שהמרחק שלהם מ-<span class="math inline">\(L\)</span> קטן מ-<span class="math inline">\(.\varepsilon\)</span> ככל שהשגיאה המותרת קטנה, המקום שממנו והלאה כל האיברים בתוך הרצועה נדחה ימינה, אבל עבור סדרה מתכנסת הוא תמיד קיים. עבור <span class="math inline">\((-1)^n\)</span> ושגיאה מותרת קטנה מספיק אין מקום כזה, לא משנה סביב איזה מספר שמים את הרצועה.</p>
 </div>
 <div id="box-exm-one-over-n" class="thmbox thmbox-example" title="הסדרה ההרמונית שואפת לאפס">
 <p><strong>דוגמה 2.2.3 — הסדרה ההרמונית שואפת לאפס.</strong></p>
-<p>עבור <span class="math inline">\(a_n = \frac{1}{n}\)</span> ו-<span class="math inline">\(L = 0\)</span> השגיאה היא <span class="math inline">\(.|\frac{1}{n} - 0| = \frac{1}{n}\)</span> מאיזה מקום היא קטנה מהשגיאה המותרת?</p>
+<p>עבור <span class="math inline">\(a_n = \frac{1}{n}\)</span> ו-<span class="math inline">\(,L = 0\)</span> השגיאה היא <span class="math inline">\(.\left|\frac{1}{n} - 0\right| = \frac{1}{n}\)</span> מאיזה מקום היא קטנה מהשגיאה המותרת?</p>
 <div class="fill">
-<p><strong>(א)</strong> עבור <span class="math inline">\(:\varepsilon = 0.1\)</span> החל מ-<span class="fill-ltr"><span class="math inline">\(n =\)</span> <span class="blank" data-ans="11"><span class="math inline">\(11\)</span></span></span></p>
-<p><strong>(ב)</strong> עבור <span class="math inline">\(:\varepsilon = 0.001\)</span> החל מ-<span class="fill-ltr"><span class="math inline">\(n =\)</span> <span class="blank" data-ans="1001"><span class="math inline">\(1001\)</span></span></span></p>
+<p><strong>(א)</strong> השגיאה המותרת <span class="math inline">\(\varepsilon = 0.1\)</span></p>
+<p>החל מ-<span class="fill-ltr"><span class="math inline">\(n =\)</span> <span class="blank" data-ans="11"><span class="math inline">\(11\)</span></span></span></p>
+<p><strong>(ב)</strong> השגיאה המותרת <span class="math inline">\(\varepsilon = 0.001\)</span></p>
+<p>החל מ-<span class="fill-ltr"><span class="math inline">\(n =\)</span> <span class="blank" data-ans="1001"><span class="math inline">\(1001\)</span></span></span></p>
 <div class="explain">
-<p><span class="math inline">\(\frac{1}{n} &lt; 0.1\)</span> בדיוק כאשר <span class="math inline">\(,n &gt; 10\)</span> כלומר החל מ-<span class="math inline">\(.n = 11\)</span> באותו אופן <span class="math inline">\(\frac{1}{n} &lt; 0.001\)</span> כאשר <span class="math inline">\(.n &gt; 1000\)</span> לכל שגיאה <span class="math inline">\(\varepsilon\)</span> זה קורה כאשר <span class="math inline">\(,n &gt; \frac{1}{\varepsilon}\)</span> ולכן <span class="math inline">\(.\frac{1}{n} \to 0\)</span></p>
+<p><span class="math inline">\(\frac{1}{n} &lt; 0.1\)</span> בדיוק כאשר <span class="math inline">\(,n &gt; 10\)</span> כלומר החל מ-<span class="math inline">\(.n = 11\)</span> באותו אופן <span class="math inline">\(\frac{1}{n} &lt; 0.001\)</span> כאשר <span class="math inline">\(.n &gt; 1000\)</span> לכל שגיאה מותרת <span class="math inline">\(\varepsilon\)</span> זה קורה כאשר <span class="math inline">\(,n &gt; \frac{1}{\varepsilon}\)</span> ולכן <span class="math inline">\(.\frac{1}{n} \to 0\)</span></p>
 </div>
 </div>
 </div>
 <div class="thmbox thmbox-key-point thmicon-rule" data-icon="rule" title="רק הזנב קובע">
 <p><strong>כלל — רק הזנב קובע.</strong></p>
 <ul>
-<li>הגבול תלוי רק באיברים שמנקודה מסוימת והלאה. שינוי של <span class="math inline">\(1000\)</span> האיברים הראשונים לא משנה אותו.</li>
+<li>האיברים ממקום מסוים והלאה נקראים <span class="term"><strong>זנב</strong></span> של הסדרה, והגבול תלוי רק בזנב. שינוי של <span class="math inline">\(1000\)</span> האיברים הראשונים לא משנה אותו.</li>
 <li>לסדרה יש <strong>לכל היותר גבול אחד</strong>: אי אפשר להתקרב כמה שרוצים לשני מספרים שונים בבת אחת.</li>
-<li>הגבול לא חייב להיות אחד האיברים, והסדרה לא חייבת להתקרב אליו בכל צעד. למשל, <span class="math inline">\(1 + \frac{(-1)^n}{n}\)</span> קופצת מעל <span class="math inline">\(1\)</span> ומתחתיו, ובכל זאת שואפת ל-<span class="math inline">\(.1\)</span></li>
+<li>הגבול לא חייב להיות אחד האיברים, והסדרה לא חייבת להתקרב אליו מצד אחד. למשל, <span class="math inline">\(1 + \frac{(-1)^n}{n}\)</span> נמצאת לסירוגין מעל <span class="math inline">\(1\)</span> ומתחת לו, ובכל זאת שואפת ל-<span class="math inline">\(.1\)</span></li>
 </ul>
+</div>
+<div class="thmbox thmbox-key-point thmicon-idea" data-icon="idea" title="חזקה עם מעריך אי-רציונלי">
+<p><strong>חשוב לזכור — חזקה עם מעריך אי-רציונלי.</strong></p>
+<p>בהרצאה 1 דחינו את ההגדרה של חזקה כמו <span class="math inline">\(.2^{\sqrt{2}}\)</span> עכשיו אפשר להשלים אותה: לוקחים את הקירובים העשרוניים של <span class="math inline">\(,\sqrt{2}\)</span> ואת החזקות שלהם, <span class="math inline">\(2^{1}\)</span> ו-<span class="math inline">\(2^{1.4}\)</span> ו-<span class="math inline">\(2^{1.41}\)</span> וכן הלאה. כל אחת מהן היא חזקה עם מעריך רציונלי, שכבר הגדרנו. הסדרה הזו מתכנסת, ו-<span class="math inline">\(2^{\sqrt{2}}\)</span> הוא הגבול שלה, בערך <span class="math inline">\(.2.665\)</span></p>
 </div>
 <div class="thmbox thmbox-self-check">
 <p><strong>בדיקה עצמית.</strong></p>
-<p><strong>(א)</strong> לאן שואפת <span class="math inline">\(?0.9, \ 0.99, \ 0.999, \ \ldots\)</span></p>
+<p><strong>(א)</strong> מהו הגבול של הסדרה <span class="math inline">\(0.9, \ 0.99, \ 0.999\)</span> וכן הלאה, שבה כל איבר מוסיף עוד <span class="math inline">\(9\)</span> בסוף?</p>
 <div class="tf-quiz" data-correct="1">
 <button type="button" class="tf-opt" data-val="1">\(1\)</button>
-<button type="button" class="tf-opt" data-val="2">\(0.999\ldots\), לא ממש \(1\)</button>
+<button type="button" class="tf-opt" data-val="2">מעט פחות מ-\(1\)</button>
 <button type="button" class="tf-opt" data-val="3">אין לה גבול</button>
 <div class="tf-feedback" aria-live="polite"></div>
 <div class="tf-why">
-<p>השגיאה היא <span class="math inline">\(,0.1, 0.01, 0.001, \ldots\)</span> וקטנה מכל שגיאה מותרת. הגבול הוא בדיוק <span class="math inline">\(.1\)</span></p>
+<p>השגיאות הן <span class="math inline">\(0.1\)</span> ו-<span class="math inline">\(0.01\)</span> ו-<span class="math inline">\(0.001\)</span> וכן הלאה, ולכן לכל שגיאה מותרת יש מקום שממנו והלאה כל האיברים בשגיאה קטנה ממנה. הגבול הוא בדיוק <span class="math inline">\(.1\)</span></p>
 </div>
 </div>
-<p><strong>(ב)</strong> האם <span class="math inline">\(1, 0, \frac{1}{2}, 0, \frac{1}{3}, 0, \ldots\)</span> מתכנסת?</p>
+<p><strong>(ב)</strong> האם הסדרה <span class="math inline">\(1, 0, \frac{1}{2}, 0, \frac{1}{3}, 0\)</span> וכן הלאה מתכנסת?</p>
 <div class="tf-quiz" data-correct="1">
 <button type="button" class="tf-opt" data-val="1">כן, ל-\(0\)</button>
 <button type="button" class="tf-opt" data-val="2">לא</button>
 <div class="tf-feedback" aria-live="polite"></div>
 <div class="tf-why">
-<p>כל האיברים מנקודה מסוימת והלאה קרובים ל-<span class="math inline">\(0\)</span> כמה שרוצים: האפסים בשגיאה <span class="math inline">\(,0\)</span> והאיברים <span class="math inline">\(\frac{1}{k}\)</span> בשגיאה קטנה. הסדרה לא חייבת להתקרב בכל צעד.</p>
+<p>כן, ל-<span class="math inline">\(.0\)</span> השגיאה של האפסים היא <span class="math inline">\(,0\)</span> והשגיאה של האיבר <span class="math inline">\(\frac{1}{k}\)</span> היא <span class="math inline">\(,\frac{1}{k}\)</span> שקטנה מכל שגיאה מותרת כש-<span class="math inline">\(k\)</span> גדול מספיק. הסדרה לא חייבת להתקרב לגבול בכל צעד.</p>
 </div>
 </div>
 </div>
 <section id="שאיפה-לאינסוף" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="שאיפה-לאינסוף">שאיפה לאינסוף</h3>
-<p>הסדרה <span class="math inline">\(\sqrt{n}\)</span> מתבדרת, אבל באופן מסוים: היא עוברת כל גובה ונשארת מעליו.</p>
+<p>הסדרה <span class="math inline">\(\sqrt{n}\)</span> מתבדרת, אבל בצורה מסודרת: היא עוברת כל גובה ונשארת מעליו.</p>
 <div id="box-def-infinite-limit" class="thmbox thmbox-definition" title="שאיפה לאינסוף">
 <p><strong>הגדרה 2.2.4 — שאיפה לאינסוף.</strong></p>
-<p>נאמר ש-<span class="math inline">\(a_n\)</span> <span class="term"><strong>שואפת לאינסוף</strong></span> ונסמן <span class="math inline">\(\lim\limits_{n\to\infty} a_n = \infty\)</span> אם לכל גובה <span class="math inline">\(M\)</span> יש מקום בסדרה שממנו והלאה כל האיברים גדולים מ-<span class="math inline">\(.M\)</span> באותו אופן, <span class="math inline">\(a_n \to -\infty\)</span> אם מנקודה מסוימת כל האיברים קטנים מכל מספר שנבחר.</p>
+<p>נאמר ש-<span class="math inline">\(a_n\)</span> <span class="term"><strong>שואפת לאינסוף</strong></span> ונסמן <span class="math inline">\(\lim\limits_{n\to\infty} a_n = \infty\)</span> או <span class="math inline">\(,a_n \to \infty\)</span> אם לכל מספר <span class="math inline">\(M\)</span> יש מקום בסדרה שממנו והלאה כל האיברים גדולים מ-<span class="math inline">\(.M\)</span> באופן דומה, <span class="math inline">\(a_n\)</span> <span class="term"><strong>שואפת למינוס אינסוף</strong></span> (<span class="math inline">\(a_n \to -\infty\)</span>) אם לכל מספר <span class="math inline">\(M\)</span> יש מקום בסדרה שממנו והלאה כל האיברים קטנים מ-<span class="math inline">\(.M\)</span></p>
 </div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="figures/ch02-to-infinity.png" class="img-fluid figure-img" style="width:90.0%" alt="משמאל נקודות שעולות ועוברות קו אופקי ונשארות מעליו; מימין נקודות שעולות לסירוגין עם נקודות על אפס"></p>
-<figcaption>משמאל, <span class="math inline">\(\sqrt{n}\)</span> שואפת לאינסוף: לכל גובה <span class="math inline">\(,M\)</span> מנקודה מסוימת כל האיברים מעליו (בכחול). מימין, <span class="math inline">\(0, 1, 0, 2, 0, 3, \ldots\)</span> עוברת כל גובה, אבל חוזרת שוב ושוב ל-<span class="math inline">\(,0\)</span> ולכן <strong>אינה</strong> שואפת לאינסוף.</figcaption>
+<figcaption>משמאל, <span class="math inline">\(\sqrt{n}\)</span> שואפת לאינסוף: לכל גובה <span class="math inline">\(,M\)</span> ממקום מסוים כל האיברים מעליו (בכחול). מימין, הסדרה <span class="math inline">\(0, 1, 0, 2, 0, 3\)</span> וכן הלאה עוברת כל גובה, אבל חוזרת שוב ושוב ל-<span class="math inline">\(,0\)</span> ולכן <strong>אינה</strong> שואפת לאינסוף.</figcaption>
 </figure>
 </div>
 <div class="thmbox thmbox-warning" title="אינסוף אינו גבול">
@@ -1307,9 +1345,9 @@ window.Quarto = {
 <div class="thmbox thmbox-summary">
 <p><strong>סיכום.</strong></p>
 <ul>
-<li><span class="math inline">\(a_n \to L\)</span> אם לכל שגיאה מותרת <span class="math inline">\(\varepsilon &gt; 0\)</span> מנקודה מסוימת והלאה כל האיברים מקיימים <span class="math inline">\(.|a_n - L| &lt; \varepsilon\)</span></li>
+<li><span class="math inline">\(a_n \to L\)</span> אם לכל שגיאה מותרת <span class="math inline">\(\varepsilon &gt; 0\)</span> יש מקום שממנו והלאה כל האיברים מקיימים <span class="math inline">\(.|a_n - L| &lt; \varepsilon\)</span></li>
 <li>רק הזנב קובע את הגבול, ולסדרה יש לכל היותר גבול אחד.</li>
-<li><span class="math inline">\(a_n \to \infty\)</span> אם היא עוברת כל גובה ונשארת מעליו; זו סדרה מתבדרת.</li>
+<li><span class="math inline">\(a_n \to \infty\)</span> אם לכל מספר <span class="math inline">\(M\)</span> יש מקום שממנו והלאה כל האיברים גדולים מ-<span class="math inline">\(.M\)</span> זו סדרה מתבדרת.</li>
 </ul>
 </div>
 </section>
@@ -1318,10 +1356,51 @@ window.Quarto = {
 <div id="box-q-limit-table" class="thmbox thmbox-question" title="מנחשים גבול מטבלה">
 <p><strong>שאלה 2.2.5 — מנחשים גבול מטבלה.</strong></p>
 <div class="fill">
-<p><strong>(א)</strong> עבור <span class="math inline">\(a_n = \frac{2n + 1}{n}\)</span> מתקבל <span class="math inline">\(.a_1 = 3, \ a_{10} = 2.1, \ a_{100} = 2.01\)</span> הגבול הוא <span class="blank" data-ans="2"><span class="math inline">\(2\)</span></span></p>
-<p><strong>(ב)</strong> עבור <span class="math inline">\(a_n = 5 - \frac{1}{n^2}\)</span> מתקבל <span class="math inline">\(.a_1 = 4, \ a_{10} = 4.99, \ a_{100} = 4.9999\)</span> הגבול הוא <span class="blank" data-ans="5"><span class="math inline">\(5\)</span></span></p>
+<p><strong>(א)</strong> <span class="math inline">\(a_n = \frac{2n + 1}{n}\)</span></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: center;"><span class="math inline">\(n\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(1\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(10\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(100\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(1000\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(a_n\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(3\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(2.1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(2.01\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(2.001\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>הגבול הוא <span class="blank" data-ans="2"><span class="math inline">\(2\)</span></span></p>
+<p><strong>(ב)</strong> <span class="math inline">\(a_n = 5 - \frac{1}{n^2}\)</span></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: center;"><span class="math inline">\(n\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(1\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(10\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(100\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(a_n\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(4\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(4.99\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(4.9999\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>הגבול הוא <span class="blank" data-ans="5"><span class="math inline">\(5\)</span></span></p>
 <div class="explain">
-<p><strong>(א)</strong> <span class="math inline">\(,\frac{2n + 1}{n} = 2 + \frac{1}{n}\)</span> והשגיאה <span class="math inline">\(\frac{1}{n}\)</span> קטנה כמה שרוצים. <strong>(ב)</strong> השגיאה היא <span class="math inline">\(.\frac{1}{n^2}\)</span></p>
+<p><strong>(א)</strong> <span class="math inline">\(,\frac{2n + 1}{n} = 2 + \frac{1}{n}\)</span> והשגיאה <span class="math inline">\(\frac{1}{n}\)</span> קטנה כמה שרוצים.</p>
+<p><strong>(ב)</strong> השגיאה היא <span class="math inline">\(,\frac{1}{n^2}\)</span> שקטנה כמה שרוצים, ולכן הגבול <span class="math inline">\(.5\)</span></p>
 </div>
 </div>
 </div>
@@ -1342,7 +1421,7 @@ window.Quarto = {
 <button type="button" class="tf-opt" data-val="2">מתבדרת</button>
 <div class="tf-feedback" aria-live="polite"></div>
 <div class="tf-why">
-<p>האיברים <span class="math inline">\(1\)</span> ו-<span class="math inline">\(-1\)</span> חוזרים בלי סוף. אם <span class="math inline">\(,\varepsilon = 0.5\)</span> אין מספר ששניהם קרובים אליו פחות מ-<span class="math inline">\(.0.5\)</span></p>
+<p>מתבדרת: האיברים <span class="math inline">\(1\)</span> ו-<span class="math inline">\(-1\)</span> חוזרים בלי סוף, ואין מספר שהמרחק של שניהם ממנו קטן מ-<span class="math inline">\(.0.5\)</span></p>
 </div>
 </div>
 <p><strong>(ג)</strong> <span class="math inline">\(7\)</span> (הסדרה הקבועה)</p>
@@ -1366,11 +1445,11 @@ window.Quarto = {
 </div>
 <div id="box-q-error-place" class="thmbox thmbox-question" title="שגיאה מותרת">
 <p><strong>שאלה 2.2.7 — שגיאה מותרת.</strong></p>
-<p>עבור <span class="math inline">\(a_n = \frac{n + 2}{n}\)</span> ו-<span class="math inline">\(,L = 1\)</span> השגיאה היא <span class="math inline">\(.\left|\frac{n + 2}{n} - 1\right| = \frac{2}{n}\)</span></p>
+<p>עבור <span class="math inline">\(a_n = \frac{n + 2}{n}\)</span> ו-<span class="math inline">\(L = 1\)</span> השגיאה היא <span class="math inline">\(.\left|\frac{n + 2}{n} - 1\right| = \frac{2}{n}\)</span></p>
 <div class="fill">
-<p>עבור <span class="math inline">\(\varepsilon = 0.01\)</span> כל האיברים בשגיאה קטנה ממנה החל מ-<span class="fill-ltr"><span class="math inline">\(n =\)</span> <span class="blank" data-ans="201"><span class="math inline">\(201\)</span></span></span></p>
+<p>השגיאה קטנה מ-<span class="math inline">\(\varepsilon = 0.01\)</span> החל מ-<span class="fill-ltr"><span class="math inline">\(n =\)</span> <span class="blank" data-ans="201"><span class="math inline">\(201\)</span></span></span></p>
 <div class="explain">
-<p><span class="math inline">\(\frac{2}{n} &lt; 0.01\)</span> בדיוק כאשר <span class="math inline">\(,n &gt; 200\)</span> כלומר החל מ-<span class="math inline">\(.n = 201\)</span> אפשר לבדוק בסימולציה.</p>
+<p><span class="math inline">\(\frac{2}{n} &lt; 0.01\)</span> בדיוק כאשר <span class="math inline">\(,n &gt; 200\)</span> כלומר החל מ-<span class="math inline">\(.n = 201\)</span> אפשר לבדוק בסימולציה <a href="#box-sim-error-band">סימולציה 2.2.2</a>.</p>
 </div>
 </div>
 </div>
@@ -1380,20 +1459,30 @@ window.Quarto = {
 <div class="tf-quiz" data-correct="2">
 <button type="button" class="tf-opt" data-val="1">\(\infty\)</button>
 <button type="button" class="tf-opt" data-val="2">\(-\infty\)</button>
-<button type="button" class="tf-opt" data-val="3">אין לה גבול</button>
+<button type="button" class="tf-opt" data-val="3">אף אחד מהם</button>
 <div class="tf-feedback" aria-live="polite"></div>
 <div class="tf-why">
-<p>מנקודה מסוימת היא קטנה מכל מספר שנבחר.</p>
+<p><span class="math inline">\(:{-}\infty\)</span> לכל מספר <span class="math inline">\(M\)</span> יש מקום שממנו והלאה <span class="math inline">\(.{-}3n &lt; M\)</span></p>
 </div>
 </div>
 <p><strong>(ב)</strong> <span class="math inline">\((-2)^n\)</span></p>
 <div class="tf-quiz" data-correct="3">
 <button type="button" class="tf-opt" data-val="1">\(\infty\)</button>
 <button type="button" class="tf-opt" data-val="2">\(-\infty\)</button>
-<button type="button" class="tf-opt" data-val="3">אין לה גבול</button>
+<button type="button" class="tf-opt" data-val="3">אף אחד מהם</button>
 <div class="tf-feedback" aria-live="polite"></div>
 <div class="tf-why">
-<p><span class="math inline">\(,{-}2, 4, -8, 16, \ldots\)</span> הערך המוחלט גדל, אבל הסימן מתחלף, ולכן היא לא נשארת מעל שום גובה ולא מתחת לשום גובה.</p>
+<p>אף אחד מהם: הסימן מתחלף (<span class="math inline">\(-2\)</span> ואחריו <span class="math inline">\(4\)</span> ואחריו <span class="math inline">\(-8\)</span>), ולכן היא לא נשארת מעל שום מספר וגם לא מתחת לשום מספר.</p>
+</div>
+</div>
+<p><strong>(ג)</strong> <span class="math inline">\(n + 2(-1)^n\)</span></p>
+<div class="tf-quiz" data-correct="1">
+<button type="button" class="tf-opt" data-val="1">\(\infty\)</button>
+<button type="button" class="tf-opt" data-val="2">\(-\infty\)</button>
+<button type="button" class="tf-opt" data-val="3">אף אחד מהם</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p><span class="math inline">\(:\infty\)</span> האיברים הם <span class="math inline">\(-1, 4, 1, 6, 3, 8\)</span> וכן הלאה: הסדרה לא עולה בכל צעד, אבל <span class="math inline">\(,n + 2(-1)^n \ge n - 2\)</span> ולכן לכל <span class="math inline">\(M\)</span> ממקום מסוים כל האיברים גדולים מ-<span class="math inline">\(.M\)</span> כדי לשאוף לאינסוף לא חייבים לעלות בכל צעד.</p>
 </div>
 </div>
 </div>
@@ -1402,38 +1491,46 @@ window.Quarto = {
 <section id="סדרות-סטנדרטיות" class="level2" data-number="2.3">
 <h2 data-number="2.3" class="anchored" data-anchor-id="סדרות-סטנדרטיות"><span class="header-section-number">2.3</span> סדרות סטנדרטיות</h2>
 <div class="lead">
-<p><strong>מה עושים כאן?</strong> את הגבולות של כמה סדרות פשוטות כדאי לזכור בעל פה. מהן נחשב את כל השאר.</p>
+<p><strong>מה עושים כאן?</strong> את הגבולות של כמה סדרות פשוטות כדאי לזכור בעל פה. מהן נחשב גבולות של סדרות מסובכות יותר.</p>
 </div>
 <div id="box-thm-standard" class="thmbox thmbox-theorem" title="גבולות של סדרות סטנדרטיות">
 <p><strong>משפט 2.3.1 — גבולות של סדרות סטנדרטיות.</strong></p>
 <ol type="1">
 <li>סדרה קבועה: <span class="math inline">\(.c \to c\)</span></li>
-<li><span class="math inline">\(\frac{1}{n^p} \to 0\)</span> לכל <span class="math inline">\(,p &gt; 0\)</span> למשל <span class="math inline">\(,\frac{1}{n}\)</span> <span class="math inline">\(\frac{1}{n^2}\)</span> ו-<span class="math inline">\(.\frac{1}{\sqrt{n}}\)</span></li>
+<li><span class="math inline">\(\frac{1}{n^p} \to 0\)</span> לכל <span class="math inline">\(.p &gt; 0\)</span> למשל <span class="math inline">\(\frac{1}{n}\)</span> ו-<span class="math inline">\(\frac{1}{n^2}\)</span> ו-<span class="math inline">\(.\frac{1}{\sqrt{n}}\)</span></li>
 <li><span class="math inline">\(n^p \to \infty\)</span> לכל <span class="math inline">\(.p &gt; 0\)</span></li>
-<li><span class="math inline">\(:q^n\)</span> אם <span class="math inline">\(|q| &lt; 1\)</span> אז <span class="math inline">\(;q^n \to 0\)</span> אם <span class="math inline">\(q = 1\)</span> אז <span class="math inline">\(;q^n \to 1\)</span> אם <span class="math inline">\(q &gt; 1\)</span> אז <span class="math inline">\(;q^n \to \infty\)</span> ואם <span class="math inline">\(q \le -1\)</span> אין לה גבול.</li>
+<li>הסדרה <span class="math inline">\(q^n\)</span> תלויה ב-<span class="math inline">\(:q\)</span>
+<ul>
+<li>אם <span class="math inline">\(|q| &lt; 1\)</span> אז <span class="math inline">\(.q^n \to 0\)</span></li>
+<li>אם <span class="math inline">\(q = 1\)</span> אז <span class="math inline">\(.q^n \to 1\)</span></li>
+<li>אם <span class="math inline">\(q &gt; 1\)</span> אז <span class="math inline">\(.q^n \to \infty\)</span></li>
+<li>אם <span class="math inline">\(q \le -1\)</span> היא מתבדרת, ואינה שואפת ל-<span class="math inline">\(\infty\)</span> וגם לא ל-<span class="math inline">\(.{-}\infty\)</span></li>
+</ul></li>
 <li><span class="math inline">\(\sqrt[n]{a} \to 1\)</span> לכל <span class="math inline">\(,a &gt; 0\)</span> וגם <span class="math inline">\(.\sqrt[n]{n} \to 1\)</span></li>
 </ol>
 </div>
 <details class="thmcollapse thmfoldable lecture-answer"><summary>למה?</summary>
 <div class="lecture-answer" title="למה?">
 <ul>
-<li>כפל חוזר במספר שקטן מ-<span class="math inline">\(1\)</span> בערך מוחלט מקטין: <span class="math inline">\(,0.8^2 = 0.64\)</span> <span class="math inline">\(,0.8^{10} \approx 0.11\)</span> <span class="math inline">\(.0.8^{30} \approx 0.001\)</span> כפל חוזר במספר גדול מ-<span class="math inline">\(1\)</span> מגדיל בלי גבול.</li>
+<li>כפל חוזר במספר שהערך המוחלט שלו קטן מ-<span class="math inline">\(1\)</span> מקרב את התוצאה לאפס: <span class="math inline">\(,0.8^2 = 0.64\)</span> <span class="math inline">\(,0.8^{10} \approx 0.11\)</span> <span class="math inline">\(.0.8^{30} \approx 0.001\)</span> כפל חוזר במספר גדול מ-<span class="math inline">\(1\)</span> מגדיל בלי גבול.</li>
 <li><span class="math inline">\(\sqrt[n]{a} = a^{1/n}\)</span> והמעריך <span class="math inline">\(\frac{1}{n}\)</span> שואף ל-<span class="math inline">\(,0\)</span> ו-<span class="math inline">\(.a^0 = 1\)</span> למשל <span class="math inline">\(.\sqrt[10]{2} \approx 1.07\)</span></li>
+<li>גם <span class="math inline">\(\sqrt[n]{n}\)</span> מתקרב ל-<span class="math inline">\(:1\)</span> <span class="math inline">\(,\sqrt[10]{10} \approx 1.26\)</span> <span class="math inline">\(,\sqrt[100]{100} \approx 1.047\)</span> <span class="math inline">\(.\sqrt[1000]{1000} \approx 1.007\)</span></li>
 </ul>
 </div>
 </details>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="figures/ch02-geometric.png" class="img-fluid figure-img" style="width:95.0%" alt="ארבעה גרפים של נקודות: יורדות לאפס, מחליפות סימן ומתקרבות לאפס, עולות מהר, קופצות בין אחת למינוס אחת"></p>
-<figcaption>הסדרה <span class="math inline">\(q^n\)</span> עבור ארבעה ערכים של <span class="math inline">\(q\)</span>. עבור <span class="math inline">\(q = 0.8\)</span> ו-<span class="math inline">\(q = -0.8\)</span> האיברים שואפים ל-<span class="math inline">\(0\)</span> (השנייה מחליפה סימן). עבור <span class="math inline">\(q = 1.2\)</span> הם גדלים בלי גבול, ועבור <span class="math inline">\(q = -1\)</span> הם קופצים בין <span class="math inline">\(1\)</span> ל-<span class="math inline">\(.{-}1\)</span></figcaption>
+<figcaption>הסדרה <span class="math inline">\(q^n\)</span> עבור ארבעה ערכים של <span class="math inline">\(q\)</span>. עבור <span class="math inline">\(q = 0.8\)</span> ו-<span class="math inline">\(q = -0.8\)</span> הסדרה שואפת ל-<span class="math inline">\(0\)</span> (עבור <span class="math inline">\(q = -0.8\)</span> הסימן מתחלף). עבור <span class="math inline">\(q = 1.2\)</span> הם גדלים בלי גבול, ועבור <span class="math inline">\(q = -1\)</span> הם קופצים בין <span class="math inline">\(1\)</span> ל-<span class="math inline">\(.{-}1\)</span></figcaption>
 </figure>
 </div>
-<div class="thmbox thmbox-warning" title="למה התנאים על q">
-<p><strong>שימו לב — למה התנאים על q.</strong></p>
+<div class="thmbox thmbox-warning" title="למה צריך את התנאים?">
+<p><strong>שימו לב — למה צריך את התנאים?</strong></p>
 <ul>
-<li><span class="math inline">\(q = -1\)</span> נותנת <span class="math inline">\(,{-}1, 1, -1, 1, \ldots\)</span> שאין לה גבול, אף ש-<span class="math inline">\(.|q| = 1\)</span></li>
-<li><span class="math inline">\(q = -2\)</span> נותנת <span class="math inline">\(,{-}2, 4, -8, \ldots\)</span> שגדלה בערך מוחלט אבל מחליפה סימן, ולכן אינה שואפת ל-<span class="math inline">\(\infty\)</span> וגם לא ל-<span class="math inline">\(.{-}\infty\)</span></li>
+<li>עבור <span class="math inline">\(q = -1\)</span> האיברים קופצים בין <span class="math inline">\(-1\)</span> ל-<span class="math inline">\(,1\)</span> ואין גבול, אף ש-<span class="math inline">\(|q| = 1\)</span> כמו עבור <span class="math inline">\(.q = 1\)</span></li>
+<li>עבור <span class="math inline">\(q = -2\)</span> הערך המוחלט גדל, אבל הסימן מתחלף, ולכן אין גבול וגם אין שאיפה ל-<span class="math inline">\(\pm\infty\)</span> (כמו בתרגיל <a href="#box-q-to-infinity">שאלה 2.2.8</a>).</li>
 <li>ב-(2) הדרישה <span class="math inline">\(p &gt; 0\)</span> הכרחית: עבור <span class="math inline">\(p = 0\)</span> מתקבלת הסדרה הקבועה <span class="math inline">\(,\frac{1}{n^0} = 1\)</span> שאינה שואפת ל-<span class="math inline">\(.0\)</span></li>
+<li>ב-(5) הדרישה <span class="math inline">\(a &gt; 0\)</span> הכרחית: עבור <span class="math inline">\(a = 0\)</span> כל האיברים <span class="math inline">\(,0\)</span> והגבול <span class="math inline">\(0\)</span> ולא <span class="math inline">\(.1\)</span></li>
 </ul>
 </div>
 <div id="box-exm-standard" class="thmbox thmbox-example" title="גבולות סטנדרטיים">
@@ -1446,13 +1543,16 @@ window.Quarto = {
 <p><strong>(ד)</strong> <span class="fill-ltr"><span class="math inline">\(\frac{1}{n^5} \to\)</span> <span class="blank" data-ans="0"><span class="math inline">\(0\)</span></span></span></p>
 <p><strong>(ה)</strong> <span class="fill-ltr"><span class="math inline">\(\sqrt[n]{7} \to\)</span> <span class="blank" data-ans="1"><span class="math inline">\(1\)</span></span></span></p>
 <div class="explain">
-<p><strong>(א)</strong> ו-<strong>(ב)</strong> לפי (4), כי <span class="math inline">\(.|q| &lt; 1\)</span> <strong>(ג)</strong> לפי (4), כי <span class="math inline">\(.q &gt; 1\)</span> <strong>(ד)</strong> לפי (2) עם <span class="math inline">\(.p = 5\)</span> <strong>(ה)</strong> לפי (5).</p>
+<p><strong>(א)</strong> ו-<strong>(ב)</strong> לפי סעיף 4 במשפט, כי <span class="math inline">\(.|q| &lt; 1\)</span></p>
+<p><strong>(ג)</strong> לפי סעיף 4, כי <span class="math inline">\(.q &gt; 1\)</span></p>
+<p><strong>(ד)</strong> לפי סעיף 2 עם <span class="math inline">\(.p = 5\)</span></p>
+<p><strong>(ה)</strong> לפי סעיף 5.</p>
 </div>
 </div>
 </div>
 <div class="thmbox thmbox-self-check">
 <p><strong>בדיקה עצמית.</strong></p>
-<p><strong>(א)</strong> <span class="math inline">\((1.01)^n \to \ ?\)</span></p>
+<p><strong>(א)</strong> לאן שואפת הסדרה <span class="math inline">\(?(1.01)^n\)</span></p>
 <div class="tf-quiz" data-correct="2">
 <button type="button" class="tf-opt" data-val="1">\(1\)</button>
 <button type="button" class="tf-opt" data-val="2">\(\infty\)</button>
@@ -1462,29 +1562,29 @@ window.Quarto = {
 <p><span class="math inline">\(,q = 1.01 &gt; 1\)</span> ולכן <span class="math inline">\(.(1.01)^n \to \infty\)</span> זה לוקח זמן (<span class="math inline">\(1.01^{100} \approx 2.7\)</span>), אבל היא עוברת כל גובה.</p>
 </div>
 </div>
-<p><strong>(ב)</strong> <span class="math inline">\((-0.99)^n \to \ ?\)</span></p>
+<p><strong>(ב)</strong> לאן שואפת הסדרה <span class="math inline">\(?(-0.99)^n\)</span></p>
 <div class="tf-quiz" data-correct="1">
 <button type="button" class="tf-opt" data-val="1">\(0\)</button>
-<button type="button" class="tf-opt" data-val="2">אין לה גבול</button>
+<button type="button" class="tf-opt" data-val="2">אף מספר</button>
 <button type="button" class="tf-opt" data-val="3">\(-1\)</button>
 <div class="tf-feedback" aria-live="polite"></div>
 <div class="tf-why">
-<p><span class="math inline">\(,|q| = 0.99 &lt; 1\)</span> ולכן <span class="math inline">\(.(-0.99)^n \to 0\)</span> הסימן מתחלף, אבל הערך המוחלט קטן.</p>
+<p><span class="math inline">\(,|q| = 0.99 &lt; 1\)</span> ולכן <span class="math inline">\(.(-0.99)^n \to 0\)</span> הסימן מתחלף, אבל הערך המוחלט שואף ל-<span class="math inline">\(.0\)</span></p>
 </div>
 </div>
 </div>
 <div class="thmbox thmbox-summary">
 <p><strong>סיכום.</strong></p>
 <ul>
-<li><span class="math inline">\(,c \to c\)</span> <span class="math inline">\(\frac{1}{n^p} \to 0\)</span> ו-<span class="math inline">\(n^p \to \infty\)</span> (עבור <span class="math inline">\(p &gt; 0\)</span>).</li>
-<li><span class="math inline">\(q^n \to 0\)</span> אם <span class="math inline">\(,|q| &lt; 1\)</span> ו-<span class="math inline">\(q^n \to \infty\)</span> אם <span class="math inline">\(;q &gt; 1\)</span> אם <span class="math inline">\(q \le -1\)</span> אין לה גבול.</li>
-<li><span class="math inline">\(\sqrt[n]{a} \to 1\)</span> (עבור <span class="math inline">\(a &gt; 0\)</span>) ו-<span class="math inline">\(.\sqrt[n]{n} \to 1\)</span></li>
+<li>סדרה קבועה שואפת לעצמה. <span class="math inline">\(\frac{1}{n^p} \to 0\)</span> ו-<span class="math inline">\(n^p \to \infty\)</span> כאשר <span class="math inline">\(.p &gt; 0\)</span></li>
+<li><span class="math inline">\(q^n\)</span> שואפת ל-<span class="math inline">\(0\)</span> כאשר <span class="math inline">\(,|q| &lt; 1\)</span> ל-<span class="math inline">\(1\)</span> כאשר <span class="math inline">\(,q = 1\)</span> ול-<span class="math inline">\(\infty\)</span> כאשר <span class="math inline">\(.q &gt; 1\)</span> כאשר <span class="math inline">\(q \le -1\)</span> היא מתבדרת.</li>
+<li><span class="math inline">\(\sqrt[n]{a} \to 1\)</span> (כאשר <span class="math inline">\(a &gt; 0\)</span>) וגם <span class="math inline">\(.\sqrt[n]{n} \to 1\)</span></li>
 </ul>
 </div>
 <section id="תרגילים-2" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="תרגילים-2">תרגילים</h3>
-<div id="box-q-standard" class="thmbox thmbox-question" title="לאן שואפת?">
-<p><strong>שאלה 2.3.3 — לאן שואפת?</strong></p>
+<div id="box-q-standard" class="thmbox thmbox-question" title="לאן הסדרה שואפת?">
+<p><strong>שאלה 2.3.3 — לאן הסדרה שואפת?</strong></p>
 <div class="fill">
 <p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\(\left(\frac{2}{3}\right)^n \to\)</span> <span class="blank" data-ans="0"><span class="math inline">\(0\)</span></span></span></p>
 <p><strong>(ב)</strong> <span class="fill-ltr"><span class="math inline">\(\frac{1}{\sqrt{n}} \to\)</span> <span class="blank" data-ans="0"><span class="math inline">\(0\)</span></span></span></p>
@@ -1499,12 +1599,13 @@ window.Quarto = {
 <div class="fill">
 <p><span class="math inline">\(q^n\)</span> מתכנסת בדיוק כאשר <span class="math inline">\(q\)</span> בקבוצה <span class="blank" data-ans="(-1,1]"><span class="math inline">\((-1, 1]\)</span></span></p>
 <div class="explain">
-<p>עבור <span class="math inline">\(|q| &lt; 1\)</span> הגבול <span class="math inline">\(,0\)</span> ועבור <span class="math inline">\(q = 1\)</span> הגבול <span class="math inline">\(.1\)</span> עבור <span class="math inline">\(q &gt; 1\)</span> היא שואפת לאינסוף, ועבור <span class="math inline">\(q \le -1\)</span> אין לה גבול. לכן <span class="math inline">\(.q \in (-1, 1]\)</span></p>
+<p>עבור <span class="math inline">\(|q| &lt; 1\)</span> הגבול <span class="math inline">\(,0\)</span> ועבור <span class="math inline">\(q = 1\)</span> הגבול <span class="math inline">\(.1\)</span> עבור <span class="math inline">\(q &gt; 1\)</span> היא שואפת לאינסוף, ועבור <span class="math inline">\(q \le -1\)</span> היא מתבדרת. לכן <span class="math inline">\(.q \in (-1, 1]\)</span></p>
 </div>
 </div>
 </div>
 <div id="box-q-standard-trap" class="thmbox thmbox-question" title="איזו מתבדרת?">
 <p><strong>שאלה 2.3.5 — איזו מתבדרת?</strong></p>
+<p>איזו מהסדרות הבאות מתבדרת?</p>
 <div class="tf-quiz" data-correct="3">
 <button type="button" class="tf-opt" data-val="1">\(\left(\frac{1}{2}\right)^n\)</button>
 <button type="button" class="tf-opt" data-val="2">\(\sqrt[n]{n}\)</button>
@@ -1512,7 +1613,30 @@ window.Quarto = {
 <button type="button" class="tf-opt" data-val="4">\(\frac{1}{n^{0.1}}\)</button>
 <div class="tf-feedback" aria-live="polite"></div>
 <div class="tf-why">
-<p><span class="math inline">\((-1.2)^n\)</span> מתבדרת, כי <span class="math inline">\(.q = -1.2 \le -1\)</span> השאר מתכנסות: <span class="math inline">\(\left(\frac{1}{2}\right)^n \to 0\)</span> ו-<span class="math inline">\(,\sqrt[n]{n} \to 1\)</span> וגם <span class="math inline">\(\frac{1}{n^{0.1}} \to 0\)</span> כי <span class="math inline">\(.p = 0.1 &gt; 0\)</span></p>
+<p><span class="math inline">\((-1.2)^n\)</span> מתבדרת, כי <span class="math inline">\(.q = -1.2 \le -1\)</span> השאר מתכנסות: <span class="math inline">\(\left(\frac{1}{2}\right)^n \to 0\)</span> ו-<span class="math inline">\(\sqrt[n]{n} \to 1\)</span> וגם <span class="math inline">\(\frac{1}{n^{0.1}} \to 0\)</span> כי <span class="math inline">\(.p = 0.1 &gt; 0\)</span></p>
+</div>
+</div>
+</div>
+<div id="box-q-standard-limits" class="thmbox thmbox-question" title="מה הגבול?">
+<p><strong>שאלה 2.3.6 — מה הגבול?</strong></p>
+<p><strong>(א)</strong> <span class="math inline">\(\sqrt[n]{n}\)</span></p>
+<div class="tf-quiz" data-correct="2">
+<button type="button" class="tf-opt" data-val="1">\(0\)</button>
+<button type="button" class="tf-opt" data-val="2">\(1\)</button>
+<button type="button" class="tf-opt" data-val="3">\(\infty\)</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p><span class="math inline">\(:1\)</span> לפי סעיף 5. אף ש-<span class="math inline">\(n\)</span> גדל, השורש מסדר <span class="math inline">\(n\)</span> מקרב אותו ל-<span class="math inline">\(.1\)</span></p>
+</div>
+</div>
+<p><strong>(ב)</strong> <span class="math inline">\(\frac{1}{n^{3/2}}\)</span></p>
+<div class="tf-quiz" data-correct="1">
+<button type="button" class="tf-opt" data-val="1">\(0\)</button>
+<button type="button" class="tf-opt" data-val="2">\(1\)</button>
+<button type="button" class="tf-opt" data-val="3">\(\infty\)</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p><span class="math inline">\(:0\)</span> לפי סעיף 2 עם <span class="math inline">\(.p = \frac{3}{2} &gt; 0\)</span></p>
 </div>
 </div>
 </div>
@@ -1521,51 +1645,67 @@ window.Quarto = {
 <section id="משפטי-גבולות-בסיסיים" class="level2" data-number="2.4">
 <h2 data-number="2.4" class="anchored" data-anchor-id="משפטי-גבולות-בסיסיים"><span class="header-section-number">2.4</span> משפטי גבולות בסיסיים</h2>
 <div class="lead">
-<p><strong>מה עושים כאן?</strong> מחשבים גבולות של סכומים, מכפלות ומנות מתוך הסדרות הסטנדרטיות, ובודקים מתי זה לא עובד.</p>
+<p><strong>מה עושים כאן?</strong> נחשב גבולות של סכומים, מכפלות ומנות בעזרת הסדרות הסטנדרטיות, נראה מתי זה לא עובד, ונכיר את כלל הסנדוויץ’.</p>
 </div>
 <div id="box-thm-limit-arithmetic" class="thmbox thmbox-theorem" title="חשבון גבולות">
 <p><strong>משפט 2.4.1 — חשבון גבולות.</strong></p>
-<p>אם <span class="math inline">\(a_n \to A\)</span> ו-<span class="math inline">\(b_n \to B\)</span> (מספרים), אז:</p>
+<p>אם <span class="math inline">\(a_n \to A\)</span> ו-<span class="math inline">\(,b_n \to B\)</span> כאשר <span class="math inline">\(A\)</span> ו-<span class="math inline">\(B\)</span> מספרים, אז לכל מספר <span class="math inline">\(c\)</span> ולכל <span class="math inline">\(k\)</span> טבעי:</p>
 <ol type="1">
-<li><span class="math inline">\(a_n \pm b_n \to A \pm B\)</span> ו-<span class="math inline">\(;c \cdot a_n \to cA\)</span></li>
-<li><span class="math inline">\(;a_n b_n \to AB\)</span></li>
-<li><span class="math inline">\(\frac{a_n}{b_n} \to \frac{A}{B}\)</span> אם <span class="math inline">\(;B \neq 0\)</span></li>
-<li><span class="math inline">\((a_n)^k \to A^k\)</span> ו-<span class="math inline">\(\sqrt{a_n} \to \sqrt{A}\)</span> (אם <span class="math inline">\(A \ge 0\)</span>).</li>
+<li><span class="math inline">\(a_n + b_n \to A + B\)</span> ו-<span class="math inline">\(a_n - b_n \to A - B\)</span> וגם <span class="math inline">\(c \cdot a_n \to cA\)</span></li>
+<li><span class="math inline">\(a_n b_n \to AB\)</span></li>
+<li><span class="math inline">\(\frac{a_n}{b_n} \to \frac{A}{B}\)</span> אם <span class="math inline">\(B \neq 0\)</span></li>
+<li><span class="math inline">\((a_n)^k \to A^k\)</span> ו-<span class="math inline">\(\sqrt{a_n} \to \sqrt{A}\)</span> אם <span class="math inline">\(a_n \ge 0\)</span></li>
 </ol>
 </div>
-<p>גם עם <span class="math inline">\(\infty\)</span> מחשבים כמו שמצפים:</p>
+<div class="thmbox thmbox-warning" title="למה צריך $B \neq 0$?">
+<p><strong>שימו לב — למה צריך <span class="math inline">\(B \neq 0\)</span>?</strong></p>
+<p>אם <span class="math inline">\(b_n \to 0\)</span> אין תשובה אחת: <span class="math inline">\(\frac{1}{1/n} = n \to \infty\)</span> אבל <span class="math inline">\(\frac{1}{(-1)^n / n} = (-1)^n n\)</span> מתבדרת ואינה שואפת ל-<span class="math inline">\(.\pm\infty\)</span> לכן “<span class="math inline">\(\frac{c}{0}\)</span>” אינו כלל.</p>
+</div>
+<p>חלק מהחישובים עובדים גם כשסדרה שואפת לאינסוף. כאן <span class="math inline">\(c\)</span> הוא מספר, ו-“<span class="math inline">\(c + \infty = \infty\)</span>” הוא קיצור של: אם <span class="math inline">\(a_n \to c\)</span> ו-<span class="math inline">\(b_n \to \infty\)</span> אז <span class="math inline">\(.a_n + b_n \to \infty\)</span></p>
 <div class="thmbox thmbox-key-point thmicon-rule" data-icon="rule" title="חשבון עם אינסוף">
 <p><strong>כלל — חשבון עם אינסוף.</strong></p>
-<p>עבור מספר <span class="math inline">\(:c\)</span> <span class="math inline">\(,c + \infty = \infty\)</span> <span class="math inline">\(,\infty + \infty = \infty\)</span> <span class="math inline">\(,\infty \cdot \infty = \infty\)</span> <span class="math inline">\(,c \cdot \infty = \infty\)</span> אם <span class="math inline">\(c &gt; 0\)</span> (ו-<span class="math inline">\(-\infty\)</span> אם <span class="math inline">\(c &lt; 0\)</span>), ו-<span class="math inline">\(.\frac{c}{\infty} = 0\)</span></p>
+<ul>
+<li><span class="math inline">\(c + \infty = \infty\)</span> ו-<span class="math inline">\(\infty + \infty = \infty\)</span></li>
+<li><span class="math inline">\(\infty \cdot \infty = \infty\)</span></li>
+<li><span class="math inline">\(c \cdot \infty = \infty\)</span> אם <span class="math inline">\(,c &gt; 0\)</span> ו-<span class="math inline">\(c \cdot \infty = -\infty\)</span> אם <span class="math inline">\(c &lt; 0\)</span></li>
+<li><span class="math inline">\(\frac{c}{\infty} = 0\)</span> ו-<span class="math inline">\(\frac{\infty}{c} = \infty\)</span> אם <span class="math inline">\(c &gt; 0\)</span></li>
+</ul>
 </div>
 <div class="thmbox thmbox-warning" title="צורות לא מוגדרות">
 <p><strong>שימו לב — צורות לא מוגדרות.</strong></p>
-<p><span class="math inline">\(,\infty - \infty\)</span> <span class="math inline">\(,\frac{\infty}{\infty}\)</span> <span class="math inline">\(0 \cdot \infty\)</span> ו-<span class="math inline">\(\frac{0}{0}\)</span> <strong>אינן</strong> מספרים: אותה צורה יכולה לתת תשובות שונות. למשל, שלוש הסדרות <span class="math inline">\(,n - n\)</span> <span class="math inline">\((n + 1) - n\)</span> ו-<span class="math inline">\(2n - n\)</span> הן כולן מהצורה <span class="math inline">\(,\infty - \infty\)</span> אבל שואפות ל-<span class="math inline">\(,0\)</span> ל-<span class="math inline">\(1\)</span> ול-<span class="math inline">\(.\infty\)</span> כשמקבלים צורה כזו, משנים קודם את הביטוי.</p>
+<p>לצורות <span class="math inline">\(\infty - \infty\)</span> ו-<span class="math inline">\(\frac{\infty}{\infty}\)</span> ו-<span class="math inline">\(0 \cdot \infty\)</span> ו-<span class="math inline">\(\frac{0}{0}\)</span> <strong>אין תשובה קבועה</strong>: אותה צורה יכולה לתת תשובות שונות.</p>
+<ul>
+<li><span class="math inline">\(\infty - \infty\)</span>: הסדרות <span class="math inline">\(n - n\)</span> ו-<span class="math inline">\((n + 1) - n\)</span> ו-<span class="math inline">\(2n - n\)</span> שואפות ל-<span class="math inline">\(0\)</span> ול-<span class="math inline">\(1\)</span> ול-<span class="math inline">\(.\infty\)</span></li>
+<li><span class="math inline">\(\frac{\infty}{\infty}\)</span>: הסדרות <span class="math inline">\(\frac{n}{n}\)</span> ו-<span class="math inline">\(\frac{n^2}{n}\)</span> ו-<span class="math inline">\(\frac{n}{n^2}\)</span> שואפות ל-<span class="math inline">\(1\)</span> ול-<span class="math inline">\(\infty\)</span> ול-<span class="math inline">\(.0\)</span></li>
+</ul>
+<p>כשמקבלים צורה כזו, קודם מעבירים את הביטוי לצורה אחרת, ורק אז מחשבים.</p>
 </div>
-<div class="thmbox thmbox-key-point thmicon-calc" data-icon="calc" title="גבול של מנה של פולינומים">
-<p><strong>שיטת חישוב — גבול של מנה של פולינומים.</strong></p>
+<div class="thmbox thmbox-key-point thmicon-calc" data-icon="calc" title="מה עושים עם צורה לא מוגדרת">
+<p><strong>שיטת חישוב — מה עושים עם צורה לא מוגדרת.</strong></p>
 <ol type="1">
-<li>מוצאים את החזקה הגבוהה ביותר של <span class="math inline">\(n\)</span> במכנה.</li>
-<li>מחלקים בה את המונה ואת המכנה.</li>
-<li>מחליפים כל סדרה סטנדרטית בגבול שלה (<span class="math inline">\(\frac{1}{n} \to 0\)</span> וכו’) ומחשבים לפי חשבון הגבולות.</li>
+<li>מנה של פולינומים: מחלקים את המונה ואת המכנה בחזקה הגבוהה ביותר של <span class="math inline">\(n\)</span> במכנה.</li>
+<li>מנה עם חזקות כמו <span class="math inline">\(2^n\)</span> ו-<span class="math inline">\(:3^n\)</span> מחלקים בחזקה הגדולה ביותר.</li>
+<li>הפרש כמו <span class="math inline">\(:n - n^2\)</span> מוציאים את החזקה הגבוהה ביותר כגורם משותף.</li>
+<li>אחר כך מחליפים כל סדרה סטנדרטית בגבול שלה (למשל <span class="math inline">\(\frac{1}{n} \to 0\)</span>) ומחשבים לפי חשבון הגבולות.</li>
 </ol>
 </div>
 <div id="box-exm-lim-rational" class="thmbox thmbox-example" title="חשבון גבולות, צעד אחר צעד">
 <p><strong>דוגמה 2.4.2 — חשבון גבולות, צעד אחר צעד.</strong></p>
-<p>חשבו את הגבולות. כל עוד יש <span class="math inline">\(n\)</span> בשורה, היא נכתבת כגבול. <span>(שבר כותבים עם קו נטוי; <span class="math inline">\(\frac{1}{n^2}\)</span> כותבים <code>1/n^2</code>, ואת <span class="math inline">\(\infty\)</span> כותבים <code>inf</code>.)</span></p>
-<p><strong>(א)</strong> <span class="math inline">\(\lim\limits_{n\to\infty} \frac{3n^2 + 1}{n^2 - 4n}\)</span></p>
-<div class="steps" data-limit="n" start="(3n^2+1)/(n^2-4n)" data-rules="divide|simplify|limit|compute" data-model="(3+[1/n^2])/(1-[4/n]) :: divide || (3+[0])/(1-[0]) :: limit || 3 :: compute">
+<p>חשבו את הגבולות. כל שורה שעדיין מופיע בה <span class="math inline">\(n\)</span> כותבים עם סימן הגבול. <span>(שבר כותבים עם קו נטוי; את <span class="math inline">\(\frac{1}{n^2}\)</span> כותבים <code>1/n^2</code>, ואת <span class="math inline">\(\infty\)</span> כותבים <code>inf</code>.)</span></p>
+<p><strong>(א)</strong> <span class="math inline">\(\lim\limits_{n\to\infty} \frac{3n^2 + 1}{n^2 + 4n}\)</span></p>
+<div class="steps" data-limit="n" start="(3n^2+1)/(n^2+4n)" data-rules="divide|simplify|limit|compute" data-model="(3+[1/n^2])/(1+[4/n]) :: divide || (3+[0])/(1+[0]) :: limit || 3 :: compute">
 <div class="hint">
-<p>הצבה ישירה נותנת <span class="math inline">\(.\frac{\infty}{\infty}\)</span> החזקה הגבוהה במכנה היא <span class="math inline">\(.n^2\)</span></p>
+<p>המונה והמכנה שואפים שניהם ל-<span class="math inline">\(:\infty\)</span> זו הצורה <span class="math inline">\(.\frac{\infty}{\infty}\)</span> החזקה הגבוהה במכנה היא <span class="math inline">\(.n^2\)</span></p>
 </div>
 <div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} \lim_{n\to\infty} \frac{3n^2 + 1}{n^2 - 4n} &amp;= \lim_{n\to\infty} \frac{3 + \frac{1}{n^2}}{1 - \frac{4}{n}} \\ &amp;= \frac{3 + 0}{1 - 0} \\ &amp;= 3 \end{aligned}\]</span> חילקנו את המונה ואת המכנה ב-<span class="math inline">\(,n^2\)</span> ואז החלפנו את <span class="math inline">\(\frac{1}{n^2}\)</span> ואת <span class="math inline">\(\frac{4}{n}\)</span> ב-<span class="math inline">\(.0\)</span></p>
+<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} \lim_{n\to\infty} \frac{3n^2 + 1}{n^2 + 4n} &amp;= \lim_{n\to\infty} \frac{3 + \frac{1}{n^2}}{1 + \frac{4}{n}} \\ &amp;= \frac{3 + 0}{1 + 0} \\ &amp;= 3 \end{aligned}\]</span></p>
+<p>חילקנו את המונה ואת המכנה ב-<span class="math inline">\(,n^2\)</span> ואז החלפנו את <span class="math inline">\(\frac{1}{n^2}\)</span> ואת <span class="math inline">\(\frac{4}{n}\)</span> ב-<span class="math inline">\(.0\)</span></p>
 </div>
 </div>
 <p><strong>(ב)</strong> <span class="math inline">\(\lim\limits_{n\to\infty} \frac{2n + 5}{n^2 + 1}\)</span></p>
 <div class="steps" data-limit="n" start="(2n+5)/(n^2+1)" data-rules="divide|simplify|limit|compute" data-model="([2/n]+[5/n^2])/(1+[1/n^2]) :: divide || ([0]+[0])/(1+[0]) :: limit || 0 :: compute">
 <div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} \lim_{n\to\infty} \frac{2n + 5}{n^2 + 1} &amp;= \lim_{n\to\infty} \frac{\frac{2}{n} + \frac{5}{n^2}}{1 + \frac{1}{n^2}} \\ &amp;= \frac{0 + 0}{1 + 0} \\ &amp;= 0 \end{aligned}\]</span> החזקה במונה קטנה מזו שבמכנה, ולכן הגבול <span class="math inline">\(.0\)</span></p>
+<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} \lim_{n\to\infty} \frac{2n + 5}{n^2 + 1} &amp;= \lim_{n\to\infty} \frac{\frac{2}{n} + \frac{5}{n^2}}{1 + \frac{1}{n^2}} \\ &amp;= \frac{0 + 0}{1 + 0} \\ &amp;= 0 \end{aligned}\]</span></p>
 </div>
 </div>
 <p><strong>(ג)</strong> <span class="math inline">\(\lim\limits_{n\to\infty} \frac{n^2 + 1}{2n + 3}\)</span></p>
@@ -1574,43 +1714,50 @@ window.Quarto = {
 <p>כאן החזקה הגבוהה במכנה היא <span class="math inline">\(.n\)</span> אחרי החילוק המונה שואף לאינסוף והמכנה ל-<span class="math inline">\(.2\)</span></p>
 </div>
 <div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} \lim_{n\to\infty} \frac{n^2 + 1}{2n + 3} &amp;= \lim_{n\to\infty} \frac{n + \frac{1}{n}}{2 + \frac{3}{n}} \\ &amp;= \infty \end{aligned}\]</span> המונה שואף ל-<span class="math inline">\(\infty\)</span> והמכנה ל-<span class="math inline">\(,2\)</span> ולכן לפי החשבון עם אינסוף, <span class="math inline">\(.\frac{\infty}{2} = \infty\)</span></p>
+<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} \lim_{n\to\infty} \frac{n^2 + 1}{2n + 3} &amp;= \lim_{n\to\infty} \frac{n + \frac{1}{n}}{2 + \frac{3}{n}} \\ &amp;= \infty \end{aligned}\]</span></p>
+<p>המונה שואף ל-<span class="math inline">\(\infty\)</span> והמכנה ל-<span class="math inline">\(,2\)</span> ולכן <span class="math inline">\(.\frac{\infty}{2} = \infty\)</span></p>
 </div>
 </div>
 <p><strong>(ד)</strong> <span class="math inline">\(\lim\limits_{n\to\infty} \frac{2^n + 3^n}{3^n}\)</span></p>
 <div class="steps" data-limit="n" start="(2^n+3^n)/3^n" data-rules="divide|simplify|limit|compute" data-model="([2/3])^n+1 :: simplify || [0]+1 :: limit || 1 :: compute">
 <div class="hint">
-<p>מחלקים כל מחובר במונה ב-<span class="math inline">\(,3^n\)</span> ונעזרים ב-<span class="math inline">\(.q^n\)</span></p>
+<p>חלקו כל מחובר במונה ב-<span class="math inline">\(,3^n\)</span> והיעזרו בגבול של <span class="math inline">\(q^n\)</span> עבור <span class="math inline">\(.q = \frac{2}{3}\)</span></p>
 </div>
 <div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} \lim_{n\to\infty} \frac{2^n + 3^n}{3^n} &amp;= \lim_{n\to\infty} \left(\left(\tfrac{2}{3}\right)^n + 1\right) \\ &amp;= 0 + 1 \\ &amp;= 1 \end{aligned}\]</span> כי <span class="math inline">\(\left(\frac{2}{3}\right)^n \to 0\)</span> (סדרה הנדסית עם <span class="math inline">\(|q| &lt; 1\)</span>).</p>
+<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} \lim_{n\to\infty} \frac{2^n + 3^n}{3^n} &amp;= \lim_{n\to\infty} \left(\frac{2^n}{3^n} + \frac{3^n}{3^n}\right) \\ &amp;= \lim_{n\to\infty} \left(\left(\tfrac{2}{3}\right)^n + 1\right) \\ &amp;= 0 + 1 \\ &amp;= 1 \end{aligned}\]</span></p>
+<p>כי <span class="math inline">\(\left(\frac{2}{3}\right)^n \to 0\)</span> (סדרה הנדסית עם <span class="math inline">\(|q| &lt; 1\)</span>).</p>
 </div>
 </div>
 </div>
 <div class="thmbox thmbox-key-point thmicon-idea" data-icon="idea" title="מה קובע את התשובה">
 <p><strong>חשוב לזכור — מה קובע את התשובה.</strong></p>
-<p>במנה של פולינומים קובעות החזקות הגבוהות: אם הן שוות, הגבול הוא מנת המקדמים שלהן (ב-(א), <span class="math inline">\(\frac{3}{1}\)</span>); אם החזקה במונה קטנה יותר, הגבול <span class="math inline">\(0\)</span> (ב-(ב)); אם היא גדולה יותר, הגבול <span class="math inline">\(\infty\)</span> או <span class="math inline">\(-\infty\)</span> (ב-(ג)).</p>
+<p>במנה של פולינומים קובעות החזקות הגבוהות ביותר של המונה ושל המכנה:</p>
+<ul>
+<li>אם הן שוות, הגבול הוא המנה של המקדמים שלהן (ב-(א), <span class="math inline">\(\frac{3}{1} = 3\)</span>).</li>
+<li>אם החזקה במונה קטנה יותר, הגבול <span class="math inline">\(0\)</span> (ב-(ב)).</li>
+<li>אם היא גדולה יותר, הסדרה שואפת ל-<span class="math inline">\(\infty\)</span> או ל-<span class="math inline">\(,{-}\infty\)</span> לפי הסימן של מנת המקדמים (ב-(ג)).</li>
+</ul>
 </div>
 <div class="thmbox thmbox-self-check">
 <p><strong>בדיקה עצמית.</strong></p>
-<p><strong>(א)</strong> <span class="math inline">\(\lim\limits_{n\to\infty} \frac{5n^3 - n}{2n^3 + 7} = \ ?\)</span></p>
+<p><strong>(א)</strong> מהו הגבול של <span class="math inline">\(?\frac{5n^3 - n}{2n^3 + 7}\)</span></p>
 <div class="tf-quiz" data-correct="1">
 <button type="button" class="tf-opt" data-val="1">\(\frac{5}{2}\)</button>
 <button type="button" class="tf-opt" data-val="2">\(1\)</button>
 <button type="button" class="tf-opt" data-val="3">\(\infty\)</button>
 <div class="tf-feedback" aria-live="polite"></div>
 <div class="tf-why">
-<p>החזקות הגבוהות שוות (<span class="math inline">\(n^3\)</span>), ולכן הגבול הוא מנת המקדמים, <span class="math inline">\(.\frac{5}{2}\)</span></p>
+<p>החזקות הגבוהות שוות (<span class="math inline">\(n^3\)</span>), ולכן הגבול הוא המנה של המקדמים, <span class="math inline">\(.\frac{5}{2}\)</span></p>
 </div>
 </div>
-<p><strong>(ב)</strong> <span class="math inline">\(\lim\limits_{n\to\infty} (n - n^2) = \ ?\)</span></p>
+<p><strong>(ב)</strong> לאן שואפת <span class="math inline">\(?n - n^2\)</span></p>
 <div class="tf-quiz" data-correct="2">
 <button type="button" class="tf-opt" data-val="1">\(0\)</button>
 <button type="button" class="tf-opt" data-val="2">\(-\infty\)</button>
 <button type="button" class="tf-opt" data-val="3">\(\infty\)</button>
 <div class="tf-feedback" aria-live="polite"></div>
 <div class="tf-why">
-<p><span class="math inline">\(\infty - \infty\)</span> אינו <span class="math inline">\(!0\)</span> מוציאים גורם משותף: <span class="math inline">\(,n - n^2 = n^2\left(\frac{1}{n} - 1\right)\)</span> והגורם <span class="math inline">\(\frac{1}{n} - 1\)</span> שואף ל-<span class="math inline">\(,{-}1\)</span> ולכן הגבול <span class="math inline">\(.{-}\infty\)</span></p>
+<p>זו הצורה <span class="math inline">\(,\infty - \infty\)</span> ואינה <span class="math inline">\(.0\)</span> מוציאים גורם משותף: <span class="math inline">\(,n - n^2 = n^2\left(\frac{1}{n} - 1\right)\)</span> והגורם השני מקיים <span class="math inline">\(,\frac{1}{n} - 1 \to -1\)</span> ולכן <span class="math inline">\(.n - n^2 \to -\infty\)</span></p>
 </div>
 </div>
 </div>
@@ -1619,46 +1766,76 @@ window.Quarto = {
 <p>חשבון הגבולות לא עוזר עבור <span class="math inline">\(,\frac{\sin n}{n}\)</span> כי ל-<span class="math inline">\(\sin n\)</span> אין גבול. במקרה כזה לוחצים את הסדרה בין שתי סדרות שהגבול שלהן ידוע.</p>
 <div id="box-thm-squeeze" class="thmbox thmbox-theorem" title="כלל הסנדוויץ'">
 <p><strong>משפט 2.4.3 — כלל הסנדוויץ’.</strong></p>
-<p>אם <span class="math inline">\(b_n \le a_n \le c_n\)</span> (מנקודה מסוימת והלאה), ו-<span class="math inline">\(b_n\)</span> ו-<span class="math inline">\(c_n\)</span> שואפות <strong>לאותו</strong> גבול <span class="math inline">\(,L\)</span> אז גם <span class="math inline">\(.a_n \to L\)</span></p>
+<p>אם <span class="math inline">\(b_n \le a_n \le c_n\)</span> (ממקום מסוים והלאה), והסדרות <span class="math inline">\(b_n\)</span> ו-<span class="math inline">\(c_n\)</span> שואפות <strong>לאותו</strong> גבול <span class="math inline">\(,L\)</span> אז גם <span class="math inline">\(.a_n \to L\)</span></p>
 </div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="figures/ch02-squeeze.png" class="img-fluid figure-img" style="width:75.0%" alt="נקודות אדומות בין שתי שורות של נקודות אפורות, אחת מעל ואחת מתחת, שמתכנסות לאפס"></p>
-<figcaption>הסדרה <span class="math inline">\(\frac{\sin n}{n}\)</span> (באדום) כלואה בין <span class="math inline">\(-\frac{1}{n}\)</span> ל-<span class="math inline">\(,\frac{1}{n}\)</span> ושתיהן שואפות ל-<span class="math inline">\(,0\)</span> ולכן גם היא.</figcaption>
+<figcaption>הסדרה <span class="math inline">\(\frac{\sin n}{n}\)</span> (באדום) כלואה בין <span class="math inline">\(-\frac{1}{n}\)</span> ל-<span class="math inline">\(.\frac{1}{n}\)</span></figcaption>
 </figure>
 </div>
-<div id="box-exm-squeeze" class="thmbox thmbox-example" title="סינוס חלקי n">
-<p><strong>דוגמה 2.4.4 — סינוס חלקי n.</strong></p>
+<div class="thmbox thmbox-key-point thmicon-calc" data-icon="calc" title="שימוש בכלל הסנדוויץ'">
+<p><strong>שיטת חישוב — שימוש בכלל הסנדוויץ’.</strong></p>
+<ol type="1">
+<li>חוסמים את החלק שקופץ, למשל <span class="math inline">\(.{-}1 \le \sin n \le 1\)</span></li>
+<li>עושים את אותה פעולה בשלושת החלקים (חילוק ב-<span class="math inline">\(n\)</span> חיובי שומר על כיוון אי-השוויון).</li>
+<li>בודקים ששני החסמים שואפים לאותו גבול.</li>
+</ol>
+</div>
+<div id="box-exm-squeeze" class="thmbox thmbox-example" title="סינוס חלקי $n$">
+<p><strong>דוגמה 2.4.4 — סינוס חלקי <span class="math inline">\(n\)</span>.</strong></p>
 <p>חשבו את <span class="math inline">\(.\lim\limits_{n\to\infty} \frac{\sin n}{n}\)</span></p>
 <div class="fill">
-<p>מכיוון ש-<span class="math inline">\(,{-}1 \le \sin n \le 1\)</span> אחרי חילוק ב-<span class="math inline">\(n\)</span> מתקבל <span class="math inline">\(-\frac{1}{n} \le \frac{\sin n}{n} \le \frac{1}{n}\)</span> ולכן הגבול הוא <span class="blank" data-ans="0"><span class="math inline">\(0\)</span></span></p>
+<p>מכיוון ש-<span class="math inline">\(-1 \le \sin n \le 1\)</span> ו-<span class="math inline">\(n &gt; 0\)</span> מתקבל <span class="math inline">\(.{-}\frac{1}{n} \le \frac{\sin n}{n} \le \frac{1}{n}\)</span> לכן הגבול הוא <span class="blank" data-ans="0"><span class="math inline">\(0\)</span></span></p>
 <div class="explain">
 <p>שתי הסדרות <span class="math inline">\(-\frac{1}{n}\)</span> ו-<span class="math inline">\(\frac{1}{n}\)</span> שואפות ל-<span class="math inline">\(,0\)</span> ולכן לפי כלל הסנדוויץ’ גם <span class="math inline">\(.\frac{\sin n}{n} \to 0\)</span></p>
 </div>
 </div>
 </div>
-<p>אותו נימוק עובד בכל מקום שבו סדרה <strong>חסומה</strong> כופלת סדרה ששואפת לאפס. סדרה <span class="term"><strong>חסומה</strong></span> אם יש מספר <span class="math inline">\(M\)</span> כך ש-<span class="math inline">\(|a_n| \le M\)</span> לכל <span class="math inline">\(,n\)</span> למשל <span class="math inline">\(,\sin n\)</span> <span class="math inline">\(\cos n\)</span> ו-<span class="math inline">\(.(-1)^n\)</span></p>
+<div id="box-def-bounded" class="thmbox thmbox-definition" title="סדרה חסומה">
+<p><strong>הגדרה 2.4.5 — סדרה חסומה.</strong></p>
+<p>נאמר שסדרה <span class="math inline">\(a_n\)</span> <span class="term"><strong>חסומה</strong></span> אם יש מספר <span class="math inline">\(M\)</span> כך ש-<span class="math inline">\(|a_n| \le M\)</span> לכל <span class="math inline">\(.n\)</span> למשל, <span class="math inline">\(\sin n\)</span> ו-<span class="math inline">\(\cos n\)</span> ו-<span class="math inline">\((-1)^n\)</span> חסומות (עם <span class="math inline">\(M = 1\)</span>). כל סדרה מתכנסת חסומה, אבל לא כל סדרה חסומה מתכנסת: <span class="math inline">\((-1)^n\)</span> חסומה ומתבדרת.</p>
+</div>
+<p>הנימוק של <span class="math inline">\(\frac{\sin n}{n}\)</span> עובד בכל מקום שבו סדרה חסומה מוכפלת בסדרה ששואפת לאפס:</p>
 <div class="thmbox thmbox-key-point thmicon-rule" data-icon="rule" title="חסומה כפול שואפת לאפס">
 <p><strong>כלל — חסומה כפול שואפת לאפס.</strong></p>
-<p>אם <span class="math inline">\(a_n\)</span> חסומה ו-<span class="math inline">\(,b_n \to 0\)</span> אז <span class="math inline">\(.a_n b_n \to 0\)</span> למשל, <span class="math inline">\(\frac{(-1)^n}{n} \to 0\)</span> ו-<span class="math inline">\(.\frac{\cos n}{n^2} \to 0\)</span></p>
+<p>אם <span class="math inline">\(a_n\)</span> חסומה ו-<span class="math inline">\(,b_n \to 0\)</span> אז <span class="math inline">\(.a_n b_n \to 0\)</span> למשל, <span class="math inline">\(\frac{(-1)^n}{\sqrt{n}} \to 0\)</span> ו-<span class="math inline">\(.\frac{\sin(3n)}{n} \to 0\)</span></p>
 </div>
-<div class="thmbox thmbox-warning" title="למה צריך את אותו גבול">
-<p><strong>שימו לב — למה צריך את אותו גבול.</strong></p>
-<p>אם <span class="math inline">\(b_n\)</span> ו-<span class="math inline">\(c_n\)</span> שואפות לגבולות <strong>שונים</strong>, הכלל לא אומר כלום. למשל, <span class="math inline">\(-1 \le (-1)^n \le 1\)</span> והחסמים שואפים ל-<span class="math inline">\(-1\)</span> ול-<span class="math inline">\(,1\)</span> אבל ל-<span class="math inline">\((-1)^n\)</span> אין גבול.</p>
+<div class="thmbox thmbox-warning" title="למה צריך כל תנאי">
+<p><strong>שימו לב — למה צריך כל תנאי.</strong></p>
+<ul>
+<li>בכלל הסנדוויץ’ שתי הסדרות מהצדדים חייבות לשאוף <strong>לאותו</strong> גבול: <span class="math inline">\(,{-}1 \le (-1)^n \le 1\)</span> אבל הסדרות הקבועות <span class="math inline">\(-1\)</span> ו-<span class="math inline">\(1\)</span> שואפות לגבולות שונים, ול-<span class="math inline">\((-1)^n\)</span> אין גבול.</li>
+<li>בכפל, הגורם הראשון חייב להיות חסום: <span class="math inline">\(n \cdot \frac{1}{n} = 1\)</span> ואינה שואפת ל-<span class="math inline">\(,0\)</span> כי <span class="math inline">\(n\)</span> אינה חסומה.</li>
+<li>והגורם השני חייב לשאוף לאפס: <span class="math inline">\((-1)^n \cdot 1\)</span> מתבדרת.</li>
+</ul>
 </div>
 <div class="thmbox thmbox-summary">
 <p><strong>סיכום.</strong></p>
 <ul>
 <li>סכום, מכפלה ומנה של סדרות מתכנסות מתכנסים לסכום, למכפלה ולמנה של הגבולות (במנה: אם הגבול במכנה אינו <span class="math inline">\(0\)</span>).</li>
-<li><span class="math inline">\(,\infty - \infty\)</span> <span class="math inline">\(\frac{\infty}{\infty}\)</span> <span class="math inline">\(0 \cdot \infty\)</span> ו-<span class="math inline">\(\frac{0}{0}\)</span> אינם מוגדרים: קודם משנים את הביטוי. במנה של פולינומים מחלקים בחזקה הגבוהה במכנה.</li>
-<li>כלל הסנדוויץ’: סדרה שכלואה בין שתי סדרות עם אותו גבול שואפת אליו. בפרט, חסומה כפול שואפת לאפס שואפת לאפס.</li>
+<li>לצורות <span class="math inline">\(\infty - \infty\)</span> ו-<span class="math inline">\(\frac{\infty}{\infty}\)</span> ו-<span class="math inline">\(0 \cdot \infty\)</span> ו-<span class="math inline">\(\frac{0}{0}\)</span> אין תשובה קבועה: קודם משנים את הביטוי. במנה של פולינומים מחלקים בחזקה הגבוהה ביותר במכנה.</li>
+<li>כלל הסנדוויץ’: סדרה שכלואה בין שתי סדרות עם אותו גבול שואפת אליו. בפרט, מכפלה של סדרה חסומה בסדרה ששואפת לאפס שואפת לאפס.</li>
 </ul>
 </div>
 </section>
 <section id="תרגילים-3" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="תרגילים-3">תרגילים</h3>
+<div id="box-q-undetermined" class="thmbox thmbox-question" title="מוגדר או לא?">
+<p><strong>שאלה 2.4.6 — מוגדר או לא?</strong></p>
+<p>איזה מהביטויים הבאים הוא צורה לא מוגדרת?</p>
+<div class="tf-quiz" data-correct="3">
+<button type="button" class="tf-opt" data-val="1">\(\frac{5}{\infty}\)</button>
+<button type="button" class="tf-opt" data-val="2">\(\infty + \infty\)</button>
+<button type="button" class="tf-opt" data-val="3">\(\frac{\infty}{\infty}\)</button>
+<button type="button" class="tf-opt" data-val="4">\(3 \cdot \infty\)</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p>רק <span class="math inline">\(\frac{\infty}{\infty}\)</span> אינה מוגדרת: למשל <span class="math inline">\(\frac{n}{n} \to 1\)</span> אבל <span class="math inline">\(.\frac{n^2}{n} \to \infty\)</span> שאר הביטויים מוגדרים: <span class="math inline">\(\frac{5}{\infty} = 0\)</span> ו-<span class="math inline">\(\infty + \infty = \infty\)</span> ו-<span class="math inline">\(.3 \cdot \infty = \infty\)</span></p>
+</div>
+</div>
+</div>
 <div id="box-q-lim-rational" class="thmbox thmbox-question" title="מנות של פולינומים">
-<p><strong>שאלה 2.4.5 — מנות של פולינומים.</strong></p>
+<p><strong>שאלה 2.4.7 — מנות של פולינומים.</strong></p>
 <p>חשבו צעד אחר צעד.</p>
 <p><strong>(א)</strong> <span class="math inline">\(\lim\limits_{n\to\infty} \frac{4n - 1}{2n + 7}\)</span></p>
 <div class="steps" data-limit="n" start="(4n-1)/(2n+7)" data-rules="divide|simplify|limit|compute" data-model="(4-[1/n])/(2+[7/n]) :: divide || (4-[0])/(2+[0]) :: limit || 2 :: compute">
@@ -1668,8 +1845,8 @@ window.Quarto = {
 <div class="steps" data-limit="n" start="(n^3-2n)/(5n^3+1)" data-rules="divide|simplify|limit|compute" data-model="(1-[2/n^2])/(5+[1/n^3]) :: divide || (1-[0])/(5+[0]) :: limit || 1/5 :: compute">
 
 </div>
-<p><strong>(ג)</strong> <span class="math inline">\(\lim\limits_{n\to\infty} \frac{6n + 1}{n^2 - 3}\)</span></p>
-<div class="steps" data-limit="n" start="(6n+1)/(n^2-3)" data-rules="divide|simplify|limit|compute" data-model="([6/n]+[1/n^2])/(1-[3/n^2]) :: divide || ([0]+[0])/(1-[0]) :: limit || 0 :: compute">
+<p><strong>(ג)</strong> <span class="math inline">\(\lim\limits_{n\to\infty} \frac{6n + 1}{n^2 + 3}\)</span></p>
+<div class="steps" data-limit="n" start="(6n+1)/(n^2+3)" data-rules="divide|simplify|limit|compute" data-model="([6/n]+[1/n^2])/(1+[3/n^2]) :: divide || ([0]+[0])/(1+[0]) :: limit || 0 :: compute">
 
 </div>
 <p><strong>(ד)</strong> <span class="math inline">\(\lim\limits_{n\to\infty} \frac{n^2 - 5}{3n + 1}\)</span></p>
@@ -1678,31 +1855,17 @@ window.Quarto = {
 </div>
 </div>
 <div id="box-q-lim-powers" class="thmbox thmbox-question" title="עם חזקות">
-<p><strong>שאלה 2.4.6 — עם חזקות.</strong></p>
-<p><span class="math inline">\(\lim\limits_{n\to\infty} \frac{5 \cdot 2^n + 4^n}{4^n}\)</span></p>
+<p><strong>שאלה 2.4.8 — עם חזקות.</strong></p>
+<p>חשבו צעד אחר צעד: <span class="math inline">\(\lim\limits_{n\to\infty} \frac{5 \cdot 2^n + 4^n}{4^n}\)</span></p>
 <div class="steps" data-limit="n" start="(5*2^n+4^n)/4^n" data-rules="divide|simplify|limit|compute" data-model="5([1/2])^n+1 :: simplify || 5*[0]+1 :: limit || 1 :: compute">
 <div class="hint">
-<p><span class="math inline">\(.\frac{2^n}{4^n} = \left(\frac{2}{4}\right)^n = \left(\frac{1}{2}\right)^n\)</span></p>
-</div>
-</div>
-</div>
-<div id="box-q-lim-conjugate" class="thmbox thmbox-question" title="הפרש של שורשים">
-<p><strong>שאלה 2.4.7 — הפרש של שורשים.</strong></p>
-<p><span class="math inline">\(\lim\limits_{n\to\infty} \left(\sqrt{n^2 + 2n} - n\right)\)</span> <span>(שורש כותבים <code>sqrt</code>, למשל <code>sqrt(n^2+2n)</code>.)</span></p>
-<div class="steps" data-limit="n" start="sqrt(n^2+2n)-n" data-rules="conjugate|divide|simplify|limit|compute" data-model="2n/(sqrt(n^2+2n)+[n]) :: conjugate || 2/(sqrt(1+[2/n])+1) :: divide || 2/(sqrt(1+[0])+1) :: limit || 1 :: compute">
-<div class="hint">
-<p>זו הצורה <span class="math inline">\(.\infty - \infty\)</span> כפלו וחלקו ב-<span class="math inline">\(,\sqrt{n^2 + 2n} + n\)</span> ובמונה השתמשו ב-<span class="math inline">\(.(a - b)(a + b) = a^2 - b^2\)</span></p>
-</div>
-<div class="hint">
-<p>אחרי הכפל מתקבל <span class="math inline">\(.\frac{2n}{\sqrt{n^2 + 2n} + n}\)</span> עכשיו חלקו את המונה ואת המכנה ב-<span class="math inline">\(,n\)</span> ושימו לב ש-<span class="math inline">\(.\frac{\sqrt{n^2 + 2n}}{n} = \sqrt{1 + \frac{2}{n}}\)</span></p>
-</div>
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} \lim_{n\to\infty} \left(\sqrt{n^2 + 2n} - n\right) &amp;= \lim_{n\to\infty} \frac{2n}{\sqrt{n^2 + 2n} + n} \\ &amp;= \lim_{n\to\infty} \frac{2}{\sqrt{1 + \frac{2}{n}} + 1} \\ &amp;= \frac{2}{\sqrt{1 + 0} + 1} \\ &amp;= 1 \end{aligned}\]</span></p>
+<p>חלקו כל מחובר במונה ב-<span class="math inline">\(,4^n\)</span> וכתבו את <span class="math inline">\(\frac{2^n}{4^n}\)</span> כחזקה של שבר אחד.</p>
 </div>
 </div>
 </div>
 <div id="box-q-lim-bounded" class="thmbox thmbox-question" title="חסומה כפול שואפת לאפס">
-<p><strong>שאלה 2.4.8 — חסומה כפול שואפת לאפס.</strong></p>
+<p><strong>שאלה 2.4.9 — חסומה כפול שואפת לאפס.</strong></p>
+<p>חשבו צעד אחר צעד.</p>
 <p><strong>(א)</strong> <span class="math inline">\(\lim\limits_{n\to\infty} \frac{\cos n}{n^2}\)</span></p>
 <div class="steps" data-limit="n" start="cos(n)/n^2" data-rules="simplify|limit|bounded|compute" data-model="0 :: bounded">
 
@@ -1711,20 +1874,6 @@ window.Quarto = {
 <div class="steps" data-limit="n" start="(n+cos(n))/n" data-rules="divide|simplify|limit|bounded|compute" data-model="1+[cos(n)/n] :: simplify || 1+[0] :: bounded || 1 :: compute">
 <div class="hint">
 <p>פרקו את השבר לשני שברים.</p>
-</div>
-</div>
-</div>
-<div id="box-q-undetermined" class="thmbox thmbox-question" title="מוגדר או לא?">
-<p><strong>שאלה 2.4.9 — מוגדר או לא?</strong></p>
-<p>איזה מהביטויים הבאים הוא צורה לא מוגדרת?</p>
-<div class="tf-quiz" data-correct="3">
-<button type="button" class="tf-opt" data-val="1">\(\frac{5}{\infty}\)</button>
-<button type="button" class="tf-opt" data-val="2">\(\infty + \infty\)</button>
-<button type="button" class="tf-opt" data-val="3">\(\frac{\infty}{\infty}\)</button>
-<button type="button" class="tf-opt" data-val="4">\(3 \cdot \infty\)</button>
-<div class="tf-feedback" aria-live="polite"></div>
-<div class="tf-why">
-<p>רק <span class="math inline">\(\frac{\infty}{\infty}\)</span> אינה מוגדרת: למשל <span class="math inline">\(\frac{n}{n} \to 1\)</span> אבל <span class="math inline">\(.\frac{n^2}{n} \to \infty\)</span> השאר מוגדרות: <span class="math inline">\(,\frac{5}{\infty} = 0\)</span> <span class="math inline">\(\infty + \infty = \infty\)</span> ו-<span class="math inline">\(.3 \cdot \infty = \infty\)</span></p>
 </div>
 </div>
 </div>
