@@ -45,12 +45,16 @@
   .msg.info { background: #f8fafc; border-color: #64748b; }
   .key { color: #475569; font-size: 13.5px; }
   .line { display: inline-block; width: 1.6em; vertical-align: middle; }
+  input, select { font: inherit; padding: .25rem; border: 1px solid #94a3b8; border-radius: 6px; }
+  input.k { width: 4em; direction: ltr; }
+  :focus-visible { outline: 3px solid #f59e0b; outline-offset: 2px; }
+  button:disabled { opacity: .45; cursor: default; }
 </style>
 </head>
 <body>
 <div class="w">
   <div class="now">הגרף שלכם: <span class="m" id="now"></span></div>
-  <canvas id="cv" width="720" height="400" aria-label="הגרף; גררו אותו כדי להזיז"></canvas>
+  <canvas id="cv" width="720" height="400" tabindex="0" aria-label="הגרף; גררו אותו או השתמשו במקשי החצים כדי להזיז"></canvas>
   <div class="row key">
     <span><span class="line" style="border-top:2px dashed #94a3b8"></span> הגרף הבסיסי</span>
     <span><span class="line" style="border-top:3px solid #4f46e5"></span> הגרף שלכם (גררו אותו)</span>
@@ -69,20 +73,25 @@
     </span>
   </div>
   <div class="row">
+    <label>גודל צעד: <select id="step"><option value="1">1</option><option value="0.5">½</option><option value="0.1">0.1</option><option value="0.01">0.01</option></select></label>
+    <span>הנקודה הכתומה: <output class="m" id="point"></output></span>
+  </div>
+  <div class="row">
     <span class="grp"><b>מתיחה אנכית:</b>
       <button type="button" data-st="v,-1" aria-label="כיווץ אנכי">−</button>
-      <span class="k m" id="vk"></span>
+      <input class="k" id="vk" aria-label="גורם מתיחה אנכית" value="1">
       <button type="button" data-st="v,1" aria-label="מתיחה אנכית">+</button>
     </span>
     <span class="grp"><b>מתיחה אופקית:</b>
       <button type="button" data-st="h,-1" aria-label="כיווץ אופקי">−</button>
-      <span class="k m" id="hk"></span>
+      <input class="k" id="hk" aria-label="גורם מתיחה אופקית" value="1">
       <button type="button" data-st="h,1" aria-label="מתיחה אופקית">+</button>
     </span>
   </div>
   <div class="row">
     <button type="button" class="main" id="check">בדיקה</button>
     <button type="button" id="show">הצגת היעד</button>
+    <button type="button" id="undo">ביטול צעד</button>
     <button type="button" id="reset">התחלה מחדש</button>
   </div>
   <div class="msg" id="msg" aria-live="polite"></div>
@@ -116,11 +125,12 @@
   var X0 = view[0], X1 = view[1], Y0 = view[2], Y1 = view[3];
   var FACT = [1 / 4, 1 / 3, 1 / 2, 1, 2, 3, 4];
   // the reader's graph: the shape (sign and factor of each direction) and the place of the key point
-  var S;
-  function reset() { S = { sv: 1, kv: 3, sh: 1, kh: 3, px: B.key[0], py: B.key[1] }; showGoal = false; say("", ""); draw(); }
+  var S, history = [];
+  function remember() { history.push(Object.assign({}, S)); if (history.length > 100) history.shift(); }
+  function reset() { S = { sv: 1, kv: 1, sh: 1, kh: 1, px: B.key[0], py: B.key[1] }; history = []; showGoal = false; say("", ""); draw(); }
   function params(s) {
     // y = a f(b(x - c)) + d whose key point is at (px, py)
-    var a = s.sv * FACT[s.kv], b = s.sh / FACT[s.kh];
+    var a = s.sv * s.kv, b = s.sh / s.kh;
     var c = s.px - B.key[0] / b, d = s.py - a * B.key[1];
     return { a: a, b: b, c: c, d: d };
   }
@@ -162,8 +172,10 @@
     curve(p, "#4f46e5", 3);
     ctx.fillStyle = "#ea580c"; ctx.beginPath(); ctx.arc(sx(S.px), sy(S.py), 5.5, 0, 2 * Math.PI); ctx.fill();
     document.getElementById("now").innerHTML = "<i>y</i> = " + formula(p);
-    document.getElementById("vk").innerHTML = (S.sv < 0 ? "−" : "") + factText(FACT[S.kv]);
-    document.getElementById("hk").innerHTML = (S.sh < 0 ? "−" : "") + factText(FACT[S.kh]);
+    document.getElementById("vk").value = String(+S.kv.toFixed(8));
+    document.getElementById("hk").value = String(+S.kh.toFixed(8));
+    document.getElementById("point").textContent = "(" + (+S.px.toFixed(6)) + ", " + (+S.py.toFixed(6)) + ")";
+    document.getElementById("undo").disabled = !history.length;
     document.getElementById("goalKey").hidden = !showGoal;
   }
 
@@ -171,7 +183,8 @@
   function fr(a, b) { return "<span class='fr'><span>" + a + "</span><span>" + b + "</span></span>"; }
   function factText(v) {
     if (Math.abs(v - Math.round(v)) < 1e-9) return String(Math.round(v));
-    return fr("1", String(Math.round(1 / v)));
+    for (var d = 2; d <= 100; d++) if (Math.abs(v * d - Math.round(v * d)) < 1e-8) return fr(String(Math.round(v * d)), String(d));
+    return String(+v.toFixed(6));
   }
   function signed(v) { return (v < 0 ? " − " : " + ") + factText(Math.abs(v)); }
   function formula(p) {
@@ -181,11 +194,11 @@
     var bb = Math.abs(p.b);
     if (Math.abs(bb - 1) < 1e-9) { inner = (p.b < 0 ? "−" + (Math.abs(p.c) < 1e-9 ? x : shift) : xs); simple = Math.abs(p.c) < 1e-9 && p.b > 0; }
     else if (bb > 1) { inner = (p.b < 0 ? "−" : "") + factText(bb) + (Math.abs(p.c) < 1e-9 ? x : shift); simple = false; }
-    else { inner = (p.b < 0 ? "−" : "") + fr(xs, String(Math.round(1 / bb))); simple = false; }
+    else { inner = (p.b < 0 ? "−" : "") + factText(bb) + shift; simple = false; }
     var body = B.w(inner, simple);
     var aa = Math.abs(p.a), pre = "";
     if (Math.abs(aa - 1) > 1e-9) pre = B.frac ? "" : factText(aa) + (Q.get("f") === "exp2" || Q.get("f") === "exp3" ? " · " : "");
-    if (B.frac && Math.abs(aa - 1) > 1e-9) body = fr(aa >= 1 ? String(Math.round(aa)) : "1", (aa < 1 ? String(Math.round(1 / aa)) + "(" : "") + inner + (aa < 1 ? ")" : ""));
+    if (B.frac && Math.abs(aa - 1) > 1e-9) body = fr(factText(aa), inner);
     var s = (p.a < 0 ? "−" : "") + pre + body;
     if (Math.abs(p.d) > 1e-9) s += signed(p.d);
     return s;
@@ -213,32 +226,49 @@
   }
 
   // ---- controls
-  function snap(v) { return Math.round(v); }
+  function step() { return +document.getElementById("step").value; }
+  function snap(v) { return Math.round(v / step()) * step(); }
+  function move(x, y) { remember(); S.px += x * step(); S.py += y * step(); say("", ""); draw(); }
   document.querySelectorAll("[data-mv]").forEach(function (bt) {
     bt.addEventListener("click", function () {
       var m = bt.getAttribute("data-mv").split(",").map(Number);
-      S.px += m[0]; S.py += m[1]; say("", ""); draw();
+      move(m[0], m[1]);
     });
   });
   document.querySelectorAll("[data-st]").forEach(function (bt) {
     bt.addEventListener("click", function () {
       var m = bt.getAttribute("data-st").split(","), k = m[0] === "v" ? "kv" : "kh";
-      var old = FACT[S[k]];
-      S[k] = Math.max(0, Math.min(FACT.length - 1, S[k] + +m[1]));
-      // a vertical stretch is measured from the x-axis, a horizontal one from the y-axis
-      if (k === "kv") S.py *= FACT[S.kv] / old; else S.px *= FACT[S.kh] / old;
-      say("", ""); draw();
+      var choices = FACT.filter(function (v) { return +m[1] > 0 ? v > S[k] + 1e-9 : v < S[k] - 1e-9; });
+      stretch(k, choices.length ? choices[+m[1] > 0 ? 0 : choices.length - 1] : S[k] * (+m[1] > 0 ? 2 : .5));
     });
   });
-  document.getElementById("flipV").addEventListener("click", function () { S.sv = -S.sv; S.py = -S.py; say("", ""); draw(); });
-  document.getElementById("flipH").addEventListener("click", function () { S.sh = -S.sh; S.px = -S.px; say("", ""); draw(); });
+  function stretch(k, v) {
+    if (!isFinite(v) || v < .01 || v > 100) { say("בחרו גורם מתיחה חיובי בין 0.01 ל־100; אפשר להקליד גם שבר.", "info"); return; }
+    remember();
+    if (k === "kv") S.py *= v / S[k]; else S.px *= v / S[k];
+    S[k] = v; say("", ""); draw();
+  }
+  ["v", "h"].forEach(function (axis) {
+    var input = document.getElementById(axis + "k");
+    input.addEventListener("change", function () { stretch("k" + axis, num(input.value, NaN)); });
+    input.addEventListener("keydown", function (e) { if (e.key === "Enter") input.blur(); });
+  });
+  cv.addEventListener("keydown", function (e) {
+    var m = { ArrowLeft: [-1,0], ArrowRight: [1,0], ArrowUp: [0,1], ArrowDown: [0,-1] }[e.key];
+    if (m) { e.preventDefault(); move(m[0], m[1]); }
+  });
+  document.getElementById("undo").addEventListener("click", function () { if (history.length) { S = history.pop(); say("", ""); draw(); } });
+  document.getElementById("flipV").addEventListener("click", function () { remember(); S.sv = -S.sv; S.py = -S.py; say("", ""); draw(); });
+  document.getElementById("flipH").addEventListener("click", function () { remember(); S.sh = -S.sh; S.px = -S.px; say("", ""); draw(); });
   document.getElementById("check").addEventListener("click", check);
   document.getElementById("show").addEventListener("click", function () { showGoal = !showGoal; this.textContent = showGoal ? "הסתרת היעד" : "הצגת היעד"; draw(); });
   document.getElementById("reset").addEventListener("click", function () { document.getElementById("show").textContent = "הצגת היעד"; reset(); });
-  // dragging moves the key point, in whole steps
+  // A drag is one undoable action, snapped to the chosen increment.
   var drag = null;
   function pos(e) { var r = cv.getBoundingClientRect(); return [(e.clientX - r.left) * W / r.width, (e.clientY - r.top) * H / r.height]; }
   cv.addEventListener("pointerdown", function (e) {
+    if (e.button !== 0 || drag) return;
+    remember(); cv.focus();
     var q = pos(e); drag = { x: wx(q[0]), y: wy(q[1]), px: S.px, py: S.py };
     cv.setPointerCapture(e.pointerId); cv.classList.add("drag");
   });

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>1&nbsp; הרצאה 1: מבוא — מספרים ממשיים ופונקציות – חשיבה אנליטית — מערכי הרצאה</title>
+<title>1&nbsp; מספרים ממשיים ופונקציות – חשיבה אנליטית — מערכי הרצאה</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -475,6 +475,54 @@ span.blank:not(.blank-ready) { text-decoration: underline; text-underline-offset
   box-sizing: content-box;
 }
 .blank-input:focus { border-color: #4f46e5; }
+/* The stable wrapper keeps exercise state while its editor upgrades on focus. */
+.mi-control { display: inline-flex; max-width: 100%; vertical-align: middle; align-items: center; }
+.mi-control[hidden] { display: none !important; }
+.mi-control > input, .mi-control > math-field { width: 100%; min-width: 0; border: 0; padding: 0; margin: 0; background: transparent; color: inherit; font: inherit; text-align: inherit; }
+.mi-control > input:focus { outline: none; }
+.mi-control > math-field { min-height: 2.4rem; font-size: 1.12em; --caret-color: #4f46e5; --selection-background-color: #e0e7ff; --placeholder-color: #64748b; --contains-highlight-background-color: #eef2ff; }
+.mi-control:focus-within { border-color: #4f46e5; outline: 3px solid #fbbf24; outline-offset: 2px; }
+.mi-control[aria-invalid="true"] { border-color: #b91c1c; }
+math-field::part(menu-toggle) { display: none; }
+math-field::part(virtual-keyboard-toggle) { color: #64748b; }
+.pw .mi-control.pw-input { width: 100%; min-width: 0; }
+.set-plot { margin: .5rem 0 .7rem; padding: .4rem .65rem; border-inline-start: 2px solid #cbd5e1; }
+.sp-help, .sp-scale { margin: .15rem 0; color: #64748b; font-size: .82rem; }
+.sp-scroll { overflow-x: auto; direction: ltr; }
+.sp-scroll svg { display: block; max-width: none; }
+.sp-scroll svg text { font: 14px system-ui, sans-serif; direction: ltr; unicode-bidi: isolate; }
+.sp-tick, .sp-point { cursor: pointer; }
+.sp-tick:hover rect, .sp-tick:focus rect { fill: #ccfbf1; fill-opacity: .6; }
+.sp-point:focus { outline: 2px solid #f59e0b; }
+.sp-tools { margin: .35rem 0; }
+.sp-tools[hidden], .sp-template[hidden], .sp-point-template[hidden] { display: none !important; }
+.sp-tools [aria-pressed="true"] { background: #e0e7ff; border-color: #4f46e5; color: #3730a3; }
+.sp-template { display: grid; grid-template-columns: auto minmax(40px, 1fr) auto; align-items: center; direction: ltr; max-width: 360px; margin: .2rem auto; }
+.sp-template-line { height: 3px; background: #0f766e; }
+.sp-end { display: grid; grid-template-rows: 20px 36px 36px; justify-items: center; gap: 2px; }
+.sp-end-label { font-size: .8rem; color: #475569; direction: rtl; }
+.sp-end select { font-size: 22px; padding: 0 .4rem; direction: ltr; }
+.sp-tools select { color: #0f766e; background: white; border: 1px solid #94a3b8; border-radius: 6px; }
+.sp-end .blank-input, .sp-point-template .blank-input { width: 5em !important; max-width: 100%; }
+.sp-point-template { display: flex; align-items: center; justify-content: center; gap: .6rem; margin: .7rem 0; }
+.sp-point-template select { font: inherit; padding: .3rem; }
+.sp-bar { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem; margin: .15rem 0; }
+.sp-bar .ix-btn { padding: .2rem .5rem; font-size: .82rem; min-height: 32px; }
+.sp-extra { margin: .2rem 0; font-size: .82rem; }
+.sp-options { display: flex; gap: 1rem; flex-wrap: wrap; align-items: start; }
+.sp-extra summary { cursor: pointer; color: #475569; }
+.sp-status:not(:empty) { padding: .3rem .5rem; margin-top: .3rem; border-inline-start: 3px solid #d97706; font-size: .9rem; }
+.sp-status.sp-good { border-color: #15803d; color: #166534; }
+.set-cases .case[hidden] { display: none !important; }
+.set-case-nav { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; margin: .5rem 0; }
+.set-case-nav select { font: inherit; max-width: 100%; padding: .3rem; border: 1px solid #94a3b8; border-radius: 6px; background: white; color: #334155; }
+@media print { .set-cases .case[hidden] { display: block !important; } .set-plot, .set-case-nav { display: none !important; } }
+.ix-frac { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; font-size: .78em; line-height: 1.1; }
+.ix-frac > :first-child { border-bottom: 1px solid currentColor; padding: 0 .3em; }
+.ix-frac > :last-child { padding: 0 .3em; }
+.pw > .ix-keys { display: none; }
+.pw:focus-within > .ix-keys { display: flex; }
+.ix-key:focus-visible { outline: 3px solid #fbbf24; outline-offset: 2px; }
 td .blank-input, th .blank-input { min-width: 2.4em; padding: .05rem .2rem; }
 .fill table { margin-inline: auto; }
 span.blank.ok .blank-input { border-color: #16a34a; background: #f0fdf4; }
@@ -510,6 +558,21 @@ span.blank.warn .blank-mark { color: #b45309; }
 .ix-msg.ix-info { border-color: #1d4ed8; background: #dbeafe; }
 /* Under an input: what has been typed so far, as a formula (no words). Dimmed while
    the input is still unfinished and only its beginning can be read. */
+.thmbox-terminology { border-color: #0369a1; background: #f0f9ff; }
+.thmbox-terminology > p:first-child > strong { color: #075985; }
+.thmbox-terminology > p:first-child > strong::before { content: "📖"; display: inline-block; margin-inline-end: .4em; }
+.pw-paper { margin: .5rem 0; background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; }
+.pw-row { padding: .5rem; border-bottom: 1px solid #e2e8f0; }
+.pw-row:last-child { border-bottom: 0; }
+.pw-entry { display: flex; gap: .4rem; direction: ltr; }
+.pw-entry .pw-input { flex: 1; min-width: 0; width: 100%; text-align: left; }
+.pw-preview { overflow-x: auto; margin-top: .2rem; color: #475569; }
+.pw-preview:empty { display: none; }
+.pw-start, .pw-example { direction: ltr; text-align: center; overflow-x: auto; padding: .4rem; }
+.pw-solution { margin-top: .6rem; }
+.pw-solution summary { cursor: pointer; color: #4338ca; }
+.pw-solution > .step { margin: .3rem 0 .8rem; }
+.pw-hints:not(:empty) { background: #fffbeb; border-inline-start: 3px solid #d97706; padding: .5rem; }
 .ix-preview:empty { display: none; }
 .ix-preview { font-size: 1.05em; color: #1e293b; margin: .25rem 0; }
 .ix-preview.ix-preview-partial { opacity: .5; }
@@ -543,7 +606,8 @@ span.blank.warn .blank-mark { color: #b45309; }
 .dv-check { min-height: 32px; padding: .1rem .7rem; font-size: .9em; }
 .dv-msg { margin: .2rem 0 0; font-size: .9em; direction: rtl; text-align: right; }
 .dv-done .dv-f { color: #0f172a; }
-.dv-keys { margin: .4rem 0 .1rem; }
+.dv-keys { margin: .4rem 0 .1rem; display: none; }
+.dv:focus-within > .dv-keys { display: flex; }
 @media (max-width: 600px) {
   .dv-row { grid-template-columns: minmax(0, 1fr); }
   .dv-math { grid-column: 1; grid-row: 1; }
@@ -622,6 +686,9 @@ a.xref-open { background: #ede9fe; border-radius: 3px; }
 @media (prefers-reduced-motion: reduce) { .toc-disclosure-arrow { transition: none; } }
 </style>
 <script src="assets/navigation.js" defer=""></script>
+<script src="assets/math-input.js" defer=""></script>
+<script src="widgets/shared/intervals.js" defer=""></script>
+<script src="assets/set-plot.js" defer=""></script>
 <script src="assets/interactive.js" defer=""></script>
 <script>
 /* ---------------------------------------------------------------------------
@@ -933,7 +1000,7 @@ window.Quarto = {
 };
 </script>
 
-<script id="book-toc-data" type="application/json">[{"file":"01-Introduction.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#מערכות-המספרים-מהטבעיים-אל-הממשיים\" id=\"toc-מערכות-המספרים-מהטבעיים-אל-הממשיים\" class=\"nav-link active\" data-scroll-target=\"#מערכות-המספרים-מהטבעיים-אל-הממשיים\">\u003cspan class=\"header-section-number\">1.1\u003c/span> מערכות המספרים: מהטבעיים אל הממשיים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#ספירה-המספרים-הטבעיים-השלמים-והרציונליים\" id=\"toc-ספירה-המספרים-הטבעיים-השלמים-והרציונליים\" class=\"nav-link\" data-scroll-target=\"#ספירה-המספרים-הטבעיים-השלמים-והרציונליים\">ספירה: המספרים הטבעיים, השלמים והרציונליים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מדידה-המספרים-האי-רציונליים\" id=\"toc-מדידה-המספרים-האי-רציונליים\" class=\"nav-link\" data-scroll-target=\"#מדידה-המספרים-האי-רציונליים\">מדידה: המספרים האי-רציונליים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הישר-הממשי\" id=\"toc-הישר-הממשי\" class=\"nav-link\" data-scroll-target=\"#הישר-הממשי\">הישר הממשי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים\" id=\"toc-תרגילים\" class=\"nav-link\" data-scroll-target=\"#תרגילים\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#קבוצות-וקטעים\" id=\"toc-קבוצות-וקטעים\" class=\"nav-link\" data-scroll-target=\"#קבוצות-וקטעים\">\u003cspan class=\"header-section-number\">1.2\u003c/span> קבוצות וקטעים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#רישום-של-קבוצות\" id=\"toc-רישום-של-קבוצות\" class=\"nav-link\" data-scroll-target=\"#רישום-של-קבוצות\">רישום של קבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#שוויון-קבוצות\" id=\"toc-שוויון-קבוצות\" class=\"nav-link\" data-scroll-target=\"#שוויון-קבוצות\">שוויון קבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הכלה\" id=\"toc-הכלה\" class=\"nav-link\" data-scroll-target=\"#הכלה\">הכלה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#פעולות-על-קבוצות\" id=\"toc-פעולות-על-קבוצות\" class=\"nav-link\" data-scroll-target=\"#פעולות-על-קבוצות\">פעולות על קבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#קטעים\" id=\"toc-קטעים\" class=\"nav-link\" data-scroll-target=\"#קטעים\">קטעים\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#סרטוט-קטעים\" id=\"toc-סרטוט-קטעים\" class=\"nav-link\" data-scroll-target=\"#סרטוט-קטעים\">סרטוט קטעים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-1\" id=\"toc-תרגילים-1\" class=\"nav-link\" data-scroll-target=\"#תרגילים-1\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#ערך-מוחלט\" id=\"toc-ערך-מוחלט\" class=\"nav-link\" data-scroll-target=\"#ערך-מוחלט\">\u003cspan class=\"header-section-number\">1.3\u003c/span> ערך מוחלט\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#כללי-אי-שוויונים\" id=\"toc-כללי-אי-שוויונים\" class=\"nav-link\" data-scroll-target=\"#כללי-אי-שוויונים\">כללי אי-שוויונים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#ערך-מוחלט-מרחק-וקטעים\" id=\"toc-ערך-מוחלט-מרחק-וקטעים\" class=\"nav-link\" data-scroll-target=\"#ערך-מוחלט-מרחק-וקטעים\">ערך מוחלט, מרחק וקטעים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-2\" id=\"toc-תרגילים-2\" class=\"nav-link\" data-scroll-target=\"#תרגילים-2\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-וגרפים\" id=\"toc-פונקציות-וגרפים\" class=\"nav-link\" data-scroll-target=\"#פונקציות-וגרפים\">\u003cspan class=\"header-section-number\">1.4\u003c/span> פונקציות וגרפים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#המישור-מכפלה-קרטזית\" id=\"toc-המישור-מכפלה-קרטזית\" class=\"nav-link\" data-scroll-target=\"#המישור-מכפלה-קרטזית\">המישור: מכפלה קרטזית\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרף-של-פונקציה\" id=\"toc-הגרף-של-פונקציה\" class=\"nav-link\" data-scroll-target=\"#הגרף-של-פונקציה\">הגרף של פונקציה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציית-הסימן-והערך-השלם\" id=\"toc-פונקציית-הסימן-והערך-השלם\" class=\"nav-link\" data-scroll-target=\"#פונקציית-הסימן-והערך-השלם\">פונקציית הסימן והערך השלם\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מה-אינו-פונקציה\" id=\"toc-מה-אינו-פונקציה\" class=\"nav-link\" data-scroll-target=\"#מה-אינו-פונקציה\">מה אינו פונקציה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תחום-ההגדרה-הטבעי\" id=\"toc-תחום-ההגדרה-הטבעי\" class=\"nav-link\" data-scroll-target=\"#תחום-ההגדרה-הטבעי\">תחום ההגדרה הטבעי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-3\" id=\"toc-תרגילים-3\" class=\"nav-link\" data-scroll-target=\"#תרגילים-3\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-זוגיות-ואי-זוגיות\" id=\"toc-פונקציות-זוגיות-ואי-זוגיות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-זוגיות-ואי-זוגיות\">\u003cspan class=\"header-section-number\">1.5\u003c/span> פונקציות זוגיות ואי-זוגיות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-4\" id=\"toc-תרגילים-4\" class=\"nav-link\" data-scroll-target=\"#תרגילים-4\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הזזה-ומתיחה-של-גרפים\" id=\"toc-הזזה-ומתיחה-של-גרפים\" class=\"nav-link\" data-scroll-target=\"#הזזה-ומתיחה-של-גרפים\">\u003cspan class=\"header-section-number\">1.6\u003c/span> הזזה ומתיחה של גרפים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-5\" id=\"toc-תרגילים-5\" class=\"nav-link\" data-scroll-target=\"#תרגילים-5\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הרכבת-פונקציות\" id=\"toc-הרכבת-פונקציות\" class=\"nav-link\" data-scroll-target=\"#הרכבת-פונקציות\">\u003cspan class=\"header-section-number\">1.7\u003c/span> הרכבת פונקציות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-6\" id=\"toc-תרגילים-6\" class=\"nav-link\" data-scroll-target=\"#תרגילים-6\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פולינומים-ושורשיהם\" id=\"toc-פולינומים-ושורשיהם\" class=\"nav-link\" data-scroll-target=\"#פולינומים-ושורשיהם\">\u003cspan class=\"header-section-number\">1.8\u003c/span> פולינומים ושורשיהם\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-7\" id=\"toc-תרגילים-7\" class=\"nav-link\" data-scroll-target=\"#תרגילים-7\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הפונקציות-הטריגונומטריות\" id=\"toc-הפונקציות-הטריגונומטריות\" class=\"nav-link\" data-scroll-target=\"#הפונקציות-הטריגונומטריות\">\u003cspan class=\"header-section-number\">1.9\u003c/span> הפונקציות הטריגונומטריות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#רדיאנים\" id=\"toc-רדיאנים\" class=\"nav-link\" data-scroll-target=\"#רדיאנים\">רדיאנים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#ההגדרה-הגאומטרית\" id=\"toc-ההגדרה-הגאומטרית\" class=\"nav-link\" data-scroll-target=\"#ההגדרה-הגאומטרית\">ההגדרה הגאומטרית\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מה-רואים-בציור\" id=\"toc-מה-רואים-בציור\" class=\"nav-link\" data-scroll-target=\"#מה-רואים-בציור\">מה רואים בציור\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#ערכים-מיוחדים\" id=\"toc-ערכים-מיוחדים\" class=\"nav-link\" data-scroll-target=\"#ערכים-מיוחדים\">ערכים מיוחדים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרפים\" id=\"toc-הגרפים\" class=\"nav-link\" data-scroll-target=\"#הגרפים\">הגרפים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#טנגנס\" id=\"toc-טנגנס\" class=\"nav-link\" data-scroll-target=\"#טנגנס\">טנגנס\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הזזה-ומתיחה-של-פונקציות-טריגונומטריות\" id=\"toc-הזזה-ומתיחה-של-פונקציות-טריגונומטריות\" class=\"nav-link\" data-scroll-target=\"#הזזה-ומתיחה-של-פונקציות-טריגונומטריות\">הזזה ומתיחה של פונקציות טריגונומטריות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-8\" id=\"toc-תרגילים-8\" class=\"nav-link\" data-scroll-target=\"#תרגילים-8\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הפונקציה-המעריכית\" id=\"toc-הפונקציה-המעריכית\" class=\"nav-link\" data-scroll-target=\"#הפונקציה-המעריכית\">\u003cspan class=\"header-section-number\">1.10\u003c/span> הפונקציה המעריכית\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#חזקות-עם-מעריך-שאינו-טבעי\" id=\"toc-חזקות-עם-מעריך-שאינו-טבעי\" class=\"nav-link\" data-scroll-target=\"#חזקות-עם-מעריך-שאינו-טבעי\">חזקות עם מעריך שאינו טבעי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרפים-1\" id=\"toc-הגרפים-1\" class=\"nav-link\" data-scroll-target=\"#הגרפים-1\">הגרפים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-9\" id=\"toc-תרגילים-9\" class=\"nav-link\" data-scroll-target=\"#תרגילים-9\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-הפוכות\" id=\"toc-פונקציות-הפוכות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-הפוכות\">\u003cspan class=\"header-section-number\">1.11\u003c/span> פונקציות הפוכות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-10\" id=\"toc-תרגילים-10\" class=\"nav-link\" data-scroll-target=\"#תרגילים-10\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-נוספות\" id=\"toc-פונקציות-נוספות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-נוספות\">\u003cspan class=\"header-section-number\">1.12\u003c/span> פונקציות נוספות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#לוגריתמים\" id=\"toc-לוגריתמים\" class=\"nav-link\" data-scroll-target=\"#לוגריתמים\">לוגריתמים\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#חוקי-הלוגריתמים\" id=\"toc-חוקי-הלוגריתמים\" class=\"nav-link\" data-scroll-target=\"#חוקי-הלוגריתמים\">חוקי הלוגריתמים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרף\" id=\"toc-הגרף\" class=\"nav-link\" data-scroll-target=\"#הגרף\">הגרף\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#חזקות-ושורשים\" id=\"toc-חזקות-ושורשים\" class=\"nav-link\" data-scroll-target=\"#חזקות-ושורשים\">חזקות ושורשים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-רציונליות\" id=\"toc-פונקציות-רציונליות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-רציונליות\">פונקציות רציונליות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הפונקציות-הטריגונומטריות-ההפוכות\" id=\"toc-הפונקציות-הטריגונומטריות-ההפוכות\" class=\"nav-link\" data-scroll-target=\"#הפונקציות-הטריגונומטריות-ההפוכות\">הפונקציות הטריגונומטריות ההפוכות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-11\" id=\"toc-תרגילים-11\" class=\"nav-link\" data-scroll-target=\"#תרגילים-11\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"},{"file":"02-Sequences.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#סדרות\" id=\"toc-סדרות\" class=\"nav-link active\" data-scroll-target=\"#סדרות\">\u003cspan class=\"header-section-number\">2.1\u003c/span> סדרות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים\" id=\"toc-תרגילים\" class=\"nav-link\" data-scroll-target=\"#תרגילים\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#גבול-של-סדרה\" id=\"toc-גבול-של-סדרה\" class=\"nav-link\" data-scroll-target=\"#גבול-של-סדרה\">\u003cspan class=\"header-section-number\">2.2\u003c/span> גבול של סדרה\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#שאיפה-לאינסוף\" id=\"toc-שאיפה-לאינסוף\" class=\"nav-link\" data-scroll-target=\"#שאיפה-לאינסוף\">שאיפה לאינסוף\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מה-עושים-עם-גבול\" id=\"toc-מה-עושים-עם-גבול\" class=\"nav-link\" data-scroll-target=\"#מה-עושים-עם-גבול\">מה עושים עם גבול\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-1\" id=\"toc-תרגילים-1\" class=\"nav-link\" data-scroll-target=\"#תרגילים-1\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#סדרות-סטנדרטיות\" id=\"toc-סדרות-סטנדרטיות\" class=\"nav-link\" data-scroll-target=\"#סדרות-סטנדרטיות\">\u003cspan class=\"header-section-number\">2.3\u003c/span> סדרות סטנדרטיות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-2\" id=\"toc-תרגילים-2\" class=\"nav-link\" data-scroll-target=\"#תרגילים-2\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#חשבון-גבולות-סנדוויץ-והשוואה\" id=\"toc-חשבון-גבולות-סנדוויץ-והשוואה\" class=\"nav-link\" data-scroll-target=\"#חשבון-גבולות-סנדוויץ-והשוואה\">\u003cspan class=\"header-section-number\">2.4\u003c/span> חשבון גבולות, סנדוויץ’ והשוואה\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#כלל-הסנדוויץ\" id=\"toc-כלל-הסנדוויץ\" class=\"nav-link\" data-scroll-target=\"#כלל-הסנדוויץ\">כלל הסנדוויץ’\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#השוואה\" id=\"toc-השוואה\" class=\"nav-link\" data-scroll-target=\"#השוואה\">השוואה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-3\" id=\"toc-תרגילים-3\" class=\"nav-link\" data-scroll-target=\"#תרגילים-3\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#קיום-ואי-קיום-של-גבול\" id=\"toc-קיום-ואי-קיום-של-גבול\" class=\"nav-link\" data-scroll-target=\"#קיום-ואי-קיום-של-גבול\">\u003cspan class=\"header-section-number\">2.5\u003c/span> קיום ואי-קיום של גבול\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#סדרות-מונוטוניות\" id=\"toc-סדרות-מונוטוניות\" class=\"nav-link\" data-scroll-target=\"#סדרות-מונוטוניות\">סדרות מונוטוניות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#המספר-e\" id=\"toc-המספר-e\" class=\"nav-link\" data-scroll-target=\"#המספר-e\">המספר e\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מתי-אין-גבול\" id=\"toc-מתי-אין-גבול\" class=\"nav-link\" data-scroll-target=\"#מתי-אין-גבול\">מתי אין גבול\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-4\" id=\"toc-תרגילים-4\" class=\"nav-link\" data-scroll-target=\"#תרגילים-4\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"},{"file":"index.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#פתח-דבר\" id=\"toc-פתח-דבר\" class=\"nav-link active\" data-scroll-target=\"#פתח-דבר\">פתח דבר\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#על-הקורס\" id=\"toc-על-הקורס\" class=\"nav-link\" data-scroll-target=\"#על-הקורס\">על הקורס\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#איך-לקרוא-את-המערכים\" id=\"toc-איך-לקרוא-את-המערכים\" class=\"nav-link\" data-scroll-target=\"#איך-לקרוא-את-המערכים\">איך לקרוא את המערכים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תוכנית-הקורס\" id=\"toc-תוכנית-הקורס\" class=\"nav-link\" data-scroll-target=\"#תוכנית-הקורס\">תוכנית הקורס\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מקורות\" id=\"toc-מקורות\" class=\"nav-link\" data-scroll-target=\"#מקורות\">מקורות\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"}]</script>
+<script id="book-toc-data" type="application/json">[{"file":"01-Introduction.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#מערכות-המספרים-מהטבעיים-אל-הממשיים\" id=\"toc-מערכות-המספרים-מהטבעיים-אל-הממשיים\" class=\"nav-link active\" data-scroll-target=\"#מערכות-המספרים-מהטבעיים-אל-הממשיים\">\u003cspan class=\"header-section-number\">1.1\u003c/span> מערכות המספרים: מהטבעיים אל הממשיים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#ספירה-המספרים-הטבעיים-השלמים-והרציונליים\" id=\"toc-ספירה-המספרים-הטבעיים-השלמים-והרציונליים\" class=\"nav-link\" data-scroll-target=\"#ספירה-המספרים-הטבעיים-השלמים-והרציונליים\">ספירה: המספרים הטבעיים, השלמים והרציונליים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מדידה-המספרים-האי-רציונליים\" id=\"toc-מדידה-המספרים-האי-רציונליים\" class=\"nav-link\" data-scroll-target=\"#מדידה-המספרים-האי-רציונליים\">מדידה: המספרים האי-רציונליים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הישר-הממשי\" id=\"toc-הישר-הממשי\" class=\"nav-link\" data-scroll-target=\"#הישר-הממשי\">הישר הממשי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים\" id=\"toc-תרגילים\" class=\"nav-link\" data-scroll-target=\"#תרגילים\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#קבוצות-וקטעים\" id=\"toc-קבוצות-וקטעים\" class=\"nav-link\" data-scroll-target=\"#קבוצות-וקטעים\">\u003cspan class=\"header-section-number\">1.2\u003c/span> קבוצות וקטעים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#רישום-של-קבוצות\" id=\"toc-רישום-של-קבוצות\" class=\"nav-link\" data-scroll-target=\"#רישום-של-קבוצות\">רישום של קבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#שוויון-קבוצות\" id=\"toc-שוויון-קבוצות\" class=\"nav-link\" data-scroll-target=\"#שוויון-קבוצות\">שוויון קבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הכלה\" id=\"toc-הכלה\" class=\"nav-link\" data-scroll-target=\"#הכלה\">הכלה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#פעולות-על-קבוצות\" id=\"toc-פעולות-על-קבוצות\" class=\"nav-link\" data-scroll-target=\"#פעולות-על-קבוצות\">פעולות על קבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#קטעים\" id=\"toc-קטעים\" class=\"nav-link\" data-scroll-target=\"#קטעים\">קטעים\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#סרטוט-קטעים\" id=\"toc-סרטוט-קטעים\" class=\"nav-link\" data-scroll-target=\"#סרטוט-קטעים\">סרטוט קטעים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-1\" id=\"toc-תרגילים-1\" class=\"nav-link\" data-scroll-target=\"#תרגילים-1\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#ערך-מוחלט\" id=\"toc-ערך-מוחלט\" class=\"nav-link\" data-scroll-target=\"#ערך-מוחלט\">\u003cspan class=\"header-section-number\">1.3\u003c/span> ערך מוחלט\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#כללי-אי-שוויונים\" id=\"toc-כללי-אי-שוויונים\" class=\"nav-link\" data-scroll-target=\"#כללי-אי-שוויונים\">כללי אי-שוויונים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#ערך-מוחלט-מרחק-וקטעים\" id=\"toc-ערך-מוחלט-מרחק-וקטעים\" class=\"nav-link\" data-scroll-target=\"#ערך-מוחלט-מרחק-וקטעים\">ערך מוחלט, מרחק וקטעים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-2\" id=\"toc-תרגילים-2\" class=\"nav-link\" data-scroll-target=\"#תרגילים-2\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-וגרפים\" id=\"toc-פונקציות-וגרפים\" class=\"nav-link\" data-scroll-target=\"#פונקציות-וגרפים\">\u003cspan class=\"header-section-number\">1.4\u003c/span> פונקציות וגרפים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#המישור-מכפלה-קרטזית\" id=\"toc-המישור-מכפלה-קרטזית\" class=\"nav-link\" data-scroll-target=\"#המישור-מכפלה-קרטזית\">המישור: מכפלה קרטזית\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרף-של-פונקציה\" id=\"toc-הגרף-של-פונקציה\" class=\"nav-link\" data-scroll-target=\"#הגרף-של-פונקציה\">הגרף של פונקציה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציית-הסימן-והערך-השלם\" id=\"toc-פונקציית-הסימן-והערך-השלם\" class=\"nav-link\" data-scroll-target=\"#פונקציית-הסימן-והערך-השלם\">פונקציית הסימן והערך השלם\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מה-אינו-פונקציה\" id=\"toc-מה-אינו-פונקציה\" class=\"nav-link\" data-scroll-target=\"#מה-אינו-פונקציה\">מה אינו פונקציה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תחום-ההגדרה-הטבעי\" id=\"toc-תחום-ההגדרה-הטבעי\" class=\"nav-link\" data-scroll-target=\"#תחום-ההגדרה-הטבעי\">תחום ההגדרה הטבעי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-3\" id=\"toc-תרגילים-3\" class=\"nav-link\" data-scroll-target=\"#תרגילים-3\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-זוגיות-ואי-זוגיות\" id=\"toc-פונקציות-זוגיות-ואי-זוגיות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-זוגיות-ואי-זוגיות\">\u003cspan class=\"header-section-number\">1.5\u003c/span> פונקציות זוגיות ואי-זוגיות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-4\" id=\"toc-תרגילים-4\" class=\"nav-link\" data-scroll-target=\"#תרגילים-4\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הזזה-ומתיחה-של-גרפים\" id=\"toc-הזזה-ומתיחה-של-גרפים\" class=\"nav-link\" data-scroll-target=\"#הזזה-ומתיחה-של-גרפים\">\u003cspan class=\"header-section-number\">1.6\u003c/span> הזזה ומתיחה של גרפים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-5\" id=\"toc-תרגילים-5\" class=\"nav-link\" data-scroll-target=\"#תרגילים-5\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הרכבת-פונקציות\" id=\"toc-הרכבת-פונקציות\" class=\"nav-link\" data-scroll-target=\"#הרכבת-פונקציות\">\u003cspan class=\"header-section-number\">1.7\u003c/span> הרכבת פונקציות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-6\" id=\"toc-תרגילים-6\" class=\"nav-link\" data-scroll-target=\"#תרגילים-6\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פולינומים-ושורשיהם\" id=\"toc-פולינומים-ושורשיהם\" class=\"nav-link\" data-scroll-target=\"#פולינומים-ושורשיהם\">\u003cspan class=\"header-section-number\">1.8\u003c/span> פולינומים ושורשיהם\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-7\" id=\"toc-תרגילים-7\" class=\"nav-link\" data-scroll-target=\"#תרגילים-7\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הפונקציות-הטריגונומטריות\" id=\"toc-הפונקציות-הטריגונומטריות\" class=\"nav-link\" data-scroll-target=\"#הפונקציות-הטריגונומטריות\">\u003cspan class=\"header-section-number\">1.9\u003c/span> הפונקציות הטריגונומטריות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#רדיאנים\" id=\"toc-רדיאנים\" class=\"nav-link\" data-scroll-target=\"#רדיאנים\">רדיאנים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#ההגדרה-הגאומטרית\" id=\"toc-ההגדרה-הגאומטרית\" class=\"nav-link\" data-scroll-target=\"#ההגדרה-הגאומטרית\">ההגדרה הגאומטרית\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מה-רואים-בציור\" id=\"toc-מה-רואים-בציור\" class=\"nav-link\" data-scroll-target=\"#מה-רואים-בציור\">מה רואים בציור\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#ערכים-מיוחדים\" id=\"toc-ערכים-מיוחדים\" class=\"nav-link\" data-scroll-target=\"#ערכים-מיוחדים\">ערכים מיוחדים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרפים\" id=\"toc-הגרפים\" class=\"nav-link\" data-scroll-target=\"#הגרפים\">הגרפים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#טנגנס\" id=\"toc-טנגנס\" class=\"nav-link\" data-scroll-target=\"#טנגנס\">טנגנס\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הזזה-ומתיחה-של-פונקציות-טריגונומטריות\" id=\"toc-הזזה-ומתיחה-של-פונקציות-טריגונומטריות\" class=\"nav-link\" data-scroll-target=\"#הזזה-ומתיחה-של-פונקציות-טריגונומטריות\">הזזה ומתיחה של פונקציות טריגונומטריות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-8\" id=\"toc-תרגילים-8\" class=\"nav-link\" data-scroll-target=\"#תרגילים-8\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הפונקציה-המעריכית\" id=\"toc-הפונקציה-המעריכית\" class=\"nav-link\" data-scroll-target=\"#הפונקציה-המעריכית\">\u003cspan class=\"header-section-number\">1.10\u003c/span> הפונקציה המעריכית\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#חזקות-עם-מעריך-שאינו-טבעי\" id=\"toc-חזקות-עם-מעריך-שאינו-טבעי\" class=\"nav-link\" data-scroll-target=\"#חזקות-עם-מעריך-שאינו-טבעי\">חזקות עם מעריך שאינו טבעי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרפים-1\" id=\"toc-הגרפים-1\" class=\"nav-link\" data-scroll-target=\"#הגרפים-1\">הגרפים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-9\" id=\"toc-תרגילים-9\" class=\"nav-link\" data-scroll-target=\"#תרגילים-9\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-הפוכות\" id=\"toc-פונקציות-הפוכות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-הפוכות\">\u003cspan class=\"header-section-number\">1.11\u003c/span> פונקציות הפוכות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-10\" id=\"toc-תרגילים-10\" class=\"nav-link\" data-scroll-target=\"#תרגילים-10\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-נוספות\" id=\"toc-פונקציות-נוספות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-נוספות\">\u003cspan class=\"header-section-number\">1.12\u003c/span> פונקציות נוספות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#לוגריתמים\" id=\"toc-לוגריתמים\" class=\"nav-link\" data-scroll-target=\"#לוגריתמים\">לוגריתמים\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#חוקי-הלוגריתמים\" id=\"toc-חוקי-הלוגריתמים\" class=\"nav-link\" data-scroll-target=\"#חוקי-הלוגריתמים\">חוקי הלוגריתמים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרף\" id=\"toc-הגרף\" class=\"nav-link\" data-scroll-target=\"#הגרף\">הגרף\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#חזקות-ושורשים\" id=\"toc-חזקות-ושורשים\" class=\"nav-link\" data-scroll-target=\"#חזקות-ושורשים\">חזקות ושורשים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-רציונליות\" id=\"toc-פונקציות-רציונליות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-רציונליות\">פונקציות רציונליות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הפונקציות-הטריגונומטריות-ההפוכות\" id=\"toc-הפונקציות-הטריגונומטריות-ההפוכות\" class=\"nav-link\" data-scroll-target=\"#הפונקציות-הטריגונומטריות-ההפוכות\">הפונקציות הטריגונומטריות ההפוכות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-11\" id=\"toc-תרגילים-11\" class=\"nav-link\" data-scroll-target=\"#תרגילים-11\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"},{"file":"02-Sequences.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#סדרות\" id=\"toc-סדרות\" class=\"nav-link active\" data-scroll-target=\"#סדרות\">\u003cspan class=\"header-section-number\">2.1\u003c/span> סדרות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים\" id=\"toc-תרגילים\" class=\"nav-link\" data-scroll-target=\"#תרגילים\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#גבול-של-סדרה\" id=\"toc-גבול-של-סדרה\" class=\"nav-link\" data-scroll-target=\"#גבול-של-סדרה\">\u003cspan class=\"header-section-number\">2.2\u003c/span> גבול של סדרה\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#שאיפה-לאינסוף\" id=\"toc-שאיפה-לאינסוף\" class=\"nav-link\" data-scroll-target=\"#שאיפה-לאינסוף\">שאיפה לאינסוף\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מה-עושים-עם-גבול\" id=\"toc-מה-עושים-עם-גבול\" class=\"nav-link\" data-scroll-target=\"#מה-עושים-עם-גבול\">מה עושים עם גבול\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-1\" id=\"toc-תרגילים-1\" class=\"nav-link\" data-scroll-target=\"#תרגילים-1\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#סדרות-סטנדרטיות\" id=\"toc-סדרות-סטנדרטיות\" class=\"nav-link\" data-scroll-target=\"#סדרות-סטנדרטיות\">\u003cspan class=\"header-section-number\">2.3\u003c/span> סדרות סטנדרטיות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-2\" id=\"toc-תרגילים-2\" class=\"nav-link\" data-scroll-target=\"#תרגילים-2\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#חשבון-גבולות-סנדוויץ-והשוואה\" id=\"toc-חשבון-גבולות-סנדוויץ-והשוואה\" class=\"nav-link\" data-scroll-target=\"#חשבון-גבולות-סנדוויץ-והשוואה\">\u003cspan class=\"header-section-number\">2.4\u003c/span> חשבון גבולות, סנדוויץ’ והשוואה\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#כלל-הסנדוויץ\" id=\"toc-כלל-הסנדוויץ\" class=\"nav-link\" data-scroll-target=\"#כלל-הסנדוויץ\">כלל הסנדוויץ’\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#השוואה\" id=\"toc-השוואה\" class=\"nav-link\" data-scroll-target=\"#השוואה\">השוואה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-3\" id=\"toc-תרגילים-3\" class=\"nav-link\" data-scroll-target=\"#תרגילים-3\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#קיום-ואי-קיום-של-גבול\" id=\"toc-קיום-ואי-קיום-של-גבול\" class=\"nav-link\" data-scroll-target=\"#קיום-ואי-קיום-של-גבול\">\u003cspan class=\"header-section-number\">2.5\u003c/span> קיום ואי-קיום של גבול\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#סדרות-מונוטוניות\" id=\"toc-סדרות-מונוטוניות\" class=\"nav-link\" data-scroll-target=\"#סדרות-מונוטוניות\">סדרות מונוטוניות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#המספר-e\" id=\"toc-המספר-e\" class=\"nav-link\" data-scroll-target=\"#המספר-e\">המספר e\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מתי-אין-גבול\" id=\"toc-מתי-אין-גבול\" class=\"nav-link\" data-scroll-target=\"#מתי-אין-גבול\">מתי אין גבול\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-4\" id=\"toc-תרגילים-4\" class=\"nav-link\" data-scroll-target=\"#תרגילים-4\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"},{"file":"index.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#פתח-דבר\" id=\"toc-פתח-דבר\" class=\"nav-link active\" data-scroll-target=\"#פתח-דבר\">פתח דבר\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#מקורות\" id=\"toc-מקורות\" class=\"nav-link\" data-scroll-target=\"#מקורות\">מקורות\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"}]</script>
 </head>
 
 <body class="nav-sidebar floating quarto-light">
@@ -945,7 +1012,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="הצג/הסתר את סרגל הניווט" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01-Introduction.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">הרצאה 1: מבוא — מספרים ממשיים ופונקציות</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01-Introduction.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">מספרים ממשיים ופונקציות</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="הצג/הסתר את סרגל הניווט" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="חפש" onclick="window.quartoOpenSearch();">
@@ -987,7 +1054,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./01-Introduction.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">הרצאה 1: מבוא — מספרים ממשיים ופונקציות</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">מספרים ממשיים ופונקציות</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -1097,7 +1164,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">הרצאה 1: מבוא — מספרים ממשיים ופונקציות</span></h1>
+<h1 class="title"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">מספרים ממשיים ופונקציות</span></h1>
 </div>
 
 
@@ -1114,15 +1181,8 @@ window.Quarto = {
 </header>
 
 
-<div class="lead">
-<p>בהרצאה הזו נבנה את השפה שבה נשתמש לאורך כל הקורס: המספרים הממשיים, קטעים וערך מוחלט, ובעיקר <strong>פונקציות</strong>. נכיר את המשפחות הבסיסיות של פונקציות: פולינומים, פונקציות טריגונומטריות, הפונקציה המעריכית והלוגריתם, יחד עם פונקציות נוספות, ונלמד איך לבנות מהן פונקציות חדשות בעזרת הזזה, מתיחה, הרכבה והיפוך.</p>
-</div>
-<p><em>ברוב הדוגמאות והשאלות כותבים את התשובה במשבצת ולוחצים “בדיקה”, ובחלקן חושפים את הפתרון שורה אחר שורה ומשלימים בכל שורה את החסר. איך מקלידים מתמטיקה במשבצת: ראו בפתח דבר.</em></p>
 <section id="מערכות-המספרים-מהטבעיים-אל-הממשיים" class="level2" data-number="1.1">
 <h2 data-number="1.1" class="anchored" data-anchor-id="מערכות-המספרים-מהטבעיים-אל-הממשיים"><span class="header-section-number">1.1</span> מערכות המספרים: מהטבעיים אל הממשיים</h2>
-<div class="lead">
-<p><strong>מה עושים כאן?</strong> עוברים על המספרים שאנחנו כבר מכירים, ובודקים למה בכל שלב היה צריך מספרים חדשים: קודם כדי <strong>לספור</strong>, ואחר כך כדי <strong>למדוד</strong>.</p>
-</div>
 <p>מי שלומד מדעי הנתונים צריך לדעת למדל נתונים. בדרך כלל מייצגים את הנתונים כמספרים (למשל בגיליון Excel), והמספרים מתארים כמויות שסופרים ותכונות שמודדים. כלומר, צריך לדעת <strong>לספור</strong> ו<strong>למדוד</strong>. נבדוק שאנחנו יודעים לעשות את שני הדברים. אם כן, הקורס הזה מיותר: אתם כבר יודעים את החומר, ואפשר ללכת הביתה.</p>
 <section id="ספירה-המספרים-הטבעיים-השלמים-והרציונליים" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="ספירה-המספרים-הטבעיים-השלמים-והרציונליים">ספירה: המספרים הטבעיים, השלמים והרציונליים</h3>
@@ -1170,7 +1230,7 @@ window.Quarto = {
 </div>
 <div id="box-exm-reciprocal" class="thmbox thmbox-example" title="מהו ההופכי?">
 <p><strong>דוגמה 1.1.7 — מהו ההופכי?</strong></p>
-<p>מצאו את ההופכי של כל מספר, ובדקו שהמכפלה של המספר וההופכי שלו היא <span class="math inline">\(.1\)</span> <span>(שבר כותבים עם קו נטוי, למשל <code>2/3</code>.)</span></p>
+<p>מצאו את ההופכי של כל מספר, ובדקו שהמכפלה של המספר וההופכי שלו היא <span class="math inline">\(.1\)</span></p>
 <div class="fill">
 <p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\(2^{-1} =\)</span> <span class="blank" data-ans="1/2"><span class="math inline">\(\frac{1}{2}\)</span></span></span></p>
 <p><strong>(ב)</strong> <span class="fill-ltr"><span class="math inline">\(\left(\frac{3}{4}\right)^{-1} =\)</span> <span class="blank" data-ans="4/3"><span class="math inline">\(\frac{4}{3}\)</span></span></span></p>
@@ -1401,15 +1461,13 @@ window.Quarto = {
 <p>יהיו <span class="math inline">\(x\)</span> ו-<span class="math inline">\(y\)</span> מספרים ממשיים. אם הנקודה <span class="math inline">\(x\)</span> נמצאת מימין לנקודה <span class="math inline">\(,y\)</span> נאמר ש-<span class="math inline">\(x\)</span> <span class="term"><strong>גדול</strong></span> מ-<span class="math inline">\(,y\)</span> ונסמן <span class="math inline">\(.x &gt; y\)</span> במקרה כזה נאמר גם ש-<span class="math inline">\(y\)</span> <span class="term"><strong>קטן</strong></span> מ-<span class="math inline">\(,x\)</span> ונסמן <span class="math inline">\(.y &lt; x\)</span></p>
 <p>אם <span class="math inline">\(x &gt; y\)</span> או <span class="math inline">\(,x = y\)</span> נסמן <span class="math inline">\(,x \ge y\)</span> ובאופן דומה <span class="math inline">\(.y \le x\)</span></p>
 </div>
+<div id="box-term-strict" class="thmbox thmbox-terminology" title="אי־שוויון חזק וחלש">
+<p><strong>מונחים — אי־שוויון חזק וחלש.</strong></p>
+<p><strong>אי־שוויון חזק</strong> (<span class="math inline">\(&lt;\)</span> או <span class="math inline">\(&gt;\)</span>) אינו כולל שוויון. <strong>אי־שוויון חלש</strong> (<span class="math inline">\(\le\)</span> או <span class="math inline">\(\ge\)</span>) כולל גם שוויון. למשל, <span class="math inline">\(3 &lt; 3\)</span> אינו נכון, אבל <span class="math inline">\(3 \le 3\)</span> נכון.</p>
+</div>
 <div id="box-exm-order" class="thmbox thmbox-example" title="מי מימין?">
 <p><strong>דוגמה 1.1.14 — מי מימין?</strong></p>
-<p>בכל סעיף, איזה מהמספרים גדול יותר? היעזרו בישר: כל זוג מסומן בו בצבע משלו.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="figures/order-line.png" class="img-fluid figure-img" style="width:100.0%" alt="ישר ממשי ממינוס ארבע עד שש, ועליו מסומנים בצבעים שונים חמש ושתיים, מינוס אחת ומינוס שלוש, אחת וחצי, וארבע"></p>
-<figcaption>המספרים מהדוגמה על הישר הממשי. בכל זוג, המספר הגדול הוא זה שמימין.</figcaption>
-</figure>
-</div>
+<p>השוו בין המספרים, וקבעו אם האי־שוויונים נכונים.</p>
 <p><strong>(א)</strong> <span class="math inline">\(5\)</span> לעומת <span class="math inline">\(2\)</span></p>
 <div class="tf-quiz" data-correct="1">
 <button type="button" class="tf-opt" data-val="1">\(5\)</button>
@@ -1456,15 +1514,22 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<div class="thmbox thmbox-self-check">
-<p><strong>בדיקה עצמית.</strong></p>
-<p>איזה מספר גדול יותר: <span class="math inline">\(-7\)</span> או <span class="math inline">\(?{-}2\)</span></p>
-<div class="tf-quiz" data-correct="2">
-<button type="button" class="tf-opt" data-val="1">\(-7\)</button>
-<button type="button" class="tf-opt" data-val="2">\(-2\)</button>
-<div class="tf-feedback" aria-live="polite"></div>
-<div class="tf-why">
-<p><span class="math inline">\(,-2 &gt; -7\)</span> כי <span class="math inline">\(-2\)</span> מימין ל-<span class="math inline">\(.{-}7\)</span> לא מסתכלים על ה”גודל” של הספרה 7: בין שני מספרים שליליים, הגדול הוא זה שקרוב יותר ל-<span class="math inline">\(.0\)</span></p>
+<div id="box-exm-order-letters" class="thmbox thmbox-example" title="סדר בלי ערכים מספריים">
+<p><strong>דוגמה 1.1.15 — סדר בלי ערכים מספריים.</strong></p>
+<p>האותיות בציור מסמנות מספרים על הישר הממשי. כתבו אותן מהקטן לגדול, עם הסימן <span class="math inline">\(&lt;\)</span> ביניהן.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/order-letters.png" class="img-fluid figure-img" style="width:85.0%" alt="על ישר אופקי מסומנות שש נקודות. משמאל לימין: e, f, a, c, d, g."></p>
+<figcaption>שש נקודות המסומנות באותיות על הישר הממשי.</figcaption>
+</figure>
+</div>
+<div class="fill">
+<p><span class="blank" data-ans="e<f<a<c<d<g" kind="letter-order" data-w="26"><span class="math inline">\(e &lt; f &lt; a &lt; c &lt; d &lt; g\)</span></span></p>
+<div class="hint">
+<p>התחילו בנקודה השמאלית ביותר, והתקדמו ימינה.</p>
+</div>
+<div class="explain">
+<p>ככל שמתקדמים ימינה על הישר, המספרים גדלים. לכן <span class="math inline">\(.e &lt; f &lt; a &lt; c &lt; d &lt; g\)</span></p>
 </div>
 </div>
 </div>
@@ -1481,7 +1546,7 @@ window.Quarto = {
 <section id="תרגילים" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="תרגילים">תרגילים</h3>
 <div id="box-q-rational" class="thmbox thmbox-question" title="רציונלי? ואם כן, איזה שבר?">
-<p><strong>שאלה 1.1.15 — רציונלי? ואם כן, איזה שבר?</strong></p>
+<p><strong>שאלה 1.1.16 — רציונלי? ואם כן, איזה שבר?</strong></p>
 <p>קבעו אם כל מספר רציונלי. את המספרים הרציונליים כתבו כשבר מצומצם (מספר שלם אפשר לכתוב כמו שהוא).</p>
 <p><strong>(א)</strong> <span class="math inline">\(1.25\)</span></p>
 <div class="tf-quiz" data-correct="1">
@@ -1542,7 +1607,7 @@ window.Quarto = {
 </div>
 </div>
 <div id="box-q-order-numbers" class="thmbox thmbox-question" title="מהקטן אל הגדול">
-<p><strong>שאלה 1.1.16 — מהקטן אל הגדול.</strong></p>
+<p><strong>שאלה 1.1.17 — מהקטן אל הגדול.</strong></p>
 <p>סדרו את המספרים מהקטן אל הגדול.</p>
 <div class="order">
 <div class="step">
@@ -1572,7 +1637,7 @@ window.Quarto = {
 </div>
 </div>
 <div id="box-q-reciprocals" class="thmbox thmbox-question" title="הופכיים">
-<p><strong>שאלה 1.1.17 — הופכיים.</strong></p>
+<p><strong>שאלה 1.1.18 — הופכיים.</strong></p>
 <p>חשבו.</p>
 <div class="fill">
 <p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\((0.2)^{-1} =\)</span> <span class="blank" data-ans="5"><span class="math inline">\(5\)</span></span></span></p>
@@ -1591,8 +1656,8 @@ window.Quarto = {
 </div>
 </div>
 <div id="box-q-divide" class="thmbox thmbox-question" title="חילוק בעזרת הופכי">
-<p><strong>שאלה 1.1.18 — חילוק בעזרת הופכי.</strong></p>
-<p>חשבו בעזרת הכלל “חילוק הוא כפל בהופכי”. <span>(שבר כותבים עם קו נטוי, למשל <code>15/8</code>.)</span></p>
+<p><strong>שאלה 1.1.19 — חילוק בעזרת הופכי.</strong></p>
+<p>חשבו בעזרת הכלל “חילוק הוא כפל בהופכי”.</p>
 <div class="fill">
 <p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\(\frac{3}{4} : \frac{2}{5} =\)</span> <span class="blank" data-ans="15/8"><span class="math inline">\(\frac{15}{8}\)</span></span></span></p>
 <p><strong>(ב)</strong> <span class="fill-ltr"><span class="math inline">\(6 : \frac{1}{3} =\)</span> <span class="blank" data-ans="18"><span class="math inline">\(18\)</span></span></span></p>
@@ -1605,8 +1670,8 @@ window.Quarto = {
 </div>
 </div>
 <div id="box-q-decimal-fraction" class="thmbox thmbox-question" title="משבר עשרוני לשבר">
-<p><strong>שאלה 1.1.19 — משבר עשרוני לשבר.</strong></p>
-<p>כתבו כל מספר כשבר מצומצם.<span>(בשדה: מונה, קו נטוי ומכנה, למשל <code>3/4</code>.)</span></p>
+<p><strong>שאלה 1.1.20 — משבר עשרוני לשבר.</strong></p>
+<p>כתבו כל מספר כשבר מצומצם.</p>
 <div class="fill">
 <p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\(0.75 =\)</span> <span class="blank" data-ans="3/4" form="frac"><span class="math inline">\(\frac{3}{4}\)</span></span></span></p>
 <p><strong>(ב)</strong> <span class="fill-ltr"><span class="math inline">\(2.4 =\)</span> <span class="blank" data-ans="12/5" form="frac"><span class="math inline">\(\frac{12}{5}\)</span></span></span></p>
@@ -1622,7 +1687,7 @@ window.Quarto = {
 </div>
 </div>
 <div id="box-q-which-rational" class="thmbox thmbox-question" title="רציונלי או לא?">
-<p><strong>שאלה 1.1.20 — רציונלי או לא?</strong></p>
+<p><strong>שאלה 1.1.21 — רציונלי או לא?</strong></p>
 <p><strong>(א)</strong> <span class="math inline">\(\sqrt{16}\)</span></p>
 <div class="tf-quiz" data-correct="1">
 <button type="button" class="tf-opt" data-val="1">רציונלי</button>
@@ -1688,7 +1753,7 @@ window.Quarto = {
 </div>
 </div>
 <div id="box-q-defined" class="thmbox thmbox-question" title="מוגדר או לא?">
-<p><strong>שאלה 1.1.21 — מוגדר או לא?</strong></p>
+<p><strong>שאלה 1.1.22 — מוגדר או לא?</strong></p>
 <p><strong>(א)</strong> <span class="math inline">\(\frac{0}{5}\)</span></p>
 <div class="tf-quiz" data-correct="1">
 <button type="button" class="tf-opt" data-val="1">מוגדר</button>
@@ -1733,15 +1798,12 @@ window.Quarto = {
 </section>
 <section id="קבוצות-וקטעים" class="level2" data-number="1.2">
 <h2 data-number="1.2" class="anchored" data-anchor-id="קבוצות-וקטעים"><span class="header-section-number">1.2</span> קבוצות וקטעים</h2>
-<div class="lead">
-<p><strong>מה עושים כאן?</strong> לומדים לדבר על <strong>אוספים</strong> של מספרים: מי שייך לאוסף, איך רושמים אותו, ואיך מחברים שני אוספים. בסוף נכיר את האוספים הנפוצים ביותר על הישר הממשי: <strong>קטעים</strong>.</p>
-</div>
 <div id="box-def-set" class="thmbox thmbox-definition" title="קבוצה">
 <p><strong>הגדרה 1.2.1 — קבוצה.</strong></p>
 <p>אוסף של אובייקטים מתמטיים נקרא <span class="term"><strong>קבוצה</strong></span>, והאובייקטים שבה נקראים <span class="term"><strong>האיברים</strong></span> של הקבוצה.</p>
 </div>
-<div class="thmbox thmbox-key-point thmicon-idea" data-icon="idea" title="קבוצה היא קופסה">
-<p><strong>חשוב לזכור — קבוצה היא קופסה.</strong></p>
+<div class="thmbox thmbox-key-point thmicon-idea" data-icon="idea" title="קבוצה היא קצת כמו קופסה">
+<p><strong>דימוי — קבוצה היא קצת כמו קופסה.</strong></p>
 <p>אפשר לחשוב על קבוצה כעל <strong>קופסה</strong> שיש בה פריטים: הפריטים שבקופסה הם האיברים של הקבוצה.</p>
 </div>
 <p>כבר פגשנו ארבע קבוצות של מספרים: <span class="math inline">\(\mathbb{N}\)</span> (הטבעיים), <span class="math inline">\(\mathbb{Z}\)</span> (השלמים), <span class="math inline">\(\mathbb{Q}\)</span> (הרציונליים) ו-<span class="math inline">\(\mathbb{R}\)</span> (הממשיים). נצטרך קבוצות גם כדי לתאר אוספים אחרים של מספרים, למשל את כל הפתרונות של אי-שוויון, או את כל המספרים שבהם נוסחה מוגדרת.</p>
@@ -1821,7 +1883,7 @@ window.Quarto = {
 <p><span class="math display">\[.\{n \in \mathbb{N} \mid 3 &lt; n &lt; 1000\}\]</span> לרשום את כל <span class="math inline">\(995\)</span> האיברים ברשימה היה ארוך מאוד; התנאי עושה את זה בשורה אחת.</p>
 </div>
 </details>
-<p><strong>(ג)</strong> רשמו את הקבוצה כרשימה. <span>(בשדה כותבים סוגריים מסולסלים, למשל <code>{5,6}</code>.)</span></p>
+<p><strong>(ג)</strong> רשמו את הקבוצה כרשימה.</p>
 <div class="fill">
 <p><span class="fill-ltr"><span class="math inline">\(\{x \in \mathbb{Z} \mid 0 &lt; x &lt; 4\} =\)</span> <span class="blank" data-ans="{1,2,3}"><span class="math inline">\(\{1, 2, 3\}\)</span></span></span></p>
 <div class="explain">
@@ -1840,12 +1902,20 @@ window.Quarto = {
 <p><strong>כלל — סדר וכפילויות אינם משנים.</strong></p>
 <p><strong>הסדר</strong> שבו רושמים את האיברים, ו<strong>מספר הפעמים</strong> שרושמים כל איבר, אינם משנים את הקבוצה: <span class="math display">\[.\{1, 2, 3\} = \{3, 1, 2\} = \{1, 1, 2, 3, 3, 3\}\]</span></p>
 </div>
-<p>בשפה של קופסאות: בניגוד לקופסה אמיתית, בקופסה שמייצגת קבוצה לא יכולים להיות שני פריטים זהים. לכן שתי הקבוצות שבציור שוות: בכל אחת מהן יש איבר אחד, שקל אחד, ולא עשרה שקלים (לצערנו).</p>
+<p>בשתי הקבוצות שבציור יש אותו איבר: שקל. רישום שלו עשר פעמים לא הופך אותו לעשרה שקלים (לצערנו).</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="figures/coin-sets.png" class="img-fluid figure-img" style="width:90.0%" alt="סוגריים מסולסלים ובהם מטבע אחד של שקל, סימן שוויון, וסוגריים ובהם עשרה מטבעות"></p>
 <figcaption>קבוצה שיש בה שקל אחד שווה לקבוצה שבה השקל רשום עשר פעמים.</figcaption>
 </figure>
+</div>
+<div class="thmbox thmbox-warning" title="קופסאות קסם">
+<p><strong>שימו לב — קופסאות קסם.</strong></p>
+<p>הדימוי של קופסה שימושי, אבל לקופסאות האלה יש שני כוחות קסם:</p>
+<ul>
+<li><strong>כל פריט נספר פעם אחת.</strong> אם מכניסים שוב את אותו פריט, מספר האיברים בקבוצה לא גדל.</li>
+<li><strong>אותו פריט יכול להיות בכמה קופסאות בו־זמנית.</strong> למשל, המספר <span class="math inline">\(2\)</span> שייך גם ל-<span class="math inline">\(\mathbb{N}\)</span> וגם ל-<span class="math inline">\(\mathbb{Z}\)</span>.</li>
+</ul>
 </div>
 <div class="thmbox thmbox-warning" title="הקופסה אינה הפריט">
 <p><strong>שימו לב — הקופסה אינה הפריט.</strong></p>
@@ -1976,6 +2046,10 @@ window.Quarto = {
 </section>
 <section id="פעולות-על-קבוצות" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="פעולות-על-קבוצות">פעולות על קבוצות</h3>
+<div id="box-term-conditions" class="thmbox thmbox-terminology" title="תנאי חזק יותר">
+<p><strong>מונחים — תנאי חזק יותר.</strong></p>
+<p>תנאי הוא <strong>חזק יותר</strong> מתנאי אחר אם הוא מבטיח שגם האחר מתקיים, אבל לא להפך. למשל, <span class="math inline">\(x &gt; 3\)</span> חזק יותר מ-<span class="math inline">\(x &gt; 1\)</span>: כל מספר שגדול מ-<span class="math inline">\(3\)</span> גדול גם מ-<span class="math inline">\(1\)</span>, אבל <span class="math inline">\(2\)</span> מקיים רק את התנאי השני. זה שימוש אחר במילה ״חזק״ מזה של ״אי־שוויון חזק״.</p>
+</div>
 <div id="box-def-union" class="thmbox thmbox-definition" title="איחוד">
 <p><strong>הגדרה 1.2.12 — איחוד.</strong></p>
 <p>יהיו <span class="math inline">\(A\)</span> ו-<span class="math inline">\(B\)</span> קבוצות. <span class="term"><strong>האיחוד</strong></span> של <span class="math inline">\(A\)</span> ו-<span class="math inline">\(,B\)</span> שמסומן <span class="math inline">\(A \cup B\)</span> (קוראים “<span class="math inline">\(A\)</span> איחוד <span class="math inline">\(B\)</span>”), הוא קבוצת כל האיברים ששייכים ל-<span class="math inline">\(A\)</span> <strong>או</strong> ל-<span class="math inline">\(B\)</span> (או לשתיהן).</p>
@@ -2010,7 +2084,7 @@ window.Quarto = {
 </div>
 <div id="box-exm-sets" class="thmbox thmbox-example" title="איחוד וחיתוך">
 <p><strong>דוגמה 1.2.15 — איחוד וחיתוך.</strong></p>
-<p>נניח <span class="math display">\[.A = \{1, 3, 5\}, \qquad B = \{2, 3, 5\}, \qquad C = \{2, 4\}\]</span> חשבו. <span>(לקבוצה הריקה כותבים <code>{}</code> או בכפתור ∅.)</span></p>
+<p>נניח <span class="math display">\[.A = \{1, 3, 5\}, \qquad B = \{2, 3, 5\}, \qquad C = \{2, 4\}\]</span> חשבו.</p>
 <div class="fill">
 <ul>
 <li><span class="fill-ltr"><span class="math inline">\(A \cap B =\)</span> <span class="blank" data-ans="{3,5}"><span class="math inline">\(\{3, 5\}\)</span></span></span></li>
@@ -2038,12 +2112,16 @@ window.Quarto = {
 </div>
 </div>
 </div>
+<div id="box-def-set-difference" class="thmbox thmbox-definition" title="הפרש קבוצות">
+<p><strong>הגדרה 1.2.16 — הפרש קבוצות.</strong></p>
+<p><strong>ההפרש</strong> <span class="math inline">\(A \setminus B\)</span> הוא קבוצת האיברים ששייכים ל-<span class="math inline">\(A\)</span> ואינם שייכים ל-<span class="math inline">\(B\)</span>. למשל, אם <span class="math inline">\(A=\{1,2,3\}\)</span> ו-<span class="math inline">\(B=\{2,4\}\)</span>, אז <span class="math inline">\(A\setminus B=\{1,3\}\)</span>, ואילו <span class="math inline">\(B\setminus A=\{4\}\)</span>. סדר הקבוצות משנה.</p>
+</div>
 </section>
 <section id="קטעים" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="קטעים">קטעים</h3>
 <p>הקבוצות החשובות ביותר על הישר הן <span class="term"><strong>קטעים</strong></span>: כל המספרים שבין שתי נקודות.</p>
 <div id="box-def-interval" class="thmbox thmbox-definition" title="קטעים">
-<p><strong>הגדרה 1.2.16 — קטעים.</strong></p>
+<p><strong>הגדרה 1.2.17 — קטעים.</strong></p>
 <p>יהיו <span class="math inline">\(a &lt; b\)</span> מספרים ממשיים. נגדיר:</p>
 <table class="caption-top table">
 <thead>
@@ -2109,6 +2187,49 @@ window.Quarto = {
 <li><strong>עיגול מלא</strong>: הקצה <strong>שייך</strong> לקטע (בסימון: סוגר מרובע).</li>
 <li><strong>עיגול ריק</strong>: הקצה <strong>אינו שייך</strong> לקטע (בסימון: סוגר עגול).</li>
 </ul>
+<p>בצד שאין בו קצה מסמנים <strong>חץ</strong>. בכלי הסרטוט בוחרים כל צד בנפרד, כותבים את ערכי הקצוות ומניחים את הקו על הישר. אפשר גם להוסיף נקודה מלאה או להוציא נקודה בעזרת עיגול ריק, אפילו מתוך קטע שכבר סורטט.</p>
+<div id="box-exm-drawing-tool" class="thmbox thmbox-example" title="מציירים על הישר">
+<p><strong>דוגמה 1.2.18 — מציירים על הישר.</strong></p>
+<p>סרטטו לפי ההנחיות, וכתבו איזו קבוצה התקבלה.</p>
+<div class="set-cases">
+<div class="case" data-title="קטע סגור">
+<p>בחרו שני עיגולים מלאים, סמנו את הקצוות <span class="math inline">\(-1\)</span> ו-<span class="math inline">\(3\)</span> והניחו את הקו על הישר.</p>
+<div class="fill">
+<p>הקבוצה: <span class="blank" data-ans="[-1,3]" data-plot="-2,-1,0,1,2,3,4"><span class="math inline">\([-1,3]\)</span></span></p>
+</div>
+</div>
+<div class="case" data-title="פותחים קצה">
+<p>סרטטו קטע מ-<span class="math inline">\(-1\)</span> עד <span class="math inline">\(3\)</span>, עם עיגול מלא משמאל ועיגול ריק מימין. אפשר גם להתחיל בשני עיגולים מלאים וללחוץ על העיגול שב-<span class="math inline">\(3\)</span> כדי לפתוח אותו.</p>
+<div class="fill">
+<p>הקבוצה: <span class="blank" data-ans="[-1,3)" data-plot="-2,-1,0,1,2,3,4"><span class="math inline">\([-1,3)\)</span></span></p>
+</div>
+</div>
+<div class="case" data-title="קרן">
+<p>בחרו עיגול מלא משמאל וחץ מימין. סמנו את הקצה ב-<span class="math inline">\(1\)</span> והניחו את הקרן.</p>
+<div class="fill">
+<p>הקבוצה: <span class="blank" data-ans="[1,inf)" data-plot="-2,-1,0,1,2,3,4"><span class="math inline">\([1,\infty)\)</span></span></p>
+</div>
+</div>
+<div class="case" data-title="כל הישר">
+<p>בחרו חץ בכל צד והניחו את הקו. אין כאן קצוות שצריך לסמן במספרים.</p>
+<div class="fill">
+<p>הקבוצה: <span class="blank" data-ans="R" kind="set" data-plot="-2,-1,0,1,2,3,4"><span class="math inline">\(\mathbb{R}\)</span></span></p>
+</div>
+</div>
+<div class="case" data-title="נקודות בודדות">
+<p>בחרו ״נקודה״ ועיגול מלא. הניחו נקודה ב-<span class="math inline">\(-1\)</span> ועוד נקודה ב-<span class="math inline">\(2\)</span>, בלי קו ביניהן.</p>
+<div class="fill">
+<p>הקבוצה: <span class="blank" data-ans="{-1,2}" data-plot="-2,-1,0,1,2,3,4"><span class="math inline">\(\{-1,2\}\)</span></span></p>
+</div>
+</div>
+<div class="case" data-title="חור בתוך קטע">
+<p>סרטטו קטע סגור מ-<span class="math inline">\(-1\)</span> עד <span class="math inline">\(3\)</span>. עברו ל״נקודה״, בחרו עיגול ריק והניחו אותו ב-<span class="math inline">\(1\)</span>. כתבו את הקבוצה כאיחוד של שני קטעים.</p>
+<div class="fill">
+<p>הקבוצה: <span class="blank" data-ans="[-1,1)U(1,3]" form="interval" data-plot="-2,-1,0,1,2,3,4"><span class="math inline">\([-1,1)\cup(1,3]\)</span></span></p>
+</div>
+</div>
+</div>
+</div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="figures/intervals.png" class="img-fluid figure-img" style="width:70.0%" alt="ארבעה ישרים: קטע פתוח עם עיגולים ריקים, קטע סגור עם עיגולים מלאים, קטע חצי פתוח וקרן"></p>
@@ -2116,7 +2237,7 @@ window.Quarto = {
 </figure>
 </div>
 <div id="box-exm-draw-half-open" class="thmbox thmbox-example" title="סרטוט קטע חצי-פתוח">
-<p><strong>דוגמה 1.2.17 — סרטוט קטע חצי-פתוח.</strong></p>
+<p><strong>דוגמה 1.2.19 — סרטוט קטע חצי-פתוח.</strong></p>
 <p>סרטטו את הקטע החצי-פתוח <span class="math display">\[.[-1, 3) = \{x \mid -1 \le x &lt; 3\}\]</span> באיזה קצה העיגול מלא, ובאיזה ריק?</p>
 <details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת הפתרון</summary>
 <div class="lecture-answer">
@@ -2136,7 +2257,7 @@ window.Quarto = {
 </div>
 <p>באותו אופן מסרטטים קרניים: קצה ששייך לקרן מסומן בעיגול מלא, וקצה שאינו שייך בעיגול ריק.</p>
 <div id="box-exm-rays" class="thmbox thmbox-example" title="קרניים">
-<p><strong>דוגמה 1.2.18 — קרניים.</strong></p>
+<p><strong>דוגמה 1.2.20 — קרניים.</strong></p>
 <p>אילו מהקרניים הבאות פתוחות, ואילו סגורות? <span class="math display">\[\begin{aligned} (3, \infty) &amp;= \{x \mid x &gt; 3\}, &amp; [8, \infty) &amp;= \{x \mid x \ge 8\}, \\ (-\infty, 4) &amp;= \{x \mid x &lt; 4\}, &amp; (-\infty, 15] &amp;= \{x \mid x \le 15\}. \end{aligned}\]</span></p>
 <details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת הפתרון</summary>
 <div class="lecture-answer">
@@ -2181,8 +2302,8 @@ window.Quarto = {
 </ol>
 </div>
 <div id="box-exm-intervals" class="thmbox thmbox-example" title="קטעים, איחודים וחיתוכים">
-<p><strong>דוגמה 1.2.19 — קטעים, איחודים וחיתוכים.</strong></p>
-<p><strong>(א)</strong> רשמו את הקבוצה <span class="math inline">\(\{x \mid -1 \le x &lt; 4\}\)</span> כקטע. <span>(בשדה: סוגריים רגילים ומרובעים, למשל <code>[0,5)</code>.)</span></p>
+<p><strong>דוגמה 1.2.21 — קטעים, איחודים וחיתוכים.</strong></p>
+<p><strong>(א)</strong> רשמו את הקבוצה <span class="math inline">\(\{x \mid -1 \le x &lt; 4\}\)</span> כקטע.</p>
 <div class="fill">
 <p><span class="fill-ltr"><span class="math inline">\(\{x \mid -1 \le x &lt; 4\} =\)</span> <span class="blank" data-ans="[-1,4)" form="interval"><span class="math inline">\([-1, 4)\)</span></span></span></p>
 <div class="explain">
@@ -2223,7 +2344,7 @@ window.Quarto = {
 <ul>
 <li>קבוצה היא “קופסה” של איברים. <span class="math inline">\(x \in A\)</span>: <span class="math inline">\(x\)</span> הוא איבר של <span class="math inline">\(.A\)</span> סדר וכפילויות אינם משנים קבוצה, ו-<span class="math inline">\(.\{3\} \neq 3\)</span></li>
 <li><span class="math inline">\(A \subseteq B\)</span>: כל איבר של <span class="math inline">\(A\)</span> נמצא גם ב-<span class="math inline">\(.B\)</span> סימן <span class="math inline">\(\in\)</span> הוא בין איבר לקבוצה, וסימן <span class="math inline">\(\subseteq\)</span> הוא בין שתי קבוצות.</li>
-<li>איחוד (<span class="math inline">\(\cup\)</span>): לפחות באחת הקבוצות. חיתוך (<span class="math inline">\(\cap\)</span>): בשתיהן.</li>
+<li>איחוד (<span class="math inline">\(\cup\)</span>): לפחות באחת הקבוצות. חיתוך (<span class="math inline">\(\cap\)</span>): בשתיהן. הפרש (<span class="math inline">\(A\setminus B\)</span>): ב-<span class="math inline">\(A\)</span> ולא ב-<span class="math inline">\(B\)</span>.</li>
 <li>קטע: סוגר מרובע ועיגול מלא, הקצה שייך. סוגר עגול ועיגול ריק, הקצה אינו שייך. ליד <span class="math inline">\(\infty\)</span> הסוגר תמיד עגול.</li>
 </ul>
 </div>
@@ -2232,11 +2353,11 @@ window.Quarto = {
 <section id="תרגילים-1" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="תרגילים-1">תרגילים</h3>
 <div id="box-q-intervals" class="thmbox thmbox-question">
-<p><strong>שאלה 1.2.20.</strong></p>
-<p>חשבו. <span>(כתבו <span class="math inline">\(\infty\)</span> בתור <code>inf</code> או בכפתור, ואיחוד בתור <code>U</code> או בכפתור.)</span></p>
+<p><strong>שאלה 1.2.22.</strong></p>
+<p>חשבו וסרטטו את הקבוצות שקיבלתם.</p>
 <div class="fill">
-<p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\([-3, 2) \cap (0, 5] =\)</span> <span class="blank" data-ans="(0,2)"><span class="math inline">\((0, 2)\)</span></span></span></p>
-<p><strong>(ב)</strong> <span class="fill-ltr"><span class="math inline">\((-\infty, 1) \cup [1, 4] =\)</span> <span class="blank" data-ans="(-inf,4]"><span class="math inline">\((-\infty, 4]\)</span></span></span></p>
+<p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\([-3, 2) \cap (0, 5] =\)</span> <span class="blank" data-ans="(0,2)" data-plot="-3,-2,-1,0,1,2,3,4,5" data-plot-a="[-3,2)" data-plot-b="(0,5]"><span class="math inline">\((0, 2)\)</span></span></span></p>
+<p><strong>(ב)</strong> <span class="fill-ltr"><span class="math inline">\((-\infty, 1) \cup [1, 4] =\)</span> <span class="blank" data-ans="(-inf,4]" data-plot="-2,-1,0,1,2,3,4,5" data-plot-a="(-inf,1)" data-plot-b="[1,4]"><span class="math inline">\((-\infty, 4]\)</span></span></span></p>
 <div class="hint">
 <p>ציירו את שני הקטעים על אותו ישר, זה מעל זה. בחיתוך מחפשים את החלק המשותף, ובאיחוד את כל מה שמכוסה.</p>
 </div>
@@ -2252,12 +2373,12 @@ window.Quarto = {
 </div>
 </div>
 <div id="box-q-set-lists" class="thmbox thmbox-question" title="מהשומר לרשימה">
-<p><strong>שאלה 1.2.21 — מהשומר לרשימה.</strong></p>
-<p>רשמו כל קבוצה כרשימה.</p>
+<p><strong>שאלה 1.2.23 — מהשומר לרשימה.</strong></p>
+<p>רשמו כל קבוצה כרשימה וסמנו את איבריה על הישר.</p>
 <div class="fill">
-<p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\(\{n \in \mathbb{N} \mid n^2 &lt; 20\} =\)</span> <span class="blank" data-ans="{1,2,3,4}"><span class="math inline">\(\{1, 2, 3, 4\}\)</span></span></span></p>
-<p><strong>(ב)</strong> <span class="fill-ltr"><span class="math inline">\(\{x \in \mathbb{Z} \mid -2 \le x &lt; 2\} =\)</span> <span class="blank" data-ans="{-2,-1,0,1}"><span class="math inline">\(\{-2, -1, 0, 1\}\)</span></span></span></p>
-<p><strong>(ג)</strong> <span class="fill-ltr"><span class="math inline">\(\{x \in \mathbb{R} \mid x^2 = 9\} =\)</span> <span class="blank" data-ans="{-3,3}"><span class="math inline">\(\{-3, 3\}\)</span></span></span></p>
+<p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\(\{n \in \mathbb{N} \mid n^2 &lt; 20\} =\)</span> <span class="blank" data-ans="{1,2,3,4}" data-plot="0,1,2,3,4,5"><span class="math inline">\(\{1, 2, 3, 4\}\)</span></span></span></p>
+<p><strong>(ב)</strong> <span class="fill-ltr"><span class="math inline">\(\{x \in \mathbb{Z} \mid -2 \le x &lt; 2\} =\)</span> <span class="blank" data-ans="{-2,-1,0,1}" data-plot="-3,-2,-1,0,1,2,3"><span class="math inline">\(\{-2, -1, 0, 1\}\)</span></span></span></p>
+<p><strong>(ג)</strong> <span class="fill-ltr"><span class="math inline">\(\{x \in \mathbb{R} \mid x^2 = 9\} =\)</span> <span class="blank" data-ans="{-3,3}" data-plot="-4,-3,-2,-1,0,1,2,3,4"><span class="math inline">\(\{-3, 3\}\)</span></span></span></p>
 <div class="hint">
 <p>השומר בודק כל מועמד מול התנאי. ב-(א) המועמדים הם <span class="math inline">\(,1, 2, 3, \dots\)</span> וב-(ב) הם מספרים שלמים.</p>
 </div>
@@ -2269,7 +2390,7 @@ window.Quarto = {
 </div>
 </div>
 <div id="box-q-set-ops" class="thmbox thmbox-question" title="פעולות על קבוצות">
-<p><strong>שאלה 1.2.22 — פעולות על קבוצות.</strong></p>
+<p><strong>שאלה 1.2.24 — פעולות על קבוצות.</strong></p>
 <p>נניח <span class="math display">\[.A = \{1, 2, 3, 4\}, \qquad B = \{2, 4, 6\}, \qquad C = \{3, 4, 5\}\]</span> חשבו.</p>
 <div class="fill">
 <ul>
@@ -2288,12 +2409,12 @@ window.Quarto = {
 </div>
 </div>
 <div id="box-q-as-interval" class="thmbox thmbox-question" title="מתנאי לקטע">
-<p><strong>שאלה 1.2.23 — מתנאי לקטע.</strong></p>
-<p>רשמו כל קבוצה כקטע.</p>
+<p><strong>שאלה 1.2.25 — מתנאי לקטע.</strong></p>
+<p>רשמו כל קבוצה בסימון של קטע או קרן וסרטטו אותה.</p>
 <div class="fill">
-<p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\(\{x \mid -2 &lt; x \le 5\} =\)</span> <span class="blank" data-ans="(-2,5]" form="interval"><span class="math inline">\((-2, 5]\)</span></span></span></p>
-<p><strong>(ב)</strong> <span class="fill-ltr"><span class="math inline">\(\{x \mid x \ge -1\} =\)</span> <span class="blank" data-ans="[-1,inf)" form="interval"><span class="math inline">\([-1, \infty)\)</span></span></span></p>
-<p><strong>(ג)</strong> <span class="fill-ltr"><span class="math inline">\(\{x \mid x &lt; 0\} =\)</span> <span class="blank" data-ans="(-inf,0)" form="interval"><span class="math inline">\((-\infty, 0)\)</span></span></span></p>
+<p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\(\{x \mid -2 &lt; x \le 5\} =\)</span> <span class="blank" data-ans="(-2,5]" form="interval" data-plot="-3,-2,-1,0,1,2,3,4,5,6"><span class="math inline">\((-2, 5]\)</span></span></span></p>
+<p><strong>(ב)</strong> <span class="fill-ltr"><span class="math inline">\(\{x \mid x \ge -1\} =\)</span> <span class="blank" data-ans="[-1,inf)" form="interval" data-plot="-3,-2,-1,0,1,2,3"><span class="math inline">\([-1, \infty)\)</span></span></span></p>
+<p><strong>(ג)</strong> <span class="fill-ltr"><span class="math inline">\(\{x \mid x &lt; 0\} =\)</span> <span class="blank" data-ans="(-inf,0)" form="interval" data-plot="-3,-2,-1,0,1,2,3"><span class="math inline">\((-\infty, 0)\)</span></span></span></p>
 <div class="hint">
 <p>סימן <span class="math inline">\(\le\)</span> או <span class="math inline">\(\ge\)</span> נותן סוגר מרובע, וסימן <span class="math inline">\(&lt;\)</span> או <span class="math inline">\(&gt;\)</span> נותן סוגר עגול. ליד <span class="math inline">\(\infty\)</span> וליד <span class="math inline">\(-\infty\)</span> הסוגר תמיד עגול.</p>
 </div>
@@ -2305,13 +2426,13 @@ window.Quarto = {
 </div>
 </div>
 <div id="box-q-interval-ops" class="thmbox thmbox-question" title="עוד חיתוכים ואיחודים">
-<p><strong>שאלה 1.2.24 — עוד חיתוכים ואיחודים.</strong></p>
-<p>חשבו.</p>
+<p><strong>שאלה 1.2.26 — עוד חיתוכים ואיחודים.</strong></p>
+<p>חשבו וסרטטו את הקבוצות שקיבלתם.</p>
 <div class="fill">
-<p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\((-\infty, 3] \cap [1, \infty) =\)</span> <span class="blank" data-ans="[1,3]"><span class="math inline">\([1, 3]\)</span></span></span></p>
-<p><strong>(ב)</strong> <span class="fill-ltr"><span class="math inline">\((-2, 0) \cup [0, 4) =\)</span> <span class="blank" data-ans="(-2,4)"><span class="math inline">\((-2, 4)\)</span></span></span></p>
-<p><strong>(ג)</strong> <span class="fill-ltr"><span class="math inline">\((0, 2) \cap [2, 5] =\)</span> <span class="blank" data-ans="{}"><span class="math inline">\(\emptyset\)</span></span></span></p>
-<p><strong>(ד)</strong> <span class="fill-ltr"><span class="math inline">\([-5, -1] \cup [1, 5] =\)</span> <span class="blank" data-ans="[-5,-1]U[1,5]" data-w="16"><span class="math inline">\([-5, -1] \cup [1, 5]\)</span></span></span></p>
+<p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\((-\infty, 3] \cap [1, \infty) =\)</span> <span class="blank" data-ans="[1,3]" data-plot="-1,0,1,2,3,4,5" data-plot-a="(-inf,3]" data-plot-b="[1,inf)"><span class="math inline">\([1, 3]\)</span></span></span></p>
+<p><strong>(ב)</strong> <span class="fill-ltr"><span class="math inline">\((-2, 0) \cup [0, 4) =\)</span> <span class="blank" data-ans="(-2,4)" data-plot="-3,-2,-1,0,1,2,3,4,5" data-plot-a="(-2,0)" data-plot-b="[0,4)"><span class="math inline">\((-2, 4)\)</span></span></span></p>
+<p><strong>(ג)</strong> <span class="fill-ltr"><span class="math inline">\((0, 2) \cap [2, 5] =\)</span> <span class="blank" data-ans="{}" data-plot="-1,0,1,2,3,4,5,6" data-plot-a="(0,2)" data-plot-b="[2,5]"><span class="math inline">\(\emptyset\)</span></span></span></p>
+<p><strong>(ד)</strong> <span class="fill-ltr"><span class="math inline">\([-5, -1] \cup [1, 5] =\)</span> <span class="blank" data-ans="[-5,-1]U[1,5]" data-w="16" data-plot="-5,-4,-3,-2,-1,0,1,2,3,4,5" data-plot-a="[-5,-1]" data-plot-b="[1,5]"><span class="math inline">\([-5, -1] \cup [1, 5]\)</span></span></span></p>
 <div class="hint">
 <p>ציירו את הקטעים זה מעל זה. ב-(ד), האם יש “רווח” בין שני הקטעים?</p>
 </div>
@@ -2324,7 +2445,7 @@ window.Quarto = {
 </div>
 </div>
 <div id="box-q-in-or-not" class="thmbox thmbox-question" title="שייך או לא?">
-<p><strong>שאלה 1.2.25 — שייך או לא?</strong></p>
+<p><strong>שאלה 1.2.27 — שייך או לא?</strong></p>
 <p><strong>(א)</strong> <span class="math inline">\(3 \in (-\infty, 3)\)</span></p>
 <div class="tf-quiz" data-correct="2">
 <button type="button" class="tf-opt" data-val="1">נכון</button>
@@ -2362,34 +2483,129 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<div id="box-q-draw-union" class="thmbox thmbox-question" title="עיגול מלא או ריק?">
-<p><strong>שאלה 1.2.26 — עיגול מלא או ריק?</strong></p>
-<p>מסרטטים על הישר את הקבוצה <span class="math inline">\(.(-\infty, -1] \cup (2, 4)\)</span> איזה עיגול מסמנים בכל נקודת קצה?</p>
-<p><strong>(א)</strong> בנקודה <span class="math inline">\(-1\)</span></p>
-<div class="tf-quiz" data-correct="1">
-<button type="button" class="tf-opt" data-val="1">מלא</button>
-<button type="button" class="tf-opt" data-val="2">ריק</button>
-<div class="tf-feedback" aria-live="polite"></div>
-<div class="tf-why">
-<p>מלא: ליד <span class="math inline">\(-1\)</span> הסוגר מרובע, ולכן <span class="math inline">\(-1\)</span> שייך לקבוצה.</p>
+<div id="box-q-draw-union" class="thmbox thmbox-question" title="מקטע לשומר ולסרטוט">
+<p><strong>שאלה 1.2.28 — מקטע לשומר ולסרטוט.</strong></p>
+<p>כתבו כל קבוצה בשיטת השומר וסרטטו אותה.</p>
+<div class="fill">
+<p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\([-2,3) =\)</span> <span class="blank" data-ans="[-2,3)" kind="set" form="builder" data-w="26" data-plot="-3,-2,-1,0,1,2,3,4"><span class="math inline">\(\{x \mid -2 \le x &lt; 3\}\)</span></span></span></p>
+<p><strong>(ב)</strong> <span class="fill-ltr"><span class="math inline">\((-\infty,-1] \cup (2,4) =\)</span> <span class="blank" data-ans="(-inf,-1]U(2,4)" kind="set" form="builder" data-w="32" data-plot="-2,-1,0,1,2,3,4,5"><span class="math inline">\(\{x \mid x \le -1 \text{ או } 2 &lt; x &lt; 4\}\)</span></span></span></p>
+<div class="hint">
+<p>בשיטת השומר כותבים תנאי לשייכות. באיחוד מספיק לקיים אחד משני התנאים: מחברים אותם באמצעות ״או״.</p>
 </div>
 </div>
-<p><strong>(ב)</strong> בנקודה <span class="math inline">\(2\)</span></p>
-<div class="tf-quiz" data-correct="2">
-<button type="button" class="tf-opt" data-val="1">מלא</button>
-<button type="button" class="tf-opt" data-val="2">ריק</button>
-<div class="tf-feedback" aria-live="polite"></div>
-<div class="tf-why">
-<p>ריק: ליד <span class="math inline">\(2\)</span> הסוגר עגול.</p>
+</div>
+<div id="box-q-set-difference" class="thmbox thmbox-question" title="מה נשאר אחרי שמוציאים?">
+<p><strong>שאלה 1.2.29 — מה נשאר אחרי שמוציאים?</strong></p>
+<p>כתבו וסרטטו את הקבוצה שמתקבלת בכל הפרש.</p>
+<div class="fill">
+<p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\([-2,4] \setminus (0,2) =\)</span> <span class="blank" data-ans="[-2,0]U[2,4]" data-plot="-3,-2,-1,0,1,2,3,4,5" data-plot-a="[-2,4]" data-plot-b="(0,2)"><span class="math inline">\([-2,0] \cup [2,4]\)</span></span></span></p>
+<p><strong>(ב)</strong> <span class="fill-ltr"><span class="math inline">\([-2,4] \setminus \{1\} =\)</span> <span class="blank" data-ans="[-2,1)U(1,4]" data-plot="-3,-2,-1,0,1,2,3,4,5" data-plot-a="[-2,4]" data-plot-b="{1}"><span class="math inline">\([-2,1) \cup (1,4]\)</span></span></span></p>
+<div class="hint">
+<p>משאירים רק את המספרים ששייכים לקבוצה הראשונה ואינם שייכים לשנייה. בדקו אם נקודות הקצה עצמן הוצאו.</p>
 </div>
 </div>
-<p><strong>(ג)</strong> בנקודה <span class="math inline">\(4\)</span></p>
-<div class="tf-quiz" data-correct="2">
-<button type="button" class="tf-opt" data-val="1">מלא</button>
-<button type="button" class="tf-opt" data-val="2">ריק</button>
-<div class="tf-feedback" aria-live="polite"></div>
-<div class="tf-why">
-<p>ריק: ליד <span class="math inline">\(4\)</span> הסוגר עגול. בין <span class="math inline">\(-1\)</span> ל-<span class="math inline">\(2\)</span> הקו אינו מודגש, כי המספרים שם אינם בקבוצה.</p>
+</div>
+<div id="box-sim-set-workspace" class="thmbox thmbox-simulation" title="כל האפשרויות על הישר">
+<p><strong>סימולציה 1.2.30 — כל האפשרויות על הישר.</strong></p>
+<p>כתבו וסרטטו בכל מקרה. אפשר לעבור בין המקרים ולחזור לסרטוטים שכבר הכנתם.</p>
+<p>במקרי החיתוך והאיחוד, שני הקטעים מוצגים זה מעל זה. <strong>בחיתוך</strong> נשאר החלק המשותף, ששניהם מכסים. <strong>באיחוד</strong> מאחדים את כל מה שלפחות אחד מהם מכסה.</p>
+<div class="set-cases">
+<div class="case" data-title="קטע פתוח">
+<p><strong>קטע פתוח</strong></p>
+<div class="fill">
+<p><span class="fill-ltr"><span class="math inline">\(\{x \mid -1 &lt; x &lt; 3\} =\)</span> <span class="blank" data-ans="(-1,3)" form="interval" data-plot="-2,-1,0,1,2,3,4"><span class="math inline">\((-1,3)\)</span></span></span></p>
+</div>
+</div>
+<div class="case" data-title="קטע סגור">
+<p><strong>קטע סגור</strong></p>
+<div class="fill">
+<p><span class="fill-ltr"><span class="math inline">\(\{x \mid -1 \le x \le 3\} =\)</span> <span class="blank" data-ans="[-1,3]" form="interval" data-plot="-2,-1,0,1,2,3,4"><span class="math inline">\([-1,3]\)</span></span></span></p>
+</div>
+</div>
+<div class="case" data-title="סגור משמאל, פתוח מימין">
+<p><strong>סגור משמאל, פתוח מימין</strong></p>
+<div class="fill">
+<p><span class="fill-ltr"><span class="math inline">\(\{x \mid -1 \le x &lt; 3\} =\)</span> <span class="blank" data-ans="[-1,3)" form="interval" data-plot="-2,-1,0,1,2,3,4"><span class="math inline">\([-1,3)\)</span></span></span></p>
+</div>
+</div>
+<div class="case" data-title="פתוח משמאל, סגור מימין">
+<p><strong>פתוח משמאל, סגור מימין</strong></p>
+<div class="fill">
+<p><span class="fill-ltr"><span class="math inline">\(\{x \mid -1 &lt; x \le 3\} =\)</span> <span class="blank" data-ans="(-1,3]" form="interval" data-plot="-2,-1,0,1,2,3,4"><span class="math inline">\((-1,3]\)</span></span></span></p>
+</div>
+</div>
+<div class="case" data-title="קרן פתוחה ימינה">
+<p><strong>קרן פתוחה ימינה</strong></p>
+<div class="fill">
+<p><span class="fill-ltr"><span class="math inline">\(\{x \mid x &gt; 1\} =\)</span> <span class="blank" data-ans="(1,inf)" form="interval" data-plot="-2,-1,0,1,2,3,4"><span class="math inline">\((1,\infty)\)</span></span></span></p>
+</div>
+</div>
+<div class="case" data-title="קרן סגורה ימינה">
+<p><strong>קרן סגורה ימינה</strong></p>
+<div class="fill">
+<p><span class="fill-ltr"><span class="math inline">\(\{x \mid x \ge 1\} =\)</span> <span class="blank" data-ans="[1,inf)" form="interval" data-plot="-2,-1,0,1,2,3,4"><span class="math inline">\([1,\infty)\)</span></span></span></p>
+</div>
+</div>
+<div class="case" data-title="קרן פתוחה שמאלה">
+<p><strong>קרן פתוחה שמאלה</strong></p>
+<div class="fill">
+<p><span class="fill-ltr"><span class="math inline">\(\{x \mid x &lt; 1\} =\)</span> <span class="blank" data-ans="(-inf,1)" form="interval" data-plot="-2,-1,0,1,2,3,4"><span class="math inline">\((-\infty,1)\)</span></span></span></p>
+</div>
+</div>
+<div class="case" data-title="קרן סגורה שמאלה">
+<p><strong>קרן סגורה שמאלה</strong></p>
+<div class="fill">
+<p><span class="fill-ltr"><span class="math inline">\(\{x \mid x \le 1\} =\)</span> <span class="blank" data-ans="(-inf,1]" form="interval" data-plot="-2,-1,0,1,2,3,4"><span class="math inline">\((-\infty,1]\)</span></span></span></p>
+</div>
+</div>
+<div class="case" data-title="קטעים זרים">
+<p><strong>קטעים זרים</strong>: <span class="math inline">\(A=[-2,0]\)</span> ו-<span class="math inline">\(.B=[1,3]\)</span></p>
+<div class="fill">
+<p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\(A\cap B =\)</span> <span class="blank" data-ans="{}" data-plot="-3,-2,-1,0,1,2,3,4" data-plot-a="[-2,0]" data-plot-b="[1,3]"><span class="math inline">\(\emptyset\)</span></span></span></p>
+<p><strong>(ב)</strong> <span class="fill-ltr"><span class="math inline">\(A\cup B =\)</span> <span class="blank" data-ans="[-2,0]U[1,3]" data-plot="-3,-2,-1,0,1,2,3,4" data-plot-a="[-2,0]" data-plot-b="[1,3]"><span class="math inline">\([-2,0]\cup[1,3]\)</span></span></span></p>
+</div>
+</div>
+<div class="case" data-title="נפגשים בקצה ששייך לשניהם">
+<p><strong>נפגשים בקצה ששייך לשניהם</strong>: <span class="math inline">\(A=[-2,1]\)</span> ו-<span class="math inline">\(.B=[1,3]\)</span></p>
+<div class="fill">
+<p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\(A\cap B =\)</span> <span class="blank" data-ans="{1}" data-plot="-3,-2,-1,0,1,2,3,4" data-plot-a="[-2,1]" data-plot-b="[1,3]"><span class="math inline">\(\{1\}\)</span></span></span></p>
+<p><strong>(ב)</strong> <span class="fill-ltr"><span class="math inline">\(A\cup B =\)</span> <span class="blank" data-ans="[-2,3]" data-plot="-3,-2,-1,0,1,2,3,4" data-plot-a="[-2,1]" data-plot-b="[1,3]"><span class="math inline">\([-2,3]\)</span></span></span></p>
+</div>
+</div>
+<div class="case" data-title="הקצה שייך רק לאחד">
+<p><strong>הקצה שייך רק לאחד</strong>: <span class="math inline">\(A=[-2,1)\)</span> ו-<span class="math inline">\(.B=[1,3]\)</span></p>
+<div class="fill">
+<p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\(A\cap B =\)</span> <span class="blank" data-ans="{}" data-plot="-3,-2,-1,0,1,2,3,4" data-plot-a="[-2,1)" data-plot-b="[1,3]"><span class="math inline">\(\emptyset\)</span></span></span></p>
+<p><strong>(ב)</strong> <span class="fill-ltr"><span class="math inline">\(A\cup B =\)</span> <span class="blank" data-ans="[-2,3]" data-plot="-3,-2,-1,0,1,2,3,4" data-plot-a="[-2,1)" data-plot-b="[1,3]"><span class="math inline">\([-2,3]\)</span></span></span></p>
+</div>
+</div>
+<div class="case" data-title="הקצה אינו שייך לאף אחד">
+<p><strong>הקצה אינו שייך לאף אחד</strong>: <span class="math inline">\(A=[-2,1)\)</span> ו-<span class="math inline">\(.B=(1,3]\)</span></p>
+<div class="fill">
+<p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\(A\cap B =\)</span> <span class="blank" data-ans="{}" data-plot="-3,-2,-1,0,1,2,3,4" data-plot-a="[-2,1)" data-plot-b="(1,3]"><span class="math inline">\(\emptyset\)</span></span></span></p>
+<p><strong>(ב)</strong> <span class="fill-ltr"><span class="math inline">\(A\cup B =\)</span> <span class="blank" data-ans="[-2,1)U(1,3]" data-plot="-3,-2,-1,0,1,2,3,4" data-plot-a="[-2,1)" data-plot-b="(1,3]"><span class="math inline">\([-2,1)\cup(1,3]\)</span></span></span></p>
+</div>
+</div>
+<div class="case" data-title="קטעים חופפים">
+<p><strong>קטעים חופפים</strong>: <span class="math inline">\(A=[-2,2)\)</span> ו-<span class="math inline">\(.B=(0,3]\)</span></p>
+<div class="fill">
+<p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\(A\cap B =\)</span> <span class="blank" data-ans="(0,2)" data-plot="-3,-2,-1,0,1,2,3,4" data-plot-a="[-2,2)" data-plot-b="(0,3]"><span class="math inline">\((0,2)\)</span></span></span></p>
+<p><strong>(ב)</strong> <span class="fill-ltr"><span class="math inline">\(A\cup B =\)</span> <span class="blank" data-ans="[-2,3]" data-plot="-3,-2,-1,0,1,2,3,4" data-plot-a="[-2,2)" data-plot-b="(0,3]"><span class="math inline">\([-2,3]\)</span></span></span></p>
+</div>
+</div>
+<div class="case" data-title="קטע בתוך קטע">
+<p><strong>קטע בתוך קטע</strong>: <span class="math inline">\(A=[-2,3]\)</span> ו-<span class="math inline">\(.B=(0,2)\)</span></p>
+<div class="fill">
+<p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\(A\cap B =\)</span> <span class="blank" data-ans="(0,2)" data-plot="-3,-2,-1,0,1,2,3,4" data-plot-a="[-2,3]" data-plot-b="(0,2)"><span class="math inline">\((0,2)\)</span></span></span></p>
+<p><strong>(ב)</strong> <span class="fill-ltr"><span class="math inline">\(A\cup B =\)</span> <span class="blank" data-ans="[-2,3]" data-plot="-3,-2,-1,0,1,2,3,4" data-plot-a="[-2,3]" data-plot-b="(0,2)"><span class="math inline">\([-2,3]\)</span></span></span></p>
+</div>
+</div>
+<div class="case" data-title="אותו קטע">
+<p><strong>אותו קטע</strong>: <span class="math inline">\(A=(-2,3]\)</span> ו-<span class="math inline">\(.B=(-2,3]\)</span></p>
+<div class="fill">
+<p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\(A\cap B =\)</span> <span class="blank" data-ans="(-2,3]" data-plot="-3,-2,-1,0,1,2,3,4" data-plot-a="(-2,3]" data-plot-b="(-2,3]"><span class="math inline">\((-2,3]\)</span></span></span></p>
+<p><strong>(ב)</strong> <span class="fill-ltr"><span class="math inline">\(A\cup B =\)</span> <span class="blank" data-ans="(-2,3]" data-plot="-3,-2,-1,0,1,2,3,4" data-plot-a="(-2,3]" data-plot-b="(-2,3]"><span class="math inline">\((-2,3]\)</span></span></span></p>
+</div>
 </div>
 </div>
 </div>
@@ -2397,9 +2613,6 @@ window.Quarto = {
 </section>
 <section id="ערך-מוחלט" class="level2" data-number="1.3">
 <h2 data-number="1.3" class="anchored" data-anchor-id="ערך-מוחלט"><span class="header-section-number">1.3</span> ערך מוחלט</h2>
-<div class="lead">
-<p><strong>מה עושים כאן?</strong> מודדים <strong>מרחק</strong> על הישר הממשי בעזרת הערך המוחלט, ולומדים לפתור אי-שוויונים. בסוף נשלב את שני הדברים: “כל הנקודות שקרובות ל-<span class="math inline">\(a\)</span>” הן קטע.</p>
-</div>
 <p>אם אנחנו חושבים על מספרים ממשיים כעל נקודות על ישר, טבעי לשאול: איך מודדים <strong>מרחק</strong> בין שתי נקודות? הכלי לכך הוא הערך המוחלט. יתברר בהמשך שזה מושג מרכזי באנליזה, ושלמעשה הכל נבנה סביבו.</p>
 <div id="box-def-abs" class="thmbox thmbox-definition" title="ערך מוחלט">
 <p><strong>הגדרה 1.3.1 — ערך מוחלט.</strong></p>
@@ -2575,6 +2788,10 @@ window.Quarto = {
 </section>
 <section id="ערך-מוחלט-מרחק-וקטעים" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="ערך-מוחלט-מרחק-וקטעים">ערך מוחלט, מרחק וקטעים</h3>
+<div id="box-term-iff" class="thmbox thmbox-terminology" title="אם ורק אם">
+<p><strong>מונחים — אם ורק אם.</strong></p>
+<p><strong>אם ורק אם</strong>, או בקיצור <strong>אמ״מ</strong>, אומר ששני התנאים שקולים: בכל פעם שאחד מתקיים, גם השני מתקיים. מסמנים זאת ב-<span class="math inline">\(\iff\)</span>. למשל, <span class="math inline">\(|x| &lt; 2\)</span> אם ורק אם <span class="math inline">\(-2 &lt; x &lt; 2\)</span>.</p>
+</div>
 <p>נשתמש בפירוש של מרחק. האי-שוויון <span class="math inline">\(|x - a| &lt; r\)</span> אומר: המרחק של <span class="math inline">\(x\)</span> מ-<span class="math inline">\(a\)</span> קטן מ-<span class="math inline">\(r\)</span>. אלה בדיוק הנקודות שבקטע שמרכזו <span class="math inline">\(a\)</span> ורדיוסו <span class="math inline">\(.r\)</span></p>
 <div class="thmbox thmbox-key-point thmicon-rule" data-icon="rule" title="ערך מוחלט וקטעים">
 <p><strong>כלל — ערך מוחלט וקטעים.</strong></p>
@@ -2602,7 +2819,7 @@ window.Quarto = {
 </div>
 <div id="box-exm-abs-solve" class="thmbox thmbox-example" title="משוואות ואי-שוויונים">
 <p><strong>דוגמה 1.3.8 — משוואות ואי-שוויונים.</strong></p>
-<p><strong>(א)</strong> פתרו את <span class="math inline">\(.|2x - 3| = 5\)</span> <span>(את קבוצת הפתרונות כותבים כרשימה, למשל <code>{1,2}</code>.)</span></p>
+<p><strong>(א)</strong> פתרו את <span class="math inline">\(.|2x - 3| = 5\)</span> כתבו את התשובה כרשימה.</p>
 <div class="derive" start="|2x-3|=5">
 <div class="step" data-line="2x-3=[5] או 2x-3=[-5]">
 <p>מפרקים את הערך המוחלט לשתי אפשרויות.</p>
@@ -2707,7 +2924,7 @@ window.Quarto = {
 <p><strong>(ד)</strong> <span class="fill-ltr"><span class="math inline">\(\big||{-}3| - 5\big| =\)</span> <span class="blank" data-ans="2"><span class="math inline">\(2\)</span></span></span></p>
 <p><strong>(ה)</strong> <span class="fill-ltr"><span class="math inline">\(|\pi - 4| =\)</span> <span class="blank" data-ans="4-pi"><span class="math inline">\(4 - \pi\)</span></span></span></p>
 <div class="hint">
-<p>ב-(ה): האם <span class="math inline">\(\pi - 4\)</span> חיובי או שלילי? (<span class="math inline">\(\pi \approx 3.14\)</span>.) כתבו תשובה מדויקת, עם <span class="math inline">\(\pi\)</span><span>(בשדה: <code>pi</code> או בכפתור)</span>.</p>
+<p>ב-(ה): האם <span class="math inline">\(\pi - 4\)</span> חיובי או שלילי? (<span class="math inline">\(\pi \approx 3.14\)</span>.) כתבו תשובה מדויקת, עם <span class="math inline">\(\pi\)</span>.</p>
 </div>
 <div class="explain">
 <p><strong>(ב)</strong> <span class="math display">\[\begin{aligned} |3 - 8| &amp;= |{-}5| \\ &amp;= 5 \end{aligned}\]</span></p>
@@ -2750,7 +2967,7 @@ window.Quarto = {
 </div>
 </div>
 <div class="fill">
-<p>קבוצת הפתרונות היא <span class="blank" data-ans="(-inf,4]" form="interval"><span class="math inline">\((-\infty, 4]\)</span></span></p>
+<p>כתבו וסרטטו את קבוצת הפתרונות: <span class="blank" data-ans="(-inf,4]" form="interval" data-plot="-2,0,2,4,6"><span class="math inline">\((-\infty, 4]\)</span></span></p>
 </div>
 </div>
 <div id="box-q-ineq-steps-2" class="thmbox thmbox-question" title="שוב כיוון מתהפך">
@@ -2768,7 +2985,7 @@ window.Quarto = {
 </div>
 </div>
 <div class="fill">
-<p>קבוצת הפתרונות היא <span class="blank" data-ans="(-inf,-2]" form="interval"><span class="math inline">\((-\infty, -2]\)</span></span></p>
+<p>כתבו וסרטטו את קבוצת הפתרונות: <span class="blank" data-ans="(-inf,-2]" form="interval" data-plot="-4,-3,-2,-1,0,1,2"><span class="math inline">\((-\infty, -2]\)</span></span></p>
 </div>
 </div>
 <div id="box-q-ineq-steps-3" class="thmbox thmbox-question" title="אי-שוויון כפול">
@@ -2786,12 +3003,12 @@ window.Quarto = {
 </div>
 </div>
 <div class="fill">
-<p>קבוצת הפתרונות היא <span class="blank" data-ans="(2,6)" form="interval"><span class="math inline">\((2, 6)\)</span></span></p>
+<p>כתבו וסרטטו את קבוצת הפתרונות: <span class="blank" data-ans="(2,6)" form="interval" data-plot="0,1,2,3,4,5,6,7"><span class="math inline">\((2, 6)\)</span></span></p>
 </div>
 </div>
 <div id="box-q-abs" class="thmbox thmbox-question" title="משוואות ואי-שוויונים עם ערך מוחלט">
 <p><strong>שאלה 1.3.14 — משוואות ואי-שוויונים עם ערך מוחלט.</strong></p>
-<p>פתרו כל סעיף. השתמשו בשיטה: <span class="math inline">\(|E| &lt; c\)</span> פירושו <span class="math inline">\(,-c &lt; E &lt; c\)</span> ו-<span class="math inline">\(|E| &gt; c\)</span> פירושו <span class="math inline">\(E &gt; c\)</span> או <span class="math inline">\(.E &lt; -c\)</span> <span>(את קבוצת הפתרונות כתבו כרשימה, למשל <code>{1,2}</code>, או כקטע.)</span></p>
+<p>פתרו כל סעיף. השתמשו בשיטה: <span class="math inline">\(|E| &lt; c\)</span> פירושו <span class="math inline">\(,-c &lt; E &lt; c\)</span> ו-<span class="math inline">\(|E| &gt; c\)</span> פירושו <span class="math inline">\(E &gt; c\)</span> או <span class="math inline">\(.E &lt; -c\)</span> כתבו את התשובה כרשימה או כקטע.</p>
 <p><strong>(א)</strong> <span class="math inline">\(|x + 2| \le 4\)</span></p>
 <div class="derive" start="|x+2|<=4">
 <div class="step" data-line="[-4]<=x+2<=[4]">
@@ -2802,7 +3019,7 @@ window.Quarto = {
 </div>
 </div>
 <div class="fill">
-<p>קבוצת הפתרונות: <span class="blank" data-ans="[-6,2]"><span class="math inline">\([-6, 2]\)</span></span></p>
+<p>כתבו וסרטטו את קבוצת הפתרונות: <span class="blank" data-ans="[-6,2]" data-plot="-8,-6,-4,-2,0,2,4"><span class="math inline">\([-6, 2]\)</span></span></p>
 </div>
 <p><strong>(ב)</strong> <span class="math inline">\(|3x - 1| &gt; 2\)</span></p>
 <div class="derive" start="|3x-1|>2">
@@ -2820,7 +3037,7 @@ window.Quarto = {
 </div>
 </div>
 <div class="fill">
-<p>קבוצת הפתרונות: <span class="blank" data-ans="(-inf,-1/3)U(1,inf)" data-w="16"><span class="math inline">\(\left(-\infty, -\frac{1}{3}\right) \cup (1, \infty)\)</span></span></p>
+<p>כתבו וסרטטו את קבוצת הפתרונות: <span class="blank" data-ans="(-inf,-1/3)U(1,inf)" data-w="16" data-plot="-2,-1,0,1,2"><span class="math inline">\(\left(-\infty, -\frac{1}{3}\right) \cup (1, \infty)\)</span></span></p>
 </div>
 <p><strong>(ג)</strong> <span class="math inline">\(|x + 1| = 4\)</span></p>
 <div class="derive" start="|x+1|=4">
@@ -2832,7 +3049,7 @@ window.Quarto = {
 </div>
 </div>
 <div class="fill">
-<p>קבוצת הפתרונות: <span class="blank" data-ans="{3,-5}"><span class="math inline">\(\{-5, 3\}\)</span></span></p>
+<p>כתבו וסרטטו את קבוצת הפתרונות: <span class="blank" data-ans="{3,-5}" data-plot="-6,-5,-4,-3,-2,-1,0,1,2,3,4"><span class="math inline">\(\{-5, 3\}\)</span></span></p>
 </div>
 <p><strong>(ד)</strong> <span class="math inline">\(|3x - 2| &lt; 4\)</span></p>
 <div class="derive" start="|3x-2|<4">
@@ -2847,7 +3064,7 @@ window.Quarto = {
 </div>
 </div>
 <div class="fill">
-<p>קבוצת הפתרונות: <span class="blank" data-ans="(-2/3,2)"><span class="math inline">\(\left(-\frac{2}{3}, 2\right)\)</span></span></p>
+<p>כתבו וסרטטו את קבוצת הפתרונות: <span class="blank" data-ans="(-2/3,2)" data-plot="-2,-1,0,1,2,3"><span class="math inline">\(\left(-\frac{2}{3}, 2\right)\)</span></span></p>
 </div>
 <p><strong>(ה)</strong> <span class="math inline">\(|2x + 3| = 0\)</span></p>
 <div class="derive" start="|2x+3|=0">
@@ -2865,7 +3082,7 @@ window.Quarto = {
 </div>
 </div>
 <div class="fill">
-<p>קבוצת הפתרונות: <span class="blank" data-ans="{-3/2}"><span class="math inline">\(\left\{-\frac{3}{2}\right\}\)</span></span></p>
+<p>כתבו וסרטטו את קבוצת הפתרונות: <span class="blank" data-ans="{-3/2}" data-plot="-3,-2,-1,0,1"><span class="math inline">\(\left\{-\frac{3}{2}\right\}\)</span></span></p>
 </div>
 </div>
 <div id="box-q-abs-write" class="thmbox thmbox-question" title="מקטע לערך מוחלט">
@@ -2926,9 +3143,6 @@ window.Quarto = {
 </section>
 <section id="פונקציות-וגרפים" class="level2" data-number="1.4">
 <h2 data-number="1.4" class="anchored" data-anchor-id="פונקציות-וגרפים"><span class="header-section-number">1.4</span> פונקציות וגרפים</h2>
-<div class="lead">
-<p><strong>מה עושים כאן?</strong> מגדירים <strong>פונקציה</strong>, כלל שמקבל מספר ומחזיר מספר אחד, ולומדים לצייר אותה כגרף במישור. נראה גם עקומות שאינן גרפים של פונקציות, ונמצא איפה נוסחה מוגדרת.</p>
-</div>
 <p>רוב הקורס עוסק ב<strong>פונקציות</strong>: כללים שמקבלים מספר ומחזירים מספר. הדרישה החשובה ביותר היא שהכלל יהיה <strong>חד-משמעי</strong>: כל קלט נותן תשובה אחת, ורק אחת.</p>
 <div class="thmbox thmbox-key-point thmicon-idea" data-icon="idea" title="פונקציה היא מכונה">
 <p><strong>חשוב לזכור — פונקציה היא מכונה.</strong></p>
@@ -2953,7 +3167,7 @@ window.Quarto = {
 <p>בכל סעיף, חשבו כמה ערכים של הפונקציה ומצאו את התמונה שלה.</p>
 <p><strong>(א)</strong> <span class="math inline">\(f(x) = 3x + 1\)</span> (מוגדרת לכל <span class="math inline">\(x\)</span> ממשי).</p>
 <div class="fill">
-<p><span class="fill-ltr"><span class="math inline">\(f(0) =\)</span> <span class="blank" data-ans="1"><span class="math inline">\(1\)</span></span></span>, <span class="fill-ltr"><span class="math inline">\(f(2) =\)</span> <span class="blank" data-ans="7"><span class="math inline">\(7\)</span></span></span>, <span class="fill-ltr"><span class="math inline">\(f(-1) =\)</span> <span class="blank" data-ans="-2"><span class="math inline">\(-2\)</span></span></span> והתמונה היא <span class="blank" data-ans="R"><span class="math inline">\(\mathbb{R}\)</span></span><span>(את <span class="math inline">\(\mathbb{R}\)</span> כותבים <code>R</code>)</span>.</p>
+<p><span class="fill-ltr"><span class="math inline">\(f(0) =\)</span> <span class="blank" data-ans="1"><span class="math inline">\(1\)</span></span></span>, <span class="fill-ltr"><span class="math inline">\(f(2) =\)</span> <span class="blank" data-ans="7"><span class="math inline">\(7\)</span></span></span>, <span class="fill-ltr"><span class="math inline">\(f(-1) =\)</span> <span class="blank" data-ans="-2"><span class="math inline">\(-2\)</span></span></span> והתמונה היא <span class="blank" data-ans="R"><span class="math inline">\(\mathbb{R}\)</span></span>.</p>
 <div class="explain">
 <p>נחשב: <span class="math display">\[f(0) = 3 \cdot 0 + 1 = 1, \qquad f(2) = 3 \cdot 2 + 1 = 7, \qquad f(-1) = 3 \cdot (-1) + 1 = -2\]</span> <strong>התמונה היא כל <span class="math inline">\(\mathbb{R}\)</span>.</strong> נבדוק לפי השיטה: יהי <span class="math inline">\(y\)</span> מספר ממשי כלשהו. נפתור את המשוואה <span class="math inline">\(:f(x) = y\)</span> <span class="math display">\[\begin{aligned} 3x + 1 &amp;= y \\ 3x &amp;= y - 1 \\ x &amp;= \frac{y - 1}{3} \end{aligned}\]</span> לכל <span class="math inline">\(y\)</span> יש פתרון, ולכן כל <span class="math inline">\(y\)</span> ממשי נמצא בתמונה. למשל, עבור <span class="math inline">\(y = 10\)</span> נקבל <span class="math inline">\(,x = 3\)</span> ואכן <span class="math inline">\(.f(3) = 10\)</span></p>
 </div>
@@ -3086,7 +3300,7 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>איך מציירים גרף? מחשבים את הפונקציה בכמה נקודות, מסמנים את הנקודות <span class="math inline">\((x, f(x))\)</span> ומחברים ביניהן. ככל שמשתמשים ביותר נקודות, הציור מדויק יותר. בסימולציה הבאה רואים את התהליך עבור <span class="math inline">\(.f(x) = x^2\)</span></p>
+<p>איך משרטטים גרף ביד? מחשבים את הפונקציה בכמה נקודות, מסמנים את הנקודות <span class="math inline">\((x, f(x))\)</span> ומחברים ביניהן לפי צורת הפונקציה, בקטעים שבהם היא רציפה — כלומר, בלי קפיצות או חורים. מוסיפים נקודות היכן שצריך כדי לראות את הצורה טוב יותר. בסימולציה הבאה רואים את התהליך עבור <span class="math inline">\(.f(x) = x^2\)</span></p>
 <div id="box-sim-parabola" class="thmbox thmbox-simulation" title="מנקודות לגרף: הפרבולה">
 <p><strong>סימולציה 1.4.7 — מנקודות לגרף: הפרבולה.</strong></p>
 <iframe class="widget-frame" src="widgets/ch01/parabola-points.html" loading="lazy" title="מנקודות לגרף: הפרבולה"></iframe>
@@ -3099,8 +3313,12 @@ window.Quarto = {
 <figcaption>הגרפים של ארבע הפונקציות מהדוגמה: ישר, פרבולה, ערך מוחלט, ופונקציה עם קפיצה ב-<span class="math inline">\(x = 0\)</span>. עיגול מלא מסמן נקודה שעל הגרף, ועיגול ריק מסמן נקודה שאינה עליו.</figcaption>
 </figure>
 </div>
-<div class="thmbox thmbox-key-point thmicon-idea" data-icon="idea" title="ציור הוא תמונה איכותית">
-<p><strong>חשוב לזכור — ציור הוא תמונה איכותית.</strong></p>
+<div class="thmbox thmbox-terminology" title="עלייה וירידה">
+<p><strong>מונחים — עלייה וירידה.</strong></p>
+<p>פונקציה <strong>עולה ממש</strong> בקטע אם ככל ש-<span class="math inline">\(x\)</span> גדל, <span class="math inline">\(f(x)\)</span> גדל; היא <strong>יורדת ממש</strong> אם <span class="math inline">\(f(x)\)</span> קטן. למשל, <span class="math inline">\(x^2\)</span> יורדת ממש עד <span class="math inline">\(0\)</span> ועולה ממש מ-<span class="math inline">\(0\)</span> והלאה. בתיאורי הגרפים בפרק נקצר ונאמר ״עולה״ או ״יורדת״. כשמתירים גם שוויון בין ערכים, אומרים ״עולה במובן החלש״ או ״יורדת במובן החלש״.</p>
+</div>
+<div class="thmbox thmbox-terminology" title="איכותי וכמותי">
+<p><strong>מונחים — איכותי וכמותי.</strong></p>
 <p>ציור של גרף הוא בדרך כלל <strong>לא מדויק</strong>. הוא נותן לנו בעיקר מידע <strong>איכותי</strong>: איפה הפונקציה עולה ואיפה היא יורדת, איפה היא חותכת את הצירים, ואיך היא מתנהגת בקצוות. בשביל מידע <strong>כמותי</strong>, כמו ערך מדויק בנקודה, מחשבים מהנוסחה. שימו לב גם שקנה המידה על ציר <span class="math inline">\(x\)</span> ועל ציר <span class="math inline">\(y\)</span> <strong>לא חייב להיות זהה</strong>: למשל, בגרף של <span class="math inline">\(3x + 1\)</span> למעלה, יחידה על ציר <span class="math inline">\(y\)</span> קצרה יותר מיחידה על ציר <span class="math inline">\(.x\)</span> בוחרים קנה מידה שבו רואים היטב את מה שמעניין.</p>
 </div>
 </section>
@@ -3264,14 +3482,14 @@ window.Quarto = {
 <ol type="1">
 <li><strong>חילוק</strong>: המכנה חייב להיות שונה מאפס.</li>
 <li><strong>שורש זוגי</strong> (<span class="math inline">\(\sqrt{\ }\)</span>, <span class="math inline">\(\sqrt[4]{\ }\)</span>, …): הביטוי שבתוכו חייב להיות אי-שלילי.</li>
-<li><strong>לוגריתם</strong> (נכיר בהמשך ההרצאה): הביטוי שבתוכו חייב להיות חיובי.</li>
+<li><strong>לוגריתם</strong> (נכיר בהמשך הפרק): הביטוי שבתוכו חייב להיות חיובי.</li>
 </ol>
 <p>כל דרישה כזו נותנת משוואה או אי-שוויון. פותרים את כולם, ותחום ההגדרה הוא ה<strong>חיתוך</strong> של כל הפתרונות.</p>
 </div>
 <div id="box-exm-domain" class="thmbox thmbox-example" title="תחומי הגדרה">
 <p><strong>דוגמה 1.4.17 — תחומי הגדרה.</strong></p>
 <p>מצאו את תחום ההגדרה הטבעי.</p>
-<p>את תחום ההגדרה כותבים כקטע או כאיחוד של קטעים. <span>(<span class="math inline">\(\mathbb{R}\)</span> בלי הנקודה <span class="math inline">\(5\)</span> אפשר לכתוב <code>R-{5}</code>.)</span></p>
+<p>את תחום ההגדרה כותבים כקטע או כאיחוד של קטעים.</p>
 <p><strong>(א)</strong> <span class="math inline">\(f(x) = \sqrt{x - 3}\)</span></p>
 <div class="fill">
 <p>תחום ההגדרה: <span class="blank" data-ans="[3,inf)"><span class="math inline">\([3, \infty)\)</span></span></p>
@@ -3535,9 +3753,6 @@ window.Quarto = {
 </section>
 <section id="פונקציות-זוגיות-ואי-זוגיות" class="level2" data-number="1.5">
 <h2 data-number="1.5" class="anchored" data-anchor-id="פונקציות-זוגיות-ואי-זוגיות"><span class="header-section-number">1.5</span> פונקציות זוגיות ואי-זוגיות</h2>
-<div class="lead">
-<p><strong>מה עושים כאן?</strong> מזהים <strong>סימטריה</strong> בגרף ישר מהנוסחה. אם יודעים שגרף סימטרי, מספיק לצייר חצי ממנו.</p>
-</div>
 <p>סימטריה חוסכת עבודה: אם יודעים שגרף סימטרי, מספיק לצייר את החצי הימני שלו, <span class="math inline">\(,x \ge 0\)</span> והחצי השמאלי נקבע ממנו.</p>
 <div id="box-def-even-odd" class="thmbox thmbox-definition" title="פונקציה זוגית ואי-זוגית">
 <p><strong>הגדרה 1.5.1 — פונקציה זוגית ואי-זוגית.</strong></p>
@@ -3622,7 +3837,7 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="תרגילים-4">תרגילים</h3>
 <div id="box-q-f-minus-x" class="thmbox thmbox-question" title="מציבים $-x$">
 <p><strong>שאלה 1.5.3 — מציבים <span class="math inline">\(-x\)</span>.</strong></p>
-<p>חשבו את <span class="math inline">\(f(-x)\)</span> ופשטו. <span>(בשדה כותבים חזקה עם <code>^</code>, למשל <code>x^3</code>.)</span></p>
+<p>חשבו את <span class="math inline">\(f(-x)\)</span> ופשטו.</p>
 <div class="fill">
 <p><strong>(א)</strong> עבור <span class="math inline">\(f(x) = x^3 + 2x\)</span>: <span class="fill-ltr"><span class="math inline">\(f(-x) =\)</span> <span class="blank" data-ans="-x^3-2x"><span class="math inline">\(-x^3 - 2x\)</span></span></span></p>
 <p><strong>(ב)</strong> עבור <span class="math inline">\(f(x) = x^4 - 3x^2 + 1\)</span>: <span class="fill-ltr"><span class="math inline">\(f(-x) =\)</span> <span class="blank" data-ans="x^4-3x^2+1"><span class="math inline">\(x^4 - 3x^2 + 1\)</span></span></span></p>
@@ -3720,9 +3935,6 @@ window.Quarto = {
 </section>
 <section id="הזזה-ומתיחה-של-גרפים" class="level2" data-number="1.6">
 <h2 data-number="1.6" class="anchored" data-anchor-id="הזזה-ומתיחה-של-גרפים"><span class="header-section-number">1.6</span> הזזה ומתיחה של גרפים</h2>
-<div class="lead">
-<p><strong>מה עושים כאן?</strong> לומדים לקבל הרבה גרפים חדשים מכמה גרפים מוכרים, על ידי הזזה, מתיחה ושיקוף, בלי לחשב אף נקודה מחדש.</p>
-</div>
 <p>אנחנו מכירים מעט גרפים בסיסיים: <span class="math inline">\(x^2\)</span>, <span class="math inline">\(\sqrt{x}\)</span>, <span class="math inline">\(|x|\)</span>, ובהמשך גם <span class="math inline">\(\sin x\)</span> ו-<span class="math inline">\(.2^x\)</span> בעזרת הזזות ומתיחות אפשר לקבל מהם הרבה גרפים חדשים, בלי עבודה נוספת.</p>
 <div id="box-thm-transformations" class="thmbox thmbox-theorem" title="הזזה, מתיחה ושיקוף">
 <p><strong>משפט 1.6.1 — הזזה, מתיחה ושיקוף.</strong></p>
@@ -3879,7 +4091,7 @@ window.Quarto = {
 </div>
 <div id="box-q-write-formula" class="thmbox thmbox-question" title="מהתיאור לנוסחה">
 <p><strong>שאלה 1.6.6 — מהתיאור לנוסחה.</strong></p>
-<p>כתבו את הנוסחה של הפונקציה החדשה. <span>(שורש: <code>sqrt</code> או הכפתור √, ערך מוחלט: <code>|x|</code>.)</span></p>
+<p>כתבו את הנוסחה של הפונקציה החדשה.</p>
 <div class="fill">
 <p><strong>(א)</strong> מזיזים את <span class="math inline">\(\sqrt{x}\)</span> ימינה ב-<span class="math inline">\(3\)</span> ולמעלה ב-<span class="fill-ltr"><span class="math inline">\(.1\)</span> <span class="math inline">\(y =\)</span> <span class="blank" data-ans="sqrt(x-3)+1" data-w="12"><span class="math inline">\(\sqrt{x - 3} + 1\)</span></span></span></p>
 <p><strong>(ב)</strong> משקפים את <span class="math inline">\(x^2\)</span> ביחס לציר <span class="math inline">\(,x\)</span> ואחר כך מזיזים למעלה ב-<span class="fill-ltr"><span class="math inline">\(.4\)</span> <span class="math inline">\(y =\)</span> <span class="blank" data-ans="4-x^2" data-w="12"><span class="math inline">\(4 - x^2\)</span></span></span></p>
@@ -3972,9 +4184,6 @@ window.Quarto = {
 </section>
 <section id="הרכבת-פונקציות" class="level2" data-number="1.7">
 <h2 data-number="1.7" class="anchored" data-anchor-id="הרכבת-פונקציות"><span class="header-section-number">1.7</span> הרכבת פונקציות</h2>
-<div class="lead">
-<p><strong>מה עושים כאן?</strong> מחברים פונקציות בשרשרת: הפלט של אחת הופך לקלט של השנייה. ולהפך: מפרקים נוסחה מסובכת לשלבים פשוטים.</p>
-</div>
 <p>נוסחאות מסובכות בנויות משלבים פשוטים. למשל, כדי לחשב את <span class="math inline">\(\sqrt{x^2 + 4}\)</span> מחשבים קודם <span class="math inline">\(x^2 + 4\)</span>, ואחר כך את השורש של התוצאה. לזהות את השלבים האלה זו מיומנות חשובה.</p>
 <div id="box-def-composition" class="thmbox thmbox-definition" title="הרכבת פונקציות">
 <p><strong>הגדרה 1.7.1 — הרכבת פונקציות.</strong></p>
@@ -4058,7 +4267,7 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="תרגילים-6">תרגילים</h3>
 <div id="box-q-composition" class="thmbox thmbox-question" title="הרכבה ותחום">
 <p><strong>שאלה 1.7.5 — הרכבה ותחום.</strong></p>
-<p>יהיו <span class="math inline">\(f(x) = \frac{1}{x}\)</span> ו-<span class="math inline">\(.g(x) = x - 2\)</span> <span>(את <span class="math inline">\(\mathbb{R}\)</span> בלי הנקודה <span class="math inline">\(5\)</span> כותבים <code>R-{5}</code>.)</span></p>
+<p>יהיו <span class="math inline">\(f(x) = \frac{1}{x}\)</span> ו-<span class="math inline">\(.g(x) = x - 2\)</span></p>
 <div class="fill">
 <ul>
 <li><span class="fill-ltr"><span class="math inline">\((f \circ g)(x) =\)</span> <span class="blank" data-ans="1/(x-2)"><span class="math inline">\(\frac{1}{x - 2}\)</span></span></span> ותחום ההגדרה שלה <span class="blank" data-ans="R-{2}"><span class="math inline">\(\mathbb{R} \setminus \{2\}\)</span></span></li>
@@ -4170,9 +4379,6 @@ window.Quarto = {
 </section>
 <section id="פולינומים-ושורשיהם" class="level2" data-number="1.8">
 <h2 data-number="1.8" class="anchored" data-anchor-id="פולינומים-ושורשיהם"><span class="header-section-number">1.8</span> פולינומים ושורשיהם</h2>
-<div class="lead">
-<p><strong>מה עושים כאן?</strong> מכירים את הפונקציות שבנויות רק מחיבור וכפל, ולומדים למצוא איפה הן מתאפסות.</p>
-</div>
 <p>הפונקציות הפשוטות ביותר הן אלה שמשתמשות רק בחיבור ובכפל. הן מוגדרות בכל מקום, וקל לחשב אותן.</p>
 <div id="box-def-polynomial" class="thmbox thmbox-definition" title="פולינום">
 <p><strong>הגדרה 1.8.1 — פולינום.</strong></p>
@@ -4200,7 +4406,7 @@ window.Quarto = {
 </div>
 <div id="box-exm-poly-roots" class="thmbox thmbox-example" title="מציאת שורשים">
 <p><strong>דוגמה 1.8.3 — מציאת שורשים.</strong></p>
-<p>מצאו את השורשים. <span>את קבוצת השורשים כותבים כרשימה, למשל <code>{1,2}</code> (ואם אין שורשים: <code>{}</code>).</span></p>
+<p>מצאו את השורשים. כתבו את התשובה כרשימה.</p>
 <p><strong>(א)</strong> <span class="math inline">\(x^2 - x - 6\)</span></p>
 <div class="fill">
 <p><span class="fill-ltr"><span class="math inline">\(\Delta =\)</span> <span class="blank" data-ans="25"><span class="math inline">\(25\)</span></span></span> והשורשים: <span class="blank" data-ans="{3,-2}"><span class="math inline">\(\{-2, 3\}\)</span></span></p>
@@ -4209,7 +4415,7 @@ window.Quarto = {
 </div>
 </div>
 <p><strong>(ב)</strong> <span class="math inline">\(x^3 - 9x\)</span></p>
-<p>פותרים את המשוואה <span class="math inline">\(.x^3 - 9x = 0\)</span> <span>(חזקה כותבים עם <code>^</code>, למשל <code>x^2</code>.)</span></p>
+<p>פותרים את המשוואה <span class="math inline">\(.x^3 - 9x = 0\)</span></p>
 <div class="derive" start="x^3-9x=0">
 <div class="step" data-line="x([x^2-9])=0">
 <p>מוציאים גורם משותף <span class="math inline">\(.x\)</span></p>
@@ -4307,7 +4513,7 @@ window.Quarto = {
 </div>
 <div id="box-q-roots" class="thmbox thmbox-question" title="מוצאים שורשים">
 <p><strong>שאלה 1.8.5 — מוצאים שורשים.</strong></p>
-<p>מצאו את קבוצת השורשים: פתרו את המשוואה <span class="math inline">\(P(x) = 0\)</span> צעד אחר צעד. קודם מוציאים גורם משותף ומחפשים כפל מקוצר; אם לא הולך, נוסחת השורשים. <span>(את הקבוצה כותבים כרשימה, למשל <code>{1,2}</code>; אם אין שורשים: <code>{}</code>.)</span></p>
+<p>מצאו את קבוצת השורשים: פתרו את המשוואה <span class="math inline">\(P(x) = 0\)</span> צעד אחר צעד. קודם מוציאים גורם משותף ומחפשים כפל מקוצר; אם לא הולך, נוסחת השורשים. כתבו את התשובה כרשימה.</p>
 <p><strong>(א)</strong> <span class="math inline">\(3x^2 - 12\)</span></p>
 <div class="derive" start="3x^2-12=0">
 <div class="step" data-line="3x^2=[12]">
@@ -4399,7 +4605,7 @@ window.Quarto = {
 </div>
 <div id="box-q-factor" class="thmbox thmbox-question" title="כתבו כמכפלה">
 <p><strong>שאלה 1.8.6 — כתבו כמכפלה.</strong></p>
-<p>פרקו לגורמים. <span>(את התשובה כותבים כמכפלה, למשל <code>(x-1)(x+2)</code>.)</span></p>
+<p>פרקו לגורמים. כתבו את התשובה כמכפלה.</p>
 <div class="fill">
 <p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\(x^2 - 9 =\)</span> <span class="blank" data-ans="(x-3)(x+3)" form="product" data-w="14"><span class="math inline">\((x - 3)(x + 3)\)</span></span></span></p>
 <p><strong>(ב)</strong> <span class="fill-ltr"><span class="math inline">\(x^2 - 7x + 12 =\)</span> <span class="blank" data-ans="(x-3)(x-4)" form="product" data-w="14"><span class="math inline">\((x - 3)(x - 4)\)</span></span></span></p>
@@ -4506,9 +4712,6 @@ window.Quarto = {
 </section>
 <section id="הפונקציות-הטריגונומטריות" class="level2" data-number="1.9">
 <h2 data-number="1.9" class="anchored" data-anchor-id="הפונקציות-הטריגונומטריות"><span class="header-section-number">1.9</span> הפונקציות הטריגונומטריות</h2>
-<div class="lead">
-<p><strong>מה עושים כאן?</strong> מגדירים את <span class="math inline">\(\sin\)</span> ואת <span class="math inline">\(\cos\)</span> על ידי <strong>הליכה על מעגל</strong>, ומקבלים מהציור את כל התכונות שלהן: מחזוריות, ערכים מיוחדים והגרפים.</p>
-</div>
 <p>הפונקציות הטריגונומטריות צמחו מהניסיון למדוד: לחשב אורכים וזוויות במשולשים, במדידת קרקעות ובאסטרונומיה. כבר בבבל העתיקה מדדו זוויות (משם מגיעה החלוקה של המעגל ל-<span class="math inline">\(360\)</span> מעלות), וביוון העתיקה נבנו טבלאות שקושרות בין זוויות לאורכים במעגל. מאז הן מופיעות בכל מקום שבו יש סיבוב או תנודה. נגדיר את <span class="math inline">\(\sin\)</span> ואת <span class="math inline">\(\cos\)</span> בעזרת מעגל, וכל התכונות שלהן ינבעו מהציור.</p>
 <section id="רדיאנים" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="רדיאנים">רדיאנים</h3>
@@ -4739,7 +4942,7 @@ window.Quarto = {
 </div>
 <div id="box-exm-special-angles" class="thmbox thmbox-example" title="הזוויות $\frac{\pi}{4}$, $\frac{\pi}{6}$ ו-$\frac{\pi}{3}$">
 <p><strong>דוגמה 1.9.8 — הזוויות <span class="math inline">\(\frac{\pi}{4}\)</span>, <span class="math inline">\(\frac{\pi}{6}\)</span> ו-<span class="math inline">\(\frac{\pi}{3}\)</span>.</strong></p>
-<p><strong>(א)</strong> חשבו את <span class="math inline">\(\sin\frac{\pi}{4}\)</span> ואת <span class="math inline">\(.\cos\frac{\pi}{4}\)</span> <span>(שורש כותבים <code>sqrt</code> או בכפתור √, למשל <code>sqrt(3)/2</code>.)</span></p>
+<p><strong>(א)</strong> חשבו את <span class="math inline">\(\sin\frac{\pi}{4}\)</span> ואת <span class="math inline">\(.\cos\frac{\pi}{4}\)</span></p>
 <div class="fill">
 <p>הזווית <span class="math inline">\(\frac{\pi}{4}\)</span> היא חצי מזווית ישרה, ולכן הנקודה נמצאת על הישר <span class="math inline">\(,y = x\)</span> כלומר <span class="math inline">\(.\cos\frac{\pi}{4} = \sin\frac{\pi}{4}\)</span> נסמן את הערך המשותף ב-<span class="math inline">\(s\)</span> ונציב בזהות פיתגורס (תכונה (ג)), <span class="math inline">\(.s^2 + s^2 = 1\)</span> השלימו:</p>
 <p><span class="fill-ltr"><span class="math inline">\(s^2 =\)</span> <span class="blank" data-ans="1/2"><span class="math inline">\(\frac{1}{2}\)</span></span></span></p>
@@ -4938,7 +5141,7 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="תרגילים-8">תרגילים</h3>
 <div id="box-q-radians" class="thmbox thmbox-question" title="סיבובים ורדיאנים">
 <p><strong>שאלה 1.9.12 — סיבובים ורדיאנים.</strong></p>
-<p>כמה רדיאנים הם<span>(כתבו <span class="math inline">\(\pi\)</span> בתור <code>pi</code> או בכפתור)</span>:</p>
+<p>כמה רדיאנים הם:</p>
 <div class="fill">
 <p><strong>(א)</strong> רבע סיבוב: <span class="blank" data-ans="pi/2"><span class="math inline">\(\frac{\pi}{2}\)</span></span></p>
 <p><strong>(ב)</strong> שישית סיבוב: <span class="blank" data-ans="pi/3"><span class="math inline">\(\frac{\pi}{3}\)</span></span></p>
@@ -4955,7 +5158,7 @@ window.Quarto = {
 </div>
 <div id="box-q-special" class="thmbox thmbox-question" title="ערכים מיוחדים">
 <p><strong>שאלה 1.9.13 — ערכים מיוחדים.</strong></p>
-<p>חשבו. <span>(שורש כותבים <code>sqrt</code>, למשל <code>-sqrt(2)/2</code>.)</span></p>
+<p>חשבו.</p>
 <div class="fill">
 <p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\(\sin\frac{5\pi}{6} =\)</span> <span class="blank" data-ans="1/2"><span class="math inline">\(\frac{1}{2}\)</span></span></span></p>
 <p><strong>(ב)</strong> <span class="fill-ltr"><span class="math inline">\(\cos\frac{4\pi}{3} =\)</span> <span class="blank" data-ans="-1/2"><span class="math inline">\(-\frac{1}{2}\)</span></span></span></p>
@@ -4980,7 +5183,7 @@ window.Quarto = {
 </div>
 <div id="box-q-trig-eq" class="thmbox thmbox-question" title="משוואות על המעגל">
 <p><strong>שאלה 1.9.14 — משוואות על המעגל.</strong></p>
-<p>מצאו את כל הפתרונות בקטע <span class="math inline">\(.[0, 2\pi]\)</span> <span>(רשימה, למשל <code>{pi/6, 5pi/6}</code>.)</span></p>
+<p>מצאו את כל הפתרונות בקטע <span class="math inline">\(.[0, 2\pi]\)</span> כתבו את התשובה כרשימה.</p>
 <div class="fill">
 <p><strong>(א)</strong> <span class="math inline">\(\sin x = 0\)</span>: <span class="blank" data-ans="{0,pi,2pi}" data-w="14"><span class="math inline">\(\{0, \pi, 2\pi\}\)</span></span></p>
 <p><strong>(ב)</strong> <span class="math inline">\(\cos x = \frac{1}{2}\)</span>: <span class="blank" data-ans="{pi/3,5pi/3}" data-w="14"><span class="math inline">\(\left\{\frac{\pi}{3}, \frac{5\pi}{3}\right\}\)</span></span></p>
@@ -5052,9 +5255,6 @@ window.Quarto = {
 </section>
 <section id="הפונקציה-המעריכית" class="level2" data-number="1.10">
 <h2 data-number="1.10" class="anchored" data-anchor-id="הפונקציה-המעריכית"><span class="header-section-number">1.10</span> הפונקציה המעריכית</h2>
-<div class="lead">
-<p><strong>מה עושים כאן?</strong> מגדירים את <span class="math inline">\(a^x\)</span> לכל <span class="math inline">\(x\)</span> ממשי, ומכירים את הפונקציה שבה כל צעד <strong>כופל</strong> את הערך באותו גורם.</p>
-</div>
 <p>בפונקציה לינארית, כל צעד של <span class="math inline">\(1\)</span> ב-<span class="math inline">\(x\)</span> <strong>מוסיף</strong> לערך אותה כמות, למשל <span class="math inline">\(.+2\)</span> בפונקציה מעריכית, כל צעד <strong>כופל</strong> את הערך באותו גורם, למשל <span class="math inline">\(.\times 2\)</span> כדי להגדיר אותה צריך לתת משמעות לביטוי כמו <span class="math inline">\(2^x\)</span> גם כאשר <span class="math inline">\(x\)</span> אינו מספר טבעי.</p>
 <section id="חזקות-עם-מעריך-שאינו-טבעי" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="חזקות-עם-מעריך-שאינו-טבעי">חזקות עם מעריך שאינו טבעי</h3>
@@ -5233,7 +5433,7 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="תרגילים-9">תרגילים</h3>
 <div id="box-q-exp" class="thmbox thmbox-question" title="מפשטים בצעדים">
 <p><strong>שאלה 1.10.4 — מפשטים בצעדים.</strong></p>
-<p>פשטו את <span class="math inline">\(\frac{4^x \cdot 2^3}{8^x}\)</span> לחזקה אחת של <span class="math inline">\(.2\)</span> <span>(חזקה כותבים עם <code>^</code>, למשל <code>2^(3x)</code>.)</span></p>
+<p>פשטו את <span class="math inline">\(\frac{4^x \cdot 2^3}{8^x}\)</span> לחזקה אחת של <span class="math inline">\(.2\)</span></p>
 <div class="derive" data-goal="2^(3-x)" start="4^x*2^3/8^x">
 <div class="step" data-line="2^[2x]*2^3/2^[3x]">
 <p>כותבים <span class="math inline">\(4^x = \left(2^2\right)^x\)</span> ו-<span class="math inline">\(,8^x = \left(2^3\right)^x\)</span> וכופלים מעריכים.</p>
@@ -5291,7 +5491,7 @@ window.Quarto = {
 </div>
 <div id="box-q-simplify-powers" class="thmbox thmbox-question" title="חוקי החזקות">
 <p><strong>שאלה 1.10.7 — חוקי החזקות.</strong></p>
-<p>פשטו לחזקה אחת. <span>(כתבו את התשובה בצורה הפשוטה ביותר, למשל <code>x^8</code>.)</span></p>
+<p>פשטו לחזקה אחת. כתבו את התשובה בצורה הפשוטה ביותר.</p>
 <div class="fill">
 <p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\(x^3 \cdot x^5 =\)</span> <span class="blank" data-ans="x^8" form="simple"><span class="math inline">\(x^8\)</span></span></span></p>
 <p><strong>(ב)</strong> <span class="fill-ltr"><span class="math inline">\(\left(2^x\right)^3 \cdot 2^{-x} =\)</span> <span class="blank" data-ans="2^(2x)" form="simple"><span class="math inline">\(2^{2x}\)</span></span></span></p>
@@ -5350,7 +5550,7 @@ window.Quarto = {
 <div class="fill">
 <p><span class="fill-ltr"><span class="math inline">\(x =\)</span> <span class="blank" data-ans="2"><span class="math inline">\(2\)</span></span></span></p>
 </div>
-<p><strong>(ד)</strong> <span class="math inline">\(\left(\frac{1}{2}\right)^x = 4\)</span> <span>(את <span class="math inline">\(\left(\frac{1}{2}\right)^x\)</span> כותבים <code>(1/2)^x</code>.)</span></p>
+<p><strong>(ד)</strong> <span class="math inline">\(\left(\frac{1}{2}\right)^x = 4\)</span></p>
 <div class="derive" start="(1/2)^x=4">
 <div class="step" data-line="2^[-x]=2^[2]">
 <p>כותבים את שני האגפים כחזקות של <span class="math inline">\(.2\)</span></p>
@@ -5431,9 +5631,6 @@ window.Quarto = {
 </section>
 <section id="פונקציות-הפוכות" class="level2" data-number="1.11">
 <h2 data-number="1.11" class="anchored" data-anchor-id="פונקציות-הפוכות"><span class="header-section-number">1.11</span> פונקציות הפוכות</h2>
-<div class="lead">
-<p><strong>מה עושים כאן?</strong> הולכים בכיוון ההפוך: יודעים את הפלט, ומחפשים את הקלט. נראה מתי זה אפשרי (פונקציות חד-חד-ערכיות ופונקציות על), איך מוצאים את הפונקציה ההפוכה, ואיך הגרף שלה נראה.</p>
-</div>
 <p>לעיתים קרובות יודעים את הפלט ומחפשים את הקלט. איזה <span class="math inline">\(x\)</span> מקיים <span class="math inline">\(x^3 = 8\)</span>? איזה <span class="math inline">\(x\)</span> מקיים <span class="math inline">\(2^x = 8\)</span>? הפונקציה ההפוכה “מחזירה” מהפלט אל הקלט. אבל כדי שזה יעבוד, לכל פלט חייב להיות קלט <strong>יחיד</strong>.</p>
 <div id="box-def-one-to-one" class="thmbox thmbox-definition" title="פונקציה חד-חד-ערכית">
 <p><strong>הגדרה 1.11.1 — פונקציה חד-חד-ערכית.</strong></p>
@@ -5620,7 +5817,7 @@ window.Quarto = {
 <p>מוציאים שורש שלישי משני האגפים.</p>
 </div>
 <div class="hint">
-<p>אחרי שמבודדים את <span class="math inline">\(,x^3\)</span> מוציאים שורש שלישי משני האגפים. <span>(שורש שלישי כותבים <code>cbrt</code>, למשל <code>cbrt(y+1)</code>.)</span></p>
+<p>אחרי שמבודדים את <span class="math inline">\(,x^3\)</span> מוציאים שורש שלישי משני האגפים.</p>
 </div>
 </div>
 <div class="fill">
@@ -5636,7 +5833,7 @@ window.Quarto = {
 </div>
 <div class="thmbox thmbox-warning" title="הסימון $f^{-1}$">
 <p><strong>שימו לב — הסימון <span class="math inline">\(f^{-1}\)</span>.</strong></p>
-<p><span class="math inline">\(f^{-1}(x)\)</span> <strong>אינו</strong> <span class="math inline">\(.\frac{1}{f(x)}\)</span> ה-<span class="math inline">\(-1\)</span> כאן מסמן “פונקציה הפוכה”, ולא את המספר ההופכי <span class="math inline">\(a^{-1} = \frac{1}{a}\)</span> שפגשנו בתחילת ההרצאה. למשל עבור <span class="math inline">\(,f(x) = 5x - 2\)</span> מצאנו <span class="math inline">\(,f^{-1}(x) = \frac{x + 2}{5}\)</span> ואילו <span class="math inline">\(.\frac{1}{f(x)} = \frac{1}{5x - 2}\)</span></p>
+<p><span class="math inline">\(f^{-1}(x)\)</span> <strong>אינו</strong> <span class="math inline">\(.\frac{1}{f(x)}\)</span> ה-<span class="math inline">\(-1\)</span> כאן מסמן “פונקציה הפוכה”, ולא את המספר ההופכי <span class="math inline">\(a^{-1} = \frac{1}{a}\)</span> שפגשנו בתחילת הפרק. למשל עבור <span class="math inline">\(,f(x) = 5x - 2\)</span> מצאנו <span class="math inline">\(,f^{-1}(x) = \frac{x + 2}{5}\)</span> ואילו <span class="math inline">\(.\frac{1}{f(x)} = \frac{1}{5x - 2}\)</span></p>
 </div>
 <p>מה קורה לגרף? בגרף של <span class="math inline">\(f\)</span> הקלט <span class="math inline">\(x\)</span> נמצא על הציר האופקי, והפלט <span class="math inline">\(y\)</span> על הציר האנכי: מ-<span class="math inline">\(x\)</span> עולים אל הגרף, ומשם פונים אל <span class="math inline">\(.y\)</span> הפונקציה ההפוכה הולכת בכיוון ההפוך: הקלט שלה הוא <span class="math inline">\(,y\)</span> והפלט שלה הוא <span class="math inline">\(.x\)</span> לכן את הגרף של <span class="math inline">\(f^{-1}\)</span> <strong>לא צריך לחשב מחדש</strong>. זה אותו גרף, רק ש<strong>הצירים מחליפים תפקידים</strong>: <span class="math inline">\(y\)</span> עובר לציר האופקי ו-<span class="math inline">\(x\)</span> לציר האנכי. אחר כך מחליפים את השמות, כמו בשלב האחרון של מציאת ההפוכה, וקוראים לציר האופקי שוב <span class="math inline">\(.x\)</span></p>
 <div class="quarto-figure quarto-figure-center">
@@ -5830,7 +6027,7 @@ window.Quarto = {
 <div class="fill">
 <p><span class="fill-ltr"><span class="math inline">\(f^{-1}(x) =\)</span> <span class="blank" data-ans="(3x-1)/2"><span class="math inline">\(\frac{3x - 1}{2}\)</span></span></span></p>
 </div>
-<p><strong>(ג)</strong> <span class="math inline">\(f(x) = \sqrt[3]{x + 2}\)</span> <span>(שורש שלישי כותבים <code>cbrt</code>, למשל <code>cbrt(x+2)</code>.)</span></p>
+<p><strong>(ג)</strong> <span class="math inline">\(f(x) = \sqrt[3]{x + 2}\)</span></p>
 <div class="derive" data-vars="x,y" data-solve="x" start="y=cbrt(x+2)">
 <div class="step" data-line="y^3=x+[2]">
 <p>מעלים את שני האגפים בחזקה שלישית.</p>
@@ -5902,9 +6099,6 @@ window.Quarto = {
 </section>
 <section id="פונקציות-נוספות" class="level2" data-number="1.12">
 <h2 data-number="1.12" class="anchored" data-anchor-id="פונקציות-נוספות"><span class="header-section-number">1.12</span> פונקציות נוספות</h2>
-<div class="lead">
-<p><strong>מה עושים כאן?</strong> מכירים עוד כמה משפחות של פונקציות שיופיעו לאורך הקורס: לוגריתמים, חזקות ושורשים, פונקציות רציונליות והפונקציות הטריגונומטריות ההפוכות.</p>
-</div>
 <section id="לוגריתמים" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="לוגריתמים">לוגריתמים</h3>
 <p>איך פותרים את <span class="math inline">\(?2^x = 10\)</span> אין חזקה שלמה של <span class="math inline">\(2\)</span> שנותנת <span class="math inline">\(10\)</span>: <span class="math inline">\(2^3 = 8\)</span> ו-<span class="math inline">\(.2^4 = 16\)</span> כדי לפתור, צריך פונקציה ש”מבטלת” את הפונקציה המעריכית, כלומר את הפונקציה ההפוכה שלה.</p>
@@ -6011,7 +6205,7 @@ window.Quarto = {
 <p>לפי חוק (ב): <span class="math display">\[\begin{aligned} \log_3 54 - \log_3 2 &amp;= \log_3\frac{54}{2} \\ &amp;= \log_3 27 \\ &amp;= 3 \end{aligned}\]</span> כי <span class="math inline">\(.3^3 = 27\)</span></p>
 </div>
 </div>
-<p><strong>(ג)</strong> פרקו את <span class="math inline">\(\log_2\frac{x^3}{\sqrt{y}}\)</span> (עבור <span class="math inline">\(x, y &gt; 0\)</span>) לסכום והפרש של כפולות של <span class="math inline">\(\log_2 x\)</span> ושל <span class="math inline">\(.\log_2 y\)</span><span>(בשדה: <code>log_2(x)</code>.)</span></p>
+<p><strong>(ג)</strong> פרקו את <span class="math inline">\(\log_2\frac{x^3}{\sqrt{y}}\)</span> (עבור <span class="math inline">\(x, y &gt; 0\)</span>) לסכום והפרש של כפולות של <span class="math inline">\(\log_2 x\)</span> ושל <span class="math inline">\(.\log_2 y\)</span></p>
 <div class="fill">
 <p><span class="fill-ltr"><span class="math inline">\(\log_2\frac{x^3}{\sqrt{y}} =\)</span> <span class="blank" data-ans="3log_2(x)-1/2*log_2(y)" data-positive="x,y" data-vars="x,y" data-w="20"><span class="math inline">\(3\log_2 x - \tfrac{1}{2}\log_2 y\)</span></span></span></p>
 <div class="explain">
@@ -6036,7 +6230,7 @@ window.Quarto = {
 <p>בדיקה: <span class="math inline">\(,8 &gt; 0\)</span> ואכן <span class="math inline">\(.\log_2 8 = 3\)</span></p>
 </div>
 </div>
-<p><strong>(ה)</strong> פתרו את <span class="math inline">\(.2^{2x - 1} = 7\)</span> <span>(לוגריתם לפי בסיס <span class="math inline">\(2\)</span> כותבים <code>log_2</code>, למשל <code>log_2(7)</code>.)</span></p>
+<p><strong>(ה)</strong> פתרו את <span class="math inline">\(.2^{2x - 1} = 7\)</span></p>
 <div class="derive" start="2^(2x-1)=7">
 <div class="step" data-line="2x-1=[log_2(7)]">
 <p>מפעילים <span class="math inline">\(\log_2\)</span> על שני האגפים.</p>
@@ -6241,7 +6435,7 @@ window.Quarto = {
 </div>
 <div id="box-exm-inverse-trig" class="thmbox thmbox-example" title="חישובים">
 <p><strong>דוגמה 1.12.10 — חישובים.</strong></p>
-<p>חשבו. <span>(את <span class="math inline">\(\pi\)</span> כותבים <code>pi</code> או בכפתור.)</span></p>
+<p>חשבו.</p>
 <p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\(\arcsin\frac{1}{2} =\)</span> <span class="blank" data-ans="pi/6" data-miss="5pi/6 :: גם $\sin\frac{5\pi}{6} = \frac{1}{2}$, אבל $\frac{5\pi}{6}$ אינו בקטע $\left[-\frac{\pi}{2}, \frac{\pi}{2}\right]$."><span class="math inline">\(\frac{\pi}{6}\)</span></span></span></p>
 <details class="thmcollapse thmfoldable lecture-answer"><summary>הסבר לסעיף (א)</summary>
 <div class="lecture-answer" title="הסבר לסעיף (א)">
@@ -6328,7 +6522,7 @@ window.Quarto = {
 </div>
 <div id="box-q-log" class="thmbox thmbox-question" title="משוואות מעריכיות ולוגריתמיות">
 <p><strong>שאלה 1.12.13 — משוואות מעריכיות ולוגריתמיות.</strong></p>
-<p>פתרו כל סעיף צעד אחר צעד. במשוואה מעריכית מפעילים <span class="math inline">\(\log\)</span> על שני האגפים; במשוואה לוגריתמית מעלים את הבסיס בחזקת שני האגפים. <span>(לוגריתם לפי בסיס <span class="math inline">\(3\)</span> כותבים <code>log_3</code>, למשל <code>log_3(20)</code>.)</span></p>
+<p>פתרו כל סעיף צעד אחר צעד. במשוואה מעריכית מפעילים <span class="math inline">\(\log\)</span> על שני האגפים; במשוואה לוגריתמית מעלים את הבסיס בחזקת שני האגפים.</p>
 <p><strong>(א)</strong> <span class="math inline">\(3^x = 20\)</span></p>
 <div class="derive" start="3^x=20">
 <div class="step" data-line="x=[log_3(20)]">
@@ -6404,11 +6598,12 @@ window.Quarto = {
 </div>
 <div id="box-q-log-domain" class="thmbox thmbox-question" title="תחום הגדרה של לוגריתם">
 <p><strong>שאלה 1.12.15 — תחום הגדרה של לוגריתם.</strong></p>
+<p>כתבו וסרטטו את תחום ההגדרה של כל פונקציה.</p>
 <div class="fill">
-<p><strong>(א)</strong> <span class="math inline">\(\log_2(4 - x^2)\)</span>: <span class="blank" data-ans="(-2,2)"><span class="math inline">\((-2, 2)\)</span></span></p>
-<p><strong>(ב)</strong> <span class="math inline">\(\log_2(x - 5)\)</span>: <span class="blank" data-ans="(5,inf)"><span class="math inline">\((5, \infty)\)</span></span></p>
-<p><strong>(ג)</strong> <span class="math inline">\(\log_3(9 - x)\)</span>: <span class="blank" data-ans="(-inf,9)"><span class="math inline">\((-\infty, 9)\)</span></span></p>
-<p><strong>(ד)</strong> <span class="math inline">\(\log_{10}(x^2 - 1)\)</span>: <span class="blank" data-ans="(-inf,-1)U(1,inf)" data-w="16"><span class="math inline">\((-\infty, -1) \cup (1, \infty)\)</span></span></p>
+<p><strong>(א)</strong> <span class="math inline">\(\log_2(4 - x^2)\)</span>: <span class="blank" data-ans="(-2,2)" data-plot="-3,-2,-1,0,1,2,3"><span class="math inline">\((-2, 2)\)</span></span></p>
+<p><strong>(ב)</strong> <span class="math inline">\(\log_2(x - 5)\)</span>: <span class="blank" data-ans="(5,inf)" data-plot="2,3,4,5,6,7,8"><span class="math inline">\((5, \infty)\)</span></span></p>
+<p><strong>(ג)</strong> <span class="math inline">\(\log_3(9 - x)\)</span>: <span class="blank" data-ans="(-inf,9)" data-plot="6,7,8,9,10,11,12"><span class="math inline">\((-\infty, 9)\)</span></span></p>
+<p><strong>(ד)</strong> <span class="math inline">\(\log_{10}(x^2 - 1)\)</span>: <span class="blank" data-ans="(-inf,-1)U(1,inf)" data-w="16" data-plot="-3,-2,-1,0,1,2,3"><span class="math inline">\((-\infty, -1) \cup (1, \infty)\)</span></span></p>
 <div class="hint">
 <p>מה שבתוך הלוגריתם חייב להיות <strong>חיובי</strong> (לא רק אי-שלילי).</p>
 </div>
@@ -6455,14 +6650,14 @@ window.Quarto = {
 </div>
 <div id="box-q-inverse-trig" class="thmbox thmbox-question" title="הפונקציות הטריגונומטריות ההפוכות">
 <p><strong>שאלה 1.12.18 — הפונקציות הטריגונומטריות ההפוכות.</strong></p>
-<p>חשבו. <span>(שורש כותבים <code>sqrt</code>, ו-<span class="math inline">\(\pi\)</span> כותבים <code>pi</code>.)</span></p>
+<p>חשבו.</p>
 <div class="fill">
 <p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\(\arccos\frac{1}{2} =\)</span> <span class="blank" data-ans="pi/3"><span class="math inline">\(\frac{\pi}{3}\)</span></span></span></p>
 <p><strong>(ב)</strong> <span class="fill-ltr"><span class="math inline">\(\arctan(-1) =\)</span> <span class="blank" data-ans="-pi/4" data-miss="3pi/4 :: $\tan\frac{3\pi}{4} = -1$, אבל $\frac{3\pi}{4}$ אינו בקטע $\left(-\frac{\pi}{2}, \frac{\pi}{2}\right)$."><span class="math inline">\(-\frac{\pi}{4}\)</span></span></span></p>
 <p><strong>(ג)</strong> <span class="fill-ltr"><span class="math inline">\(\arcsin\left(-\frac{1}{2}\right) =\)</span> <span class="blank" data-ans="-pi/6"><span class="math inline">\(-\frac{\pi}{6}\)</span></span></span></p>
 <p><strong>(ד)</strong> <span class="fill-ltr"><span class="math inline">\(\arccos\left(-\frac{1}{2}\right) =\)</span> <span class="blank" data-ans="2pi/3"><span class="math inline">\(\frac{2\pi}{3}\)</span></span></span></p>
 <p><strong>(ה)</strong> <span class="fill-ltr"><span class="math inline">\(\arctan\sqrt{3} =\)</span> <span class="blank" data-ans="pi/3"><span class="math inline">\(\frac{\pi}{3}\)</span></span></span></p>
-<p><strong>(ו)</strong> <span class="fill-ltr"><span class="math inline">\(\arcsin\left(\sin\frac{5\pi}{6}\right) =\)</span> <span class="blank" data-ans="pi/6" data-miss="5pi/6 :: זו המלכודת מכלל (ב) בהרצאה: $\arcsin$ מחזירה זווית בקטע $\left[-\frac{\pi}{2}, \frac{\pi}{2}\right]$, ו-$\frac{5\pi}{6}$ אינו בקטע."><span class="math inline">\(\frac{\pi}{6}\)</span></span></span></p>
+<p><strong>(ו)</strong> <span class="fill-ltr"><span class="math inline">\(\arcsin\left(\sin\frac{5\pi}{6}\right) =\)</span> <span class="blank" data-ans="pi/6" data-miss="5pi/6 :: זו המלכודת מכלל (ב) בפרק: $\arcsin$ מחזירה זווית בקטע $\left[-\frac{\pi}{2}, \frac{\pi}{2}\right]$, ו-$\frac{5\pi}{6}$ אינו בקטע."><span class="math inline">\(\frac{\pi}{6}\)</span></span></span></p>
 <p><strong>(ז)</strong> <span class="fill-ltr"><span class="math inline">\(\cos\left(\arcsin\frac{3}{5}\right) =\)</span> <span class="blank" data-ans="4/5"><span class="math inline">\(\frac{4}{5}\)</span></span></span></p>
 <div class="hint">
 <p>בכל סעיף מחפשים זווית בקטע הנכון: <span class="math inline">\(\left[-\frac{\pi}{2}, \frac{\pi}{2}\right]\)</span> ל-<span class="math inline">\(,\arcsin\)</span> <span class="math inline">\([0, \pi]\)</span> ל-<span class="math inline">\(\arccos\)</span> ו-<span class="math inline">\(\left(-\frac{\pi}{2}, \frac{\pi}{2}\right)\)</span> ל-<span class="math inline">\(.\arctan\)</span></p>
@@ -6481,6 +6676,92 @@ window.Quarto = {
 </div>
 </div>
 </div>
+<details class="thmcollapse thmfoldable"><summary>מילון מונחים — מספרים ממשיים ופונקציות</summary>
+<div class="foldable" title="מילון מונחים — מספרים ממשיים ופונקציות">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">מונח</th>
+<th style="text-align: left;">פירוש</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">שייך, <span class="math inline">\(x \in A\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(x\)</span> הוא איבר בקבוצה <span class="math inline">\(A\)</span>.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">מוכל, <span class="math inline">\(A \subseteq B\)</span></td>
+<td style="text-align: left;">כל איבר של <span class="math inline">\(A\)</span> שייך גם ל-<span class="math inline">\(B\)</span>.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">איחוד, <span class="math inline">\(A \cup B\)</span></td>
+<td style="text-align: left;">האיברים ששייכים לפחות לאחת משתי הקבוצות.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">חיתוך, <span class="math inline">\(A \cap B\)</span></td>
+<td style="text-align: left;">האיברים ששייכים לשתי הקבוצות.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">הפרש, <span class="math inline">\(A \setminus B\)</span></td>
+<td style="text-align: left;">האיברים של <span class="math inline">\(A\)</span> שאינם שייכים ל-<span class="math inline">\(B\)</span>.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">אי־שוויון חזק / חלש</td>
+<td style="text-align: left;">חזק: <span class="math inline">\(&lt;\)</span> או <span class="math inline">\(&gt;\)</span>; חלש: <span class="math inline">\(\le\)</span> או <span class="math inline">\(\ge\)</span>, כולל שוויון.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">תנאי חזק יותר</td>
+<td style="text-align: left;">מבטיח את התנאי האחר, אבל לא להפך.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">אם ורק אם, <span class="math inline">\(\iff\)</span></td>
+<td style="text-align: left;">שני התנאים מתקיימים בדיוק באותם מקרים.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">תחום הגדרה</td>
+<td style="text-align: left;">הערכים שמותר להציב בפונקציה.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">טווח / תמונה</td>
+<td style="text-align: left;">הטווח הוא קבוצת היעד שנקבעה; התמונה היא הערכים שהפונקציה מקבלת בפועל.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">איכותי / כמותי</td>
+<td style="text-align: left;">איכותי: תיאור ההתנהגות והצורה; כמותי: ערכים ומידות מספריים.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">עולה ממש / יורדת ממש</td>
+<td style="text-align: left;">כאשר <span class="math inline">\(x\)</span> גדל, ערך הפונקציה גדל / קטן, בלי שוויון.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">חד־חד־ערכית</td>
+<td style="text-align: left;">קלטים שונים נותנים פלטים שונים.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">על</td>
+<td style="text-align: left;">כל איבר בטווח מתקבל כפלט.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">פונקציה הפוכה</td>
+<td style="text-align: left;">מחזירה מהפלט לקלט; שונה מהמספר ההופכי <span class="math inline">\(\frac{1}{f(x)}\)</span>.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">הרכבה</td>
+<td style="text-align: left;">הפעלת פונקציה על התוצאה של פונקציה אחרת.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">אסימפטוטה</td>
+<td style="text-align: left;">ישר שהגרף מתקרב אליו במובן המתואר בדוגמה, ליד נקודה או רחוק לאורך הציר.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</details>
 
 
 </section>

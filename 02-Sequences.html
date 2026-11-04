@@ -474,6 +474,54 @@ span.blank:not(.blank-ready) { text-decoration: underline; text-underline-offset
   box-sizing: content-box;
 }
 .blank-input:focus { border-color: #4f46e5; }
+/* The stable wrapper keeps exercise state while its editor upgrades on focus. */
+.mi-control { display: inline-flex; max-width: 100%; vertical-align: middle; align-items: center; }
+.mi-control[hidden] { display: none !important; }
+.mi-control > input, .mi-control > math-field { width: 100%; min-width: 0; border: 0; padding: 0; margin: 0; background: transparent; color: inherit; font: inherit; text-align: inherit; }
+.mi-control > input:focus { outline: none; }
+.mi-control > math-field { min-height: 2.4rem; font-size: 1.12em; --caret-color: #4f46e5; --selection-background-color: #e0e7ff; --placeholder-color: #64748b; --contains-highlight-background-color: #eef2ff; }
+.mi-control:focus-within { border-color: #4f46e5; outline: 3px solid #fbbf24; outline-offset: 2px; }
+.mi-control[aria-invalid="true"] { border-color: #b91c1c; }
+math-field::part(menu-toggle) { display: none; }
+math-field::part(virtual-keyboard-toggle) { color: #64748b; }
+.pw .mi-control.pw-input { width: 100%; min-width: 0; }
+.set-plot { margin: .5rem 0 .7rem; padding: .4rem .65rem; border-inline-start: 2px solid #cbd5e1; }
+.sp-help, .sp-scale { margin: .15rem 0; color: #64748b; font-size: .82rem; }
+.sp-scroll { overflow-x: auto; direction: ltr; }
+.sp-scroll svg { display: block; max-width: none; }
+.sp-scroll svg text { font: 14px system-ui, sans-serif; direction: ltr; unicode-bidi: isolate; }
+.sp-tick, .sp-point { cursor: pointer; }
+.sp-tick:hover rect, .sp-tick:focus rect { fill: #ccfbf1; fill-opacity: .6; }
+.sp-point:focus { outline: 2px solid #f59e0b; }
+.sp-tools { margin: .35rem 0; }
+.sp-tools[hidden], .sp-template[hidden], .sp-point-template[hidden] { display: none !important; }
+.sp-tools [aria-pressed="true"] { background: #e0e7ff; border-color: #4f46e5; color: #3730a3; }
+.sp-template { display: grid; grid-template-columns: auto minmax(40px, 1fr) auto; align-items: center; direction: ltr; max-width: 360px; margin: .2rem auto; }
+.sp-template-line { height: 3px; background: #0f766e; }
+.sp-end { display: grid; grid-template-rows: 20px 36px 36px; justify-items: center; gap: 2px; }
+.sp-end-label { font-size: .8rem; color: #475569; direction: rtl; }
+.sp-end select { font-size: 22px; padding: 0 .4rem; direction: ltr; }
+.sp-tools select { color: #0f766e; background: white; border: 1px solid #94a3b8; border-radius: 6px; }
+.sp-end .blank-input, .sp-point-template .blank-input { width: 5em !important; max-width: 100%; }
+.sp-point-template { display: flex; align-items: center; justify-content: center; gap: .6rem; margin: .7rem 0; }
+.sp-point-template select { font: inherit; padding: .3rem; }
+.sp-bar { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem; margin: .15rem 0; }
+.sp-bar .ix-btn { padding: .2rem .5rem; font-size: .82rem; min-height: 32px; }
+.sp-extra { margin: .2rem 0; font-size: .82rem; }
+.sp-options { display: flex; gap: 1rem; flex-wrap: wrap; align-items: start; }
+.sp-extra summary { cursor: pointer; color: #475569; }
+.sp-status:not(:empty) { padding: .3rem .5rem; margin-top: .3rem; border-inline-start: 3px solid #d97706; font-size: .9rem; }
+.sp-status.sp-good { border-color: #15803d; color: #166534; }
+.set-cases .case[hidden] { display: none !important; }
+.set-case-nav { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; margin: .5rem 0; }
+.set-case-nav select { font: inherit; max-width: 100%; padding: .3rem; border: 1px solid #94a3b8; border-radius: 6px; background: white; color: #334155; }
+@media print { .set-cases .case[hidden] { display: block !important; } .set-plot, .set-case-nav { display: none !important; } }
+.ix-frac { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; font-size: .78em; line-height: 1.1; }
+.ix-frac > :first-child { border-bottom: 1px solid currentColor; padding: 0 .3em; }
+.ix-frac > :last-child { padding: 0 .3em; }
+.pw > .ix-keys { display: none; }
+.pw:focus-within > .ix-keys { display: flex; }
+.ix-key:focus-visible { outline: 3px solid #fbbf24; outline-offset: 2px; }
 td .blank-input, th .blank-input { min-width: 2.4em; padding: .05rem .2rem; }
 .fill table { margin-inline: auto; }
 span.blank.ok .blank-input { border-color: #16a34a; background: #f0fdf4; }
@@ -509,6 +557,21 @@ span.blank.warn .blank-mark { color: #b45309; }
 .ix-msg.ix-info { border-color: #1d4ed8; background: #dbeafe; }
 /* Under an input: what has been typed so far, as a formula (no words). Dimmed while
    the input is still unfinished and only its beginning can be read. */
+.thmbox-terminology { border-color: #0369a1; background: #f0f9ff; }
+.thmbox-terminology > p:first-child > strong { color: #075985; }
+.thmbox-terminology > p:first-child > strong::before { content: "📖"; display: inline-block; margin-inline-end: .4em; }
+.pw-paper { margin: .5rem 0; background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; }
+.pw-row { padding: .5rem; border-bottom: 1px solid #e2e8f0; }
+.pw-row:last-child { border-bottom: 0; }
+.pw-entry { display: flex; gap: .4rem; direction: ltr; }
+.pw-entry .pw-input { flex: 1; min-width: 0; width: 100%; text-align: left; }
+.pw-preview { overflow-x: auto; margin-top: .2rem; color: #475569; }
+.pw-preview:empty { display: none; }
+.pw-start, .pw-example { direction: ltr; text-align: center; overflow-x: auto; padding: .4rem; }
+.pw-solution { margin-top: .6rem; }
+.pw-solution summary { cursor: pointer; color: #4338ca; }
+.pw-solution > .step { margin: .3rem 0 .8rem; }
+.pw-hints:not(:empty) { background: #fffbeb; border-inline-start: 3px solid #d97706; padding: .5rem; }
 .ix-preview:empty { display: none; }
 .ix-preview { font-size: 1.05em; color: #1e293b; margin: .25rem 0; }
 .ix-preview.ix-preview-partial { opacity: .5; }
@@ -542,7 +605,8 @@ span.blank.warn .blank-mark { color: #b45309; }
 .dv-check { min-height: 32px; padding: .1rem .7rem; font-size: .9em; }
 .dv-msg { margin: .2rem 0 0; font-size: .9em; direction: rtl; text-align: right; }
 .dv-done .dv-f { color: #0f172a; }
-.dv-keys { margin: .4rem 0 .1rem; }
+.dv-keys { margin: .4rem 0 .1rem; display: none; }
+.dv:focus-within > .dv-keys { display: flex; }
 @media (max-width: 600px) {
   .dv-row { grid-template-columns: minmax(0, 1fr); }
   .dv-math { grid-column: 1; grid-row: 1; }
@@ -621,6 +685,9 @@ a.xref-open { background: #ede9fe; border-radius: 3px; }
 @media (prefers-reduced-motion: reduce) { .toc-disclosure-arrow { transition: none; } }
 </style>
 <script src="assets/navigation.js" defer=""></script>
+<script src="assets/math-input.js" defer=""></script>
+<script src="widgets/shared/intervals.js" defer=""></script>
+<script src="assets/set-plot.js" defer=""></script>
 <script src="assets/interactive.js" defer=""></script>
 <script>
 /* ---------------------------------------------------------------------------
@@ -932,7 +999,7 @@ window.Quarto = {
 };
 </script>
 
-<script id="book-toc-data" type="application/json">[{"file":"01-Introduction.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#מערכות-המספרים-מהטבעיים-אל-הממשיים\" id=\"toc-מערכות-המספרים-מהטבעיים-אל-הממשיים\" class=\"nav-link active\" data-scroll-target=\"#מערכות-המספרים-מהטבעיים-אל-הממשיים\">\u003cspan class=\"header-section-number\">1.1\u003c/span> מערכות המספרים: מהטבעיים אל הממשיים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#ספירה-המספרים-הטבעיים-השלמים-והרציונליים\" id=\"toc-ספירה-המספרים-הטבעיים-השלמים-והרציונליים\" class=\"nav-link\" data-scroll-target=\"#ספירה-המספרים-הטבעיים-השלמים-והרציונליים\">ספירה: המספרים הטבעיים, השלמים והרציונליים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מדידה-המספרים-האי-רציונליים\" id=\"toc-מדידה-המספרים-האי-רציונליים\" class=\"nav-link\" data-scroll-target=\"#מדידה-המספרים-האי-רציונליים\">מדידה: המספרים האי-רציונליים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הישר-הממשי\" id=\"toc-הישר-הממשי\" class=\"nav-link\" data-scroll-target=\"#הישר-הממשי\">הישר הממשי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים\" id=\"toc-תרגילים\" class=\"nav-link\" data-scroll-target=\"#תרגילים\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#קבוצות-וקטעים\" id=\"toc-קבוצות-וקטעים\" class=\"nav-link\" data-scroll-target=\"#קבוצות-וקטעים\">\u003cspan class=\"header-section-number\">1.2\u003c/span> קבוצות וקטעים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#רישום-של-קבוצות\" id=\"toc-רישום-של-קבוצות\" class=\"nav-link\" data-scroll-target=\"#רישום-של-קבוצות\">רישום של קבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#שוויון-קבוצות\" id=\"toc-שוויון-קבוצות\" class=\"nav-link\" data-scroll-target=\"#שוויון-קבוצות\">שוויון קבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הכלה\" id=\"toc-הכלה\" class=\"nav-link\" data-scroll-target=\"#הכלה\">הכלה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#פעולות-על-קבוצות\" id=\"toc-פעולות-על-קבוצות\" class=\"nav-link\" data-scroll-target=\"#פעולות-על-קבוצות\">פעולות על קבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#קטעים\" id=\"toc-קטעים\" class=\"nav-link\" data-scroll-target=\"#קטעים\">קטעים\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#סרטוט-קטעים\" id=\"toc-סרטוט-קטעים\" class=\"nav-link\" data-scroll-target=\"#סרטוט-קטעים\">סרטוט קטעים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-1\" id=\"toc-תרגילים-1\" class=\"nav-link\" data-scroll-target=\"#תרגילים-1\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#ערך-מוחלט\" id=\"toc-ערך-מוחלט\" class=\"nav-link\" data-scroll-target=\"#ערך-מוחלט\">\u003cspan class=\"header-section-number\">1.3\u003c/span> ערך מוחלט\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#כללי-אי-שוויונים\" id=\"toc-כללי-אי-שוויונים\" class=\"nav-link\" data-scroll-target=\"#כללי-אי-שוויונים\">כללי אי-שוויונים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#ערך-מוחלט-מרחק-וקטעים\" id=\"toc-ערך-מוחלט-מרחק-וקטעים\" class=\"nav-link\" data-scroll-target=\"#ערך-מוחלט-מרחק-וקטעים\">ערך מוחלט, מרחק וקטעים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-2\" id=\"toc-תרגילים-2\" class=\"nav-link\" data-scroll-target=\"#תרגילים-2\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-וגרפים\" id=\"toc-פונקציות-וגרפים\" class=\"nav-link\" data-scroll-target=\"#פונקציות-וגרפים\">\u003cspan class=\"header-section-number\">1.4\u003c/span> פונקציות וגרפים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#המישור-מכפלה-קרטזית\" id=\"toc-המישור-מכפלה-קרטזית\" class=\"nav-link\" data-scroll-target=\"#המישור-מכפלה-קרטזית\">המישור: מכפלה קרטזית\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרף-של-פונקציה\" id=\"toc-הגרף-של-פונקציה\" class=\"nav-link\" data-scroll-target=\"#הגרף-של-פונקציה\">הגרף של פונקציה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציית-הסימן-והערך-השלם\" id=\"toc-פונקציית-הסימן-והערך-השלם\" class=\"nav-link\" data-scroll-target=\"#פונקציית-הסימן-והערך-השלם\">פונקציית הסימן והערך השלם\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מה-אינו-פונקציה\" id=\"toc-מה-אינו-פונקציה\" class=\"nav-link\" data-scroll-target=\"#מה-אינו-פונקציה\">מה אינו פונקציה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תחום-ההגדרה-הטבעי\" id=\"toc-תחום-ההגדרה-הטבעי\" class=\"nav-link\" data-scroll-target=\"#תחום-ההגדרה-הטבעי\">תחום ההגדרה הטבעי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-3\" id=\"toc-תרגילים-3\" class=\"nav-link\" data-scroll-target=\"#תרגילים-3\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-זוגיות-ואי-זוגיות\" id=\"toc-פונקציות-זוגיות-ואי-זוגיות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-זוגיות-ואי-זוגיות\">\u003cspan class=\"header-section-number\">1.5\u003c/span> פונקציות זוגיות ואי-זוגיות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-4\" id=\"toc-תרגילים-4\" class=\"nav-link\" data-scroll-target=\"#תרגילים-4\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הזזה-ומתיחה-של-גרפים\" id=\"toc-הזזה-ומתיחה-של-גרפים\" class=\"nav-link\" data-scroll-target=\"#הזזה-ומתיחה-של-גרפים\">\u003cspan class=\"header-section-number\">1.6\u003c/span> הזזה ומתיחה של גרפים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-5\" id=\"toc-תרגילים-5\" class=\"nav-link\" data-scroll-target=\"#תרגילים-5\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הרכבת-פונקציות\" id=\"toc-הרכבת-פונקציות\" class=\"nav-link\" data-scroll-target=\"#הרכבת-פונקציות\">\u003cspan class=\"header-section-number\">1.7\u003c/span> הרכבת פונקציות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-6\" id=\"toc-תרגילים-6\" class=\"nav-link\" data-scroll-target=\"#תרגילים-6\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פולינומים-ושורשיהם\" id=\"toc-פולינומים-ושורשיהם\" class=\"nav-link\" data-scroll-target=\"#פולינומים-ושורשיהם\">\u003cspan class=\"header-section-number\">1.8\u003c/span> פולינומים ושורשיהם\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-7\" id=\"toc-תרגילים-7\" class=\"nav-link\" data-scroll-target=\"#תרגילים-7\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הפונקציות-הטריגונומטריות\" id=\"toc-הפונקציות-הטריגונומטריות\" class=\"nav-link\" data-scroll-target=\"#הפונקציות-הטריגונומטריות\">\u003cspan class=\"header-section-number\">1.9\u003c/span> הפונקציות הטריגונומטריות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#רדיאנים\" id=\"toc-רדיאנים\" class=\"nav-link\" data-scroll-target=\"#רדיאנים\">רדיאנים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#ההגדרה-הגאומטרית\" id=\"toc-ההגדרה-הגאומטרית\" class=\"nav-link\" data-scroll-target=\"#ההגדרה-הגאומטרית\">ההגדרה הגאומטרית\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מה-רואים-בציור\" id=\"toc-מה-רואים-בציור\" class=\"nav-link\" data-scroll-target=\"#מה-רואים-בציור\">מה רואים בציור\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#ערכים-מיוחדים\" id=\"toc-ערכים-מיוחדים\" class=\"nav-link\" data-scroll-target=\"#ערכים-מיוחדים\">ערכים מיוחדים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרפים\" id=\"toc-הגרפים\" class=\"nav-link\" data-scroll-target=\"#הגרפים\">הגרפים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#טנגנס\" id=\"toc-טנגנס\" class=\"nav-link\" data-scroll-target=\"#טנגנס\">טנגנס\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הזזה-ומתיחה-של-פונקציות-טריגונומטריות\" id=\"toc-הזזה-ומתיחה-של-פונקציות-טריגונומטריות\" class=\"nav-link\" data-scroll-target=\"#הזזה-ומתיחה-של-פונקציות-טריגונומטריות\">הזזה ומתיחה של פונקציות טריגונומטריות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-8\" id=\"toc-תרגילים-8\" class=\"nav-link\" data-scroll-target=\"#תרגילים-8\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הפונקציה-המעריכית\" id=\"toc-הפונקציה-המעריכית\" class=\"nav-link\" data-scroll-target=\"#הפונקציה-המעריכית\">\u003cspan class=\"header-section-number\">1.10\u003c/span> הפונקציה המעריכית\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#חזקות-עם-מעריך-שאינו-טבעי\" id=\"toc-חזקות-עם-מעריך-שאינו-טבעי\" class=\"nav-link\" data-scroll-target=\"#חזקות-עם-מעריך-שאינו-טבעי\">חזקות עם מעריך שאינו טבעי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרפים-1\" id=\"toc-הגרפים-1\" class=\"nav-link\" data-scroll-target=\"#הגרפים-1\">הגרפים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-9\" id=\"toc-תרגילים-9\" class=\"nav-link\" data-scroll-target=\"#תרגילים-9\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-הפוכות\" id=\"toc-פונקציות-הפוכות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-הפוכות\">\u003cspan class=\"header-section-number\">1.11\u003c/span> פונקציות הפוכות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-10\" id=\"toc-תרגילים-10\" class=\"nav-link\" data-scroll-target=\"#תרגילים-10\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-נוספות\" id=\"toc-פונקציות-נוספות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-נוספות\">\u003cspan class=\"header-section-number\">1.12\u003c/span> פונקציות נוספות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#לוגריתמים\" id=\"toc-לוגריתמים\" class=\"nav-link\" data-scroll-target=\"#לוגריתמים\">לוגריתמים\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#חוקי-הלוגריתמים\" id=\"toc-חוקי-הלוגריתמים\" class=\"nav-link\" data-scroll-target=\"#חוקי-הלוגריתמים\">חוקי הלוגריתמים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרף\" id=\"toc-הגרף\" class=\"nav-link\" data-scroll-target=\"#הגרף\">הגרף\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#חזקות-ושורשים\" id=\"toc-חזקות-ושורשים\" class=\"nav-link\" data-scroll-target=\"#חזקות-ושורשים\">חזקות ושורשים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-רציונליות\" id=\"toc-פונקציות-רציונליות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-רציונליות\">פונקציות רציונליות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הפונקציות-הטריגונומטריות-ההפוכות\" id=\"toc-הפונקציות-הטריגונומטריות-ההפוכות\" class=\"nav-link\" data-scroll-target=\"#הפונקציות-הטריגונומטריות-ההפוכות\">הפונקציות הטריגונומטריות ההפוכות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-11\" id=\"toc-תרגילים-11\" class=\"nav-link\" data-scroll-target=\"#תרגילים-11\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"},{"file":"02-Sequences.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#סדרות\" id=\"toc-סדרות\" class=\"nav-link active\" data-scroll-target=\"#סדרות\">\u003cspan class=\"header-section-number\">2.1\u003c/span> סדרות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים\" id=\"toc-תרגילים\" class=\"nav-link\" data-scroll-target=\"#תרגילים\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#גבול-של-סדרה\" id=\"toc-גבול-של-סדרה\" class=\"nav-link\" data-scroll-target=\"#גבול-של-סדרה\">\u003cspan class=\"header-section-number\">2.2\u003c/span> גבול של סדרה\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#שאיפה-לאינסוף\" id=\"toc-שאיפה-לאינסוף\" class=\"nav-link\" data-scroll-target=\"#שאיפה-לאינסוף\">שאיפה לאינסוף\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מה-עושים-עם-גבול\" id=\"toc-מה-עושים-עם-גבול\" class=\"nav-link\" data-scroll-target=\"#מה-עושים-עם-גבול\">מה עושים עם גבול\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-1\" id=\"toc-תרגילים-1\" class=\"nav-link\" data-scroll-target=\"#תרגילים-1\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#סדרות-סטנדרטיות\" id=\"toc-סדרות-סטנדרטיות\" class=\"nav-link\" data-scroll-target=\"#סדרות-סטנדרטיות\">\u003cspan class=\"header-section-number\">2.3\u003c/span> סדרות סטנדרטיות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-2\" id=\"toc-תרגילים-2\" class=\"nav-link\" data-scroll-target=\"#תרגילים-2\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#חשבון-גבולות-סנדוויץ-והשוואה\" id=\"toc-חשבון-גבולות-סנדוויץ-והשוואה\" class=\"nav-link\" data-scroll-target=\"#חשבון-גבולות-סנדוויץ-והשוואה\">\u003cspan class=\"header-section-number\">2.4\u003c/span> חשבון גבולות, סנדוויץ’ והשוואה\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#כלל-הסנדוויץ\" id=\"toc-כלל-הסנדוויץ\" class=\"nav-link\" data-scroll-target=\"#כלל-הסנדוויץ\">כלל הסנדוויץ’\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#השוואה\" id=\"toc-השוואה\" class=\"nav-link\" data-scroll-target=\"#השוואה\">השוואה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-3\" id=\"toc-תרגילים-3\" class=\"nav-link\" data-scroll-target=\"#תרגילים-3\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#קיום-ואי-קיום-של-גבול\" id=\"toc-קיום-ואי-קיום-של-גבול\" class=\"nav-link\" data-scroll-target=\"#קיום-ואי-קיום-של-גבול\">\u003cspan class=\"header-section-number\">2.5\u003c/span> קיום ואי-קיום של גבול\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#סדרות-מונוטוניות\" id=\"toc-סדרות-מונוטוניות\" class=\"nav-link\" data-scroll-target=\"#סדרות-מונוטוניות\">סדרות מונוטוניות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#המספר-e\" id=\"toc-המספר-e\" class=\"nav-link\" data-scroll-target=\"#המספר-e\">המספר e\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מתי-אין-גבול\" id=\"toc-מתי-אין-גבול\" class=\"nav-link\" data-scroll-target=\"#מתי-אין-גבול\">מתי אין גבול\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-4\" id=\"toc-תרגילים-4\" class=\"nav-link\" data-scroll-target=\"#תרגילים-4\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"},{"file":"index.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#פתח-דבר\" id=\"toc-פתח-דבר\" class=\"nav-link active\" data-scroll-target=\"#פתח-דבר\">פתח דבר\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#על-הקורס\" id=\"toc-על-הקורס\" class=\"nav-link\" data-scroll-target=\"#על-הקורס\">על הקורס\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#איך-לקרוא-את-המערכים\" id=\"toc-איך-לקרוא-את-המערכים\" class=\"nav-link\" data-scroll-target=\"#איך-לקרוא-את-המערכים\">איך לקרוא את המערכים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תוכנית-הקורס\" id=\"toc-תוכנית-הקורס\" class=\"nav-link\" data-scroll-target=\"#תוכנית-הקורס\">תוכנית הקורס\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מקורות\" id=\"toc-מקורות\" class=\"nav-link\" data-scroll-target=\"#מקורות\">מקורות\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"}]</script>
+<script id="book-toc-data" type="application/json">[{"file":"01-Introduction.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#מערכות-המספרים-מהטבעיים-אל-הממשיים\" id=\"toc-מערכות-המספרים-מהטבעיים-אל-הממשיים\" class=\"nav-link active\" data-scroll-target=\"#מערכות-המספרים-מהטבעיים-אל-הממשיים\">\u003cspan class=\"header-section-number\">1.1\u003c/span> מערכות המספרים: מהטבעיים אל הממשיים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#ספירה-המספרים-הטבעיים-השלמים-והרציונליים\" id=\"toc-ספירה-המספרים-הטבעיים-השלמים-והרציונליים\" class=\"nav-link\" data-scroll-target=\"#ספירה-המספרים-הטבעיים-השלמים-והרציונליים\">ספירה: המספרים הטבעיים, השלמים והרציונליים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מדידה-המספרים-האי-רציונליים\" id=\"toc-מדידה-המספרים-האי-רציונליים\" class=\"nav-link\" data-scroll-target=\"#מדידה-המספרים-האי-רציונליים\">מדידה: המספרים האי-רציונליים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הישר-הממשי\" id=\"toc-הישר-הממשי\" class=\"nav-link\" data-scroll-target=\"#הישר-הממשי\">הישר הממשי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים\" id=\"toc-תרגילים\" class=\"nav-link\" data-scroll-target=\"#תרגילים\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#קבוצות-וקטעים\" id=\"toc-קבוצות-וקטעים\" class=\"nav-link\" data-scroll-target=\"#קבוצות-וקטעים\">\u003cspan class=\"header-section-number\">1.2\u003c/span> קבוצות וקטעים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#רישום-של-קבוצות\" id=\"toc-רישום-של-קבוצות\" class=\"nav-link\" data-scroll-target=\"#רישום-של-קבוצות\">רישום של קבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#שוויון-קבוצות\" id=\"toc-שוויון-קבוצות\" class=\"nav-link\" data-scroll-target=\"#שוויון-קבוצות\">שוויון קבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הכלה\" id=\"toc-הכלה\" class=\"nav-link\" data-scroll-target=\"#הכלה\">הכלה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#פעולות-על-קבוצות\" id=\"toc-פעולות-על-קבוצות\" class=\"nav-link\" data-scroll-target=\"#פעולות-על-קבוצות\">פעולות על קבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#קטעים\" id=\"toc-קטעים\" class=\"nav-link\" data-scroll-target=\"#קטעים\">קטעים\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#סרטוט-קטעים\" id=\"toc-סרטוט-קטעים\" class=\"nav-link\" data-scroll-target=\"#סרטוט-קטעים\">סרטוט קטעים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-1\" id=\"toc-תרגילים-1\" class=\"nav-link\" data-scroll-target=\"#תרגילים-1\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#ערך-מוחלט\" id=\"toc-ערך-מוחלט\" class=\"nav-link\" data-scroll-target=\"#ערך-מוחלט\">\u003cspan class=\"header-section-number\">1.3\u003c/span> ערך מוחלט\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#כללי-אי-שוויונים\" id=\"toc-כללי-אי-שוויונים\" class=\"nav-link\" data-scroll-target=\"#כללי-אי-שוויונים\">כללי אי-שוויונים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#ערך-מוחלט-מרחק-וקטעים\" id=\"toc-ערך-מוחלט-מרחק-וקטעים\" class=\"nav-link\" data-scroll-target=\"#ערך-מוחלט-מרחק-וקטעים\">ערך מוחלט, מרחק וקטעים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-2\" id=\"toc-תרגילים-2\" class=\"nav-link\" data-scroll-target=\"#תרגילים-2\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-וגרפים\" id=\"toc-פונקציות-וגרפים\" class=\"nav-link\" data-scroll-target=\"#פונקציות-וגרפים\">\u003cspan class=\"header-section-number\">1.4\u003c/span> פונקציות וגרפים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#המישור-מכפלה-קרטזית\" id=\"toc-המישור-מכפלה-קרטזית\" class=\"nav-link\" data-scroll-target=\"#המישור-מכפלה-קרטזית\">המישור: מכפלה קרטזית\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרף-של-פונקציה\" id=\"toc-הגרף-של-פונקציה\" class=\"nav-link\" data-scroll-target=\"#הגרף-של-פונקציה\">הגרף של פונקציה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציית-הסימן-והערך-השלם\" id=\"toc-פונקציית-הסימן-והערך-השלם\" class=\"nav-link\" data-scroll-target=\"#פונקציית-הסימן-והערך-השלם\">פונקציית הסימן והערך השלם\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מה-אינו-פונקציה\" id=\"toc-מה-אינו-פונקציה\" class=\"nav-link\" data-scroll-target=\"#מה-אינו-פונקציה\">מה אינו פונקציה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תחום-ההגדרה-הטבעי\" id=\"toc-תחום-ההגדרה-הטבעי\" class=\"nav-link\" data-scroll-target=\"#תחום-ההגדרה-הטבעי\">תחום ההגדרה הטבעי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-3\" id=\"toc-תרגילים-3\" class=\"nav-link\" data-scroll-target=\"#תרגילים-3\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-זוגיות-ואי-זוגיות\" id=\"toc-פונקציות-זוגיות-ואי-זוגיות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-זוגיות-ואי-זוגיות\">\u003cspan class=\"header-section-number\">1.5\u003c/span> פונקציות זוגיות ואי-זוגיות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-4\" id=\"toc-תרגילים-4\" class=\"nav-link\" data-scroll-target=\"#תרגילים-4\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הזזה-ומתיחה-של-גרפים\" id=\"toc-הזזה-ומתיחה-של-גרפים\" class=\"nav-link\" data-scroll-target=\"#הזזה-ומתיחה-של-גרפים\">\u003cspan class=\"header-section-number\">1.6\u003c/span> הזזה ומתיחה של גרפים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-5\" id=\"toc-תרגילים-5\" class=\"nav-link\" data-scroll-target=\"#תרגילים-5\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הרכבת-פונקציות\" id=\"toc-הרכבת-פונקציות\" class=\"nav-link\" data-scroll-target=\"#הרכבת-פונקציות\">\u003cspan class=\"header-section-number\">1.7\u003c/span> הרכבת פונקציות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-6\" id=\"toc-תרגילים-6\" class=\"nav-link\" data-scroll-target=\"#תרגילים-6\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פולינומים-ושורשיהם\" id=\"toc-פולינומים-ושורשיהם\" class=\"nav-link\" data-scroll-target=\"#פולינומים-ושורשיהם\">\u003cspan class=\"header-section-number\">1.8\u003c/span> פולינומים ושורשיהם\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-7\" id=\"toc-תרגילים-7\" class=\"nav-link\" data-scroll-target=\"#תרגילים-7\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הפונקציות-הטריגונומטריות\" id=\"toc-הפונקציות-הטריגונומטריות\" class=\"nav-link\" data-scroll-target=\"#הפונקציות-הטריגונומטריות\">\u003cspan class=\"header-section-number\">1.9\u003c/span> הפונקציות הטריגונומטריות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#רדיאנים\" id=\"toc-רדיאנים\" class=\"nav-link\" data-scroll-target=\"#רדיאנים\">רדיאנים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#ההגדרה-הגאומטרית\" id=\"toc-ההגדרה-הגאומטרית\" class=\"nav-link\" data-scroll-target=\"#ההגדרה-הגאומטרית\">ההגדרה הגאומטרית\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מה-רואים-בציור\" id=\"toc-מה-רואים-בציור\" class=\"nav-link\" data-scroll-target=\"#מה-רואים-בציור\">מה רואים בציור\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#ערכים-מיוחדים\" id=\"toc-ערכים-מיוחדים\" class=\"nav-link\" data-scroll-target=\"#ערכים-מיוחדים\">ערכים מיוחדים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרפים\" id=\"toc-הגרפים\" class=\"nav-link\" data-scroll-target=\"#הגרפים\">הגרפים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#טנגנס\" id=\"toc-טנגנס\" class=\"nav-link\" data-scroll-target=\"#טנגנס\">טנגנס\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הזזה-ומתיחה-של-פונקציות-טריגונומטריות\" id=\"toc-הזזה-ומתיחה-של-פונקציות-טריגונומטריות\" class=\"nav-link\" data-scroll-target=\"#הזזה-ומתיחה-של-פונקציות-טריגונומטריות\">הזזה ומתיחה של פונקציות טריגונומטריות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-8\" id=\"toc-תרגילים-8\" class=\"nav-link\" data-scroll-target=\"#תרגילים-8\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הפונקציה-המעריכית\" id=\"toc-הפונקציה-המעריכית\" class=\"nav-link\" data-scroll-target=\"#הפונקציה-המעריכית\">\u003cspan class=\"header-section-number\">1.10\u003c/span> הפונקציה המעריכית\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#חזקות-עם-מעריך-שאינו-טבעי\" id=\"toc-חזקות-עם-מעריך-שאינו-טבעי\" class=\"nav-link\" data-scroll-target=\"#חזקות-עם-מעריך-שאינו-טבעי\">חזקות עם מעריך שאינו טבעי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרפים-1\" id=\"toc-הגרפים-1\" class=\"nav-link\" data-scroll-target=\"#הגרפים-1\">הגרפים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-9\" id=\"toc-תרגילים-9\" class=\"nav-link\" data-scroll-target=\"#תרגילים-9\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-הפוכות\" id=\"toc-פונקציות-הפוכות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-הפוכות\">\u003cspan class=\"header-section-number\">1.11\u003c/span> פונקציות הפוכות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-10\" id=\"toc-תרגילים-10\" class=\"nav-link\" data-scroll-target=\"#תרגילים-10\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-נוספות\" id=\"toc-פונקציות-נוספות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-נוספות\">\u003cspan class=\"header-section-number\">1.12\u003c/span> פונקציות נוספות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#לוגריתמים\" id=\"toc-לוגריתמים\" class=\"nav-link\" data-scroll-target=\"#לוגריתמים\">לוגריתמים\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#חוקי-הלוגריתמים\" id=\"toc-חוקי-הלוגריתמים\" class=\"nav-link\" data-scroll-target=\"#חוקי-הלוגריתמים\">חוקי הלוגריתמים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרף\" id=\"toc-הגרף\" class=\"nav-link\" data-scroll-target=\"#הגרף\">הגרף\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#חזקות-ושורשים\" id=\"toc-חזקות-ושורשים\" class=\"nav-link\" data-scroll-target=\"#חזקות-ושורשים\">חזקות ושורשים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-רציונליות\" id=\"toc-פונקציות-רציונליות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-רציונליות\">פונקציות רציונליות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הפונקציות-הטריגונומטריות-ההפוכות\" id=\"toc-הפונקציות-הטריגונומטריות-ההפוכות\" class=\"nav-link\" data-scroll-target=\"#הפונקציות-הטריגונומטריות-ההפוכות\">הפונקציות הטריגונומטריות ההפוכות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-11\" id=\"toc-תרגילים-11\" class=\"nav-link\" data-scroll-target=\"#תרגילים-11\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"},{"file":"02-Sequences.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#סדרות\" id=\"toc-סדרות\" class=\"nav-link active\" data-scroll-target=\"#סדרות\">\u003cspan class=\"header-section-number\">2.1\u003c/span> סדרות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים\" id=\"toc-תרגילים\" class=\"nav-link\" data-scroll-target=\"#תרגילים\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#גבול-של-סדרה\" id=\"toc-גבול-של-סדרה\" class=\"nav-link\" data-scroll-target=\"#גבול-של-סדרה\">\u003cspan class=\"header-section-number\">2.2\u003c/span> גבול של סדרה\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#שאיפה-לאינסוף\" id=\"toc-שאיפה-לאינסוף\" class=\"nav-link\" data-scroll-target=\"#שאיפה-לאינסוף\">שאיפה לאינסוף\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מה-עושים-עם-גבול\" id=\"toc-מה-עושים-עם-גבול\" class=\"nav-link\" data-scroll-target=\"#מה-עושים-עם-גבול\">מה עושים עם גבול\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-1\" id=\"toc-תרגילים-1\" class=\"nav-link\" data-scroll-target=\"#תרגילים-1\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#סדרות-סטנדרטיות\" id=\"toc-סדרות-סטנדרטיות\" class=\"nav-link\" data-scroll-target=\"#סדרות-סטנדרטיות\">\u003cspan class=\"header-section-number\">2.3\u003c/span> סדרות סטנדרטיות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-2\" id=\"toc-תרגילים-2\" class=\"nav-link\" data-scroll-target=\"#תרגילים-2\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#חשבון-גבולות-סנדוויץ-והשוואה\" id=\"toc-חשבון-גבולות-סנדוויץ-והשוואה\" class=\"nav-link\" data-scroll-target=\"#חשבון-גבולות-סנדוויץ-והשוואה\">\u003cspan class=\"header-section-number\">2.4\u003c/span> חשבון גבולות, סנדוויץ’ והשוואה\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#כלל-הסנדוויץ\" id=\"toc-כלל-הסנדוויץ\" class=\"nav-link\" data-scroll-target=\"#כלל-הסנדוויץ\">כלל הסנדוויץ’\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#השוואה\" id=\"toc-השוואה\" class=\"nav-link\" data-scroll-target=\"#השוואה\">השוואה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-3\" id=\"toc-תרגילים-3\" class=\"nav-link\" data-scroll-target=\"#תרגילים-3\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#קיום-ואי-קיום-של-גבול\" id=\"toc-קיום-ואי-קיום-של-גבול\" class=\"nav-link\" data-scroll-target=\"#קיום-ואי-קיום-של-גבול\">\u003cspan class=\"header-section-number\">2.5\u003c/span> קיום ואי-קיום של גבול\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#סדרות-מונוטוניות\" id=\"toc-סדרות-מונוטוניות\" class=\"nav-link\" data-scroll-target=\"#סדרות-מונוטוניות\">סדרות מונוטוניות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#המספר-e\" id=\"toc-המספר-e\" class=\"nav-link\" data-scroll-target=\"#המספר-e\">המספר e\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מתי-אין-גבול\" id=\"toc-מתי-אין-גבול\" class=\"nav-link\" data-scroll-target=\"#מתי-אין-גבול\">מתי אין גבול\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-4\" id=\"toc-תרגילים-4\" class=\"nav-link\" data-scroll-target=\"#תרגילים-4\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"},{"file":"index.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#פתח-דבר\" id=\"toc-פתח-דבר\" class=\"nav-link active\" data-scroll-target=\"#פתח-דבר\">פתח דבר\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#מקורות\" id=\"toc-מקורות\" class=\"nav-link\" data-scroll-target=\"#מקורות\">מקורות\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"}]</script>
 </head>
 
 <body class="nav-sidebar floating quarto-light">
@@ -986,7 +1053,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./01-Introduction.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">הרצאה 1: מבוא — מספרים ממשיים ופונקציות</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">מספרים ממשיים ופונקציות</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -1059,10 +1126,7 @@ window.Quarto = {
 
 <section id="סדרות" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="סדרות"><span class="header-section-number">2.1</span> סדרות</h2>
-<div class="lead">
-<p><strong>מה עושים כאן?</strong> נגדיר מהי סדרה, נראה שתי דרכים לתאר אותה, ונכיר כמה סדרות מפורסמות.</p>
-</div>
-<p>בהרצאה 1 ראינו ש-<span class="math inline">\(\sqrt{2}\)</span> אינו רציונלי, ולכן הכתיבה העשרונית שלו לא נגמרת. אפשר רק לקרב אותו, ספרה אחר ספרה:</p>
+<p>בפרק 1 ראינו ש-<span class="math inline">\(\sqrt{2}\)</span> אינו רציונלי, ולכן הכתיבה העשרונית שלו לא נגמרת. אפשר רק לקרב אותו, ספרה אחר ספרה:</p>
 <p><span class="math display">\[1, \quad 1.4, \quad 1.41, \quad 1.414, \quad 1.4142, \quad \ldots\]</span></p>
 <p>רשימה כזו, שיש בה סדר ואין לה סוף, היא סדרה.</p>
 <div id="box-def-sequence" class="thmbox thmbox-definition" title="סדרה">
@@ -1070,7 +1134,7 @@ window.Quarto = {
 <p><span class="term"><strong>סדרה</strong></span> היא רשימה אינסופית ומסודרת של מספרים ממשיים:</p>
 <p><span class="math display">\[a_1, \quad a_2, \quad a_3, \quad \ldots\]</span></p>
 <p>המספר <span class="math inline">\(a_n\)</span> נקרא <span class="term"><strong>האיבר</strong></span> שבמקום <span class="math inline">\(,n\)</span> ו-<span class="math inline">\(n\)</span> נקרא <span class="term"><strong>האינדקס</strong></span>. נסמן את הסדרה כולה ב-<span class="math inline">\(a_n\)</span> או ב-<span class="math inline">\(.(a_n)\)</span></p>
-<p>במונחים של הרצאה 1: סדרה היא פונקציה שתחום ההגדרה שלה הוא <span class="math inline">\(,\mathbb{N}\)</span> ו-<span class="math inline">\(a_n\)</span> הוא הערך שלה ב-<span class="math inline">\(.n\)</span></p>
+<p>במונחים של פרק 1: סדרה היא פונקציה שתחום ההגדרה שלה הוא <span class="math inline">\(,\mathbb{N}\)</span> ו-<span class="math inline">\(a_n\)</span> הוא הערך שלה ב-<span class="math inline">\(.n\)</span></p>
 </div>
 <div class="thmbox thmbox-key-point thmicon-idea" data-icon="idea" title="שתי דרכים לתאר סדרה">
 <p><strong>חשוב לזכור — שתי דרכים לתאר סדרה.</strong></p>
@@ -1106,7 +1170,7 @@ window.Quarto = {
 </div>
 <div id="box-exm-seq-terms" class="thmbox thmbox-example" title="מחשבים איברים">
 <p><strong>דוגמה 2.1.3 — מחשבים איברים.</strong></p>
-<p><span>(שבר כותבים עם קו נטוי, למשל <code>3/2</code>. חזקה כותבים עם <code>^</code>, למשל <code>2^(n-1)</code>. כמה איברים כותבים מופרדים בפסיקים, למשל <code>1, 2, 3</code>.)</span></p>
+<p>כתבו את האיברים מופרדים בפסיקים.</p>
 <div class="fill">
 <p><strong>(א)</strong> הסדרה <span class="math inline">\(a_n = \frac{n + 1}{n}\)</span></p>
 <p><span class="fill-ltr"><span class="math inline">\(a_1 =\)</span> <span class="blank" data-ans="2"><span class="math inline">\(2\)</span></span></span>, <span class="fill-ltr"><span class="math inline">\(a_2 =\)</span> <span class="blank" data-ans="3/2"><span class="math inline">\(\frac{3}{2}\)</span></span></span>, <span class="fill-ltr"><span class="math inline">\(a_{10} =\)</span> <span class="blank" data-ans="11/10"><span class="math inline">\(\frac{11}{10}\)</span></span></span></p>
@@ -1252,9 +1316,6 @@ window.Quarto = {
 </section>
 <section id="גבול-של-סדרה" class="level2" data-number="2.2">
 <h2 data-number="2.2" class="anchored" data-anchor-id="גבול-של-סדרה"><span class="header-section-number">2.2</span> גבול של סדרה</h2>
-<div class="lead">
-<p><strong>מה עושים כאן?</strong> נגדיר מה פירוש “הסדרה מתקרבת למספר”, ונראה סדרות שמתקרבות לגבול וסדרות שלא.</p>
-</div>
 <p>הקירובים העשרוניים מתקרבים אל <span class="math inline">\(\sqrt{2}\)</span> כמה שרוצים, ואילו <span class="math inline">\((-1)^n\)</span> קופצת בין <span class="math inline">\(-1\)</span> ל-<span class="math inline">\(1\)</span> ולא מתייצבת. במילים: <span class="math inline">\(a_n\)</span> מתקרבת ל-<span class="math inline">\(L\)</span> אם <span class="math inline">\(a_n\)</span> קרוב ל-<span class="math inline">\(L\)</span> כמה שרוצים, בתנאי ש-<span class="math inline">\(n\)</span> גדול מספיק.</p>
 <p>כדי לבדוק “קרוב כמה שרוצים” מדברים על <span class="term"><strong>שגיאה</strong></span>: המרחק <span class="math inline">\(|a_n - L|\)</span> בין האיבר לגבול. בוחרים <span class="term"><strong>שגיאה מותרת</strong></span>, מספר חיובי <span class="math inline">\(\varepsilon\)</span> (למשל <span class="math inline">\(0.1\)</span> או <span class="math inline">\(0.001\)</span>), וצריך להראות שממקום מסוים והלאה השגיאה של <strong>כל</strong> האיברים קטנה מ-<span class="math inline">\(.\varepsilon\)</span></p>
 <div id="box-def-limit" class="thmbox thmbox-definition" title="גבול של סדרה">
@@ -1299,7 +1360,7 @@ window.Quarto = {
 </div>
 <div class="thmbox thmbox-key-point thmicon-idea" data-icon="idea" title="חזקה עם מעריך אי-רציונלי">
 <p><strong>חשוב לזכור — חזקה עם מעריך אי-רציונלי.</strong></p>
-<p>בהרצאה 1 דחינו את ההגדרה של חזקה כמו <span class="math inline">\(.2^{\sqrt{2}}\)</span> עכשיו אפשר להשלים אותה: לוקחים את הקירובים העשרוניים של <span class="math inline">\(,\sqrt{2}\)</span> ואת החזקות שלהם, <span class="math inline">\(2^{1}\)</span> ו-<span class="math inline">\(2^{1.4}\)</span> ו-<span class="math inline">\(2^{1.41}\)</span> וכן הלאה. כל אחת מהן היא חזקה עם מעריך רציונלי, שכבר הגדרנו. הסדרה הזו מתכנסת, ו-<span class="math inline">\(2^{\sqrt{2}}\)</span> הוא הגבול שלה, בערך <span class="math inline">\(.2.665\)</span></p>
+<p>בפרק 1 דחינו את ההגדרה של חזקה כמו <span class="math inline">\(.2^{\sqrt{2}}\)</span> עכשיו אפשר להשלים אותה: לוקחים את הקירובים העשרוניים של <span class="math inline">\(,\sqrt{2}\)</span> ואת החזקות שלהם, <span class="math inline">\(2^{1}\)</span> ו-<span class="math inline">\(2^{1.4}\)</span> ו-<span class="math inline">\(2^{1.41}\)</span> וכן הלאה. כל אחת מהן היא חזקה עם מעריך רציונלי, שכבר הגדרנו. הסדרה הזו מתכנסת, ו-<span class="math inline">\(2^{\sqrt{2}}\)</span> הוא הגבול שלה, בערך <span class="math inline">\(.2.665\)</span></p>
 </div>
 <div class="thmbox thmbox-self-check">
 <p><strong>בדיקה עצמית.</strong></p>
@@ -1518,9 +1579,6 @@ window.Quarto = {
 </section>
 <section id="סדרות-סטנדרטיות" class="level2" data-number="2.3">
 <h2 data-number="2.3" class="anchored" data-anchor-id="סדרות-סטנדרטיות"><span class="header-section-number">2.3</span> סדרות סטנדרטיות</h2>
-<div class="lead">
-<p><strong>מה עושים כאן?</strong> את הגבולות של כמה סדרות פשוטות כדאי לזכור בעל פה. הן אבני הבניין של כל חישוב: מהן, בעזרת חשבון הגבולות, נחשב גבולות של סדרות מסובכות יותר.</p>
-</div>
 <div id="box-thm-standard" class="thmbox thmbox-theorem" title="גבולות של סדרות סטנדרטיות">
 <p><strong>משפט 2.3.1 — גבולות של סדרות סטנדרטיות.</strong></p>
 <ol type="1">
@@ -1563,7 +1621,6 @@ window.Quarto = {
 </div>
 <div id="box-exm-standard" class="thmbox thmbox-example" title="גבולות סטנדרטיים">
 <p><strong>דוגמה 2.3.2 — גבולות סטנדרטיים.</strong></p>
-<p><span>(את <span class="math inline">\(\infty\)</span> כותבים <code>inf</code>.)</span></p>
 <div class="fill">
 <p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\((0.9)^n \to\)</span> <span class="blank" data-ans="0"><span class="math inline">\(0\)</span></span></span></p>
 <p><strong>(ב)</strong> <span class="fill-ltr"><span class="math inline">\(\left(-\frac{1}{3}\right)^n \to\)</span> <span class="blank" data-ans="0"><span class="math inline">\(0\)</span></span></span></p>
@@ -1673,9 +1730,6 @@ window.Quarto = {
 </section>
 <section id="חשבון-גבולות-סנדוויץ-והשוואה" class="level2" data-number="2.4">
 <h2 data-number="2.4" class="anchored" data-anchor-id="חשבון-גבולות-סנדוויץ-והשוואה"><span class="header-section-number">2.4</span> חשבון גבולות, סנדוויץ’ והשוואה</h2>
-<div class="lead">
-<p><strong>מה עושים כאן?</strong> נחשב גבולות של סכומים, מכפלות ומנות בעזרת הסדרות הסטנדרטיות, נראה מתי זה לא עובד, ונכיר שני כלים נוספים: כלל הסנדוויץ’ והשוואה בין סדרות.</p>
-</div>
 <div id="box-thm-limit-arithmetic" class="thmbox thmbox-theorem" title="חשבון גבולות">
 <p><strong>משפט 2.4.1 — חשבון גבולות.</strong></p>
 <p>אם <span class="math inline">\(a_n \to A\)</span> ו-<span class="math inline">\(,b_n \to B\)</span> כאשר <span class="math inline">\(A\)</span> ו-<span class="math inline">\(B\)</span> מספרים, אז לכל מספר <span class="math inline">\(c\)</span> ולכל <span class="math inline">\(k\)</span> טבעי:</p>
@@ -1720,7 +1774,7 @@ window.Quarto = {
 </div>
 <div id="box-exm-lim-rational" class="thmbox thmbox-example" title="חשבון גבולות, צעד אחר צעד">
 <p><strong>דוגמה 2.4.2 — חשבון גבולות, צעד אחר צעד.</strong></p>
-<p>חשבו את הגבולות. <span>(שבר כותבים עם קו נטוי; את <span class="math inline">\(\frac{1}{n^2}\)</span> כותבים <code>1/n^2</code>, ואת <span class="math inline">\(\infty\)</span> כותבים <code>inf</code>.)</span></p>
+<p>חשבו את הגבולות.</p>
 <p><strong>(א)</strong> <span class="math inline">\(\lim\limits_{n\to\infty} \frac{3n^2 + 1}{n^2 + 4n}\)</span></p>
 <div class="derive" data-limit="n" start="(3n^2+1)/(n^2+4n)">
 <div class="step" data-line="(3+[1/n^2])/(1+[4/n])">
@@ -1872,6 +1926,10 @@ window.Quarto = {
 <p>בסעיף (ב): לכל מספר <span class="math inline">\(M\)</span> יש מקום שממנו והלאה <span class="math inline">\(,a_n &gt; M\)</span> ויש מקום שממנו והלאה <span class="math inline">\(.b_n \ge a_n\)</span> מהמאוחר מבין שני המקומות <span class="math inline">\(,b_n \ge a_n &gt; M\)</span> כלומר גם <span class="math inline">\(b_n\)</span> גדולים מ-<span class="math inline">\(.M\)</span> סעיף (ג) הוא אותו נימוק בכיוון ההפוך.</p>
 </div>
 </details>
+<div class="thmbox thmbox-terminology" title="חזק וחלש">
+<p><strong>מונחים — חזק וחלש.</strong></p>
+<p>אי־שוויון <strong>חזק</strong> (<span class="math inline">\(&lt;\)</span> או <span class="math inline">\(&gt;\)</span>) אינו מתיר שוויון; אי־שוויון <strong>חלש</strong> (<span class="math inline">\(\le\)</span> או <span class="math inline">\(\ge\)</span>) מתיר אותו. במעבר לגבולות ייתכן שהבדל בין האיברים ייעלם.</p>
+</div>
 <div class="thmbox thmbox-warning" title="מה ההשוואה לא אומרת">
 <p><strong>שימו לב — מה ההשוואה לא אומרת.</strong></p>
 <ul>
@@ -2072,9 +2130,6 @@ window.Quarto = {
 </section>
 <section id="קיום-ואי-קיום-של-גבול" class="level2" data-number="2.5">
 <h2 data-number="2.5" class="anchored" data-anchor-id="קיום-ואי-קיום-של-גבול"><span class="header-section-number">2.5</span> קיום ואי-קיום של גבול</h2>
-<div class="lead">
-<p><strong>מה עושים כאן?</strong> נכיר כלים לשתי המשימות הנוספות: להראות שיש גבול גם כשאי אפשר לחשב אותו, ולהראות שאין גבול.</p>
-</div>
 <section id="סדרות-מונוטוניות" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="סדרות-מונוטוניות">סדרות מונוטוניות</h3>
 <p>סדרה שעולה כל הזמן, אבל אף פעם לא עוברת מספר מסוים, חייבת להתייצב ליד מספר כלשהו. כדי לומר את זה במדויק נגדיר:</p>
@@ -2093,7 +2148,7 @@ window.Quarto = {
 </div>
 <div id="box-exm-monotone" class="thmbox thmbox-example" title="עולה או יורדת?">
 <p><strong>דוגמה 2.5.2 — עולה או יורדת?</strong></p>
-<p><strong>(א)</strong> <span class="math inline">\(a_n = 3 - \frac{1}{n}\)</span> <span>(שבר כותבים עם קו נטוי, למשל <code>2/(n+3)</code>.)</span></p>
+<p><strong>(א)</strong> <span class="math inline">\(a_n = 3 - \frac{1}{n}\)</span></p>
 <div class="fill">
 <div class="eqline">
 <p><span class="fill-ltr"><span class="math inline">\(a_{n+1} - a_n =\)</span> <span class="blank" data-ans="1/(n(n+1))" data-vars="n" data-w="12"><span class="math inline">\(\frac{1}{n(n+1)}\)</span></span></span></p>
@@ -2197,7 +2252,7 @@ window.Quarto = {
 </div>
 <div id="box-exm-e-arith" class="thmbox thmbox-example" title="חשבון גבולות עם $e$">
 <p><strong>דוגמה 2.5.6 — חשבון גבולות עם <span class="math inline">\(e\)</span>.</strong></p>
-<p>חשבו את <span class="math inline">\(.\lim\limits_{n\to\infty} \left(3\left(1 + \frac{1}{n}\right)^n - \frac{2}{n}\right)\)</span> <span>(את <span class="math inline">\(e\)</span> כותבים <code>e</code>, למשל <code>5e</code>.)</span></p>
+<p>חשבו את <span class="math inline">\(.\lim\limits_{n\to\infty} \left(3\left(1 + \frac{1}{n}\right)^n - \frac{2}{n}\right)\)</span></p>
 <div class="derive" data-limit="n" start="3(1+1/n)^n-2/n">
 <div class="step" data-line="3[e]-[0]">
 <p>מחליפים כל סדרה סטנדרטית בגבול שלה, וגם את <span class="math inline">\(\left(1 + \frac{1}{n}\right)^n\)</span> ב-<span class="math inline">\(.e\)</span></p>
@@ -2355,7 +2410,6 @@ window.Quarto = {
 </div>
 <div id="box-q-e-limits" class="thmbox thmbox-question" title="גבולות עם $e$">
 <p><strong>שאלה 2.5.10 — גבולות עם <span class="math inline">\(e\)</span>.</strong></p>
-<p><span>(את <span class="math inline">\(e\)</span> כותבים <code>e</code>, למשל <code>e/2</code> או <code>5e</code>.)</span></p>
 <div class="fill">
 <p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\(\lim\limits_{n\to\infty} 2\left(1 + \frac{1}{n}\right)^n =\)</span> <span class="blank" data-ans="2e"><span class="math inline">\(2e\)</span></span></span></p>
 <p><strong>(ב)</strong> <span class="fill-ltr"><span class="math inline">\(\lim\limits_{n\to\infty} \left(1 + \frac{1}{n}\right)^{2n} =\)</span> <span class="blank" data-ans="e^2"><span class="math inline">\(e^2\)</span></span></span></p>
@@ -2454,6 +2508,68 @@ window.Quarto = {
 </div>
 </div>
 </div>
+<details class="thmcollapse thmfoldable"><summary>מילון מונחים — סדרות וגבולות</summary>
+<div class="foldable" title="מילון מונחים — סדרות וגבולות">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">מונח</th>
+<th style="text-align: left;">פירוש</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">איבר / אינדקס</td>
+<td style="text-align: left;"><span class="math inline">\(a_n\)</span> הוא האיבר שבמקום <span class="math inline">\(n\)</span>; <span class="math inline">\(n\)</span> הוא האינדקס.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">רקורסיה</td>
+<td style="text-align: left;">קביעת איברים ראשונים וכלל לחישוב איברים מתוך הקודמים להם.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">מתכנסת / גבול</td>
+<td style="text-align: left;">איברי הסדרה קרובים ככל שנרצה למספר קבוע, החל ממקום מתאים והלאה; המספר הוא הגבול.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">מתבדרת</td>
+<td style="text-align: left;">אינה מתכנסת למספר ממשי. גם סדרה ששואפת לאינסוף מתבדרת.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">שגיאה מותרת, <span class="math inline">\(\varepsilon\)</span></td>
+<td style="text-align: left;">המרחק החיובי שבו אנחנו מוכנים להתרחק מהגבול.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">החל ממקום מסוים</td>
+<td style="text-align: left;">מותר שהטענה לא תתקיים בכמה איברים ראשונים; אחריהם היא מתקיימת תמיד.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">חסומה / חסם</td>
+<td style="text-align: left;">כל האיברים בין שני מספרים קבועים. חסם עליון נמצא מעל כל האיברים או שווה להם; חסם תחתון מתחתם או שווה להם.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">מונוטונית</td>
+<td style="text-align: left;">עולה לאורך הסדרה או יורדת לאורכה; לפי ההגדרה כאן, מותר גם שוויון בין איברים.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">אי־שוויון חזק / חלש</td>
+<td style="text-align: left;">חזק: <span class="math inline">\(&lt;\)</span> או <span class="math inline">\(&gt;\)</span>; חלש: <span class="math inline">\(\le\)</span> או <span class="math inline">\(\ge\)</span>.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">צורה לא מוגדרת</td>
+<td style="text-align: left;">צירוף גבולות כמו <span class="math inline">\(\frac{0}{0}\)</span> שאינו קובע לבדו את התוצאה.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">סנדוויץ׳</td>
+<td style="text-align: left;">סדרה שנמצאת בין שתי סדרות בעלות אותו גבול מתכנסת גם היא אליו.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</details>
 
 
 </section>
@@ -2862,8 +2978,8 @@ window.Quarto = {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./01-Introduction.html" class="pagination-link" aria-label="הרצאה 1: מבוא — מספרים ממשיים ופונקציות">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">הרצאה 1: מבוא — מספרים ממשיים ופונקציות</span></span>
+      <a href="./01-Introduction.html" class="pagination-link" aria-label="מספרים ממשיים ופונקציות">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">מספרים ממשיים ופונקציות</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
