@@ -392,11 +392,11 @@ details.lecture-solution { margin-top: -.4rem; }
 
 /* A small label in front of a hint or a step ("רמז", "צעד 2 מתוך 4"). */
 .solve > .hint::before, .solve > .step::before,
-.fill > .hint::before, .steps > .hint::before {
+.fill > .hint::before, .derive > .hint::before {
   display: inline-block; margin-inline-end: .5rem; padding: 0 .5rem; border-radius: 999px;
   font-size: .85em; font-weight: 700; background: #e2e8f0; color: #334155;
 }
-.solve > .hint::before, .fill > .hint::before, .steps > .hint::before {
+.solve > .hint::before, .fill > .hint::before, .derive > .hint::before {
   content: "רמז"; background: #fde68a; color: #92400e;
 }
 
@@ -433,7 +433,7 @@ details.lecture-solution { margin-top: -.4rem; }
 .solve-bar button.solve-main:hover:not(:disabled), .ix-btn.ix-main:hover:not(:disabled) { background: #4338ca; }
 .solve-bar button.solve-quiet, .ix-btn.ix-quiet { color: #475569; }
 .solve-bar button:focus-visible, .ix-btn:focus-visible, .ix-key:focus-visible,
-.blank-input:focus-visible, .st-in:focus-visible, .st-rule:focus-visible, .ord-card:focus-visible {
+.blank-input:focus-visible, .ord-card:focus-visible {
   outline: 3px solid #f59e0b; outline-offset: 2px;
 }
 
@@ -513,75 +513,41 @@ span.blank.warn .blank-mark { color: #b45309; }
 .ix-preview:empty { display: none; }
 .ix-preview { font-size: 1.05em; color: #1e293b; margin: .25rem 0; }
 .ix-preview.ix-preview-partial { opacity: .5; }
-.proof-step .ix-preview { direction: ltr; text-align: left; }
 .ix-or { margin: 0 .35em; font-weight: 600; }
-.fill > .hint, .steps > .hint {
+.fill > .hint, .derive > .hint {
   margin: .4rem 0; padding: .4rem .7rem; border-radius: 8px;
   border: 1px dashed #d97706; background: #fffbeb;
 }
-.fill > .hint > p:first-child, .steps > .hint > p:first-child { display: inline; }
-.fill > .explain, .steps > .solution, .order > .after {
+.fill > .hint > p:first-child, .derive > .hint > p:first-child { display: inline; }
+.fill > .explain, .order > .after {
   margin: .4rem 0; padding: .4rem .7rem; border-radius: 8px; border: 1px solid #bbf7d0; background: #f0fdf4;
 }
-.steps > .solution::before { content: "פתרון: "; font-weight: 700; color: #166534; }
-.steps > .solution > p:first-child { display: inline; }
-.fill > :last-child, .steps > :last-child { margin-bottom: 0; }
+.fill > :last-child, .derive > :last-child { margin-bottom: 0; }
 
-/* Step builder (.steps): a solution ledger, laid out like the directed proofs of
-   the Ramat Gan notes (their .proof-ledger / .proof-step / .step-compact rules).
-   On top the goal (blue strip) and the starting line; then one fieldset per step.
-   A checked step folds into one line: label | rule | the new line | עריכה. */
-.st-ui { margin: .6rem 0 1.2rem; min-width: 0; }
-.activity-help { margin: .5rem 0 .8rem; font-size: .92rem; }
-.activity-help summary { cursor: pointer; color: #4338ca; }
-.activity-help ol { padding: .7rem 1.7rem .7rem .7rem; background: #f8fafc; border-radius: 8px; }
-.activity-help li + li { margin-top: .5rem; }
-.proof-ledger { border: 1px solid #b7c8d8; border-radius: 7px; padding: .6rem; margin: .6rem 0; background: #fff; min-width: 0; }
-.proof-start { padding: .65rem; border-inline-start: 4px solid #075985; background: #f0f9ff; border-radius: 6px; color: #075985; font-weight: 600; }
-.st-given {
-  display: grid; grid-template-columns: 5.2rem minmax(0, 1fr); column-gap: .5rem; align-items: baseline;
-  padding: .45rem .2rem; border-bottom: 1px solid #dbe3ea;
-}
-.given-label { font-size: .85rem; line-height: 1.5; font-weight: 600; color: #475569; }
-/* The line itself reads left to right (⟺ first), like .proof-formula in Ramat Gan. */
-.st-formula { min-width: 0; overflow-x: auto; overflow-y: hidden; direction: ltr; unicode-bidi: isolate; text-align: left; }
-.proof-step { min-width: 0; margin: .35rem 0; padding: .45rem .7rem .6rem; border: 1px solid #c7d2fe; border-radius: 10px; background: #f8faff; }
-.proof-step > legend { float: none; width: auto; padding: 0 .4rem; margin: 0; font-size: 1.05em; font-weight: 700; color: #581c87; }
-.proof-field { display: grid; gap: .3rem; margin: .3rem 0; font-weight: 600; }
-.proof-rule { width: 100%; min-width: 0; max-width: 100%; min-height: 44px; padding: .4rem; border: 1px solid #94a3b8; border-radius: 8px; background: #fff; font: inherit; }
-.proof-rule:focus-visible { outline: 3px solid #f59e0b; outline-offset: 2px; }
-.st-in {
-  width: 100%; min-width: 0; min-height: 40px; box-sizing: border-box; direction: ltr; text-align: left;
-  padding: .3rem .6rem; border: 1px solid #94a3b8; border-radius: 8px; background: #fff;
-  font: 1.05rem "Cambria Math", "STIX Two Math", "Times New Roman", serif;
-}
-.st-in:focus { border-color: #4f46e5; }
-.st-in[aria-invalid="true"] { border: 2px solid #b91c1c; }
-.proof-step .ix-keys { margin: .35rem 0; }
-.step-compact[hidden], .step-editor[hidden], .proof-qed[hidden], .step-compact-reason[hidden] { display: none !important; }
-/* A checked step: no box, one line with the label at the side. */
-.proof-ledger .step-accepted { border: 0; border-bottom: 1px solid #dbe3ea; border-radius: 0; background: transparent; padding: .3rem .2rem; }
-.proof-ledger .side-labelled > .step-label { display: none; }
-.proof-ledger .side-labelled.step-accepted { display: grid; grid-template-columns: 5.2rem minmax(0, 1fr); column-gap: .5rem; align-items: start; }
-.proof-ledger .side-labelled.step-accepted > legend { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-.proof-ledger .side-labelled.step-accepted > .step-label { display: block; grid-column: 1; grid-row: 1; font-size: .85rem; font-weight: 600; color: #475569; padding-top: .35rem; }
-.proof-ledger .side-labelled.step-accepted > .step-compact { grid-column: 2; grid-row: 1; min-width: 0; }
-/* Physical left/right placement is explicit (as in Ramat Gan): עריכה on the left,
-   then the new line, then the rule in Hebrew. */
-.proof-ledger .step-compact { display: grid; direction: ltr; grid-template-columns: 4.2rem minmax(0, 1fr); align-items: start; gap: .25rem .65rem; font-size: .94rem; }
-.proof-ledger .step-compact > .step-edit { grid-column: 1; grid-row: 1; justify-self: start; margin: 0; direction: rtl; padding: .15rem .5rem; min-height: 32px; font-size: .85rem; }
-.proof-ledger .step-statement { grid-column: 2; grid-row: 1; min-width: 0; }
-.proof-ledger .step-statement > .st-formula { white-space: nowrap; padding: .15rem 0; }
-.proof-ledger .step-compact-reason { grid-column: 2; grid-row: 2; direction: rtl; text-align: right; font-size: .85rem; color: #475569; }
-.proof-ledger .proof-qed { grid-column: 2; grid-row: 3; direction: rtl; justify-self: end; color: #166534; font-weight: 700; }
-/* "או" between two formulas is its own bidi island, so the line keeps the typed order. */
-.st-formula .ix-or { unicode-bidi: isolate; }
-.proof-steps .ix-msg:empty { display: none; }
-.st-controls { margin-top: .5rem; }
+/* Guided derivation (.derive): a worked solution revealed line by line, the way it is
+   written on the board. Each row: the line (LTR, left) and a short note (right). */
+.dv { margin: .6rem 0 1.2rem; padding: .5rem .8rem; border: 1px solid #c7d2fe; border-radius: 10px; background: #f8faff; min-width: 0; }
+.dv-row { display: grid; grid-template-columns: minmax(0, 15rem) minmax(0, 1fr); column-gap: 1rem; align-items: start; padding: .3rem 0; border-bottom: 1px solid #e2e8f0; }
+.dv-row:last-child { border-bottom: 0; }
+.dv-math { grid-column: 2; grid-row: 1; min-width: 0; direction: ltr; text-align: left; }
+.dv-note { grid-column: 1; grid-row: 1; font-size: .9em; color: #475569; padding-top: .25rem; }
+.dv-note > :last-child { margin-bottom: 0; }
+.dv-f { overflow-x: auto; overflow-y: hidden; padding: .1rem 0; font-size: 1.05em; }
+.dv-f .ix-or { unicode-bidi: isolate; margin: 0 .4em; }
+.dv-in { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem .8rem; margin: .25rem 0 .1rem; }
+.dv-in[hidden], .dv-box[hidden], .dv-keys[hidden] { display: none !important; }
+.dv-box { display: inline-flex; align-items: center; gap: .25rem; }
+.dv-lab { font: 1em "Cambria Math", "Times New Roman", serif; color: #3730a3; }
+.dv-input { min-width: 3em; }
+.dv-sign { min-width: 2.2em; min-height: 34px; }
+.dv-check { min-height: 32px; padding: .1rem .7rem; font-size: .9em; }
+.dv-msg { margin: .2rem 0 0; font-size: .9em; direction: rtl; text-align: right; }
+.dv-done .dv-f { color: #0f172a; }
+.dv-keys { margin: .4rem 0 .1rem; }
 @media (max-width: 600px) {
-  .proof-ledger { padding: .35rem; }
-  .st-given, .proof-ledger .side-labelled.step-accepted { grid-template-columns: 3.6rem minmax(0, 1fr); column-gap: .3rem; }
-  .proof-ledger .step-compact > .step-edit { min-height: 44px; }
+  .dv-row { grid-template-columns: minmax(0, 1fr); }
+  .dv-math { grid-column: 1; grid-row: 1; }
+  .dv-note { grid-column: 1; grid-row: 2; padding-top: 0; }
 }
 
 /* References shown in place (assets/interactive.js, ported from the BGU book). */
@@ -622,7 +588,7 @@ a.xref-open { background: #ede9fe; border-radius: 3px; }
 .ord-card > p:first-child { margin-top: 0; }
 .ord-empty { color: #94a3b8; font-style: italic; list-style: none; }
 @media print {
-  .blank-input, .blank-mark, .ix-panel, .st-ui, .ord-ui { display: none !important; }
+  .blank-input, .blank-mark, .ix-panel, .dv-bar, .dv-in, .ord-ui { display: none !important; }
   .blank-answer { display: inline !important; background: transparent; text-decoration: underline; }
   .ix-hidden { display: block !important; }
 }
@@ -1143,7 +1109,7 @@ window.Quarto = {
 <div class="lead">
 <p>בהרצאה הזו נבנה את השפה שבה נשתמש לאורך כל הקורס: המספרים הממשיים, קטעים וערך מוחלט, ובעיקר <strong>פונקציות</strong>. נכיר את המשפחות הבסיסיות של פונקציות: פולינומים, פונקציות טריגונומטריות, הפונקציה המעריכית והלוגריתם, יחד עם פונקציות נוספות, ונלמד איך לבנות מהן פונקציות חדשות בעזרת הזזה, מתיחה, הרכבה והיפוך.</p>
 </div>
-<p><em>ברוב הדוגמאות והשאלות כותבים את התשובה במשבצת ולוחצים “בדיקה”, ובחלקן בונים את הפתרון צעד אחר צעד. איך מקלידים מתמטיקה במשבצת: ראו בפתח דבר.</em></p>
+<p><em>ברוב הדוגמאות והשאלות כותבים את התשובה במשבצת ולוחצים “בדיקה”, ובחלקן חושפים את הפתרון שורה אחר שורה ומשלימים בכל שורה את החסר. איך מקלידים מתמטיקה במשבצת: ראו בפתח דבר.</em></p>
 <section id="מערכות-המספרים-מהטבעיים-אל-הממשיים" class="level2" data-number="1.1">
 <h2 data-number="1.1" class="anchored" data-anchor-id="מערכות-המספרים-מהטבעיים-אל-הממשיים"><span class="header-section-number">1.1</span> מערכות המספרים: מהטבעיים אל הממשיים</h2>
 <div class="lead">
@@ -1641,7 +1607,9 @@ window.Quarto = {
 <p>ספרה אחת אחרי הנקודה היא עשיריות, שתיים מאיות ושלוש אלפיות. אחר כך מצמצמים.</p>
 </div>
 <div class="explain">
-<p><span class="math display">\[\begin{aligned} 0.75 &amp;= \frac{75}{100} = \frac{3}{4} \\ 2.4 &amp;= \frac{24}{10} = \frac{12}{5} \\ -0.125 &amp;= -\frac{125}{1000} = -\frac{1}{8} \end{aligned}\]</span> בשורה הראשונה צמצמנו ב-<span class="math inline">\(,25\)</span> בשנייה ב-<span class="math inline">\(,2\)</span> ובשלישית ב-<span class="math inline">\(.125\)</span></p>
+<p><strong>(א)</strong> שתי ספרות אחרי הנקודה הן מאיות: <span class="math display">\[\begin{aligned} 0.75 &amp;= \frac{75}{100} \\ &amp;= \frac{3}{4} \end{aligned}\]</span> צמצמנו ב-<span class="math inline">\(.25\)</span></p>
+<p><strong>(ב)</strong> ספרה אחת אחרי הנקודה היא עשיריות: <span class="math display">\[\begin{aligned} 2.4 &amp;= \frac{24}{10} \\ &amp;= \frac{12}{5} \end{aligned}\]</span> צמצמנו ב-<span class="math inline">\(.2\)</span></p>
+<p><strong>(ג)</strong> שלוש ספרות אחרי הנקודה הן אלפיות: <span class="math display">\[\begin{aligned} -0.125 &amp;= -\frac{125}{1000} \\ &amp;= -\frac{1}{8} \end{aligned}\]</span> צמצמנו ב-<span class="math inline">\(.125\)</span></p>
 </div>
 </div>
 </div>
@@ -2318,8 +2286,13 @@ window.Quarto = {
 <p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\(\{x \mid -2 &lt; x \le 5\} =\)</span> <span class="blank" data-ans="(-2,5]" form="interval"><span class="math inline">\((-2, 5]\)</span></span></span></p>
 <p><strong>(ב)</strong> <span class="fill-ltr"><span class="math inline">\(\{x \mid x \ge -1\} =\)</span> <span class="blank" data-ans="[-1,inf)" form="interval"><span class="math inline">\([-1, \infty)\)</span></span></span></p>
 <p><strong>(ג)</strong> <span class="fill-ltr"><span class="math inline">\(\{x \mid x &lt; 0\} =\)</span> <span class="blank" data-ans="(-inf,0)" form="interval"><span class="math inline">\((-\infty, 0)\)</span></span></span></p>
-<div class="explain">
+<div class="hint">
 <p>סימן <span class="math inline">\(\le\)</span> או <span class="math inline">\(\ge\)</span> נותן סוגר מרובע, וסימן <span class="math inline">\(&lt;\)</span> או <span class="math inline">\(&gt;\)</span> נותן סוגר עגול. ליד <span class="math inline">\(\infty\)</span> וליד <span class="math inline">\(-\infty\)</span> הסוגר תמיד עגול.</p>
+</div>
+<div class="explain">
+<p><strong>(א)</strong> הקצה <span class="math inline">\(-2\)</span> אינו בקבוצה (הסימן הוא <span class="math inline">\(&lt;\)</span>), ולכן הסוגר שלו עגול. הקצה <span class="math inline">\(5\)</span> בקבוצה (הסימן הוא <span class="math inline">\(\le\)</span>), ולכן הסוגר שלו מרובע.</p>
+<p><strong>(ב)</strong> הקצה <span class="math inline">\(-1\)</span> בקבוצה (הסימן הוא <span class="math inline">\(\ge\)</span>), ולכן הסוגר שלו מרובע. מימין אין קצה: הקטע ממשיך עד <span class="math inline">\(,\infty\)</span> וליד <span class="math inline">\(\infty\)</span> הסוגר תמיד עגול.</p>
+<p><strong>(ג)</strong> הקצה <span class="math inline">\(0\)</span> אינו בקבוצה (הסימן הוא <span class="math inline">\(&lt;\)</span>), ולכן הסוגר שלו עגול. משמאל הקטע מתחיל ב-<span class="math inline">\(,-\infty\)</span> וגם שם הסוגר עגול.</p>
 </div>
 </div>
 </div>
@@ -2540,15 +2513,18 @@ window.Quarto = {
 <div id="box-exm-linear-ineq" class="thmbox thmbox-example" title="פתרון אי-שוויון לינארי">
 <p><strong>דוגמה 1.3.6 — פתרון אי-שוויון לינארי.</strong></p>
 <p>פתרו את <span class="math inline">\(.3 - 2x &lt; 7\)</span></p>
-<div class="steps" start="3-2x<7" data-rules="add|mulpos|mulneg|simplify">
+<div class="derive" start="3-2x<7">
+<div class="step" data-line="-2x<[4]">
+<p>מחסירים <span class="math inline">\(3\)</span> משני האגפים (כלל (א)).</p>
+</div>
+<div class="step" data-line="x [>] [-2]">
+<p>מחלקים את שני האגפים ב-<span class="math inline">\(,-2\)</span> מספר שלילי (כלל (ג)).</p>
+</div>
 <div class="hint">
 <p>מה מפריע ל-<span class="math inline">\(x\)</span> להיות לבד? קודם ה-<span class="math inline">\(,3\)</span> ואחר כך הכפל ב-<span class="math inline">\(.{-}2\)</span></p>
 </div>
 <div class="hint">
 <p>אחרי שנשאר <span class="math inline">\(,-2x &lt; 4\)</span> מחלקים ב-<span class="math inline">\(.{-}2\)</span> מה קורה לכיוון של אי-השוויון?</p>
-</div>
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><strong>נעביר את <span class="math inline">\(3\)</span> לאגף ימין.</strong> לפי כלל (א), נחסר <span class="math inline">\(3\)</span> משני האגפים: <span class="math display">\[\begin{aligned} 3 - 2x - 3 &amp;&lt; 7 - 3 \\ -2x &amp;&lt; 4 \end{aligned}\]</span> <strong>נשאיר את <span class="math inline">\(x\)</span> לבד.</strong> נחלק את שני האגפים ב-<span class="math inline">\(.{-}2\)</span> חילוק ב-<span class="math inline">\(-2\)</span> הוא כפל ב-<span class="math inline">\(,-\frac{1}{2}\)</span> שהוא מספר שלילי, ולכן לפי כלל (ג) <strong>הכיוון מתהפך</strong>: <span class="math display">\[\begin{aligned} \frac{-2x}{-2} &amp;&gt; \frac{4}{-2} \\ x &amp;&gt; -2 \end{aligned}\]</span></p>
 </div>
 </div>
 <div class="fill">
@@ -2618,16 +2594,22 @@ window.Quarto = {
 </div>
 <div id="box-exm-abs-solve" class="thmbox thmbox-example" title="משוואות ואי-שוויונים">
 <p><strong>דוגמה 1.3.8 — משוואות ואי-שוויונים.</strong></p>
-<p><strong>(א)</strong> פתרו את <span class="math inline">\(.|2x - 3| = 5\)</span> כתבו את הפתרון צעד אחר צעד. <span>(ערך מוחלט כותבים בין שני קווים, <code>|2x-3|</code>. בין שתי אפשרויות כותבים “או”, למשל <code>x=1 או x=2</code>. את קבוצת הפתרונות כותבים כרשימה, למשל <code>{1,2}</code>.)</span></p>
-<div class="steps" start="|2x-3|=5" data-rules="abs|add|mulpos|mulneg|simplify">
-<div class="hint">
-<p>לפי השיטה יש שתי אפשרויות: <span class="math inline">\(2x - 3 = 5\)</span> או <span class="math inline">\(.2x - 3 = -5\)</span> כתבו את שתיהן בשורה אחת, עם “או” ביניהן.</p>
+<p><strong>(א)</strong> פתרו את <span class="math inline">\(.|2x - 3| = 5\)</span> <span>(את קבוצת הפתרונות כותבים כרשימה, למשל <code>{1,2}</code>.)</span></p>
+<div class="derive" start="|2x-3|=5">
+<div class="step" data-line="2x-3=[5] או 2x-3=[-5]">
+<p>מפרקים את הערך המוחלט לשתי אפשרויות.</p>
+</div>
+<div class="step" data-line="2x=[8] או 2x=[-2]">
+<p>מוסיפים <span class="math inline">\(3\)</span> לשני האגפים, בשתי האפשרויות.</p>
+</div>
+<div class="step" data-line="x=[4] או x=[-1]">
+<p>מחלקים ב-<span class="math inline">\(.2\)</span></p>
 </div>
 <div class="hint">
-<p>מכאן ממשיכים בשתי האפשרויות יחד: מוסיפים <span class="math inline">\(3\)</span> לשני האגפים בשתיהן, ואחר כך מחלקים ב-<span class="math inline">\(.2\)</span></p>
+<p>לפי השיטה, <span class="math inline">\(|E| = c\)</span> פירושו <span class="math inline">\(E = c\)</span> או <span class="math inline">\(.E = -c\)</span></p>
 </div>
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} 2x - 3 &amp;= 5 &amp; \qquad\qquad 2x - 3 &amp;= -5 \\ 2x &amp;= 8 &amp; 2x &amp;= -2 \\ x &amp;= 4 &amp; x &amp;= -1 \end{aligned}\]</span> בשורה הראשונה פירקנו את הערך המוחלט לשתי אפשרויות, בשנייה הוספנו <span class="math inline">\(3\)</span> לשני האגפים, ובשלישית חילקנו ב-<span class="math inline">\(.2\)</span></p>
+<div class="hint">
+<p>בכל אחת מהאפשרויות פותרים משוואה לינארית רגילה.</p>
 </div>
 </div>
 <div class="fill">
@@ -2636,13 +2618,16 @@ window.Quarto = {
 <p>יש שני פתרונות: <span class="math inline">\(x = 4\)</span> ו-<span class="math inline">\(.x = -1\)</span> בדיקה: <span class="math inline">\(|2 \cdot 4 - 3| = |5| = 5\)</span> ו-<span class="math inline">\(.|2 \cdot (-1) - 3| = |{-}5| = 5\)</span></p>
 </div>
 </div>
-<p><strong>(ב)</strong> פתרו את <span class="math inline">\(.|x - 4| &lt; 3\)</span> כתבו את הפתרון צעד אחר צעד.</p>
-<div class="steps" start="|x-4|<3" data-rules="abs|add|mulpos|mulneg|simplify">
+<p><strong>(ב)</strong> פתרו את <span class="math inline">\(.|x - 4| &lt; 3\)</span></p>
+<div class="derive" start="|x-4|<3">
+<div class="step" data-line="[-3]<x-4<[3]">
+<p>מפרקים את הערך המוחלט: <span class="math inline">\(|E| &lt; c\)</span> פירושו <span class="math inline">\(.{-}c &lt; E &lt; c\)</span></p>
+</div>
+<div class="step" data-line="[1]<x<[7]">
+<p>מוסיפים <span class="math inline">\(4\)</span> לכל שלושת החלקים.</p>
+</div>
 <div class="hint">
 <p>במילים: המרחק של <span class="math inline">\(x\)</span> מ-<span class="math inline">\(4\)</span> קטן מ-<span class="math inline">\(.3\)</span> לפי השיטה, <span class="math inline">\(|E| &lt; c\)</span> פירושו <span class="math inline">\(.{-}c &lt; E &lt; c\)</span></p>
-</div>
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} -3 &amp;&lt; x - 4 &lt; 3 \\ 1 &amp;&lt; x &lt; 7 \end{aligned}\]</span> בשורה הראשונה פירקנו את הערך המוחלט, ובשנייה הוספנו <span class="math inline">\(4\)</span> לכל שלושת החלקים.</p>
 </div>
 </div>
 <div class="fill">
@@ -2652,12 +2637,18 @@ window.Quarto = {
 </div>
 </div>
 <p><strong>(ג)</strong> פתרו את <span class="math inline">\(.|2x + 1| \ge 3\)</span></p>
-<div class="steps" start="|2x+1|>=3" data-rules="abs|add|mulpos|mulneg|simplify">
+<div class="derive" start="|2x+1|>=3">
+<div class="step" data-line="2x+1>=[3] או 2x+1 [<=] [-3]">
+<p>מפרקים את הערך המוחלט לשתי אפשרויות. שימו לב לכיוון באפשרות השנייה.</p>
+</div>
+<div class="step" data-line="2x>=[2] או 2x<=[-4]">
+<p>מחסירים <span class="math inline">\(1\)</span> משני האגפים.</p>
+</div>
+<div class="step" data-line="x>=[1] או x<=[-2]">
+<p>מחלקים ב-<span class="math inline">\(2\)</span> (חיובי, ולכן הכיוון נשמר).</p>
+</div>
 <div class="hint">
 <p>לפי השיטה יש שתי אפשרויות: <span class="math inline">\(2x + 1 \ge 3\)</span> או <span class="math inline">\(.2x + 1 \le -3\)</span> שימו לב שבאפשרות השנייה הכיוון מתהפך.</p>
-</div>
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} 2x + 1 &amp;\ge 3 &amp; \qquad\qquad 2x + 1 &amp;\le -3 \\ 2x &amp;\ge 2 &amp; 2x &amp;\le -4 \\ x &amp;\ge 1 &amp; x &amp;\le -2 \end{aligned}\]</span> בשורה הראשונה פירקנו את הערך המוחלט, בשנייה חיסרנו <span class="math inline">\(1\)</span> משני האגפים, ובשלישית חילקנו ב-<span class="math inline">\(2\)</span> (חיובי, ולכן הכיוון נשמר).</p>
 </div>
 </div>
 <div class="fill">
@@ -2711,7 +2702,7 @@ window.Quarto = {
 <p>ב-(ה): האם <span class="math inline">\(\pi - 4\)</span> חיובי או שלילי? (<span class="math inline">\(\pi \approx 3.14\)</span>.) כתבו תשובה מדויקת, עם <span class="math inline">\(\pi\)</span><span>(בשדה: <code>pi</code> או בכפתור)</span>.</p>
 </div>
 <div class="explain">
-<p><strong>(ב)</strong> <span class="math inline">\(.|3 - 8| = |{-}5| = 5\)</span></p>
+<p><strong>(ב)</strong> <span class="math display">\[\begin{aligned} |3 - 8| &amp;= |{-}5| \\ &amp;= 5 \end{aligned}\]</span></p>
 <p><strong>(ד)</strong> מחשבים מבפנים החוצה: <span class="math inline">\(.\big||{-}3| - 5\big| = |3 - 5| = |{-}2| = 2\)</span></p>
 <p><strong>(ה)</strong> <span class="math inline">\(,\pi &lt; 4\)</span> ולכן <span class="math inline">\(\pi - 4\)</span> שלילי, ומורידים את המינוס: <span class="math inline">\(.|\pi - 4| = -(\pi - 4) = 4 - \pi\)</span></p>
 </div>
@@ -2723,20 +2714,31 @@ window.Quarto = {
 <p><strong>(א)</strong> המרחק בין <span class="math inline">\(-2\)</span> ל-<span class="math inline">\(5\)</span> הוא <span class="blank" data-ans="7"><span class="math inline">\(7\)</span></span></p>
 <p><strong>(ב)</strong> המרחק בין <span class="math inline">\(-6\)</span> לבין <span class="math inline">\(-1\)</span> הוא <span class="blank" data-ans="5"><span class="math inline">\(5\)</span></span></p>
 <p><strong>(ג)</strong> המרחק בין <span class="math inline">\(\frac{1}{2}\)</span> לבין <span class="math inline">\(-\frac{1}{2}\)</span> הוא <span class="blank" data-ans="1"><span class="math inline">\(1\)</span></span></p>
+<div class="hint">
+<p>המרחק בין <span class="math inline">\(a\)</span> ל-<span class="math inline">\(b\)</span> הוא <span class="math inline">\(.|a - b|\)</span></p>
+</div>
 <div class="explain">
-<p>המרחק בין <span class="math inline">\(a\)</span> ל-<span class="math inline">\(b\)</span> הוא <span class="math inline">\(:|a - b|\)</span> <span class="math display">\[\begin{aligned} |{-}2 - 5| &amp;= |{-}7| = 7 \\ |{-}6 - (-1)| &amp;= |{-}5| = 5 \\ \left|\tfrac{1}{2} - \left(-\tfrac{1}{2}\right)\right| &amp;= |1| = 1 \end{aligned}\]</span></p>
+<p><strong>(א)</strong> <span class="math display">\[\begin{aligned} |{-}2 - 5| &amp;= |{-}7| \\ &amp;= 7 \end{aligned}\]</span></p>
+<p><strong>(ב)</strong> <span class="math display">\[\begin{aligned} |{-}6 - (-1)| &amp;= |{-}6 + 1| \\ &amp;= |{-}5| \\ &amp;= 5 \end{aligned}\]</span></p>
+<p><strong>(ג)</strong> <span class="math display">\[\begin{aligned} \left|\tfrac{1}{2} - \left(-\tfrac{1}{2}\right)\right| &amp;= \left|\tfrac{1}{2} + \tfrac{1}{2}\right| \\ &amp;= |1| \\ &amp;= 1 \end{aligned}\]</span></p>
 </div>
 </div>
 </div>
 <div id="box-q-ineq-steps-1" class="thmbox thmbox-question" title="אי-שוויון, צעד אחר צעד">
 <p><strong>שאלה 1.3.11 — אי-שוויון, צעד אחר צעד.</strong></p>
 <p>פתרו את <span class="math inline">\(.5x - 4 \le 2x + 8\)</span></p>
-<div class="steps" start="5x-4<=2x+8" data-rules="add|mulpos|mulneg|simplify">
+<div class="derive" start="5x-4<=2x+8">
+<div class="step" data-line="3x-4<=[8]">
+<p>מחסירים <span class="math inline">\(2x\)</span> משני האגפים.</p>
+</div>
+<div class="step" data-line="3x<=[12]">
+<p>מוסיפים <span class="math inline">\(.4\)</span></p>
+</div>
+<div class="step" data-line="x [<=] [4]">
+<p>מחלקים ב-<span class="math inline">\(.3\)</span></p>
+</div>
 <div class="hint">
 <p>קודם אספו את כל האיברים עם <span class="math inline">\(x\)</span> באגף אחד ואת המספרים באגף השני.</p>
-</div>
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} 5x - 4 &amp;\le 2x + 8 \\ 3x - 4 &amp;\le 8 \\ 3x &amp;\le 12 \\ x &amp;\le 4 \end{aligned}\]</span> חיסרנו <span class="math inline">\(,2x\)</span> הוספנו <span class="math inline">\(,4\)</span> וחילקנו ב-<span class="math inline">\(3\)</span> (חיובי, ולכן הכיוון נשמר).</p>
 </div>
 </div>
 <div class="fill">
@@ -2746,12 +2748,15 @@ window.Quarto = {
 <div id="box-q-ineq-steps-2" class="thmbox thmbox-question" title="שוב כיוון מתהפך">
 <p><strong>שאלה 1.3.12 — שוב כיוון מתהפך.</strong></p>
 <p>פתרו את <span class="math inline">\(.4 - 3x \ge 10\)</span></p>
-<div class="steps" start="4-3x>=10" data-rules="add|mulpos|mulneg|simplify">
+<div class="derive" start="4-3x>=10">
+<div class="step" data-line="-3x>=[6]">
+<p>מחסירים <span class="math inline">\(.4\)</span></p>
+</div>
+<div class="step" data-line="x [<=] [-2]">
+<p>מחלקים ב-<span class="math inline">\(.{-}3\)</span></p>
+</div>
 <div class="hint">
 <p>אחרי שתחסרו <span class="math inline">\(,4\)</span> תצטרכו לחלק במספר שלילי.</p>
-</div>
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} 4 - 3x &amp;\ge 10 \\ -3x &amp;\ge 6 \\ x &amp;\le -2 \end{aligned}\]</span> בשורה האחרונה חילקנו ב-<span class="math inline">\(,-3\)</span> ולכן הכיוון התהפך.</p>
 </div>
 </div>
 <div class="fill">
@@ -2761,12 +2766,15 @@ window.Quarto = {
 <div id="box-q-ineq-steps-3" class="thmbox thmbox-question" title="אי-שוויון כפול">
 <p><strong>שאלה 1.3.13 — אי-שוויון כפול.</strong></p>
 <p>פתרו את <span class="math inline">\(.{-}1 &lt; 2x - 5 &lt; 7\)</span> כל פעולה מפעילים על שלושת החלקים יחד.</p>
-<div class="steps" start="-1<2x-5<7" data-rules="add|mulpos|mulneg|simplify">
+<div class="derive" start="-1<2x-5<7">
+<div class="step" data-line="[4]<2x<[12]">
+<p>מוסיפים <span class="math inline">\(5\)</span> לכל שלושת החלקים.</p>
+</div>
+<div class="step" data-line="[2]<x<[6]">
+<p>מחלקים את שלושת החלקים ב-<span class="math inline">\(.2\)</span></p>
+</div>
 <div class="hint">
 <p>הוסיפו <span class="math inline">\(5\)</span> לכל שלושת החלקים, ואחר כך חלקו את שלושתם ב-<span class="math inline">\(.2\)</span></p>
-</div>
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} -1 &amp;&lt; 2x - 5 &lt; 7 \\ 4 &amp;&lt; 2x &lt; 12 \\ 2 &amp;&lt; x &lt; 6 \end{aligned}\]</span></p>
 </div>
 </div>
 <div class="fill">
@@ -2775,53 +2783,77 @@ window.Quarto = {
 </div>
 <div id="box-q-abs" class="thmbox thmbox-question" title="משוואות ואי-שוויונים עם ערך מוחלט">
 <p><strong>שאלה 1.3.14 — משוואות ואי-שוויונים עם ערך מוחלט.</strong></p>
-<p>פתרו כל סעיף צעד אחר צעד. השתמשו בשיטה: <span class="math inline">\(|E| &lt; c\)</span> פירושו <span class="math inline">\(,-c &lt; E &lt; c\)</span> ו-<span class="math inline">\(|E| &gt; c\)</span> פירושו <span class="math inline">\(E &gt; c\)</span> או <span class="math inline">\(.E &lt; -c\)</span> <span>(את קבוצת הפתרונות כתבו כרשימה, למשל <code>{1,2}</code>, או כקטע.)</span></p>
+<p>פתרו כל סעיף. השתמשו בשיטה: <span class="math inline">\(|E| &lt; c\)</span> פירושו <span class="math inline">\(,-c &lt; E &lt; c\)</span> ו-<span class="math inline">\(|E| &gt; c\)</span> פירושו <span class="math inline">\(E &gt; c\)</span> או <span class="math inline">\(.E &lt; -c\)</span> <span>(את קבוצת הפתרונות כתבו כרשימה, למשל <code>{1,2}</code>, או כקטע.)</span></p>
 <p><strong>(א)</strong> <span class="math inline">\(|x + 2| \le 4\)</span></p>
-<div class="steps" start="|x+2|<=4" data-rules="abs|add|mulpos|mulneg|simplify">
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} -4 &amp;\le x + 2 \le 4 \\ -6 &amp;\le x \le 2 \end{aligned}\]</span> פירקנו את הערך המוחלט, וחיסרנו <span class="math inline">\(2\)</span> מכל שלושת החלקים. אלה הנקודות שמרחקן מ-<span class="math inline">\(-2\)</span> הוא לכל היותר <span class="math inline">\(.4\)</span></p>
+<div class="derive" start="|x+2|<=4">
+<div class="step" data-line="[-4]<=x+2<=[4]">
+<p>מפרקים את הערך המוחלט.</p>
+</div>
+<div class="step" data-line="[-6]<=x<=[2]">
+<p>מחסירים <span class="math inline">\(2\)</span> מכל שלושת החלקים. אלה הנקודות שמרחקן מ-<span class="math inline">\(-2\)</span> הוא לכל היותר <span class="math inline">\(.4\)</span></p>
 </div>
 </div>
 <div class="fill">
 <p>קבוצת הפתרונות: <span class="blank" data-ans="[-6,2]"><span class="math inline">\([-6, 2]\)</span></span></p>
 </div>
 <p><strong>(ב)</strong> <span class="math inline">\(|3x - 1| &gt; 2\)</span></p>
-<div class="steps" start="|3x-1|>2" data-rules="abs|add|mulpos|mulneg|simplify">
+<div class="derive" start="|3x-1|>2">
+<div class="step" data-line="3x-1>[2] או 3x-1 [<] [-2]">
+<p>מפרקים את הערך המוחלט לשתי אפשרויות.</p>
+</div>
+<div class="step" data-line="3x>[3] או 3x<[-1]">
+<p>מוסיפים <span class="math inline">\(1\)</span> לשני האגפים.</p>
+</div>
+<div class="step" data-line="x>[1] או x<[-1/3]">
+<p>מחלקים ב-<span class="math inline">\(.3\)</span></p>
+</div>
 <div class="hint">
 <p>כאן יש שתי אפשרויות: <span class="math inline">\(3x - 1 &gt; 2\)</span> או <span class="math inline">\(.3x - 1 &lt; -2\)</span></p>
-</div>
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} 3x - 1 &amp;&gt; 2 &amp; \qquad\qquad 3x - 1 &amp;&lt; -2 \\ 3x &amp;&gt; 3 &amp; 3x &amp;&lt; -1 \\ x &amp;&gt; 1 &amp; x &amp;&lt; -\tfrac{1}{3} \end{aligned}\]</span> פירקנו את הערך המוחלט, הוספנו <span class="math inline">\(1\)</span> לשני האגפים בשתי האפשרויות, וחילקנו ב-<span class="math inline">\(.3\)</span></p>
 </div>
 </div>
 <div class="fill">
 <p>קבוצת הפתרונות: <span class="blank" data-ans="(-inf,-1/3)U(1,inf)" data-w="16"><span class="math inline">\(\left(-\infty, -\frac{1}{3}\right) \cup (1, \infty)\)</span></span></p>
 </div>
 <p><strong>(ג)</strong> <span class="math inline">\(|x + 1| = 4\)</span></p>
-<div class="steps" start="|x+1|=4" data-rules="abs|add|mulpos|mulneg|simplify">
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} x + 1 &amp;= 4 &amp; \qquad\qquad x + 1 &amp;= -4 \\ x &amp;= 3 &amp; x &amp;= -5 \end{aligned}\]</span> פירקנו את הערך המוחלט לשתי אפשרויות, וחיסרנו <span class="math inline">\(1\)</span> משני האגפים.</p>
+<div class="derive" start="|x+1|=4">
+<div class="step" data-line="x+1=[4] או x+1=[-4]">
+<p>מפרקים את הערך המוחלט לשתי אפשרויות.</p>
+</div>
+<div class="step" data-line="x=[3] או x=[-5]">
+<p>מחסירים <span class="math inline">\(.1\)</span></p>
 </div>
 </div>
 <div class="fill">
 <p>קבוצת הפתרונות: <span class="blank" data-ans="{3,-5}"><span class="math inline">\(\{-5, 3\}\)</span></span></p>
 </div>
 <p><strong>(ד)</strong> <span class="math inline">\(|3x - 2| &lt; 4\)</span></p>
-<div class="steps" start="|3x-2|<4" data-rules="abs|add|mulpos|mulneg|simplify">
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} -4 &amp;&lt; 3x - 2 &lt; 4 \\ -2 &amp;&lt; 3x &lt; 6 \\ -\tfrac{2}{3} &amp;&lt; x &lt; 2 \end{aligned}\]</span> פירקנו את הערך המוחלט, הוספנו <span class="math inline">\(2\)</span> לכל שלושת החלקים, וחילקנו את שלושתם ב-<span class="math inline">\(.3\)</span></p>
+<div class="derive" start="|3x-2|<4">
+<div class="step" data-line="[-4]<3x-2<[4]">
+<p>מפרקים את הערך המוחלט.</p>
+</div>
+<div class="step" data-line="[-2]<3x<[6]">
+<p>מוסיפים <span class="math inline">\(2\)</span> לכל שלושת החלקים.</p>
+</div>
+<div class="step" data-line="[-2/3]<x<[2]">
+<p>מחלקים את שלושת החלקים ב-<span class="math inline">\(.3\)</span></p>
 </div>
 </div>
 <div class="fill">
 <p>קבוצת הפתרונות: <span class="blank" data-ans="(-2/3,2)"><span class="math inline">\(\left(-\frac{2}{3}, 2\right)\)</span></span></p>
 </div>
 <p><strong>(ה)</strong> <span class="math inline">\(|2x + 3| = 0\)</span></p>
-<div class="steps" start="|2x+3|=0" data-rules="abs|add|mulpos|mulneg|simplify">
+<div class="derive" start="|2x+3|=0">
+<div class="step" data-line="2x+3=[0]">
+<p>ערך מוחלט שווה <span class="math inline">\(0\)</span> רק כשמה שבתוכו שווה <span class="math inline">\(,0\)</span> ולכן יש כאן אפשרות אחת.</p>
+</div>
+<div class="step" data-line="2x=[-3]">
+<p>מחסירים <span class="math inline">\(.3\)</span></p>
+</div>
+<div class="step" data-line="x=[-3/2]">
+<p>מחלקים ב-<span class="math inline">\(.2\)</span></p>
+</div>
 <div class="hint">
 <p>ערך מוחלט הוא <span class="math inline">\(0\)</span> רק כשמה שבתוכו הוא <span class="math inline">\(,0\)</span> ולכן כאן יש אפשרות אחת בלבד.</p>
-</div>
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} 2x + 3 &amp;= 0 \\ 2x &amp;= -3 \\ x &amp;= -\tfrac{3}{2} \end{aligned}\]</span></p>
 </div>
 </div>
 <div class="fill">
@@ -3285,7 +3317,10 @@ window.Quarto = {
 <p>מציבים את המספר <strong>בכל</strong> מקום שבו מופיע <span class="math inline">\(,x\)</span> עם סוגריים: למשל <span class="math inline">\(.f(-1) = (-1)^2 - 3 \cdot (-1) + 1\)</span></p>
 </div>
 <div class="explain">
-<p><span class="math display">\[\begin{aligned} f(2) &amp;= 4 - 6 + 1 = -1 \\ f(-1) &amp;= 1 + 3 + 1 = 5 \\ f(0) &amp;= 0 - 0 + 1 = 1 \\ f\left(\tfrac{1}{2}\right) &amp;= \tfrac{1}{4} - \tfrac{3}{2} + 1 = -\tfrac{1}{4} \end{aligned}\]</span></p>
+<p><strong>(א)</strong> <span class="math display">\[\begin{aligned} f(2) &amp;= 2^2 - 3 \cdot 2 + 1 \\ &amp;= 4 - 6 + 1 \\ &amp;= -1 \end{aligned}\]</span></p>
+<p><strong>(ב)</strong> <span class="math display">\[\begin{aligned} f(-1) &amp;= (-1)^2 - 3 \cdot (-1) + 1 \\ &amp;= 1 + 3 + 1 \\ &amp;= 5 \end{aligned}\]</span></p>
+<p><strong>(ג)</strong> <span class="math display">\[\begin{aligned} f(0) &amp;= 0^2 - 3 \cdot 0 + 1 \\ &amp;= 1 \end{aligned}\]</span></p>
+<p><strong>(ד)</strong> <span class="math display">\[\begin{aligned} f\left(\tfrac{1}{2}\right) &amp;= \left(\tfrac{1}{2}\right)^2 - 3 \cdot \tfrac{1}{2} + 1 \\ &amp;= \tfrac{1}{4} - \tfrac{6}{4} + \tfrac{4}{4} \\ &amp;= -\tfrac{1}{4} \end{aligned}\]</span></p>
 </div>
 </div>
 </div>
@@ -3300,8 +3335,8 @@ window.Quarto = {
 <p>במקום כל <span class="math inline">\(x\)</span> כותבים את הביטוי כולו, בתוך סוגריים.</p>
 </div>
 <div class="explain">
-<p><strong>(א)</strong> <span class="math inline">\(.f(a + 1) = 2(a + 1) + 3 = 2a + 2 + 3 = 2a + 5\)</span></p>
-<p><strong>(ב)</strong> <span class="math inline">\(.f(2a) = 2 \cdot 2a + 3 = 4a + 3\)</span></p>
+<p><strong>(א)</strong> <span class="math display">\[\begin{aligned} f(a + 1) &amp;= 2(a + 1) + 3 \\ &amp;= 2a + 2 + 3 \\ &amp;= 2a + 5 \end{aligned}\]</span></p>
+<p><strong>(ב)</strong> <span class="math display">\[\begin{aligned} f(2a) &amp;= 2 \cdot 2a + 3 \\ &amp;= 4a + 3 \end{aligned}\]</span></p>
 <p><strong>(ג)</strong> <span class="math display">\[\begin{aligned} f(x + 1) - f(x) &amp;= (x + 1)^2 - x^2 \\ &amp;= x^2 + 2x + 1 - x^2 \\ &amp;= 2x + 1 \end{aligned}\]</span></p>
 </div>
 </div>
@@ -3318,7 +3353,9 @@ window.Quarto = {
 <p>לכל <span class="math inline">\(x\)</span> בודקים קודם באיזו שורה הוא נמצא. ב-(ב): <span class="math inline">\(1 \le 1\)</span> נכון.</p>
 </div>
 <div class="explain">
-<p><strong>(א)</strong> <span class="math inline">\(,-2 \le 1\)</span> ולכן <span class="math inline">\(.f(-2) = 1 - (-2) = 3\)</span> <strong>(ב)</strong> <span class="math inline">\(,1 \le 1\)</span> ולכן <span class="math inline">\(.f(1) = 1 - 1 = 0\)</span> <strong>(ג)</strong> <span class="math inline">\(,3 &gt; 1\)</span> ולכן <span class="math inline">\(.f(3) = 9\)</span></p>
+<p><strong>(א)</strong> <span class="math inline">\(,-2 \le 1\)</span> ולכן משתמשים בשורה הראשונה: <span class="math display">\[\begin{aligned} f(-2) &amp;= 1 - (-2) \\ &amp;= 3 \end{aligned}\]</span></p>
+<p><strong>(ב)</strong> <span class="math inline">\(,1 \le 1\)</span> ולכן גם כאן משתמשים בשורה הראשונה: <span class="math display">\[\begin{aligned} f(1) &amp;= 1 - 1 \\ &amp;= 0 \end{aligned}\]</span></p>
+<p><strong>(ג)</strong> <span class="math inline">\(,3 &gt; 1\)</span> ולכן משתמשים בשורה השנייה: <span class="math display">\[\begin{aligned} f(3) &amp;= 3^2 \\ &amp;= 9 \end{aligned}\]</span></p>
 <p><strong>(ד)</strong> עבור <span class="math inline">\(x \le 1\)</span> הערכים <span class="math inline">\(1 - x\)</span> ממלאים את <span class="math inline">\(,[0, \infty)\)</span> ועבור <span class="math inline">\(x &gt; 1\)</span> הערכים <span class="math inline">\(x^2\)</span> ממלאים את <span class="math inline">\(.(1, \infty)\)</span> האיחוד הוא <span class="math inline">\(.[0, \infty)\)</span></p>
 </div>
 </div>
@@ -3412,8 +3449,8 @@ window.Quarto = {
 </div>
 <div class="explain">
 <p><strong>(א)</strong> בגלל השורש <span class="math inline">\(,5 - x \ge 0\)</span> ובגלל המכנה <span class="math inline">\(.\sqrt{5 - x} \neq 0\)</span> יחד: <span class="math inline">\(,5 - x &gt; 0\)</span> כלומר <span class="math display">\[\begin{aligned} 5 - x &amp;&gt; 0 \\ -x &amp;&gt; -5 \\ x &amp;&lt; 5 \end{aligned}\]</span> בשורה השלישית כפלנו ב-<span class="math inline">\(,-1\)</span> ולכן הכיוון התהפך.</p>
-<p><strong>(ב)</strong> <span class="math inline">\(,2x - 6 \ge 0\)</span> כלומר <span class="math inline">\(.x \ge 3\)</span></p>
-<p><strong>(ג)</strong> <span class="math inline">\(,x^2 - 9 \neq 0\)</span> כלומר <span class="math inline">\(.x \neq \pm 3\)</span></p>
+<p><strong>(ב)</strong> <span class="math display">\[\begin{aligned} 2x - 6 &amp;\ge 0 \\ 2x &amp;\ge 6 \\ x &amp;\ge 3 \end{aligned}\]</span></p>
+<p><strong>(ג)</strong> <span class="math display">\[\begin{aligned} x^2 - 9 &amp;\neq 0 \\ x^2 &amp;\neq 9 \\ x &amp;\neq \pm 3 \end{aligned}\]</span></p>
 <p><strong>(ד)</strong> <span class="math inline">\(4 - x \ge 0\)</span> (כלומר <span class="math inline">\(x \le 4\)</span>) וגם <span class="math inline">\(x + 1 \neq 0\)</span> (כלומר <span class="math inline">\(x \neq -1\)</span>).</p>
 <p><strong>(ה)</strong> <span class="math inline">\(x^2 + 1 \ge 1 &gt; 0\)</span> לכל <span class="math inline">\(,x\)</span> ולכן אין שום דרישה.</p>
 </div>
@@ -3450,8 +3487,9 @@ window.Quarto = {
 <p>אליפסה <span class="math inline">\(\frac{x^2}{a^2} + \frac{y^2}{b^2} = 1\)</span> חותכת את הצירים ב-<span class="math inline">\((\pm a, 0)\)</span> וב-<span class="math inline">\(.(0, \pm b)\)</span> להיפרבולה <span class="math inline">\(\frac{x^2}{a^2} - \frac{y^2}{b^2} = 1\)</span> יש אסימפטוטות <span class="math inline">\(.y = \pm \frac{b}{a} x\)</span></p>
 </div>
 <div class="explain">
-<p><strong>(א)</strong> <span class="math inline">\(,a^2 = 25\)</span> <span class="math inline">\(,b^2 = 16\)</span> ולכן <span class="math inline">\(a = 5\)</span> ו-<span class="math inline">\(.b = 4\)</span></p>
-<p><strong>(ב)</strong> ו-<strong>(ג)</strong> <span class="math inline">\(a = 3\)</span> ו-<span class="math inline">\(,b = 2\)</span> ולכן הקודקודים הם <span class="math inline">\((\pm 3, 0)\)</span> והאסימפטוטות <span class="math inline">\(.y = \pm \frac{2}{3} x\)</span></p>
+<p><strong>(א)</strong> על ציר <span class="math inline">\(x\)</span> מתקיים <span class="math inline">\(:y = 0\)</span> <span class="math display">\[\begin{aligned} \frac{x^2}{25} &amp;= 1 \\ x^2 &amp;= 25 \\ x &amp;= \pm 5 \end{aligned}\]</span> על ציר <span class="math inline">\(y\)</span> מתקיים <span class="math inline">\(:x = 0\)</span> <span class="math display">\[\begin{aligned} \frac{y^2}{16} &amp;= 1 \\ y^2 &amp;= 16 \\ y &amp;= \pm 4 \end{aligned}\]</span></p>
+<p><strong>(ב)</strong> הקודקודים על ציר <span class="math inline">\(,x\)</span> כלומר <span class="math inline">\(:y = 0\)</span> <span class="math display">\[\begin{aligned} \frac{x^2}{9} &amp;= 1 \\ x^2 &amp;= 9 \\ x &amp;= \pm 3 \end{aligned}\]</span></p>
+<p><strong>(ג)</strong> כאן <span class="math inline">\(a = 3\)</span> ו-<span class="math inline">\(,b = 2\)</span> ולכן <span class="math inline">\(.m = \frac{b}{a} = \frac{2}{3}\)</span></p>
 </div>
 </div>
 </div>
@@ -3664,7 +3702,8 @@ window.Quarto = {
 <p>ב-(ג): הציבו <span class="math inline">\(x = 0\)</span> בהגדרה <span class="math inline">\(.h(-x) = -h(x)\)</span></p>
 </div>
 <div class="explain">
-<p><strong>(א)</strong> <span class="math inline">\(.f(-2) = f(2) = 5\)</span> <strong>(ב)</strong> <span class="math inline">\(.g(-3) = -g(3) = 4\)</span></p>
+<p><strong>(א)</strong> <span class="math inline">\(f\)</span> זוגית, ולכן <span class="math inline">\(:f(-x) = f(x)\)</span> <span class="math display">\[\begin{aligned} f(-2) &amp;= f(2) \\ &amp;= 5 \end{aligned}\]</span></p>
+<p><strong>(ב)</strong> <span class="math inline">\(g\)</span> אי-זוגית, ולכן <span class="math inline">\(:g(-x) = -g(x)\)</span> <span class="math display">\[\begin{aligned} g(-3) &amp;= -g(3) \\ &amp;= -(-4) \\ &amp;= 4 \end{aligned}\]</span></p>
 <p><strong>(ג)</strong> <span class="math inline">\(,h(-0) = -h(0)\)</span> כלומר <span class="math inline">\(.h(0) = -h(0)\)</span> המספר היחיד ששווה למינוס עצמו הוא <span class="math inline">\(,0\)</span> ולכן <span class="math inline">\(.h(0) = 0\)</span> לכן הגרף של פונקציה אי-זוגית שמוגדרת ב-<span class="math inline">\(0\)</span> עובר דרך הראשית.</p>
 </div>
 </div>
@@ -3787,6 +3826,8 @@ window.Quarto = {
 <div class="eqline">
 <p><span class="fill-ltr"><span class="math inline">\(x^2 - 4x + 7 = (x -{}\)</span> <span class="blank" data-ans="2"><span class="math inline">\(2\)</span></span> <span class="math inline">\()^2 +{}\)</span> <span class="blank" data-ans="3"><span class="math inline">\(3\)</span></span></span></p>
 </div>
+<p>הזיזו את הפרבולה <span class="math inline">\(y = x^2\)</span> עד שתקבלו את הגרף של <span class="math inline">\(:f\)</span></p>
+<iframe class="widget-frame" src="widgets/ch01/move-graph.html?f=sq&amp;c=2&amp;d=3" loading="lazy" title="מזיזים את הפרבולה"></iframe>
 <p>הקודקוד הוא <span class="fill-ltr"><span class="math inline">\((\)</span><span class="blank" data-ans="2"><span class="math inline">\(2\)</span></span><span class="math inline">\(,{}\)</span> <span class="blank" data-ans="3"><span class="math inline">\(3\)</span></span><span class="math inline">\()\)</span></span></p>
 <p>התמונה היא <span class="blank" data-ans="[3,inf)"><span class="math inline">\([3, \infty)\)</span></span></p>
 <div class="hint">
@@ -3813,7 +3854,8 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="תרגילים-5">תרגילים</h3>
 <div id="box-q-transform" class="thmbox thmbox-question" title="הקודקוד של $|x + 3| - 1$">
 <p><strong>שאלה 1.6.5 — הקודקוד של <span class="math inline">\(|x + 3| - 1\)</span>.</strong></p>
-<p>איך מקבלים את הגרף של <span class="math inline">\(y = |x + 3| - 1\)</span> מהגרף של <span class="math inline">\(?y = |x|\)</span> איפה הקודקוד?</p>
+<p>איך מקבלים את הגרף של <span class="math inline">\(y = |x + 3| - 1\)</span> מהגרף של <span class="math inline">\(?y = |x|\)</span> הזיזו את הגרף עד שיגיע למקום, ומצאו את הקודקוד.</p>
+<iframe class="widget-frame" src="widgets/ch01/move-graph.html?f=abs&amp;c=-3&amp;d=-1" loading="lazy" title="מזיזים את הגרף של הערך המוחלט"></iframe>
 <div class="fill">
 <p>הקודקוד הוא <span class="fill-ltr"><span class="math inline">\((\)</span><span class="blank" data-ans="-3"><span class="math inline">\(-3\)</span></span><span class="math inline">\(,{}\)</span> <span class="blank" data-ans="-1"><span class="math inline">\(-1\)</span></span><span class="math inline">\()\)</span></span></p>
 <div class="explain">
@@ -3839,7 +3881,10 @@ window.Quarto = {
 <p>הזזה ימינה ב-<span class="math inline">\(c\)</span> פירושה להחליף את <span class="math inline">\(x\)</span> ב-<span class="math inline">\(;x - c\)</span> הזזה למעלה פירושה להוסיף <span class="math inline">\(c\)</span> לכל הביטוי.</p>
 </div>
 <div class="explain">
-<p><strong>(א)</strong> <span class="math inline">\(\sqrt{x - 3}\)</span> מזיז ימינה, ו-<span class="math inline">\(+1\)</span> מזיז למעלה. <strong>(ב)</strong> השיקוף נותן <span class="math inline">\(,-x^2\)</span> וההזזה <span class="math inline">\(.{-}x^2 + 4\)</span> <strong>(ג)</strong> המתיחה נותנת <span class="math inline">\(,2|x|\)</span> וההזזה מחליפה את <span class="math inline">\(x\)</span> ב-<span class="math inline">\(.x + 1\)</span> <strong>(ד)</strong> <span class="math inline">\(.(x + 5)^2 - 2\)</span></p>
+<p><strong>(א)</strong> הזזה ימינה ב-<span class="math inline">\(3\)</span> מחליפה את <span class="math inline">\(x\)</span> ב-<span class="math inline">\(,x - 3\)</span> והזזה למעלה ב-<span class="math inline">\(1\)</span> מוסיפה <span class="math inline">\(:1\)</span> <span class="math display">\[\begin{aligned} \sqrt{x} &amp;\to \sqrt{x - 3} \\ &amp;\to \sqrt{x - 3} + 1 \end{aligned}\]</span></p>
+<p><strong>(ב)</strong> השיקוף ביחס לציר <span class="math inline">\(x\)</span> הופך את הסימן של כל הביטוי, וההזזה למעלה מוסיפה <span class="math inline">\(:4\)</span> <span class="math display">\[\begin{aligned} x^2 &amp;\to -x^2 \\ &amp;\to -x^2 + 4 = 4 - x^2 \end{aligned}\]</span></p>
+<p><strong>(ג)</strong> המתיחה כופלת את כל הביטוי ב-<span class="math inline">\(,2\)</span> וההזזה שמאלה מחליפה את <span class="math inline">\(x\)</span> ב-<span class="math inline">\(:x + 1\)</span> <span class="math display">\[\begin{aligned} |x| &amp;\to 2|x| \\ &amp;\to 2|x + 1| \end{aligned}\]</span></p>
+<p><strong>(ד)</strong> הזזה שמאלה ב-<span class="math inline">\(5\)</span> מחליפה את <span class="math inline">\(x\)</span> ב-<span class="math inline">\(,x + 5\)</span> והזזה למטה ב-<span class="math inline">\(2\)</span> מחסירה <span class="math inline">\(:2\)</span> <span class="math display">\[\begin{aligned} x^2 &amp;\to (x + 5)^2 \\ &amp;\to (x + 5)^2 - 2 \end{aligned}\]</span></p>
 </div>
 </div>
 </div>
@@ -3870,6 +3915,8 @@ window.Quarto = {
 <div class="eqline">
 <p><span class="fill-ltr"><span class="math inline">\(x^2 + 6x + 5 = (x +{}\)</span> <span class="blank" data-ans="3"><span class="math inline">\(3\)</span></span> <span class="math inline">\()^2 -{}\)</span> <span class="blank" data-ans="4"><span class="math inline">\(4\)</span></span></span></p>
 </div>
+<p>הזיזו את הפרבולה <span class="math inline">\(y = x^2\)</span> למקום:</p>
+<iframe class="widget-frame" src="widgets/ch01/move-graph.html?f=sq&amp;c=-3&amp;d=-4" loading="lazy" title="מזיזים את הפרבולה"></iframe>
 <p>הקודקוד הוא <span class="fill-ltr"><span class="math inline">\((\)</span><span class="blank" data-ans="-3"><span class="math inline">\(-3\)</span></span><span class="math inline">\(,{}\)</span> <span class="blank" data-ans="-4"><span class="math inline">\(-4\)</span></span><span class="math inline">\()\)</span></span></p>
 <p>התמונה היא <span class="blank" data-ans="[-4,inf)"><span class="math inline">\([-4, \infty)\)</span></span></p>
 <div class="hint">
@@ -4027,8 +4074,10 @@ window.Quarto = {
 <p>ב-<span class="math inline">\(f \circ g\)</span> מציבים את <span class="math inline">\(g(x)\)</span> במקום כל <span class="math inline">\(x\)</span> בנוסחה של <span class="math inline">\(.f\)</span></p>
 </div>
 <div class="explain">
-<p><strong>(א)</strong> <span class="math inline">\(.f(g(x)) = f(x^2) = 2x^2 - 1\)</span> <strong>(ב)</strong> <span class="math inline">\(.g(f(x)) = g(2x - 1) = (2x - 1)^2\)</span></p>
-<p><strong>(ג)</strong> <span class="math display">\[\begin{aligned} f(f(x)) &amp;= f(2x - 1) \\ &amp;= 2(2x - 1) - 1 \\ &amp;= 4x - 3 \end{aligned}\]</span> <strong>(ד)</strong> קודם <span class="math inline">\(,g(3) = 9\)</span> ואחר כך <span class="math inline">\(.f(9) = 17\)</span></p>
+<p><strong>(א)</strong> <span class="math display">\[\begin{aligned} (f \circ g)(x) &amp;= f(g(x)) \\ &amp;= f(x^2) \\ &amp;= 2x^2 - 1 \end{aligned}\]</span></p>
+<p><strong>(ב)</strong> <span class="math display">\[\begin{aligned} (g \circ f)(x) &amp;= g(f(x)) \\ &amp;= g(2x - 1) \\ &amp;= (2x - 1)^2 \end{aligned}\]</span></p>
+<p><strong>(ג)</strong> <span class="math display">\[\begin{aligned} (f \circ f)(x) &amp;= f(f(x)) \\ &amp;= f(2x - 1) \\ &amp;= 2(2x - 1) - 1 \\ &amp;= 4x - 3 \end{aligned}\]</span></p>
+<p><strong>(ד)</strong> <span class="math display">\[\begin{aligned} (f \circ g)(3) &amp;= f(g(3)) \\ &amp;= f(9) \\ &amp;= 2 \cdot 9 - 1 \\ &amp;= 17 \end{aligned}\]</span></p>
 </div>
 </div>
 </div>
@@ -4068,7 +4117,10 @@ window.Quarto = {
 <p>מבפנים החוצה: ב-(א) מחפשים קודם את <span class="math inline">\(g(1)\)</span> בטבלה, ואחר כך את <span class="math inline">\(f\)</span> של התוצאה.</p>
 </div>
 <div class="explain">
-<p><strong>(א)</strong> <span class="math inline">\(,g(1) = 2\)</span> ו-<span class="math inline">\(.f(2) = 1\)</span> <strong>(ב)</strong> <span class="math inline">\(,f(1) = 3\)</span> ו-<span class="math inline">\(.g(3) = 1\)</span> <strong>(ג)</strong> <span class="math inline">\(,f(2) = 1\)</span> ו-<span class="math inline">\(.f(1) = 3\)</span> <strong>(ד)</strong> <span class="math inline">\(,g(3) = 1\)</span> ו-<span class="math inline">\(.g(1) = 2\)</span></p>
+<p><strong>(א)</strong> <span class="math display">\[\begin{aligned} (f \circ g)(1) &amp;= f(g(1)) \\ &amp;= f(2) \\ &amp;= 1 \end{aligned}\]</span></p>
+<p><strong>(ב)</strong> <span class="math display">\[\begin{aligned} (g \circ f)(1) &amp;= g(f(1)) \\ &amp;= g(3) \\ &amp;= 1 \end{aligned}\]</span></p>
+<p><strong>(ג)</strong> <span class="math display">\[\begin{aligned} (f \circ f)(2) &amp;= f(f(2)) \\ &amp;= f(1) \\ &amp;= 3 \end{aligned}\]</span></p>
+<p><strong>(ד)</strong> <span class="math display">\[\begin{aligned} (g \circ g)(3) &amp;= g(g(3)) \\ &amp;= g(1) \\ &amp;= 2 \end{aligned}\]</span></p>
 </div>
 </div>
 </div>
@@ -4149,16 +4201,22 @@ window.Quarto = {
 </div>
 </div>
 <p><strong>(ב)</strong> <span class="math inline">\(x^3 - 9x\)</span></p>
-<p>פותרים את המשוואה <span class="math inline">\(x^3 - 9x = 0\)</span> צעד אחר צעד. <span>(חזקה כותבים עם <code>^</code>, למשל <code>x^3</code>. בין כמה אפשרויות כותבים “או”, למשל <code>x=0 או x=3</code>.)</span></p>
-<div class="steps" start="x^3-9x=0" data-rules="factor|zero|add|mulpos|mulneg|simplify">
+<p>פותרים את המשוואה <span class="math inline">\(.x^3 - 9x = 0\)</span> <span>(חזקה כותבים עם <code>^</code>, למשל <code>x^2</code>.)</span></p>
+<div class="derive" start="x^3-9x=0">
+<div class="step" data-line="x([x^2-9])=0">
+<p>מוציאים גורם משותף <span class="math inline">\(.x\)</span></p>
+</div>
+<div class="step" data-line="x(x-[3])(x+[3])=0">
+<p>הפרש ריבועים: <span class="math inline">\(.a^2 - b^2 = (a - b)(a + b)\)</span></p>
+</div>
+<div class="step" data-line="x=0 או x=[3] או x=[-3]">
+<p>מכפלה שווה <span class="math inline">\(0\)</span> כשאחד הגורמים שווה <span class="math inline">\(.0\)</span></p>
+</div>
 <div class="hint">
 <p>נוציא גורם משותף <span class="math inline">\(,x\)</span> ואחר כך נשתמש ב-<span class="math inline">\(.a^2 - b^2 = (a - b)(a + b)\)</span></p>
 </div>
 <div class="hint">
-<p>מכפלה מתאפסת כאשר אחד הגורמים מתאפס. כתבו את כל האפשרויות בשורה אחת, עם “או” ביניהן.</p>
-</div>
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} x^3 - 9x &amp;= 0 \\ x(x^2 - 9) &amp;= 0 \\ x(x - 3)(x + 3) &amp;= 0 \end{aligned}\]</span> ולכן <span class="math inline">\(x = 0\)</span> או <span class="math inline">\(x - 3 = 0\)</span> או <span class="math inline">\(,x + 3 = 0\)</span> כלומר <span class="math inline">\(x = 0\)</span> או <span class="math inline">\(x = 3\)</span> או <span class="math inline">\(.x = -3\)</span></p>
+<p>מכפלה מתאפסת כאשר אחד הגורמים מתאפס.</p>
 </div>
 </div>
 <div class="fill">
@@ -4243,51 +4301,69 @@ window.Quarto = {
 <p><strong>שאלה 1.8.5 — מוצאים שורשים.</strong></p>
 <p>מצאו את קבוצת השורשים: פתרו את המשוואה <span class="math inline">\(P(x) = 0\)</span> צעד אחר צעד. קודם מוציאים גורם משותף ומחפשים כפל מקוצר; אם לא הולך, נוסחת השורשים. <span>(את הקבוצה כותבים כרשימה, למשל <code>{1,2}</code>; אם אין שורשים: <code>{}</code>.)</span></p>
 <p><strong>(א)</strong> <span class="math inline">\(3x^2 - 12\)</span></p>
-<div class="steps" start="3x^2-12=0" data-rules="factor|zero|root|formula|add|mulpos|mulneg|simplify">
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} 3x^2 - 12 &amp;= 0 \\ 3x^2 &amp;= 12 \\ x^2 &amp;= 4 \end{aligned}\]</span> ולכן <span class="math inline">\(x = 2\)</span> או <span class="math inline">\(.x = -2\)</span> (הוספנו <span class="math inline">\(,12\)</span> חילקנו ב-<span class="math inline">\(3\)</span> והוצאנו שורש. אפשר גם לפרק: <span class="math inline">\(.3x^2 - 12 = 3(x - 2)(x + 2)\)</span>)</p>
+<div class="derive" start="3x^2-12=0">
+<div class="step" data-line="3x^2=[12]">
+<p>מוסיפים <span class="math inline">\(.12\)</span></p>
+</div>
+<div class="step" data-line="x^2=[4]">
+<p>מחלקים ב-<span class="math inline">\(.3\)</span></p>
+</div>
+<div class="step" data-line="x=[2] או x=[-2]">
+<p>מוציאים שורש: יש שתי אפשרויות. (אפשר גם לפרק: <span class="math inline">\(.3x^2 - 12 = 3(x - 2)(x + 2)\)</span>)</p>
 </div>
 </div>
 <div class="fill">
 <p>השורשים: <span class="blank" data-ans="{2,-2}"><span class="math inline">\(\{-2, 2\}\)</span></span></p>
 </div>
 <p><strong>(ב)</strong> <span class="math inline">\(x^3 - x^2\)</span></p>
-<div class="steps" start="x^3-x^2=0" data-rules="factor|zero|root|formula|add|mulpos|mulneg|simplify">
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} x^3 - x^2 &amp;= 0 \\ x^2(x - 1) &amp;= 0 \end{aligned}\]</span> ולכן <span class="math inline">\(x = 0\)</span> או <span class="math inline">\(,x - 1 = 0\)</span> כלומר <span class="math inline">\(x = 0\)</span> או <span class="math inline">\(.x = 1\)</span> השורש <span class="math inline">\(0\)</span> הוא שורש כפול, כי הגורם <span class="math inline">\(x\)</span> מופיע פעמיים.</p>
+<div class="derive" start="x^3-x^2=0">
+<div class="step" data-line="x^2(x-[1])=0">
+<p>מוציאים גורם משותף <span class="math inline">\(.x^2\)</span></p>
+</div>
+<div class="step" data-line="x=[0] או x=[1]">
+<p>מכפלה שווה <span class="math inline">\(0\)</span> כשאחד הגורמים שווה <span class="math inline">\(.0\)</span> השורש <span class="math inline">\(0\)</span> הוא שורש כפול, כי הגורם <span class="math inline">\(x\)</span> מופיע פעמיים.</p>
 </div>
 </div>
 <div class="fill">
 <p>השורשים: <span class="blank" data-ans="{0,1}"><span class="math inline">\(\{0, 1\}\)</span></span></p>
 </div>
 <p><strong>(ג)</strong> <span class="math inline">\(x^2 - 5x + 6\)</span></p>
-<div class="steps" start="x^2-5x+6=0" data-rules="factor|zero|root|formula|add|mulpos|mulneg|simplify">
+<div class="derive" start="x^2-5x+6=0">
+<div class="step" data-line="(x-[2])(x-[3])=0">
+<p>מפרקים לגורמים.</p>
+</div>
+<div class="step" data-line="x=[2] או x=[3]">
+<p>מכפלה שווה <span class="math inline">\(0\)</span> כשאחד הגורמים שווה <span class="math inline">\(.0\)</span></p>
+</div>
 <div class="hint">
 <p>חפשו שני מספרים שסכומם <span class="math inline">\(5\)</span> ומכפלתם <span class="math inline">\(.6\)</span></p>
-</div>
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} x^2 - 5x + 6 &amp;= 0 \\ (x - 2)(x - 3) &amp;= 0 \end{aligned}\]</span> ולכן <span class="math inline">\(x - 2 = 0\)</span> או <span class="math inline">\(,x - 3 = 0\)</span> כלומר <span class="math inline">\(x = 2\)</span> או <span class="math inline">\(.x = 3\)</span></p>
 </div>
 </div>
 <div class="fill">
 <p>השורשים: <span class="blank" data-ans="{2,3}"><span class="math inline">\(\{2, 3\}\)</span></span></p>
 </div>
 <p><strong>(ד)</strong> <span class="math inline">\(2x^2 + x - 1\)</span></p>
-<div class="steps" start="2x^2+x-1=0" data-rules="factor|zero|root|formula|add|mulpos|mulneg|simplify">
-<div class="hint">
-<p>נוסחת השורשים עם <span class="math inline">\(,a = 2\)</span> <span class="math inline">\(b = 1\)</span> ו-<span class="math inline">\(.c = -1\)</span> בחרו “נוסחת השורשים”, וכתבו את שני הפתרונות בשורה אחת עם “או” ביניהם.</p>
+<div class="derive" start="2x^2+x-1=0">
+<div class="step" data-line="x=(-1+sqrt([9]))/4 או x=(-1-sqrt(9))/4">
+<p>נוסחת השורשים <span class="math inline">\(x = \frac{-b \pm \sqrt{\Delta}}{2a}\)</span> עם <span class="math inline">\(,a = 2\)</span> <span class="math inline">\(b = 1\)</span> ו-<span class="math inline">\(.c = -1\)</span> בתיבה: <span class="math inline">\(.\Delta = b^2 - 4ac\)</span></p>
 </div>
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math inline">\(,\Delta = 1 + 8 = 9\)</span> ולכן <span class="math inline">\(,x = \frac{-1 \pm 3}{4}\)</span> כלומר <span class="math inline">\(x = \frac{1}{2}\)</span> או <span class="math inline">\(.x = -1\)</span></p>
+<div class="step" data-line="x=[1/2] או x=[-1]">
+<p>מחשבים את שני הפתרונות.</p>
+</div>
+<div class="hint">
+<p><span class="math inline">\(.\Delta = 1^2 - 4 \cdot 2 \cdot (-1)\)</span></p>
 </div>
 </div>
 <div class="fill">
 <p>השורשים: <span class="blank" data-ans="{1/2,-1}"><span class="math inline">\(\left\{-1, \frac{1}{2}\right\}\)</span></span></p>
 </div>
 <p><strong>(ה)</strong> <span class="math inline">\(x^2 - 10x + 25\)</span></p>
-<div class="steps" start="x^2-10x+25=0" data-rules="factor|zero|root|formula|add|mulpos|mulneg|simplify">
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} x^2 - 10x + 25 &amp;= 0 \\ (x - 5)^2 &amp;= 0 \\ x - 5 &amp;= 0 \\ x &amp;= 5 \end{aligned}\]</span> זה שורש כפול.</p>
+<div class="derive" start="x^2-10x+25=0">
+<div class="step" data-line="(x-[5])^2=0">
+<p>כפל מקוצר: <span class="math inline">\(.(a - b)^2 = a^2 - 2ab + b^2\)</span></p>
+</div>
+<div class="step" data-line="x=[5]">
+<p>ריבוע שווה <span class="math inline">\(0\)</span> רק כשהבסיס שווה <span class="math inline">\(.0\)</span> זה שורש כפול.</p>
 </div>
 </div>
 <div class="fill">
@@ -4301,9 +4377,12 @@ window.Quarto = {
 </div>
 </div>
 <p><strong>(ז)</strong> <span class="math inline">\(x^3 - 4x\)</span></p>
-<div class="steps" start="x^3-4x=0" data-rules="factor|zero|root|formula|add|mulpos|mulneg|simplify">
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} x^3 - 4x &amp;= 0 \\ x(x - 2)(x + 2) &amp;= 0 \end{aligned}\]</span> ולכן <span class="math inline">\(x = 0\)</span> או <span class="math inline">\(x = 2\)</span> או <span class="math inline">\(.x = -2\)</span></p>
+<div class="derive" start="x^3-4x=0">
+<div class="step" data-line="x(x-[2])(x+[2])=0">
+<p>מוציאים גורם משותף <span class="math inline">\(x\)</span> ומפרקים הפרש ריבועים.</p>
+</div>
+<div class="step" data-line="x=0 או x=[2] או x=[-2]">
+<p>מכפלה שווה <span class="math inline">\(0\)</span> כשאחד הגורמים שווה <span class="math inline">\(.0\)</span></p>
 </div>
 </div>
 <div class="fill">
@@ -4321,7 +4400,9 @@ window.Quarto = {
 <p>אם <span class="math inline">\(r\)</span> שורש, <span class="math inline">\((x - r)\)</span> גורם. מצאו קודם את השורשים.</p>
 </div>
 <div class="explain">
-<p><strong>(א)</strong> <span class="math inline">\(.a^2 - b^2 = (a - b)(a + b)\)</span> <strong>(ב)</strong> השורשים הם <span class="math inline">\(3\)</span> ו-<span class="math inline">\(,4\)</span> כי <span class="math inline">\(3 + 4 = 7\)</span> ו-<span class="math inline">\(.3 \cdot 4 = 12\)</span> <strong>(ג)</strong> מוציאים <span class="math inline">\(,x\)</span> ואז <span class="math inline">\(.x^2 - 1 = (x - 1)(x + 1)\)</span></p>
+<p><strong>(א)</strong> הפרש ריבועים, <span class="math inline">\(a^2 - b^2 = (a - b)(a + b)\)</span> עם <span class="math inline">\(a = x\)</span> ו-<span class="math inline">\(:b = 3\)</span> <span class="math display">\[\begin{aligned} x^2 - 9 &amp;= x^2 - 3^2 \\ &amp;= (x - 3)(x + 3) \end{aligned}\]</span></p>
+<p><strong>(ב)</strong> מחפשים שני מספרים שסכומם <span class="math inline">\(7\)</span> ומכפלתם <span class="math inline">\(:12\)</span> אלה <span class="math inline">\(3\)</span> ו-<span class="math inline">\(.4\)</span> בדיקה בכפל: <span class="math display">\[\begin{aligned} (x - 3)(x - 4) &amp;= x^2 - 4x - 3x + 12 \\ &amp;= x^2 - 7x + 12 \end{aligned}\]</span></p>
+<p><strong>(ג)</strong> <span class="math display">\[\begin{aligned} x^3 - x &amp;= x(x^2 - 1) \\ &amp;= x(x - 1)(x + 1) \end{aligned}\]</span> בשורה הראשונה הוצאנו גורם משותף <span class="math inline">\(,x\)</span> ובשנייה פירקנו הפרש ריבועים.</p>
 </div>
 </div>
 </div>
@@ -4361,15 +4442,21 @@ window.Quarto = {
 <div id="box-q-cubic" class="thmbox thmbox-question" title="פולינום ממעלה שלוש">
 <p><strong>שאלה 1.8.8 — פולינום ממעלה שלוש.</strong></p>
 <p>מצאו את השורשים של <span class="math inline">\(.x^3 - 3x^2 - x + 3\)</span> פתרו את המשוואה <span class="math inline">\(x^3 - 3x^2 - x + 3 = 0\)</span> צעד אחר צעד.</p>
-<div class="steps" start="x^3-3x^2-x+3=0" data-rules="factor|zero|root|formula|add|mulpos|mulneg|simplify">
+<div class="derive" start="x^3-3x^2-x+3=0">
+<div class="step" data-line="(x-1)([x^2-2x-3])=0">
+<p>ניחשנו את השורש <span class="math inline">\(,x = 1\)</span> ולכן מוציאים את הגורם <span class="math inline">\(.(x - 1)\)</span></p>
+</div>
+<div class="step" data-line="(x-1)(x-[3])(x+[1])=0">
+<p>מפרקים את הגורם הריבועי.</p>
+</div>
+<div class="step" data-line="x=1 או x=[3] או x=[-1]">
+<p>מכפלה שווה <span class="math inline">\(0\)</span> כשאחד הגורמים שווה <span class="math inline">\(.0\)</span></p>
+</div>
 <div class="hint">
 <p>נחשו שורש בין המחלקים של <span class="math inline">\(:3\)</span> <span class="math inline">\(.\pm 1, \pm 3\)</span></p>
 </div>
 <div class="hint">
 <p><span class="math inline">\(,1 - 3 - 1 + 3 = 0\)</span> ולכן <span class="math inline">\(1\)</span> שורש, ואפשר להוציא את הגורם <span class="math inline">\(.(x - 1)\)</span> בדקו בכפל ש-<span class="math inline">\(.x^3 - 3x^2 - x + 3 = (x - 1)(x^2 - 2x - 3)\)</span></p>
-</div>
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} x^3 - 3x^2 - x + 3 &amp;= 0 \\ (x - 1)(x^2 - 2x - 3) &amp;= 0 \\ (x - 1)(x - 3)(x + 1) &amp;= 0 \end{aligned}\]</span> ולכן <span class="math inline">\(x = 1\)</span> או <span class="math inline">\(x = 3\)</span> או <span class="math inline">\(.x = -1\)</span> בשורה השנייה הוצאנו את הגורם <span class="math inline">\((x - 1)\)</span> של השורש שניחשנו, ובשלישית פירקנו את הריבועי.</p>
 </div>
 </div>
 <div class="fill">
@@ -4480,32 +4567,95 @@ window.Quarto = {
 </section>
 <section id="מה-רואים-בציור" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="מה-רואים-בציור">מה רואים בציור</h3>
-<p>כל התכונות הבסיסיות של <span class="math inline">\(\sin\)</span> ו-<span class="math inline">\(\cos\)</span> נובעות ישירות מההגדרה:</p>
+<p>כל התכונות הבסיסיות של <span class="math inline">\(\sin\)</span> ו-<span class="math inline">\(\cos\)</span> נובעות ישירות מההגדרה, וכל אחת מהן היא ציור על המעגל:</p>
 <div id="box-thm-trig-props" class="thmbox thmbox-theorem" title="תכונות הסינוס והקוסינוס">
 <p><strong>משפט 1.9.4 — תכונות הסינוס והקוסינוס.</strong></p>
 <p>לכל <span class="math inline">\(\theta\)</span> ממשי:</p>
 <p>(א) <strong>סיבוב שלם</strong>: <span class="math inline">\(\sin(\theta + 2\pi) = \sin\theta\)</span> ו-<span class="math inline">\(.\cos(\theta + 2\pi) = \cos\theta\)</span></p>
-<p>(ב) <strong>חסימות</strong>: <span class="math inline">\(-1 \le \sin\theta \le 1\)</span> ו-<span class="math inline">\(.{-}1 \le \cos\theta \le 1\)</span></p>
-<p>(ג) <strong>זהות פיתגורס</strong>: <span class="math inline">\(.\sin^2\theta + \cos^2\theta = 1\)</span></p>
-<p>(ד) <strong>זוגיות</strong>: <span class="math inline">\(\cos(-\theta) = \cos\theta\)</span> ו-<span class="math inline">\(.\sin(-\theta) = -\sin\theta\)</span></p>
-<p>(ה) <strong>חצי סיבוב</strong>: <span class="math inline">\(\sin(\theta + \pi) = -\sin\theta\)</span> ו-<span class="math inline">\(.\cos(\theta + \pi) = -\cos\theta\)</span></p>
-<p>(ו) <strong>שיקוף ביחס לציר <span class="math inline">\(y\)</span></strong>: <span class="math inline">\(\sin(\pi - \theta) = \sin\theta\)</span> ו-<span class="math inline">\(.\cos(\pi - \theta) = -\cos\theta\)</span></p>
-<p>(ז) <strong>זווית משלימה</strong>: <span class="math inline">\(\sin\left(\frac{\pi}{2} - \theta\right) = \cos\theta\)</span> ו-<span class="math inline">\(.\cos\left(\frac{\pi}{2} - \theta\right) = \sin\theta\)</span></p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>מאיפה זה בא?</summary>
+<div class="lecture-answer" title="מאיפה זה בא?">
+<p>הליכה של עוד <span class="math inline">\(2\pi\)</span> היא עוד סיבוב שלם, כי היקף המעגל הוא <span class="math inline">\(.2\pi\)</span> לכן מגיעים בדיוק לאותה נקודה, ולשתי הזוויות יש אותם שיעורים.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/trig-period.png" class="img-fluid figure-img" style="width:42.0%" alt="מעגל היחידה, קשת כתומה באורך תטא ולולאה סגולה של סיבוב שלם שחוזרת לאותה נקודה"></p>
+<figcaption>אחרי <span class="math inline">\(\theta\)</span> (בכתום) הולכים עוד סיבוב שלם (בסגול) וחוזרים לאותה נקודה.</figcaption>
+</figure>
 </div>
-<details class="thmcollapse thmfoldable lecture-answer"><summary>מאיפה זה בא? כל תכונה היא ציור</summary>
-<div class="lecture-answer" title="מאיפה זה בא? כל תכונה היא ציור">
-<p>כל אחת מהתכונות היא תיאור של מה שקורה על המעגל:</p>
-<ul>
-<li>(א) הליכה של עוד <span class="math inline">\(2\pi\)</span> היא עוד סיבוב שלם, שמחזיר אותנו לאותה נקודה.</li>
-<li>(ב) כל נקודה על מעגל היחידה נמצאת בין <span class="math inline">\(-1\)</span> ל-<span class="math inline">\(1\)</span> בכל אחד מהשיעורים.</li>
-<li>(ג) המרחק של הנקודה מהראשית הוא <span class="math inline">\(1\)</span>, ולפי משפט פיתגורס <span class="math inline">\(.\cos^2\theta + \sin^2\theta = 1^2\)</span></li>
-<li>(ד) הליכה של <span class="math inline">\(-\theta\)</span> (עם כיוון השעון) מגיעה לשיקוף של הנקודה ביחס לציר <span class="math inline">\(x\)</span>: שיעור ה-<span class="math inline">\(x\)</span> נשאר, ושיעור ה-<span class="math inline">\(y\)</span> מחליף סימן.</li>
-<li>(ה) עוד חצי סיבוב מביא אותנו לנקודה הנגדית במעגל, ששני השיעורים שלה מחליפים סימן.</li>
-<li>(ו) הנקודות שמתאימות ל-<span class="math inline">\(\theta\)</span> ול-<span class="math inline">\(\pi - \theta\)</span> הן שיקוף זו של זו ביחס לציר <span class="math inline">\(.y\)</span></li>
-<li>(ז) הנקודות שמתאימות ל-<span class="math inline">\(\theta\)</span> ול-<span class="math inline">\(\frac{\pi}{2} - \theta\)</span> הן שיקוף זו של זו ביחס לישר <span class="math inline">\(y = x\)</span>, ושיקוף כזה מחליף בין השיעורים.</li>
-</ul>
 </div>
 </details>
+<p>(ב) <strong>חסימות</strong>: <span class="math inline">\(-1 \le \sin\theta \le 1\)</span> ו-<span class="math inline">\(.{-}1 \le \cos\theta \le 1\)</span></p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>מאיפה זה בא?</summary>
+<div class="lecture-answer" title="מאיפה זה בא?">
+<p>מעגל היחידה כלוא בריבוע שצלעותיו על הישרים <span class="math inline">\(x = \pm 1\)</span> ו-<span class="math inline">\(.y = \pm 1\)</span> לכן לכל נקודה עליו שני השיעורים, <span class="math inline">\(\cos\theta\)</span> ו-<span class="math inline">\(,\sin\theta\)</span> בין <span class="math inline">\(-1\)</span> ל-<span class="math inline">\(.1\)</span></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/trig-bounded.png" class="img-fluid figure-img" style="width:42.0%" alt="מעגל היחידה בתוך ריבוע מקווקו, ונקודה על המעגל עם ההיטלים שלה על הצירים"></p>
+<figcaption>מעגל היחידה בתוך הריבוע המקווקו. ההיטלים של כל נקודה על המעגל נופלים בין <span class="math inline">\(-1\)</span> ל-<span class="math inline">\(1\)</span>.</figcaption>
+</figure>
+</div>
+</div>
+</details>
+<p>(ג) <strong>זהות פיתגורס</strong>: <span class="math inline">\(.\sin^2\theta + \cos^2\theta = 1\)</span></p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>מאיפה זה בא?</summary>
+<div class="lecture-answer" title="מאיפה זה בא?">
+<p>מהנקודה <span class="math inline">\((\cos\theta, \sin\theta)\)</span> מורידים אנך לציר <span class="math inline">\(.x\)</span> מתקבל משולש ישר-זווית: הניצבים באורך <span class="math inline">\(|\cos\theta|\)</span> ו-<span class="math inline">\(,|\sin\theta|\)</span> והיתר הוא רדיוס, באורך <span class="math inline">\(.1\)</span> לפי משפט פיתגורס <span class="math inline">\(.\cos^2\theta + \sin^2\theta = 1^2 = 1\)</span></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/trig-pythagoras.png" class="img-fluid figure-img" style="width:42.0%" alt="מעגל היחידה ובתוכו משולש ישר-זווית מהראשית אל הנקודה על המעגל, עם ניצבים קוסינוס תטא וסינוס תטא ויתר אחת"></p>
+<figcaption>משולש ישר-זווית עם הניצבים <span class="math inline">\(\cos\theta\)</span> ו-<span class="math inline">\(\sin\theta\)</span> והיתר <span class="math inline">\(1\)</span>.</figcaption>
+</figure>
+</div>
+</div>
+</details>
+<p>(ד) <strong>זוגיות</strong>: <span class="math inline">\(\cos(-\theta) = \cos\theta\)</span> ו-<span class="math inline">\(.\sin(-\theta) = -\sin\theta\)</span></p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>מאיפה זה בא?</summary>
+<div class="lecture-answer" title="מאיפה זה בא?">
+<p>הליכה של <span class="math inline">\(-\theta\)</span> היא אותה הליכה, אבל עם כיוון השעון. מגיעים לנקודה הסימטרית ביחס לציר <span class="math inline">\(:x\)</span> שיעור ה-<span class="math inline">\(x\)</span> נשאר, ושיעור ה-<span class="math inline">\(y\)</span> מחליף סימן.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/trig-even.png" class="img-fluid figure-img" style="width:42.0%" alt="שתי קשתות מהנקודה אחת אפס, אחת למעלה ואחת למטה, והנקודות שבקצותיהן סימטריות ביחס לציר x"></p>
+<figcaption><span class="math inline">\(\theta\)</span> נגד כיוון השעון (בכתום) ו-<span class="math inline">\(-\theta\)</span> עם כיוון השעון (בירוק): שתי נקודות סימטריות ביחס לציר <span class="math inline">\(x\)</span>.</figcaption>
+</figure>
+</div>
+</div>
+</details>
+<p>(ה) <strong>חצי סיבוב</strong>: <span class="math inline">\(\sin(\theta + \pi) = -\sin\theta\)</span> ו-<span class="math inline">\(.\cos(\theta + \pi) = -\cos\theta\)</span></p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>מאיפה זה בא?</summary>
+<div class="lecture-answer" title="מאיפה זה בא?">
+<p>עוד חצי סיבוב מביא לנקודה הנגדית במעגל, בקצה השני של הקוטר. שני השיעורים שלה מחליפים סימן.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/trig-half-turn.png" class="img-fluid figure-img" style="width:42.0%" alt="קשת כתומה באורך תטא ואחריה חצי סיבוב סגול, עד הנקודה הנגדית במעגל"></p>
+<figcaption>אחרי <span class="math inline">\(\theta\)</span> הולכים עוד <span class="math inline">\(\pi\)</span> (בסגול) ומגיעים לנקודה הנגדית.</figcaption>
+</figure>
+</div>
+</div>
+</details>
+<p>(ו) <strong>שיקוף ביחס לציר <span class="math inline">\(y\)</span></strong>: <span class="math inline">\(\sin(\pi - \theta) = \sin\theta\)</span> ו-<span class="math inline">\(.\cos(\pi - \theta) = -\cos\theta\)</span></p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>מאיפה זה בא?</summary>
+<div class="lecture-answer" title="מאיפה זה בא?">
+<p>כדי להגיע ל-<span class="math inline">\(\pi - \theta\)</span> הולכים חצי סיבוב, עד <span class="math inline">\(,(-1, 0)\)</span> וחוזרים <span class="math inline">\(\theta\)</span> אחורה. זו תמונת ראי של ההליכה ל-<span class="math inline">\(\theta\)</span> ביחס לציר <span class="math inline">\(:y\)</span> שיעור ה-<span class="math inline">\(y\)</span> נשאר, ושיעור ה-<span class="math inline">\(x\)</span> מחליף סימן.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/trig-reflect-y.png" class="img-fluid figure-img" style="width:42.0%" alt="שתי קשתות באורך תטא, אחת מימין ואחת משמאל, והנקודות שבקצותיהן באותו גובה"></p>
+<figcaption>הקשת מ-<span class="math inline">\((1, 0)\)</span> והקשת מ-<span class="math inline">\((-1, 0)\)</span> שתיהן באורך <span class="math inline">\(\theta\)</span>: הנקודות סימטריות ביחס לציר <span class="math inline">\(y\)</span>.</figcaption>
+</figure>
+</div>
+</div>
+</details>
+<p>(ז) <strong>זווית משלימה</strong>: <span class="math inline">\(\sin\left(\frac{\pi}{2} - \theta\right) = \cos\theta\)</span> ו-<span class="math inline">\(.\cos\left(\frac{\pi}{2} - \theta\right) = \sin\theta\)</span></p>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>מאיפה זה בא?</summary>
+<div class="lecture-answer" title="מאיפה זה בא?">
+<p>כדי להגיע ל-<span class="math inline">\(\frac{\pi}{2} - \theta\)</span> הולכים רבע סיבוב, עד <span class="math inline">\(,(0, 1)\)</span> וחוזרים <span class="math inline">\(\theta\)</span> אחורה. זו תמונת ראי של ההליכה ל-<span class="math inline">\(\theta\)</span> ביחס לישר <span class="math inline">\(,y = x\)</span> ושיקוף ביחס לישר הזה מחליף בין שני השיעורים.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/trig-complement.png" class="img-fluid figure-img" style="width:42.0%" alt="שתי קשתות באורך תטא, מהנקודה אחת אפס ומהנקודה אפס אחת, והנקודות שבקצותיהן סימטריות ביחס לישר y שווה x"></p>
+<figcaption>הקשת מ-<span class="math inline">\((1, 0)\)</span> והקשת מ-<span class="math inline">\((0, 1)\)</span> שתיהן באורך <span class="math inline">\(\theta\)</span>: הנקודות סימטריות ביחס לישר <span class="math inline">\(y = x\)</span>.</figcaption>
+</figure>
+</div>
+</div>
+</details>
+</div>
 <p>לתכונה (א) יש שם: <span class="term"><strong>מחזוריות</strong></span>.</p>
 <div id="box-def-periodic" class="thmbox thmbox-definition" title="פונקציה מחזורית">
 <p><strong>הגדרה 1.9.5 — פונקציה מחזורית.</strong></p>
@@ -4581,28 +4731,49 @@ window.Quarto = {
 </div>
 <div id="box-exm-special-angles" class="thmbox thmbox-example" title="הזוויות $\frac{\pi}{4}$, $\frac{\pi}{6}$ ו-$\frac{\pi}{3}$">
 <p><strong>דוגמה 1.9.8 — הזוויות <span class="math inline">\(\frac{\pi}{4}\)</span>, <span class="math inline">\(\frac{\pi}{6}\)</span> ו-<span class="math inline">\(\frac{\pi}{3}\)</span>.</strong></p>
-<p><strong>(א)</strong> חשבו את <span class="math inline">\(\sin\frac{\pi}{4}\)</span> ואת <span class="math inline">\(.\cos\frac{\pi}{4}\)</span></p>
-<details class="thmcollapse thmfoldable lecture-answer"><summary>תשובה לסעיף (א)</summary>
-<div class="lecture-answer" title="תשובה לסעיף (א)">
-<p>זו חצי מזווית ישרה, ולכן הנקודה נמצאת על הישר <span class="math inline">\(,y = x\)</span> כלומר <span class="math inline">\(.\cos\frac{\pi}{4} = \sin\frac{\pi}{4}\)</span> נסמן את הערך המשותף ב-<span class="math inline">\(s\)</span> ונציב בזהות פיתגורס: <span class="math display">\[\begin{aligned} s^2 + s^2 &amp;= 1 \\ 2s^2 &amp;= 1 \\ s^2 &amp;= \tfrac{1}{2} \\ s &amp;= \tfrac{1}{\sqrt{2}} = \tfrac{\sqrt{2}}{2} \end{aligned}\]</span> (לקחנו את השורש החיובי, כי הנקודה ברביע הראשון.) לכן <span class="math inline">\(.\sin\frac{\pi}{4} = \cos\frac{\pi}{4} = \frac{\sqrt{2}}{2}\)</span></p>
+<p><strong>(א)</strong> חשבו את <span class="math inline">\(\sin\frac{\pi}{4}\)</span> ואת <span class="math inline">\(.\cos\frac{\pi}{4}\)</span> <span>(שורש כותבים <code>sqrt</code> או בכפתור √, למשל <code>sqrt(3)/2</code>.)</span></p>
+<div class="fill">
+<p>הזווית <span class="math inline">\(\frac{\pi}{4}\)</span> היא חצי מזווית ישרה, ולכן הנקודה נמצאת על הישר <span class="math inline">\(,y = x\)</span> כלומר <span class="math inline">\(.\cos\frac{\pi}{4} = \sin\frac{\pi}{4}\)</span> נסמן את הערך המשותף ב-<span class="math inline">\(s\)</span> ונציב בזהות פיתגורס (תכונה (ג)), <span class="math inline">\(.s^2 + s^2 = 1\)</span> השלימו:</p>
+<p><span class="fill-ltr"><span class="math inline">\(s^2 =\)</span> <span class="blank" data-ans="1/2"><span class="math inline">\(\frac{1}{2}\)</span></span></span></p>
+<p>הנקודה ברביע הראשון, ולכן <span class="math inline">\(s\)</span> חיובי:</p>
+<p><span class="fill-ltr"><span class="math inline">\(\sin\frac{\pi}{4} = \cos\frac{\pi}{4} = s =\)</span> <span class="blank" data-ans="sqrt(2)/2"><span class="math inline">\(\frac{\sqrt{2}}{2}\)</span></span></span></p>
+<div class="hint">
+<p>מ-<span class="math inline">\(s^2 + s^2 = 1\)</span> מקבלים <span class="math inline">\(,2s^2 = 1\)</span> ואז מחלקים ב-<span class="math inline">\(.2\)</span></p>
 </div>
-</details>
+<div class="explain">
+<p><span class="math display">\[\begin{aligned} s^2 + s^2 &amp;= 1 \\ 2s^2 &amp;= 1 \\ s^2 &amp;= \tfrac{1}{2} \\ s &amp;= \tfrac{1}{\sqrt{2}} = \tfrac{\sqrt{2}}{2} \end{aligned}\]</span> לקחנו את השורש החיובי, כי הנקודה ברביע הראשון.</p>
+</div>
+</div>
 <p><strong>(ב)</strong> חשבו את <span class="math inline">\(\sin\frac{\pi}{6}\)</span> ואת <span class="math inline">\(.\cos\frac{\pi}{6}\)</span></p>
-<details class="thmcollapse thmfoldable lecture-answer"><summary>תשובה לסעיף (ב)</summary>
-<div class="lecture-answer" title="תשובה לסעיף (ב)">
-<p>הנקודות שמתאימות ל-<span class="math inline">\(\frac{\pi}{6}\)</span> ול-<span class="math inline">\(-\frac{\pi}{6}\)</span> יוצרות משולש יחד עם הראשית. שתי הצלעות שיוצאות מהראשית הן רדיוסים, ולכן אורכן <span class="math inline">\(,1\)</span> והזווית ביניהן היא <span class="math inline">\(.\frac{\pi}{6} + \frac{\pi}{6} = \frac{\pi}{3}\)</span> במשולש שווה-שוקיים שתי זוויות הבסיס שוות, וסכום הזוויות במשולש הוא <span class="math inline">\(,\pi\)</span> ולכן כל אחת מזוויות הבסיס היא <span class="math inline">\(.\frac{1}{2}\left(\pi - \frac{\pi}{3}\right) = \frac{\pi}{3}\)</span> כל הזוויות שוות, כלומר המשולש שווה-צלעות, וגם הצלע השלישית באורך <span class="math inline">\(.1\)</span> הצלע האנכית שלו מחברת את <span class="math inline">\(\left(\cos\frac{\pi}{6}, \sin\frac{\pi}{6}\right)\)</span> ל-<span class="math inline">\(,\left(\cos\frac{\pi}{6}, -\sin\frac{\pi}{6}\right)\)</span> ולכן אורכה <span class="math inline">\(:2\sin\frac{\pi}{6}\)</span> <span class="math display">\[\begin{aligned} 2\sin\tfrac{\pi}{6} &amp;= 1 \\ \sin\tfrac{\pi}{6} &amp;= \tfrac{1}{2} \end{aligned}\]</span> מזהות פיתגורס: <span class="math display">\[\begin{aligned} \cos\tfrac{\pi}{6} &amp;= \sqrt{1 - \sin^2\tfrac{\pi}{6}} \\ &amp;= \sqrt{1 - \tfrac{1}{4}} \\ &amp;= \sqrt{\tfrac{3}{4}} = \tfrac{\sqrt{3}}{2}. \end{aligned}\]</span></p>
+<div class="fill">
+<p>נסתכל על הנקודות שמתאימות ל-<span class="math inline">\(\frac{\pi}{6}\)</span> ול-<span class="math inline">\(,-\frac{\pi}{6}\)</span> ועל המשולש שהן יוצרות יחד עם הראשית. שתי הצלעות שיוצאות מהראשית הן רדיוסים, ולכן אורכן <span class="math inline">\(.1\)</span> הזווית ביניהן:</p>
+<p><span class="fill-ltr"><span class="math inline">\(\frac{\pi}{6} + \frac{\pi}{6} =\)</span> <span class="blank" data-ans="pi/3"><span class="math inline">\(\frac{\pi}{3}\)</span></span></span></p>
+<p>המשולש שווה-שוקיים, ולכן שתי זוויות הבסיס שלו שוות. סכום הזוויות במשולש הוא <span class="math inline">\(,\pi\)</span> ולכן כל אחת מזוויות הבסיס היא</p>
+<p><span class="fill-ltr"><span class="math inline">\(\frac{1}{2}\left(\pi - \frac{\pi}{3}\right) =\)</span> <span class="blank" data-ans="pi/3"><span class="math inline">\(\frac{\pi}{3}\)</span></span></span></p>
+<p>כל הזוויות שוות, כלומר המשולש שווה-צלעות, וגם הצלע השלישית שלו, האנכית, באורך <span class="math inline">\(.1\)</span> היא מחברת את <span class="math inline">\(\left(\cos\frac{\pi}{6}, \sin\frac{\pi}{6}\right)\)</span> ל-<span class="math inline">\(,\left(\cos\frac{\pi}{6}, -\sin\frac{\pi}{6}\right)\)</span> ולכן אורכה <span class="math inline">\(.2\sin\frac{\pi}{6}\)</span> מכאן:</p>
+<p><span class="fill-ltr"><span class="math inline">\(\sin\frac{\pi}{6} =\)</span> <span class="blank" data-ans="1/2"><span class="math inline">\(\frac{1}{2}\)</span></span></span></p>
+<p>ומזהות פיתגורס (הקוסינוס חיובי ברביע הראשון):</p>
+<p><span class="fill-ltr"><span class="math inline">\(\cos\frac{\pi}{6} = \sqrt{1 - \sin^2\frac{\pi}{6}} =\)</span> <span class="blank" data-ans="sqrt(3)/2"><span class="math inline">\(\frac{\sqrt{3}}{2}\)</span></span></span></p>
+<div class="hint">
+<p>אורך הצלע האנכית הוא <span class="math inline">\(2\sin\frac{\pi}{6}\)</span> וגם <span class="math inline">\(,1\)</span> ולכן <span class="math inline">\(.2\sin\frac{\pi}{6} = 1\)</span></p>
 </div>
-</details>
+<div class="hint">
+<p><span class="math inline">\(.1 - \left(\frac{1}{2}\right)^2 = \frac{3}{4}\)</span></p>
+</div>
+<div class="explain">
+<p><span class="math display">\[\begin{aligned} 2\sin\tfrac{\pi}{6} &amp;= 1 \\ \sin\tfrac{\pi}{6} &amp;= \tfrac{1}{2} \end{aligned}\]</span> <span class="math display">\[\begin{aligned} \cos\tfrac{\pi}{6} &amp;= \sqrt{1 - \sin^2\tfrac{\pi}{6}} \\ &amp;= \sqrt{1 - \tfrac{1}{4}} \\ &amp;= \sqrt{\tfrac{3}{4}} \\ &amp;= \tfrac{\sqrt{3}}{2} \end{aligned}\]</span></p>
+</div>
+</div>
 <p><strong>(ג)</strong> חשבו את <span class="math inline">\(\sin\frac{\pi}{3}\)</span> ואת <span class="math inline">\(.\cos\frac{\pi}{3}\)</span></p>
-<details class="thmcollapse thmfoldable lecture-answer"><summary>תשובה לסעיף (ג)</summary>
-<div class="lecture-answer" title="תשובה לסעיף (ג)">
-<p>מתקיים <span class="math inline">\(,\frac{\pi}{2} - \frac{\pi}{6} = \frac{\pi}{3}\)</span> ולכן לפי תכונת הזווית המשלימה (ז): <span class="math display">\[\sin\tfrac{\pi}{3} = \cos\tfrac{\pi}{6} = \tfrac{\sqrt{3}}{2}, \qquad \cos\tfrac{\pi}{3} = \sin\tfrac{\pi}{6} = \tfrac{1}{2}\]</span></p>
+<div class="fill">
+<p>מתקיים <span class="math inline">\(,\frac{\pi}{2} - \frac{\pi}{6} = \frac{\pi}{3}\)</span> ולכן לפי תכונת הזווית המשלימה (ז) ולפי סעיף (ב):</p>
+<p><span class="fill-ltr"><span class="math inline">\(\sin\frac{\pi}{3} = \cos\frac{\pi}{6} =\)</span> <span class="blank" data-ans="sqrt(3)/2"><span class="math inline">\(\frac{\sqrt{3}}{2}\)</span></span></span></p>
+<p><span class="fill-ltr"><span class="math inline">\(\cos\frac{\pi}{3} = \sin\frac{\pi}{6} =\)</span> <span class="blank" data-ans="1/2"><span class="math inline">\(\frac{1}{2}\)</span></span></span></p>
 </div>
-</details>
 </div>
 <div id="box-exm-special-table" class="thmbox thmbox-example" title="טבלת הערכים המיוחדים">
 <p><strong>דוגמה 1.9.9 — טבלת הערכים המיוחדים.</strong></p>
-<p>מלאו את הטבלה בעזרת שתי הדוגמאות האחרונות. <span>(שורש כותבים <code>sqrt</code> או בכפתור √, למשל <code>sqrt(3)/2</code>.)</span></p>
+<p>מלאו את הטבלה בעזרת שתי הדוגמאות האחרונות.</p>
 <div class="fill">
 <table class="caption-top table">
 <colgroup>
@@ -4764,8 +4935,13 @@ window.Quarto = {
 <p><strong>(א)</strong> רבע סיבוב: <span class="blank" data-ans="pi/2"><span class="math inline">\(\frac{\pi}{2}\)</span></span></p>
 <p><strong>(ב)</strong> שישית סיבוב: <span class="blank" data-ans="pi/3"><span class="math inline">\(\frac{\pi}{3}\)</span></span></p>
 <p><strong>(ג)</strong> שלושה סיבובים שלמים: <span class="blank" data-ans="6pi"><span class="math inline">\(6\pi\)</span></span></p>
+<div class="hint">
+<p>סיבוב שלם הוא <span class="math inline">\(.2\pi\)</span></p>
+</div>
 <div class="explain">
-<p>סיבוב שלם הוא <span class="math inline">\(,2\pi\)</span> ולכן: <span class="math inline">\(,\frac{2\pi}{4} = \frac{\pi}{2}\)</span> <span class="math inline">\(\frac{2\pi}{6} = \frac{\pi}{3}\)</span> ו-<span class="math inline">\(.3 \cdot 2\pi = 6\pi\)</span></p>
+<p><strong>(א)</strong> <span class="math display">\[\begin{aligned} \tfrac{1}{4} \cdot 2\pi &amp;= \tfrac{2\pi}{4} \\ &amp;= \tfrac{\pi}{2} \end{aligned}\]</span></p>
+<p><strong>(ב)</strong> <span class="math display">\[\begin{aligned} \tfrac{1}{6} \cdot 2\pi &amp;= \tfrac{2\pi}{6} \\ &amp;= \tfrac{\pi}{3} \end{aligned}\]</span></p>
+<p><strong>(ג)</strong> <span class="math display">\[\begin{aligned} 3 \cdot 2\pi &amp;= 6\pi \end{aligned}\]</span></p>
 </div>
 </div>
 </div>
@@ -4788,7 +4964,7 @@ window.Quarto = {
 <p><strong>(ב)</strong> לפי תכונה (ה): <span class="math inline">\(.\cos\frac{4\pi}{3} = \cos\left(\frac{\pi}{3} + \pi\right) = -\cos\frac{\pi}{3} = -\frac{1}{2}\)</span></p>
 <p><strong>(ג)</strong> <span class="math inline">\(\frac{7\pi}{6} = \frac{\pi}{6} + \pi\)</span> ולפי (ה) הסינוס מחליף סימן.</p>
 <p><strong>(ד)</strong> <span class="math inline">\(\frac{3\pi}{4} = \pi - \frac{\pi}{4}\)</span> ולפי (ו) הקוסינוס מחליף סימן.</p>
-<p><strong>(ה)</strong> <span class="math inline">\(.\tan\frac{\pi}{3} = \frac{\sqrt{3}/2}{1/2} = \sqrt{3}\)</span></p>
+<p><strong>(ה)</strong> <span class="math display">\[\begin{aligned} \tan\tfrac{\pi}{3} &amp;= \frac{\sin\frac{\pi}{3}}{\cos\frac{\pi}{3}} \\ &amp;= \frac{\sqrt{3}/2}{1/2} \\ &amp;= \sqrt{3} \end{aligned}\]</span></p>
 <p><strong>(ו)</strong> הליכה של רבע סיבוב עם כיוון השעון מגיעה ל-<span class="math inline">\(.(0, -1)\)</span></p>
 <p><strong>(ז)</strong> <span class="math inline">\(,\frac{13\pi}{6} = 2\pi + \frac{\pi}{6}\)</span> סיבוב שלם ועוד <span class="math inline">\(.\frac{\pi}{6}\)</span></p>
 </div>
@@ -4825,7 +5001,7 @@ window.Quarto = {
 <p><strong>(א)</strong> <span class="math inline">\(,B = \pi\)</span> ולכן המחזור הוא <span class="math inline">\(.\frac{2\pi}{\pi} = 2\)</span> התמונה: <span class="math display">\[\begin{aligned} -1 &amp;\le \cos(\pi x) \le 1 \\ -2 &amp;\le 2\cos(\pi x) \le 2 \\ -1 &amp;\le 2\cos(\pi x) + 1 \le 3 \end{aligned}\]</span></p>
 <p><strong>(ב)</strong> <span class="math inline">\(B = 3\)</span> ו-<span class="math inline">\(.|A| = 4\)</span></p>
 <p><strong>(ג)</strong> <span class="math inline">\(,B = \frac{1}{2}\)</span> ולכן המחזור הוא <span class="math inline">\(.\frac{2\pi}{1/2} = 4\pi\)</span> המינוס משקף, והתמונה נשארת <span class="math inline">\(.[-1, 1]\)</span></p>
-<p><strong>(ד)</strong> <span class="math inline">\(,-2 \le -2\sin x \le 2\)</span> ולכן <span class="math inline">\(.{-}1 \le 1 - 2\sin x \le 3\)</span></p>
+<p><strong>(ד)</strong> <span class="math display">\[\begin{aligned} -1 &amp;\le \sin x \le 1 \\ -2 &amp;\le -2\sin x \le 2 \\ -1 &amp;\le 1 - 2\sin x \le 3 \end{aligned}\]</span> בשורה השנייה כפלנו ב-<span class="math inline">\(,-2\)</span> ולכן הכיוון התהפך: <span class="math inline">\(,2 \ge -2\sin x \ge -2\)</span> וכתבנו את זה מהקטן לגדול. בשלישית הוספנו <span class="math inline">\(.1\)</span></p>
 </div>
 </div>
 </div>
@@ -4968,24 +5144,26 @@ window.Quarto = {
 </div>
 <div id="box-exm-exp-transform" class="thmbox thmbox-example" title="הזזה ומתיחה של הפונקציה המעריכית">
 <p><strong>דוגמה 1.10.3 — הזזה ומתיחה של הפונקציה המעריכית.</strong></p>
-<p>תארו את הגרף: תמונה, אסימפטוטה אופקית ונקודה אחת על הגרף.</p>
+<p>בכל סעיף הביאו את הגרף של המעריכית הבסיסית למקום, ואז מצאו את התמונה ונקודה אחת על הגרף.</p>
 <p><strong>(א)</strong> <span class="math inline">\(y = 2 - 3^x\)</span></p>
+<iframe class="widget-frame" src="widgets/ch01/move-graph.html?f=exp3&amp;a=-1&amp;d=2" loading="lazy" title="מזיזים את הגרף של 3 בחזקת x"></iframe>
 <div class="fill">
-<p>התמונה: <span class="blank" data-ans="(-inf,2)"><span class="math inline">\((-\infty, 2)\)</span></span> האסימפטוטה האופקית: <span class="fill-ltr"><span class="math inline">\(y =\)</span> <span class="blank" data-ans="2"><span class="math inline">\(2\)</span></span></span> והגרף עובר דרך <span class="fill-ltr"><span class="math inline">\((0,{}\)</span> <span class="blank" data-ans="1"><span class="math inline">\(1\)</span></span><span class="math inline">\()\)</span></span></p>
+<p>התמונה: <span class="blank" data-ans="(-inf,2)"><span class="math inline">\((-\infty, 2)\)</span></span> והגרף עובר דרך <span class="fill-ltr"><span class="math inline">\((0,{}\)</span> <span class="blank" data-ans="1"><span class="math inline">\(1\)</span></span><span class="math inline">\()\)</span></span></p>
 <div class="explain">
 <p>נכתוב <span class="math inline">\(,y = -3^x + 2\)</span> ונבנה את הגרף בשני שלבים:</p>
 <ol type="1">
 <li><span class="math inline">\(-3^x\)</span> הוא שיקוף של <span class="math inline">\(3^x\)</span> ביחס לציר <span class="math inline">\(.x\)</span> מכיוון ש-<span class="math inline">\(,3^x &gt; 0\)</span> מתקבל <span class="math inline">\(,-3^x &lt; 0\)</span> והתמונה היא <span class="math inline">\(.(-\infty, 0)\)</span></li>
 <li>הוספת <span class="math inline">\(2\)</span> מזיזה למעלה ב-<span class="math inline">\(.2\)</span> התמונה הופכת ל-<span class="math inline">\(.(-\infty, 2)\)</span></li>
 </ol>
-<p>הישר <span class="math inline">\(y = 2\)</span> הוא <strong>אסימפטוטה אופקית</strong>: כאשר <span class="math inline">\(x\)</span> קטן מאוד (שלילי וגדול בערכו המוחלט), הביטוי <span class="math inline">\(3^x\)</span> קרוב מאוד ל-<span class="math inline">\(,0\)</span> ולכן <span class="math inline">\(y\)</span> קרוב מאוד ל-<span class="math inline">\(.2\)</span> נקודה על הגרף: עבור <span class="math inline">\(x = 0\)</span> מתקבל <span class="math inline">\(.y = 2 - 1 = 1\)</span></p>
+<p>נקודה על הגרף: עבור <span class="math inline">\(x = 0\)</span> מתקבל <span class="math inline">\(.y = 2 - 1 = 1\)</span></p>
 </div>
 </div>
 <p><strong>(ב)</strong> <span class="math inline">\(y = 2^{x+2} - 1\)</span></p>
+<iframe class="widget-frame" src="widgets/ch01/move-graph.html?f=exp2&amp;c=-2&amp;d=-1" loading="lazy" title="מזיזים את הגרף של 2 בחזקת x"></iframe>
 <div class="fill">
-<p>התמונה: <span class="blank" data-ans="(-1,inf)"><span class="math inline">\((-1, \infty)\)</span></span> האסימפטוטה האופקית: <span class="fill-ltr"><span class="math inline">\(y =\)</span> <span class="blank" data-ans="-1"><span class="math inline">\(-1\)</span></span></span> והגרף עובר דרך <span class="fill-ltr"><span class="math inline">\(({-}2,{}\)</span> <span class="blank" data-ans="0"><span class="math inline">\(0\)</span></span><span class="math inline">\()\)</span></span></p>
+<p>התמונה: <span class="blank" data-ans="(-1,inf)"><span class="math inline">\((-1, \infty)\)</span></span> והגרף עובר דרך <span class="fill-ltr"><span class="math inline">\(({-}2,{}\)</span> <span class="blank" data-ans="0"><span class="math inline">\(0\)</span></span><span class="math inline">\()\)</span></span></p>
 <div class="explain">
-<p>בתוך החזקה <span class="math inline">\(,x + 2\)</span> ולכן הזזה <strong>שמאלה</strong> ב-<span class="math inline">\(.2\)</span> מחוץ לה <span class="math inline">\(,-1\)</span> ולכן הזזה <strong>למטה</strong> ב-<span class="math inline">\(.1\)</span> התמונה של <span class="math inline">\(2^x\)</span> היא <span class="math inline">\(,(0, \infty)\)</span> ואחרי ההזזה למטה היא <span class="math inline">\(.(-1, \infty)\)</span> האסימפטוטה האופקית היא <span class="math inline">\(.y = -1\)</span> נקודה על הגרף: עבור <span class="math inline">\(x = -2\)</span> מתקבל <span class="math inline">\(.y = 2^0 - 1 = 0\)</span></p>
+<p>בתוך החזקה <span class="math inline">\(,x + 2\)</span> ולכן הזזה <strong>שמאלה</strong> ב-<span class="math inline">\(.2\)</span> מחוץ לה <span class="math inline">\(,-1\)</span> ולכן הזזה <strong>למטה</strong> ב-<span class="math inline">\(.1\)</span> התמונה של <span class="math inline">\(2^x\)</span> היא <span class="math inline">\(,(0, \infty)\)</span> ואחרי ההזזה למטה היא <span class="math inline">\(.(-1, \infty)\)</span> נקודה על הגרף: עבור <span class="math inline">\(x = -2\)</span> מתקבל <span class="math inline">\(.y = 2^0 - 1 = 0\)</span></p>
 </div>
 </div>
 </div>
@@ -5047,26 +5225,37 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="תרגילים-9">תרגילים</h3>
 <div id="box-q-exp" class="thmbox thmbox-question" title="מפשטים בצעדים">
 <p><strong>שאלה 1.10.4 — מפשטים בצעדים.</strong></p>
-<p>פשטו את <span class="math inline">\(\frac{4^x \cdot 2^3}{8^x}\)</span> לחזקה אחת של <span class="math inline">\(.2\)</span> כתבו כל שלב בשורה משלו. <span>(חזקה כותבים עם <code>^</code>, למשל <code>2^(3x)</code>.)</span></p>
-<div class="steps" start="4^x*2^3/8^x" data-goal="2^(3-x)" data-rules="כותבים בבסיס משותף|כפל חזקות: מחברים מעריכים|חילוק חזקות: מחסירים מעריכים|חזקה של חזקה: כופלים מעריכים|פישוט המעריך">
+<p>פשטו את <span class="math inline">\(\frac{4^x \cdot 2^3}{8^x}\)</span> לחזקה אחת של <span class="math inline">\(.2\)</span> <span>(חזקה כותבים עם <code>^</code>, למשל <code>2^(3x)</code>.)</span></p>
+<div class="derive" data-goal="2^(3-x)" start="4^x*2^3/8^x">
+<div class="step" data-line="2^[2x]*2^3/2^[3x]">
+<p>כותבים <span class="math inline">\(4^x = \left(2^2\right)^x\)</span> ו-<span class="math inline">\(,8^x = \left(2^3\right)^x\)</span> וכופלים מעריכים.</p>
+</div>
+<div class="step" data-line="2^[2x+3-3x]">
+<p>כפל חזקות: מחברים מעריכים. חילוק: מחסירים את המעריך של המכנה.</p>
+</div>
+<div class="step" data-line="2^[3-x]">
+<p>מפשטים את המעריך.</p>
+</div>
 <div class="hint">
 <p>כתבו קודם <span class="math inline">\(4 = 2^2\)</span> ו-<span class="math inline">\(,8 = 2^3\)</span> כלומר <span class="math inline">\(4^x = (2^2)^x = 2^{2x}\)</span> ו-<span class="math inline">\(.8^x = 2^{3x}\)</span></p>
 </div>
 <div class="hint">
 <p>אחר כך: במונה <span class="math inline">\(,2^{2x} \cdot 2^3 = 2^{2x + 3}\)</span> ובחילוק מחסירים את המעריך של המכנה.</p>
 </div>
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} \frac{4^x \cdot 2^3}{8^x} &amp;= \frac{\left(2^2\right)^x \cdot 2^3}{\left(2^3\right)^x} \\ &amp;= \frac{2^{2x} \cdot 2^3}{2^{3x}} \\ &amp;= 2^{2x + 3 - 3x} \\ &amp;= 2^{3 - x} \end{aligned}\]</span></p>
-</div>
 </div>
 </div>
 <div id="box-q-exp-graph" class="thmbox thmbox-question" title="תיאור גרף">
 <p><strong>שאלה 1.10.5 — תיאור גרף.</strong></p>
+<p>בכל סעיף הביאו את הגרף של המעריכית הבסיסית למקום, ואז מצאו את התמונה ואת נקודת החיתוך עם ציר <span class="math inline">\(.y\)</span></p>
 <div class="fill">
-<p><strong>(א)</strong> עבור <span class="math inline">\(y = 3^{-x} + 1\)</span>: התמונה היא <span class="blank" data-ans="(1,inf)"><span class="math inline">\((1, \infty)\)</span></span> והאסימפטוטה האופקית היא <span class="fill-ltr"><span class="math inline">\(y =\)</span> <span class="blank" data-ans="1"><span class="math inline">\(1\)</span></span></span></p>
-<p><strong>(ב)</strong> עבור <span class="math inline">\(y = 3 \cdot 2^x - 1\)</span>: התמונה היא <span class="blank" data-ans="(-1,inf)"><span class="math inline">\((-1, \infty)\)</span></span> והגרף חותך את ציר <span class="math inline">\(y\)</span> בגובה <span class="blank" data-ans="2"><span class="math inline">\(2\)</span></span></p>
+<p><strong>(א)</strong> <span class="math inline">\(y = 3^{-x} + 1\)</span></p>
+<iframe class="widget-frame" src="widgets/ch01/move-graph.html?f=exp3&amp;b=-1&amp;d=1" loading="lazy" title="מזיזים את הגרף של 3 בחזקת x"></iframe>
+<p>התמונה היא <span class="blank" data-ans="(1,inf)"><span class="math inline">\((1, \infty)\)</span></span> והגרף חותך את ציר <span class="math inline">\(y\)</span> בגובה <span class="blank" data-ans="2"><span class="math inline">\(2\)</span></span></p>
+<p><strong>(ב)</strong> <span class="math inline">\(y = 3 \cdot 2^x - 1\)</span></p>
+<iframe class="widget-frame" src="widgets/ch01/move-graph.html?f=exp2&amp;a=3&amp;d=-1" loading="lazy" title="מזיזים את הגרף של 2 בחזקת x"></iframe>
+<p>התמונה היא <span class="blank" data-ans="(-1,inf)"><span class="math inline">\((-1, \infty)\)</span></span> והגרף חותך את ציר <span class="math inline">\(y\)</span> בגובה <span class="blank" data-ans="2"><span class="math inline">\(2\)</span></span></p>
 <div class="explain">
-<p><strong>(א)</strong> <span class="math inline">\(,3^{-x} = \left(\frac{1}{3}\right)^x\)</span> פונקציה מעריכית <strong>יורדת</strong> עם תמונה <span class="math inline">\(.(0, \infty)\)</span> הוספת <span class="math inline">\(1\)</span> מזיזה למעלה, והגרף מתקרב לישר <span class="math inline">\(y = 1\)</span> כאשר <span class="math inline">\(x\)</span> גדל.</p>
+<p><strong>(א)</strong> <span class="math inline">\(,3^{-x} = \left(\frac{1}{3}\right)^x\)</span> פונקציה מעריכית <strong>יורדת</strong> עם תמונה <span class="math inline">\(.(0, \infty)\)</span> הוספת <span class="math inline">\(1\)</span> מזיזה למעלה, והתמונה הופכת ל-<span class="math inline">\(.(1, \infty)\)</span> עבור <span class="math inline">\(x = 0\)</span>: <span class="math inline">\(.y = 1 + 1 = 2\)</span></p>
 <p><strong>(ב)</strong> <span class="math inline">\(3 \cdot 2^x\)</span> מקבל את כל הערכים ב-<span class="math inline">\(,(0, \infty)\)</span> ואחרי הורדה ב-<span class="math inline">\(1\)</span> מתקבל <span class="math inline">\(.(-1, \infty)\)</span> עבור <span class="math inline">\(x = 0\)</span>: <span class="math inline">\(.y = 3 \cdot 1 - 1 = 2\)</span></p>
 </div>
 </div>
@@ -5084,7 +5273,11 @@ window.Quarto = {
 <p>המכנה במעריך הוא שורש, המונה הוא חזקה, והמינוס הוא הופכי. כדאי להתחיל בשורש.</p>
 </div>
 <div class="explain">
-<p><span class="math display">\[\begin{aligned} 16^{3/4} &amp;= \left(\sqrt[4]{16}\right)^3 = 2^3 = 8 \\ 9^{-1/2} &amp;= \frac{1}{\sqrt{9}} = \frac{1}{3} \\ \left(\tfrac{1}{4}\right)^{-2} &amp;= 4^2 = 16 \\ 32^{1/5} &amp;= \sqrt[5]{32} = 2 \\ 1000^{2/3} &amp;= \left(\sqrt[3]{1000}\right)^2 = 10^2 = 100 \end{aligned}\]</span></p>
+<p><strong>(א)</strong> <span class="math display">\[\begin{aligned} 16^{3/4} &amp;= \left(\sqrt[4]{16}\right)^3 \\ &amp;= 2^3 \\ &amp;= 8 \end{aligned}\]</span></p>
+<p><strong>(ב)</strong> <span class="math display">\[\begin{aligned} 9^{-1/2} &amp;= \frac{1}{9^{1/2}} \\ &amp;= \frac{1}{\sqrt{9}} \\ &amp;= \frac{1}{3} \end{aligned}\]</span></p>
+<p><strong>(ג)</strong> המינוס במעריך הופך את השבר: <span class="math display">\[\begin{aligned} \left(\tfrac{1}{4}\right)^{-2} &amp;= 4^2 \\ &amp;= 16 \end{aligned}\]</span></p>
+<p><strong>(ד)</strong> <span class="math display">\[\begin{aligned} 32^{1/5} &amp;= \sqrt[5]{32} \\ &amp;= 2 \end{aligned}\]</span> כי <span class="math inline">\(.2^5 = 32\)</span></p>
+<p><strong>(ה)</strong> <span class="math display">\[\begin{aligned} 1000^{2/3} &amp;= \left(\sqrt[3]{1000}\right)^2 \\ &amp;= 10^2 \\ &amp;= 100 \end{aligned}\]</span></p>
 </div>
 </div>
 </div>
@@ -5096,49 +5289,72 @@ window.Quarto = {
 <p><strong>(ב)</strong> <span class="fill-ltr"><span class="math inline">\(\left(2^x\right)^3 \cdot 2^{-x} =\)</span> <span class="blank" data-ans="2^(2x)" form="simple"><span class="math inline">\(2^{2x}\)</span></span></span></p>
 <p><strong>(ג)</strong> <span class="fill-ltr"><span class="math inline">\(\frac{9^x}{3^x} =\)</span> <span class="blank" data-ans="3^x" form="simple"><span class="math inline">\(3^x\)</span></span></span></p>
 <div class="explain">
-<p><strong>(א)</strong> מחברים מעריכים: <span class="math inline">\(.3 + 5 = 8\)</span> <strong>(ב)</strong> <span class="math inline">\(\left(2^x\right)^3 = 2^{3x}\)</span> ואחר כך <span class="math inline">\(.2^{3x} \cdot 2^{-x} = 2^{2x}\)</span> <strong>(ג)</strong> <span class="math inline">\(,9^x = \left(3^2\right)^x = 3^{2x}\)</span> ולכן <span class="math inline">\(.\frac{3^{2x}}{3^x} = 3^x\)</span></p>
+<p><strong>(א)</strong> בכפל מחברים מעריכים: <span class="math display">\[\begin{aligned} x^3 \cdot x^5 &amp;= x^{3 + 5} \\ &amp;= x^8 \end{aligned}\]</span></p>
+<p><strong>(ב)</strong> <span class="math display">\[\begin{aligned} \left(2^x\right)^3 \cdot 2^{-x} &amp;= 2^{3x} \cdot 2^{-x} \\ &amp;= 2^{3x - x} \\ &amp;= 2^{2x} \end{aligned}\]</span></p>
+<p><strong>(ג)</strong> <span class="math display">\[\begin{aligned} \frac{9^x}{3^x} &amp;= \frac{\left(3^2\right)^x}{3^x} \\ &amp;= \frac{3^{2x}}{3^x} \\ &amp;= 3^{2x - x} \\ &amp;= 3^x \end{aligned}\]</span></p>
 </div>
 </div>
 </div>
 <div id="box-q-exp-eq" class="thmbox thmbox-question" title="משוואות עם בסיס משותף">
 <p><strong>שאלה 1.10.8 — משוואות עם בסיס משותף.</strong></p>
 <p><strong>(א)</strong> פתרו את <span class="math inline">\(.4^x = 8\)</span> כתבו את שני האגפים כחזקות של <span class="math inline">\(,2\)</span> ואז השוו את המעריכים.</p>
-<div class="steps" start="4^x=8" data-rules="simplify|log|mulpos|add|swap">
+<div class="derive" start="4^x=8">
+<div class="step" data-line="2^[2x]=2^[3]">
+<p>כותבים את שני האגפים כחזקות של <span class="math inline">\(.2\)</span></p>
+</div>
+<div class="step" data-line="2x=[3]">
+<p>משווים מעריכים (מפעילים <span class="math inline">\(\log_2\)</span> על שני האגפים).</p>
+</div>
+<div class="step" data-line="x=[3/2]">
+<p>מחלקים ב-<span class="math inline">\(.2\)</span></p>
+</div>
 <div class="hint">
 <p><span class="math inline">\(4^x = 2^{2x}\)</span> ו-<span class="math inline">\(.8 = 2^3\)</span> מ-<span class="math inline">\(2^{2x} = 2^3\)</span> נובע <span class="math inline">\(2x = 3\)</span> (זה בדיוק “הפעלת <span class="math inline">\(\log_2\)</span> על שני האגפים”).</p>
 </div>
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} 4^x &amp;= 8 \\ 2^{2x} &amp;= 2^3 \\ 2x &amp;= 3 \\ x &amp;= \tfrac{3}{2} \end{aligned}\]</span></p>
-</div>
 </div>
 <p><strong>(ב)</strong> <span class="math inline">\(2^x = 32\)</span></p>
-<div class="steps" start="2^x=32" data-rules="simplify|log|mulpos|mulneg|add|swap">
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} 2^x &amp;= 32 \\ 2^x &amp;= 2^5 \\ x &amp;= 5 \end{aligned}\]</span></p>
+<div class="derive" start="2^x=32">
+<div class="step" data-line="2^x=2^[5]">
+<p>כותבים את <span class="math inline">\(32\)</span> כחזקה של <span class="math inline">\(.2\)</span></p>
+</div>
+<div class="step" data-line="x=[5]">
+<p>משווים מעריכים (מפעילים <span class="math inline">\(\log_2\)</span> על שני האגפים).</p>
 </div>
 </div>
 <div class="fill">
 <p><span class="fill-ltr"><span class="math inline">\(x =\)</span> <span class="blank" data-ans="5"><span class="math inline">\(5\)</span></span></span></p>
 </div>
 <p><strong>(ג)</strong> <span class="math inline">\(3^{x + 1} = 27\)</span></p>
-<div class="steps" start="3^(x+1)=27" data-rules="simplify|log|mulpos|mulneg|add|swap">
+<div class="derive" start="3^(x+1)=27">
+<div class="step" data-line="3^(x+1)=3^[3]">
+<p>כותבים את <span class="math inline">\(27\)</span> כחזקה של <span class="math inline">\(.3\)</span></p>
+</div>
+<div class="step" data-line="x+1=[3]">
+<p>משווים מעריכים.</p>
+</div>
+<div class="step" data-line="x=[2]">
+<p>מחסירים <span class="math inline">\(.1\)</span></p>
+</div>
 <div class="hint">
 <p><span class="math inline">\(.27 = 3^3\)</span></p>
-</div>
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} 3^{x + 1} &amp;= 27 \\ 3^{x + 1} &amp;= 3^3 \\ x + 1 &amp;= 3 \\ x &amp;= 2 \end{aligned}\]</span></p>
 </div>
 </div>
 <div class="fill">
 <p><span class="fill-ltr"><span class="math inline">\(x =\)</span> <span class="blank" data-ans="2"><span class="math inline">\(2\)</span></span></span></p>
 </div>
 <p><strong>(ד)</strong> <span class="math inline">\(\left(\frac{1}{2}\right)^x = 4\)</span> <span>(את <span class="math inline">\(\left(\frac{1}{2}\right)^x\)</span> כותבים <code>(1/2)^x</code>.)</span></p>
-<div class="steps" start="(1/2)^x=4" data-rules="simplify|log|mulpos|mulneg|add|swap">
+<div class="derive" start="(1/2)^x=4">
+<div class="step" data-line="2^[-x]=2^[2]">
+<p>כותבים את שני האגפים כחזקות של <span class="math inline">\(.2\)</span></p>
+</div>
+<div class="step" data-line="-x=[2]">
+<p>משווים מעריכים (מפעילים <span class="math inline">\(\log_2\)</span> על שני האגפים).</p>
+</div>
+<div class="step" data-line="x=[-2]">
+<p>כופלים ב-<span class="math inline">\(.{-}1\)</span></p>
+</div>
 <div class="hint">
 <p><span class="math inline">\(\left(\frac{1}{2}\right)^x = 2^{-x}\)</span> ו-<span class="math inline">\(.4 = 2^2\)</span></p>
-</div>
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} \left(\tfrac{1}{2}\right)^x &amp;= 4 \\ 2^{-x} &amp;= 2^2 \\ -x &amp;= 2 \\ x &amp;= -2 \end{aligned}\]</span> בשורה האחרונה כפלנו ב-<span class="math inline">\(.{-}1\)</span></p>
 </div>
 </div>
 <div class="fill">
@@ -5342,12 +5558,15 @@ window.Quarto = {
 <p>מצאו את הפונקציה ההפוכה.</p>
 <p><strong>(א)</strong> <span class="math inline">\(f(x) = 5x - 2\)</span></p>
 <p>כותבים <span class="math inline">\(y = 5x - 2\)</span> ומבודדים את <span class="math inline">\(x\)</span> צעד אחר צעד:</p>
-<div class="steps" start="y=5x-2" data-vars="x,y" data-solve="x" data-rules="add|mul|simplify|swap">
+<div class="derive" data-vars="x,y" data-solve="x" start="y=5x-2">
+<div class="step" data-line="y+[2]=5x">
+<p>מוסיפים <span class="math inline">\(2\)</span> לשני האגפים.</p>
+</div>
+<div class="step" data-line="x=[(y+2)/5]">
+<p>מחלקים ב-<span class="math inline">\(5\)</span> וכותבים את <span class="math inline">\(x\)</span> משמאל.</p>
+</div>
 <div class="hint">
 <p>מה מפריע ל-<span class="math inline">\(x\)</span> להיות לבד? קודם ה-<span class="math inline">\(,-2\)</span> ואחר כך הכפל ב-<span class="math inline">\(.5\)</span></p>
-</div>
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} y &amp;= 5x - 2 \\ y + 2 &amp;= 5x \\ x &amp;= \frac{y + 2}{5} \end{aligned}\]</span></p>
 </div>
 </div>
 <div class="fill">
@@ -5357,12 +5576,15 @@ window.Quarto = {
 </div>
 </div>
 <p><strong>(ב)</strong> <span class="math inline">\(f(x) = x^3 - 1\)</span></p>
-<div class="steps" start="y=x^3-1" data-vars="x,y" data-solve="x" data-rules="add|mul|root|simplify|swap">
+<div class="derive" data-vars="x,y" data-solve="x" start="y=x^3-1">
+<div class="step" data-line="y+[1]=x^3">
+<p>מוסיפים <span class="math inline">\(1\)</span> לשני האגפים.</p>
+</div>
+<div class="step" data-line="x=[cbrt(y+1)]">
+<p>מוציאים שורש שלישי משני האגפים.</p>
+</div>
 <div class="hint">
 <p>אחרי שמבודדים את <span class="math inline">\(,x^3\)</span> מוציאים שורש שלישי משני האגפים. <span>(שורש שלישי כותבים <code>cbrt</code>, למשל <code>cbrt(y+1)</code>.)</span></p>
-</div>
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} y &amp;= x^3 - 1 \\ y + 1 &amp;= x^3 \\ x &amp;= \sqrt[3]{y + 1} \end{aligned}\]</span></p>
 </div>
 </div>
 <div class="fill">
@@ -5409,9 +5631,12 @@ window.Quarto = {
 <div id="box-q-inverse" class="thmbox thmbox-question" title="מוצאים הפוכה ובודקים">
 <p><strong>שאלה 1.11.8 — מוצאים הפוכה ובודקים.</strong></p>
 <p>מצאו את הפונקציה ההפוכה ל-<span class="math inline">\(.f(x) = \frac{x + 3}{2}\)</span></p>
-<div class="steps" start="y=(x+3)/2" data-vars="x,y" data-solve="x" data-rules="add|mul|simplify|swap">
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} y &amp;= \frac{x + 3}{2} \\ 2y &amp;= x + 3 \\ x &amp;= 2y - 3 \end{aligned}\]</span></p>
+<div class="derive" data-vars="x,y" data-solve="x" start="y=(x+3)/2">
+<div class="step" data-line="2y=x+[3]">
+<p>כופלים ב-<span class="math inline">\(.2\)</span></p>
+</div>
+<div class="step" data-line="x=[2y-3]">
+<p>מחסירים <span class="math inline">\(.3\)</span></p>
 </div>
 </div>
 <div class="fill">
@@ -5530,30 +5755,42 @@ window.Quarto = {
 <p><strong>שאלה 1.11.11 — עוד פונקציות הפוכות.</strong></p>
 <p>מצאו את <span class="math inline">\(f^{-1}(x)\)</span> בכל סעיף: כותבים <span class="math inline">\(,y = f(x)\)</span> מבודדים את <span class="math inline">\(x\)</span> צעד אחר צעד, ומחליפים שמות.</p>
 <p><strong>(א)</strong> <span class="math inline">\(f(x) = 3 - 4x\)</span></p>
-<div class="steps" start="y=3-4x" data-vars="x,y" data-solve="x" data-rules="add|mul|simplify|swap">
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} y &amp;= 3 - 4x \\ y + 4x &amp;= 3 \\ 4x &amp;= 3 - y \\ x &amp;= \frac{3 - y}{4} \end{aligned}\]</span> הוספנו <span class="math inline">\(4x\)</span> לשני האגפים, חיסרנו <span class="math inline">\(,y\)</span> וחילקנו ב-<span class="math inline">\(.4\)</span></p>
+<div class="derive" data-vars="x,y" data-solve="x" start="y=3-4x">
+<div class="step" data-line="4x=[3-y]">
+<p>מוסיפים <span class="math inline">\(4x\)</span> לשני האגפים ומחסירים <span class="math inline">\(.y\)</span></p>
+</div>
+<div class="step" data-line="x=[(3-y)/4]">
+<p>מחלקים ב-<span class="math inline">\(.4\)</span></p>
 </div>
 </div>
 <div class="fill">
 <p><span class="fill-ltr"><span class="math inline">\(f^{-1}(x) =\)</span> <span class="blank" data-ans="(3-x)/4"><span class="math inline">\(\frac{3 - x}{4}\)</span></span></span></p>
 </div>
 <p><strong>(ב)</strong> <span class="math inline">\(f(x) = \frac{2x + 1}{3}\)</span></p>
-<div class="steps" start="y=(2x+1)/3" data-vars="x,y" data-solve="x" data-rules="add|mul|simplify|swap">
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} y &amp;= \frac{2x + 1}{3} \\ 3y &amp;= 2x + 1 \\ 3y - 1 &amp;= 2x \\ x &amp;= \frac{3y - 1}{2} \end{aligned}\]</span> כפלנו ב-<span class="math inline">\(,3\)</span> חיסרנו <span class="math inline">\(,1\)</span> וחילקנו ב-<span class="math inline">\(.2\)</span></p>
+<div class="derive" data-vars="x,y" data-solve="x" start="y=(2x+1)/3">
+<div class="step" data-line="3y=2x+[1]">
+<p>כופלים ב-<span class="math inline">\(.3\)</span></p>
+</div>
+<div class="step" data-line="[3y-1]=2x">
+<p>מחסירים <span class="math inline">\(.1\)</span></p>
+</div>
+<div class="step" data-line="x=[(3y-1)/2]">
+<p>מחלקים ב-<span class="math inline">\(.2\)</span></p>
 </div>
 </div>
 <div class="fill">
 <p><span class="fill-ltr"><span class="math inline">\(f^{-1}(x) =\)</span> <span class="blank" data-ans="(3x-1)/2"><span class="math inline">\(\frac{3x - 1}{2}\)</span></span></span></p>
 </div>
 <p><strong>(ג)</strong> <span class="math inline">\(f(x) = \sqrt[3]{x + 2}\)</span> <span>(שורש שלישי כותבים <code>cbrt</code>, למשל <code>cbrt(x+2)</code>.)</span></p>
-<div class="steps" start="y=cbrt(x+2)" data-vars="x,y" data-solve="x" data-rules="add|mul|power|root|simplify|swap">
+<div class="derive" data-vars="x,y" data-solve="x" start="y=cbrt(x+2)">
+<div class="step" data-line="y^3=x+[2]">
+<p>מעלים את שני האגפים בחזקה שלישית.</p>
+</div>
+<div class="step" data-line="x=[y^3-2]">
+<p>מחסירים <span class="math inline">\(.2\)</span></p>
+</div>
 <div class="hint">
 <p>כדי להיפטר מהשורש השלישי, מעלים את שני האגפים בחזקה שלישית.</p>
-</div>
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} y &amp;= \sqrt[3]{x + 2} \\ y^3 &amp;= x + 2 \\ x &amp;= y^3 - 2 \end{aligned}\]</span></p>
 </div>
 </div>
 <div class="fill">
@@ -5575,7 +5812,9 @@ window.Quarto = {
 <p><strong>(ב)</strong> <span class="fill-ltr"><span class="math inline">\(f^{-1}\big(f(5)\big) =\)</span> <span class="blank" data-ans="5"><span class="math inline">\(5\)</span></span></span></p>
 <p><strong>(ג)</strong> <span class="fill-ltr"><span class="math inline">\(f\big(f^{-1}(13)\big) =\)</span> <span class="blank" data-ans="13"><span class="math inline">\(13\)</span></span></span></p>
 <div class="explain">
-<p><strong>(א)</strong> מחפשים <span class="math inline">\(x\)</span> שעבורו <span class="math inline">\(:f(x) = 7\)</span> <span class="math inline">\(,3x + 1 = 7\)</span> כלומר <span class="math inline">\(.x = 2\)</span> <strong>(ב)</strong>, <strong>(ג)</strong> כל אחת מהפונקציות “מבטלת” את השנייה.</p>
+<p><strong>(א)</strong> <span class="math inline">\(f^{-1}(7)\)</span> הוא ה-<span class="math inline">\(x\)</span> שעבורו <span class="math inline">\(:f(x) = 7\)</span> <span class="math display">\[\begin{aligned} 3x + 1 &amp;= 7 \\ 3x &amp;= 6 \\ x &amp;= 2 \end{aligned}\]</span></p>
+<p><strong>(ב)</strong> <span class="math display">\[\begin{aligned} f(5) &amp;= 3 \cdot 5 + 1 \\ &amp;= 16 \end{aligned}\]</span> ו-<span class="math inline">\(f^{-1}(16)\)</span> הוא ה-<span class="math inline">\(x\)</span> שעבורו <span class="math inline">\(,f(x) = 16\)</span> כלומר <span class="math inline">\(.5\)</span> באופן כללי ההפוכה מבטלת את <span class="math inline">\(,f\)</span> כלומר <span class="math inline">\(.f^{-1}(f(x)) = x\)</span></p>
+<p><strong>(ג)</strong> <span class="math inline">\(f^{-1}(13)\)</span> הוא ה-<span class="math inline">\(x\)</span> שעבורו <span class="math inline">\(:f(x) = 13\)</span> <span class="math display">\[\begin{aligned} 3x + 1 &amp;= 13 \\ 3x &amp;= 12 \\ x &amp;= 4 \end{aligned}\]</span> ולכן <span class="math inline">\(.f\big(f^{-1}(13)\big) = f(4) = 13\)</span> באופן כללי <span class="math inline">\(.f\big(f^{-1}(y)\big) = y\)</span></p>
 </div>
 </div>
 </div>
@@ -5685,7 +5924,7 @@ window.Quarto = {
 </section>
 <section id="הגרף" class="level4 unnumbered">
 <h4 class="unnumbered anchored" data-anchor-id="הגרף">הגרף</h4>
-<p>הגרף של <span class="math inline">\(\log_2 x\)</span> הוא השיקוף של הגרף של <span class="math inline">\(2^x\)</span> ביחס לישר <span class="math inline">\(.y = x\)</span> הוא עובר דרך <span class="math inline">\(,(1, 0)\)</span> עולה, גדל לאט מאוד, ויש לו אסימפטוטה אנכית ב-<span class="math inline">\(:x = 0\)</span> כאשר <span class="math inline">\(x\)</span> מתקרב ל-<span class="math inline">\(0\)</span> מימין, <span class="math inline">\(\log_2 x\)</span> יורד מתחת לכל מספר.</p>
+<p>הגרף של <span class="math inline">\(\log_2 x\)</span> הוא השיקוף של הגרף של <span class="math inline">\(2^x\)</span> ביחס לישר <span class="math inline">\(.y = x\)</span> הוא עובר דרך <span class="math inline">\(,(1, 0)\)</span> עולה, וגדל לאט מאוד. כאשר <span class="math inline">\(x\)</span> מתקרב ל-<span class="math inline">\(0\)</span> מימין, <span class="math inline">\(\log_2 x\)</span> יורד מתחת לכל מספר.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="figures/exp-log.png" class="img-fluid figure-img" style="width:50.0%" alt="גרף שתיים בחזקת x וגרף לוגריתם לפי בסיס שתיים, סימטריים ביחס לישר y שווה x"></p>
@@ -5731,12 +5970,15 @@ window.Quarto = {
 </div>
 </div>
 <p><strong>(ד)</strong> פתרו את <span class="math inline">\(.\log_2 x = 3\)</span></p>
-<div class="steps" start="log_2(x)=3" data-rules="exp|log|simplify|add|mulpos|swap">
+<div class="derive" start="log_2(x)=3">
+<div class="step" data-line="x=2^[3]">
+<p>מעלים את <span class="math inline">\(2\)</span> בחזקת שני האגפים, כי <span class="math inline">\(.2^{\log_2 x} = x\)</span></p>
+</div>
+<div class="step" data-line="x=[8]">
+<p>מחשבים.</p>
+</div>
 <div class="hint">
 <p>העלו את <span class="math inline">\(2\)</span> בחזקת שני האגפים. מה זה <span class="math inline">\(?2^{\log_2 x}\)</span></p>
-</div>
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} \log_2 x &amp;= 3 \\ x &amp;= 2^3 \\ x &amp;= 8 \end{aligned}\]</span> בשורה השנייה העלינו את <span class="math inline">\(2\)</span> בחזקת שני האגפים, כי <span class="math inline">\(.2^{\log_2 x} = x\)</span></p>
 </div>
 </div>
 <div class="fill">
@@ -5746,24 +5988,36 @@ window.Quarto = {
 </div>
 </div>
 <p><strong>(ה)</strong> פתרו את <span class="math inline">\(.2^{2x - 1} = 7\)</span> <span>(לוגריתם לפי בסיס <span class="math inline">\(2\)</span> כותבים <code>log_2</code>, למשל <code>log_2(7)</code>.)</span></p>
-<div class="steps" start="2^(2x-1)=7" data-rules="log|add|mulpos|simplify|swap">
+<div class="derive" start="2^(2x-1)=7">
+<div class="step" data-line="2x-1=[log_2(7)]">
+<p>מפעילים <span class="math inline">\(\log_2\)</span> על שני האגפים.</p>
+</div>
+<div class="step" data-line="2x=[1+log_2(7)]">
+<p>מוסיפים <span class="math inline">\(.1\)</span></p>
+</div>
+<div class="step" data-line="x=[(1+log_2(7))/2]">
+<p>מחלקים ב-<span class="math inline">\(.2\)</span></p>
+</div>
 <div class="hint">
 <p>הפעילו <span class="math inline">\(\log_2\)</span> על שני האגפים. מה זה <span class="math inline">\(?\log_2\left(2^{2x - 1}\right)\)</span></p>
-</div>
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} 2^{2x - 1} &amp;= 7 \\ 2x - 1 &amp;= \log_2 7 \\ 2x &amp;= 1 + \log_2 7 \\ x &amp;= \frac{1 + \log_2 7}{2} \end{aligned}\]</span></p>
 </div>
 </div>
 <div class="fill">
 <p><span class="fill-ltr"><span class="math inline">\(x =\)</span> <span class="blank" data-ans="(1+log_2(7))/2" data-w="14"><span class="math inline">\(\frac{1 + \log_2 7}{2}\)</span></span></span></p>
 </div>
 <p><strong>(ו)</strong> פתרו את <span class="math inline">\(.5 \cdot 2^x = 40\)</span></p>
-<div class="steps" start="5*2^x=40" data-rules="mulpos|mulneg|add|simplify|log|exp|swap">
+<div class="derive" start="5*2^x=40">
+<div class="step" data-line="2^x=[8]">
+<p>מחלקים ב-<span class="math inline">\(.5\)</span></p>
+</div>
+<div class="step" data-line="2^x=2^[3]">
+<p>כותבים את <span class="math inline">\(8\)</span> כחזקה של <span class="math inline">\(.2\)</span></p>
+</div>
+<div class="step" data-line="x=[3]">
+<p>משווים מעריכים (מפעילים <span class="math inline">\(\log_2\)</span> על שני האגפים).</p>
+</div>
 <div class="hint">
 <p>קודם בודדו את החזקה <span class="math inline">\(,2^x\)</span> ואז כתבו את <span class="math inline">\(8\)</span> כחזקה של <span class="math inline">\(.2\)</span></p>
-</div>
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} 5 \cdot 2^x &amp;= 40 \\ 2^x &amp;= 8 \\ 2^x &amp;= 2^3 \\ x &amp;= 3 \end{aligned}\]</span> חילקנו ב-<span class="math inline">\(,5\)</span> כתבנו <span class="math inline">\(8 = 2^3\)</span> והשווינו מעריכים (הפעלת <span class="math inline">\(\log_2\)</span> על שני האגפים).</p>
 </div>
 </div>
 <div class="fill">
@@ -5787,11 +6041,12 @@ window.Quarto = {
 <div class="fill">
 <p><span class="fill-ltr"><span class="math inline">\(x =\)</span> <span class="blank" data-ans="log_2(3)/(log_2(3)-1)" data-w="16"><span class="math inline">\(\frac{\log_2 3}{\log_2 3 - 1}\)</span></span></span></p>
 </div>
-<p><strong>(ח)</strong> מצאו את תחום ההגדרה של <span class="math inline">\(y = \log_2(x - 3) + 1\)</span> ותארו את הגרף.</p>
+<p><strong>(ח)</strong> מצאו את תחום ההגדרה של <span class="math inline">\(,y = \log_2(x - 3) + 1\)</span> והביאו את הגרף של <span class="math inline">\(\log_2 x\)</span> למקום.</p>
+<iframe class="widget-frame" src="widgets/ch01/move-graph.html?f=log2&amp;c=3&amp;d=1" loading="lazy" title="מזיזים את הגרף של הלוגריתם"></iframe>
 <div class="fill">
-<p>תחום ההגדרה: <span class="blank" data-ans="(3,inf)"><span class="math inline">\((3, \infty)\)</span></span> האסימפטוטה האנכית: <span class="fill-ltr"><span class="math inline">\(x =\)</span> <span class="blank" data-ans="3"><span class="math inline">\(3\)</span></span></span></p>
+<p>תחום ההגדרה: <span class="blank" data-ans="(3,inf)"><span class="math inline">\((3, \infty)\)</span></span> והגרף עובר דרך <span class="fill-ltr"><span class="math inline">\((4,{}\)</span> <span class="blank" data-ans="1"><span class="math inline">\(1\)</span></span><span class="math inline">\()\)</span></span></p>
 <div class="explain">
-<p>מה שבתוך הלוגריתם חייב להיות חיובי: <span class="math display">\[\begin{aligned} x - 3 &amp;&gt; 0 \\ x &amp;&gt; 3 \end{aligned}\]</span> הגרף הוא הגרף של <span class="math inline">\(\log_2 x\)</span> אחרי הזזה ימינה ב-<span class="math inline">\(3\)</span> ולמעלה ב-<span class="math inline">\(,1\)</span> והאסימפטוטה האנכית עוברת מ-<span class="math inline">\(x = 0\)</span> ל-<span class="math inline">\(.x = 3\)</span></p>
+<p>מה שבתוך הלוגריתם חייב להיות חיובי: <span class="math display">\[\begin{aligned} x - 3 &amp;&gt; 0 \\ x &amp;&gt; 3 \end{aligned}\]</span> הגרף הוא הגרף של <span class="math inline">\(\log_2 x\)</span> אחרי הזזה ימינה ב-<span class="math inline">\(3\)</span> ולמעלה ב-<span class="math inline">\(.1\)</span> נקודה על הגרף: עבור <span class="math inline">\(x = 4\)</span> מתקבל <span class="math inline">\(.y = \log_2 1 + 1 = 1\)</span></p>
 </div>
 </div>
 </div>
@@ -5891,7 +6146,8 @@ window.Quarto = {
 <p>נמצא את השורשים של המכנה: <span class="math display">\[\begin{aligned} x^2 - 4 &amp;= 0 \\ (x - 2)(x + 2) &amp;= 0 \\ x &amp;= \pm 2 \end{aligned}\]</span></p>
 </div>
 </div>
-<p><strong>(ב)</strong> איך מתקבל הגרף של <span class="math inline">\(\frac{1}{x - 2} + 3\)</span> מהגרף של <span class="math inline">\(?\frac{1}{x}\)</span> איפה האסימפטוטות?</p>
+<p><strong>(ב)</strong> איך מתקבל הגרף של <span class="math inline">\(\frac{1}{x - 2} + 3\)</span> מהגרף של <span class="math inline">\(?\frac{1}{x}\)</span> הביאו את הגרף למקום. איפה האסימפטוטות?</p>
+<iframe class="widget-frame" src="widgets/ch01/move-graph.html?f=inv&amp;c=2&amp;d=3" loading="lazy" title="מזיזים את הגרף של אחד חלקי x"></iframe>
 <div class="fill">
 <p>האסימפטוטה האנכית: <span class="fill-ltr"><span class="math inline">\(x =\)</span> <span class="blank" data-ans="2"><span class="math inline">\(2\)</span></span></span> והאופקית: <span class="fill-ltr"><span class="math inline">\(y =\)</span> <span class="blank" data-ans="3"><span class="math inline">\(3\)</span></span></span></p>
 <div class="explain">
@@ -5997,7 +6253,11 @@ window.Quarto = {
 <p>שואלים: באיזו חזקה צריך להעלות את הבסיס כדי לקבל את המספר?</p>
 </div>
 <div class="explain">
-<p><strong>(א)</strong> <span class="math inline">\(.5^3 = 125\)</span> <strong>(ב)</strong> <span class="math inline">\(.2^{-3} = \frac{1}{8}\)</span> <strong>(ג)</strong> <span class="math inline">\(.7^0 = 1\)</span> <strong>(ד)</strong> <span class="math inline">\(.4^{1/2} = \sqrt{4} = 2\)</span> <strong>(ה)</strong> הלוגריתם והמעריכית מבטלים זה את זה.</p>
+<p><strong>(א)</strong> מחפשים את החזקה שבה צריך להעלות את <span class="math inline">\(5\)</span> כדי לקבל <span class="math inline">\(:125\)</span> <span class="math display">\[\begin{aligned} 5^3 &amp;= 125 \end{aligned}\]</span> ולכן <span class="math inline">\(.\log_5 125 = 3\)</span></p>
+<p><strong>(ב)</strong> <span class="math display">\[\begin{aligned} 2^{-3} &amp;= \tfrac{1}{2^3} \\ &amp;= \tfrac{1}{8} \end{aligned}\]</span> ולכן <span class="math inline">\(.\log_2\frac{1}{8} = -3\)</span></p>
+<p><strong>(ג)</strong> <span class="math inline">\(,7^0 = 1\)</span> ולכן <span class="math inline">\(.\log_7 1 = 0\)</span></p>
+<p><strong>(ד)</strong> <span class="math display">\[\begin{aligned} 4^{1/2} &amp;= \sqrt{4} \\ &amp;= 2 \end{aligned}\]</span> ולכן <span class="math inline">\(.\log_4 2 = \frac{1}{2}\)</span></p>
+<p><strong>(ה)</strong> <span class="math inline">\(\log_3 11\)</span> הוא החזקה שבה מעלים את <span class="math inline">\(3\)</span> כדי לקבל <span class="math inline">\(,11\)</span> ולכן <span class="math inline">\(.3^{\log_3 11} = 11\)</span></p>
 </div>
 </div>
 </div>
@@ -6011,8 +6271,9 @@ window.Quarto = {
 <p>חברו קודם ללוגריתם אחד בעזרת חוקים (א)–(ג), ורק אחר כך חשבו.</p>
 </div>
 <div class="explain">
-<p><strong>(א)</strong> <span class="math inline">\(.\log_2\frac{40}{5} = \log_2 8 = 3\)</span> <strong>(ב)</strong> <span class="math inline">\(.\log_6(4 \cdot 9) = \log_6 36 = 2\)</span></p>
-<p><strong>(ג)</strong> <span class="math display">\[\begin{aligned} 2\log_3 6 - \log_3 4 &amp;= \log_3 36 - \log_3 4 \\ &amp;= \log_3 9 = 2 \end{aligned}\]</span></p>
+<p><strong>(א)</strong> <span class="math display">\[\begin{aligned} \log_2 40 - \log_2 5 &amp;= \log_2\tfrac{40}{5} \\ &amp;= \log_2 8 \\ &amp;= 3 \end{aligned}\]</span></p>
+<p><strong>(ב)</strong> <span class="math display">\[\begin{aligned} \log_6 4 + \log_6 9 &amp;= \log_6(4 \cdot 9) \\ &amp;= \log_6 36 \\ &amp;= 2 \end{aligned}\]</span></p>
+<p><strong>(ג)</strong> <span class="math display">\[\begin{aligned} 2\log_3 6 - \log_3 4 &amp;= \log_3 6^2 - \log_3 4 \\ &amp;= \log_3 36 - \log_3 4 \\ &amp;= \log_3\tfrac{36}{4} \\ &amp;= \log_3 9 \\ &amp;= 2 \end{aligned}\]</span></p>
 </div>
 </div>
 </div>
@@ -6020,9 +6281,9 @@ window.Quarto = {
 <p><strong>שאלה 1.12.13 — משוואות מעריכיות ולוגריתמיות.</strong></p>
 <p>פתרו כל סעיף צעד אחר צעד. במשוואה מעריכית מפעילים <span class="math inline">\(\log\)</span> על שני האגפים; במשוואה לוגריתמית מעלים את הבסיס בחזקת שני האגפים. <span>(לוגריתם לפי בסיס <span class="math inline">\(3\)</span> כותבים <code>log_3</code>, למשל <code>log_3(20)</code>.)</span></p>
 <p><strong>(א)</strong> <span class="math inline">\(3^x = 20\)</span></p>
-<div class="steps" start="3^x=20" data-rules="log|exp|add|mulpos|mulneg|simplify|swap">
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} 3^x &amp;= 20 \\ x &amp;= \log_3 20 \end{aligned}\]</span> הפעלנו <span class="math inline">\(\log_3\)</span> על שני האגפים.</p>
+<div class="derive" start="3^x=20">
+<div class="step" data-line="x=[log_3(20)]">
+<p>מפעילים <span class="math inline">\(\log_3\)</span> על שני האגפים.</p>
 </div>
 </div>
 <div class="fill">
@@ -6032,27 +6293,39 @@ window.Quarto = {
 </div>
 </div>
 <p><strong>(ב)</strong> <span class="math inline">\(\log_3 x = 4\)</span></p>
-<div class="steps" start="log_3(x)=4" data-rules="log|exp|add|mulpos|mulneg|simplify|swap">
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} \log_3 x &amp;= 4 \\ x &amp;= 3^4 \\ x &amp;= 81 \end{aligned}\]</span> העלינו את <span class="math inline">\(3\)</span> בחזקת שני האגפים.</p>
+<div class="derive" start="log_3(x)=4">
+<div class="step" data-line="x=3^[4]">
+<p>מעלים את <span class="math inline">\(3\)</span> בחזקת שני האגפים.</p>
+</div>
+<div class="step" data-line="x=[81]">
+<p>מחשבים.</p>
 </div>
 </div>
 <div class="fill">
 <p><span class="fill-ltr"><span class="math inline">\(x =\)</span> <span class="blank" data-ans="81"><span class="math inline">\(81\)</span></span></span></p>
 </div>
 <p><strong>(ג)</strong> <span class="math inline">\(\log_2(x + 1) = 3\)</span></p>
-<div class="steps" start="log_2(x+1)=3" data-rules="log|exp|add|mulpos|mulneg|simplify|swap">
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} \log_2(x + 1) &amp;= 3 \\ x + 1 &amp;= 2^3 \\ x + 1 &amp;= 8 \\ x &amp;= 7 \end{aligned}\]</span> העלינו את <span class="math inline">\(2\)</span> בחזקת שני האגפים, חישבנו, וחיסרנו <span class="math inline">\(.1\)</span></p>
+<div class="derive" start="log_2(x+1)=3">
+<div class="step" data-line="x+1=2^[3]">
+<p>מעלים את <span class="math inline">\(2\)</span> בחזקת שני האגפים.</p>
+</div>
+<div class="step" data-line="x+1=[8]">
+<p>מחשבים.</p>
+</div>
+<div class="step" data-line="x=[7]">
+<p>מחסירים <span class="math inline">\(.1\)</span></p>
 </div>
 </div>
 <div class="fill">
 <p><span class="fill-ltr"><span class="math inline">\(x =\)</span> <span class="blank" data-ans="7"><span class="math inline">\(7\)</span></span></span></p>
 </div>
 <p><strong>(ד)</strong> <span class="math inline">\(2^{x + 1} = 5\)</span></p>
-<div class="steps" start="2^(x+1)=5" data-rules="log|exp|add|mulpos|mulneg|simplify|swap">
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} 2^{x + 1} &amp;= 5 \\ x + 1 &amp;= \log_2 5 \\ x &amp;= \log_2 5 - 1 \end{aligned}\]</span> הפעלנו <span class="math inline">\(\log_2\)</span> על שני האגפים, וחיסרנו <span class="math inline">\(.1\)</span></p>
+<div class="derive" start="2^(x+1)=5">
+<div class="step" data-line="x+1=[log_2(5)]">
+<p>מפעילים <span class="math inline">\(\log_2\)</span> על שני האגפים.</p>
+</div>
+<div class="step" data-line="x=[log_2(5)-1]">
+<p>מחסירים <span class="math inline">\(.1\)</span></p>
 </div>
 </div>
 <div class="fill">
@@ -6092,7 +6365,9 @@ window.Quarto = {
 </div>
 <div class="explain">
 <p><strong>(א)</strong> <span class="math display">\[\begin{aligned} 4 - x^2 &amp;&gt; 0 \\ x^2 &amp;&lt; 4 \\ -2 &amp;&lt; x &lt; 2 \end{aligned}\]</span> (בשורה האחרונה: <span class="math inline">\(x^2 &lt; 4\)</span> פירושו <span class="math inline">\(,|x| &lt; 2\)</span> כלומר המרחק של <span class="math inline">\(x\)</span> מ-<span class="math inline">\(0\)</span> קטן מ-<span class="math inline">\(2\)</span>.)</p>
-<p><strong>(ב)</strong> <span class="math inline">\(.x &gt; 5\)</span> <strong>(ג)</strong> <span class="math inline">\(.x &lt; 9\)</span> <strong>(ד)</strong> <span class="math inline">\(,x^2 &gt; 1\)</span> כלומר <span class="math inline">\(,|x| &gt; 1\)</span> ולכן <span class="math inline">\(x &gt; 1\)</span> או <span class="math inline">\(.x &lt; -1\)</span></p>
+<p><strong>(ב)</strong> <span class="math display">\[\begin{aligned} x - 5 &amp;&gt; 0 \\ x &amp;&gt; 5 \end{aligned}\]</span></p>
+<p><strong>(ג)</strong> <span class="math display">\[\begin{aligned} 9 - x &amp;&gt; 0 \\ 9 &amp;&gt; x \end{aligned}\]</span></p>
+<p><strong>(ד)</strong> <span class="math display">\[\begin{aligned} x^2 - 1 &amp;&gt; 0 \\ x^2 &amp;&gt; 1 \end{aligned}\]</span> כלומר <span class="math inline">\(,|x| &gt; 1\)</span> ולכן <span class="math inline">\(x &gt; 1\)</span> או <span class="math inline">\(.x &lt; -1\)</span></p>
 </div>
 </div>
 </div>
@@ -6108,8 +6383,11 @@ window.Quarto = {
 <p>שורש אי-זוגי מוגדר לכל מספר; שורש זוגי רק למספרים אי-שליליים.</p>
 </div>
 <div class="explain">
-<p><strong>(א)</strong> <span class="math inline">\(.(-5)^3 = -125\)</span> <strong>(ב)</strong> <span class="math inline">\(.2^4 = 16\)</span> <strong>(ג)</strong> שורש שלישי (אי-זוגי) מוגדר לכל מספר, ולכן אין שום דרישה.</p>
-<p><strong>(ד)</strong> <span class="math display">\[\begin{aligned} 2 - x &amp;\ge 0 \\ 2 &amp;\ge x \end{aligned}\]</span> <strong>(ה)</strong> רק השורש הריבועי דורש משהו: <span class="math inline">\(.x - 4 \ge 0\)</span></p>
+<p><strong>(א)</strong> <span class="math inline">\(,(-5)^3 = -125\)</span> ולכן <span class="math inline">\(.\sqrt[3]{-125} = -5\)</span></p>
+<p><strong>(ב)</strong> <span class="math display">\[\begin{aligned} 16^{1/4} &amp;= \sqrt[4]{16} \\ &amp;= 2 \end{aligned}\]</span> כי <span class="math inline">\(.2^4 = 16\)</span></p>
+<p><strong>(ג)</strong> שורש שלישי (אי-זוגי) מוגדר לכל מספר, ולכן אין שום דרישה.</p>
+<p><strong>(ד)</strong> שורש רביעי (זוגי) דורש מספר אי-שלילי: <span class="math display">\[\begin{aligned} 2 - x &amp;\ge 0 \\ 2 &amp;\ge x \end{aligned}\]</span></p>
+<p><strong>(ה)</strong> השורש השלישי מוגדר לכל מספר, ולכן רק השורש הריבועי דורש משהו: <span class="math display">\[\begin{aligned} x - 4 &amp;\ge 0 \\ x &amp;\ge 4 \end{aligned}\]</span></p>
 </div>
 </div>
 </div>
@@ -6144,10 +6422,13 @@ window.Quarto = {
 <p>ב-(ז): נסמן <span class="math inline">\(.\theta = \arcsin\frac{3}{5}\)</span> אז <span class="math inline">\(\sin\theta = \frac{3}{5}\)</span> ו-<span class="math inline">\(\theta\)</span> בקטע שבו הקוסינוס אינו שלילי. השתמשו בזהות פיתגורס.</p>
 </div>
 <div class="explain">
-<p><strong>(א)</strong> <span class="math inline">\(\cos\frac{\pi}{3} = \frac{1}{2}\)</span> ו-<span class="math inline">\(.\frac{\pi}{3} \in [0, \pi]\)</span> <strong>(ב)</strong> <span class="math inline">\(\arctan\)</span> אי-זוגית: <span class="math inline">\(.\arctan(-1) = -\arctan 1 = -\frac{\pi}{4}\)</span></p>
-<p><strong>(ג)</strong> <span class="math inline">\(\arcsin\)</span> אי-זוגית: <span class="math inline">\(.\arcsin\left(-\frac{1}{2}\right) = -\frac{\pi}{6}\)</span> <strong>(ד)</strong> <span class="math inline">\(\cos\frac{2\pi}{3} = -\frac{1}{2}\)</span> ו-<span class="math inline">\(.\frac{2\pi}{3} \in [0, \pi]\)</span> <strong>(ה)</strong> <span class="math inline">\(.\tan\frac{\pi}{3} = \sqrt{3}\)</span></p>
-<p><strong>(ו)</strong> מבפנים החוצה: <span class="math inline">\(,\sin\frac{5\pi}{6} = \frac{1}{2}\)</span> ו-<span class="math inline">\(.\arcsin\frac{1}{2} = \frac{\pi}{6}\)</span></p>
-<p><strong>(ז)</strong> <span class="math display">\[\begin{aligned} \cos\theta &amp;= \sqrt{1 - \sin^2\theta} \\ &amp;= \sqrt{1 - \tfrac{9}{25}} = \tfrac{4}{5} \end{aligned}\]</span> לקחנו את השורש החיובי, כי <span class="math inline">\(\theta \in \left[-\frac{\pi}{2}, \frac{\pi}{2}\right]\)</span> ושם <span class="math inline">\(.\cos\theta \ge 0\)</span></p>
+<p><strong>(א)</strong> מחפשים זווית ב-<span class="math inline">\([0, \pi]\)</span> שהקוסינוס שלה <span class="math inline">\(.\frac{1}{2}\)</span> מתקיים <span class="math inline">\(\cos\frac{\pi}{3} = \frac{1}{2}\)</span> ו-<span class="math inline">\(,\frac{\pi}{3} \in [0, \pi]\)</span> ולכן <span class="math inline">\(.\arccos\frac{1}{2} = \frac{\pi}{3}\)</span></p>
+<p><strong>(ב)</strong> <span class="math inline">\(\arctan\)</span> אי-זוגית: <span class="math display">\[\begin{aligned} \arctan(-1) &amp;= -\arctan 1 \\ &amp;= -\tfrac{\pi}{4} \end{aligned}\]</span> כי <span class="math inline">\(\tan\frac{\pi}{4} = 1\)</span> ו-<span class="math inline">\(.\frac{\pi}{4} \in \left(-\frac{\pi}{2}, \frac{\pi}{2}\right)\)</span></p>
+<p><strong>(ג)</strong> <span class="math inline">\(\arcsin\)</span> אי-זוגית: <span class="math display">\[\begin{aligned} \arcsin\left(-\tfrac{1}{2}\right) &amp;= -\arcsin\tfrac{1}{2} \\ &amp;= -\tfrac{\pi}{6} \end{aligned}\]</span></p>
+<p><strong>(ד)</strong> מחפשים זווית ב-<span class="math inline">\([0, \pi]\)</span> שהקוסינוס שלה <span class="math inline">\(.{-}\frac{1}{2}\)</span> לפי תכונה (ו): <span class="math display">\[\begin{aligned} \cos\tfrac{2\pi}{3} &amp;= \cos\left(\pi - \tfrac{\pi}{3}\right) \\ &amp;= -\cos\tfrac{\pi}{3} \\ &amp;= -\tfrac{1}{2} \end{aligned}\]</span> ו-<span class="math inline">\(,\frac{2\pi}{3} \in [0, \pi]\)</span> ולכן <span class="math inline">\(.\arccos\left(-\frac{1}{2}\right) = \frac{2\pi}{3}\)</span></p>
+<p><strong>(ה)</strong> <span class="math display">\[\begin{aligned} \tan\tfrac{\pi}{3} &amp;= \frac{\sin\frac{\pi}{3}}{\cos\frac{\pi}{3}} \\ &amp;= \frac{\sqrt{3}/2}{1/2} \\ &amp;= \sqrt{3} \end{aligned}\]</span> ו-<span class="math inline">\(,\frac{\pi}{3} \in \left(-\frac{\pi}{2}, \frac{\pi}{2}\right)\)</span> ולכן <span class="math inline">\(.\arctan\sqrt{3} = \frac{\pi}{3}\)</span></p>
+<p><strong>(ו)</strong> מבפנים החוצה. לפי תכונה (ו), <span class="math inline">\(:\sin\frac{5\pi}{6} = \sin\left(\pi - \frac{\pi}{6}\right) = \frac{1}{2}\)</span> <span class="math display">\[\begin{aligned} \arcsin\left(\sin\tfrac{5\pi}{6}\right) &amp;= \arcsin\tfrac{1}{2} \\ &amp;= \tfrac{\pi}{6} \end{aligned}\]</span></p>
+<p><strong>(ז)</strong> נסמן <span class="math inline">\(,\theta = \arcsin\frac{3}{5}\)</span> כלומר <span class="math inline">\(\sin\theta = \frac{3}{5}\)</span> ו-<span class="math inline">\(.\theta \in \left[-\frac{\pi}{2}, \frac{\pi}{2}\right]\)</span> בקטע הזה <span class="math inline">\(,\cos\theta \ge 0\)</span> ולכן מזהות פיתגורס: <span class="math display">\[\begin{aligned} \cos\theta &amp;= \sqrt{1 - \sin^2\theta} \\ &amp;= \sqrt{1 - \tfrac{9}{25}} \\ &amp;= \sqrt{\tfrac{16}{25}} \\ &amp;= \tfrac{4}{5} \end{aligned}\]</span></p>
 </div>
 </div>
 </div>

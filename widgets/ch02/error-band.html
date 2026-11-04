@@ -11,7 +11,15 @@
   canvas { display: block; width: 100%; height: auto; }
   .row { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem 0.9rem; margin-top: 0.55rem; }
   .row input[type=range] { flex: 1 1 220px; direction: ltr; }
-  select { font: inherit; padding: .2rem .4rem; border: 1px solid #94a3b8; border-radius: 8px; background: #fff; }
+  /* math typeset in plain HTML: italic variables, real fractions, superscripts */
+  .m, .opt .f { direction: ltr; unicode-bidi: isolate; font: 17px "Cambria Math", "Times New Roman", serif; }
+  .fr { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; font-size: .9em; line-height: 1.1; margin: 0 .1em; }
+  .fr > span:first-child { border-bottom: 1px solid currentColor; padding: 0 .15em; }
+  .opts { display: flex; flex-wrap: wrap; gap: .4rem; }
+  .opt { display: inline-flex; align-items: center; gap: .3rem; padding: .2rem .6rem; border: 1px solid #cbd5e1; border-radius: 8px; cursor: pointer; background: #fff; }
+  .opt:has(input:checked) { border-color: #4f46e5; background: #eef2ff; }
+  .opt input { margin: 0; }
+  .now { text-align: center; margin-bottom: .2rem; }
   .m { direction: ltr; unicode-bidi: isolate; display: inline-block; font: 16px "Cambria Math", "Times New Roman", serif; }
   .read { padding: .35rem .6rem; border-radius: 8px; background: #f8fafc; border: 1px solid #e2e8f0; }
   .read.good { background: #f0fdf4; border-color: #bbf7d0; }
@@ -20,17 +28,11 @@
 </head>
 <body>
 <div class="w">
+  <div class="now"><span class="m" id="now"></span> <span id="lim"></span></div>
   <canvas id="cv" width="780" height="300"></canvas>
-  <div class="row">
-    <label for="seq">הסדרה:</label>
-    <select id="seq">
-      <option value="0">1/n</option>
-      <option value="1">(n+2)/n</option>
-      <option value="2">(−1)ⁿ/n</option>
-      <option value="3">1 + sin(n)/n</option>
-      <option value="4">(−1)ⁿ</option>
-    </select>
-    <span id="lim"></span>
+  <div class="row" role="radiogroup" aria-label="הסדרה">
+    <span>הסדרה:</span>
+    <div class="opts" id="opts"></div>
   </div>
   <div class="row">
     <label for="eps">השגיאה המותרת <span class="m">ε</span>:</label>
@@ -47,14 +49,23 @@
   var W = cv.width, H = cv.height, PADL = 46, PADR = 16, PADT = 16, PADB = 34;
   var EPS = [0.5, 0.2, 0.1, 0.05, 0.02, 0.01, 0.005];
   // L: the limit (null: the sequence diverges; then the band is drawn around `around`)
+  function fr(a, b) { return "<span class='fr'><span>" + a + "</span><span>" + b + "</span></span>"; }
+  var N_ = "<i>n</i>", POW = "(−1)<sup><i>n</i></sup>";
   var SEQS = [
-    { f: function (n) { return 1 / n; }, L: 0, tex: "1/n", lo: -0.15, hi: 1.05 },
-    { f: function (n) { return (n + 2) / n; }, L: 1, tex: "(n+2)/n", lo: 0.85, hi: 3.05 },
-    { f: function (n) { return (n % 2 ? -1 : 1) / n; }, L: 0, tex: "(−1)ⁿ/n", lo: -1.05, hi: 0.6 },
-    { f: function (n) { return 1 + Math.sin(n) / n; }, L: 1, tex: "1 + sin(n)/n", lo: 0.55, hi: 1.9 },
-    { f: function (n) { return n % 2 ? -1 : 1; }, L: null, around: 1, tex: "(−1)ⁿ", lo: -1.3, hi: 1.3 }
+    { f: function (n) { return 1 / n; }, L: 0, html: fr("1", N_), lo: -0.15, hi: 1.05 },
+    { f: function (n) { return (n + 2) / n; }, L: 1, html: fr(N_ + " + 2", N_), lo: 0.85, hi: 3.05 },
+    { f: function (n) { return (n % 2 ? -1 : 1) / n; }, L: 0, html: fr(POW, N_), lo: -1.05, hi: 0.6 },
+    { f: function (n) { return 1 + Math.sin(n) / n; }, L: 1, html: "1 + " + fr("sin " + N_, N_), lo: 0.55, hi: 1.9 },
+    { f: function (n) { return n % 2 ? -1 : 1; }, L: null, around: 1, html: POW, lo: -1.3, hi: 1.3 }
   ];
-  var sel = document.getElementById("seq"), slider = document.getElementById("eps");
+  var opts = document.getElementById("opts");
+  SEQS.forEach(function (S, i) {
+    var lab = document.createElement("label"); lab.className = "opt";
+    lab.innerHTML = "<input type='radio' name='seq' value='" + i + "'" + (i ? "" : " checked") + "><span class='f'>" + S.html + "</span>";
+    opts.appendChild(lab);
+  });
+  var sel = { get value() { return document.querySelector("input[name=seq]:checked").value; } };
+  var slider = document.getElementById("eps");
   var read = document.getElementById("read"), epsval = document.getElementById("epsval"), limEl = document.getElementById("lim");
   var SCAN = 20000;
 
@@ -110,7 +121,8 @@
       ctx.beginPath(); ctx.arc(X(n), Y(Math.max(S.lo, Math.min(S.hi, v))), r, 0, 2 * Math.PI); ctx.fill();
     }
     epsval.textContent = "ε = " + e;
-    limEl.innerHTML = S.L === null ? "<span>אין לה גבול</span>" : "<span>הגבול: <span class='m'>L = " + S.L + "</span></span>";
+    document.getElementById("now").innerHTML = "<i>a</i><sub><i>n</i></sub> = " + S.html;
+    limEl.innerHTML = S.L === null ? "<span>(אין לה גבול)</span>" : "<span>(הגבול: <span class='m'><i>L</i> = " + S.L + "</span>)</span>";
     if (N) {
       read.className = "row read good";
       read.innerHTML = "<span>החל מ-<span class='m'>n = " + N + "</span> <b>כל</b> האיברים בתוך הרצועה: <span class='m'>|a<sub>n</sub> − " + S.L + "| &lt; " + e + "</span>. האיברים האדומים, שלפני המקום הזה, אינם משנים את הגבול.</span>";
@@ -119,7 +131,7 @@
       read.innerHTML = "<span>אין מקום שממנו כל האיברים בתוך הרצועה סביב <span class='m'>" + center + "</span>: האיברים קופצים בין <span class='m'>1</span> ל-<span class='m'>−1</span>, ושום רצועה צרה לא מכילה את שניהם. כך גם סביב כל מספר אחר.</span>";
     }
   }
-  sel.addEventListener("change", draw);
+  opts.addEventListener("change", draw);
   slider.addEventListener("input", draw);
   draw();
 })();

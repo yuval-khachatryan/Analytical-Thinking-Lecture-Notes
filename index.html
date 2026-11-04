@@ -392,11 +392,11 @@ details.lecture-solution { margin-top: -.4rem; }
 
 /* A small label in front of a hint or a step ("רמז", "צעד 2 מתוך 4"). */
 .solve > .hint::before, .solve > .step::before,
-.fill > .hint::before, .steps > .hint::before {
+.fill > .hint::before, .derive > .hint::before {
   display: inline-block; margin-inline-end: .5rem; padding: 0 .5rem; border-radius: 999px;
   font-size: .85em; font-weight: 700; background: #e2e8f0; color: #334155;
 }
-.solve > .hint::before, .fill > .hint::before, .steps > .hint::before {
+.solve > .hint::before, .fill > .hint::before, .derive > .hint::before {
   content: "רמז"; background: #fde68a; color: #92400e;
 }
 
@@ -433,7 +433,7 @@ details.lecture-solution { margin-top: -.4rem; }
 .solve-bar button.solve-main:hover:not(:disabled), .ix-btn.ix-main:hover:not(:disabled) { background: #4338ca; }
 .solve-bar button.solve-quiet, .ix-btn.ix-quiet { color: #475569; }
 .solve-bar button:focus-visible, .ix-btn:focus-visible, .ix-key:focus-visible,
-.blank-input:focus-visible, .st-in:focus-visible, .st-rule:focus-visible, .ord-card:focus-visible {
+.blank-input:focus-visible, .ord-card:focus-visible {
   outline: 3px solid #f59e0b; outline-offset: 2px;
 }
 
@@ -513,75 +513,41 @@ span.blank.warn .blank-mark { color: #b45309; }
 .ix-preview:empty { display: none; }
 .ix-preview { font-size: 1.05em; color: #1e293b; margin: .25rem 0; }
 .ix-preview.ix-preview-partial { opacity: .5; }
-.proof-step .ix-preview { direction: ltr; text-align: left; }
 .ix-or { margin: 0 .35em; font-weight: 600; }
-.fill > .hint, .steps > .hint {
+.fill > .hint, .derive > .hint {
   margin: .4rem 0; padding: .4rem .7rem; border-radius: 8px;
   border: 1px dashed #d97706; background: #fffbeb;
 }
-.fill > .hint > p:first-child, .steps > .hint > p:first-child { display: inline; }
-.fill > .explain, .steps > .solution, .order > .after {
+.fill > .hint > p:first-child, .derive > .hint > p:first-child { display: inline; }
+.fill > .explain, .order > .after {
   margin: .4rem 0; padding: .4rem .7rem; border-radius: 8px; border: 1px solid #bbf7d0; background: #f0fdf4;
 }
-.steps > .solution::before { content: "פתרון: "; font-weight: 700; color: #166534; }
-.steps > .solution > p:first-child { display: inline; }
-.fill > :last-child, .steps > :last-child { margin-bottom: 0; }
+.fill > :last-child, .derive > :last-child { margin-bottom: 0; }
 
-/* Step builder (.steps): a solution ledger, laid out like the directed proofs of
-   the Ramat Gan notes (their .proof-ledger / .proof-step / .step-compact rules).
-   On top the goal (blue strip) and the starting line; then one fieldset per step.
-   A checked step folds into one line: label | rule | the new line | עריכה. */
-.st-ui { margin: .6rem 0 1.2rem; min-width: 0; }
-.activity-help { margin: .5rem 0 .8rem; font-size: .92rem; }
-.activity-help summary { cursor: pointer; color: #4338ca; }
-.activity-help ol { padding: .7rem 1.7rem .7rem .7rem; background: #f8fafc; border-radius: 8px; }
-.activity-help li + li { margin-top: .5rem; }
-.proof-ledger { border: 1px solid #b7c8d8; border-radius: 7px; padding: .6rem; margin: .6rem 0; background: #fff; min-width: 0; }
-.proof-start { padding: .65rem; border-inline-start: 4px solid #075985; background: #f0f9ff; border-radius: 6px; color: #075985; font-weight: 600; }
-.st-given {
-  display: grid; grid-template-columns: 5.2rem minmax(0, 1fr); column-gap: .5rem; align-items: baseline;
-  padding: .45rem .2rem; border-bottom: 1px solid #dbe3ea;
-}
-.given-label { font-size: .85rem; line-height: 1.5; font-weight: 600; color: #475569; }
-/* The line itself reads left to right (⟺ first), like .proof-formula in Ramat Gan. */
-.st-formula { min-width: 0; overflow-x: auto; overflow-y: hidden; direction: ltr; unicode-bidi: isolate; text-align: left; }
-.proof-step { min-width: 0; margin: .35rem 0; padding: .45rem .7rem .6rem; border: 1px solid #c7d2fe; border-radius: 10px; background: #f8faff; }
-.proof-step > legend { float: none; width: auto; padding: 0 .4rem; margin: 0; font-size: 1.05em; font-weight: 700; color: #581c87; }
-.proof-field { display: grid; gap: .3rem; margin: .3rem 0; font-weight: 600; }
-.proof-rule { width: 100%; min-width: 0; max-width: 100%; min-height: 44px; padding: .4rem; border: 1px solid #94a3b8; border-radius: 8px; background: #fff; font: inherit; }
-.proof-rule:focus-visible { outline: 3px solid #f59e0b; outline-offset: 2px; }
-.st-in {
-  width: 100%; min-width: 0; min-height: 40px; box-sizing: border-box; direction: ltr; text-align: left;
-  padding: .3rem .6rem; border: 1px solid #94a3b8; border-radius: 8px; background: #fff;
-  font: 1.05rem "Cambria Math", "STIX Two Math", "Times New Roman", serif;
-}
-.st-in:focus { border-color: #4f46e5; }
-.st-in[aria-invalid="true"] { border: 2px solid #b91c1c; }
-.proof-step .ix-keys { margin: .35rem 0; }
-.step-compact[hidden], .step-editor[hidden], .proof-qed[hidden], .step-compact-reason[hidden] { display: none !important; }
-/* A checked step: no box, one line with the label at the side. */
-.proof-ledger .step-accepted { border: 0; border-bottom: 1px solid #dbe3ea; border-radius: 0; background: transparent; padding: .3rem .2rem; }
-.proof-ledger .side-labelled > .step-label { display: none; }
-.proof-ledger .side-labelled.step-accepted { display: grid; grid-template-columns: 5.2rem minmax(0, 1fr); column-gap: .5rem; align-items: start; }
-.proof-ledger .side-labelled.step-accepted > legend { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-.proof-ledger .side-labelled.step-accepted > .step-label { display: block; grid-column: 1; grid-row: 1; font-size: .85rem; font-weight: 600; color: #475569; padding-top: .35rem; }
-.proof-ledger .side-labelled.step-accepted > .step-compact { grid-column: 2; grid-row: 1; min-width: 0; }
-/* Physical left/right placement is explicit (as in Ramat Gan): עריכה on the left,
-   then the new line, then the rule in Hebrew. */
-.proof-ledger .step-compact { display: grid; direction: ltr; grid-template-columns: 4.2rem minmax(0, 1fr); align-items: start; gap: .25rem .65rem; font-size: .94rem; }
-.proof-ledger .step-compact > .step-edit { grid-column: 1; grid-row: 1; justify-self: start; margin: 0; direction: rtl; padding: .15rem .5rem; min-height: 32px; font-size: .85rem; }
-.proof-ledger .step-statement { grid-column: 2; grid-row: 1; min-width: 0; }
-.proof-ledger .step-statement > .st-formula { white-space: nowrap; padding: .15rem 0; }
-.proof-ledger .step-compact-reason { grid-column: 2; grid-row: 2; direction: rtl; text-align: right; font-size: .85rem; color: #475569; }
-.proof-ledger .proof-qed { grid-column: 2; grid-row: 3; direction: rtl; justify-self: end; color: #166534; font-weight: 700; }
-/* "או" between two formulas is its own bidi island, so the line keeps the typed order. */
-.st-formula .ix-or { unicode-bidi: isolate; }
-.proof-steps .ix-msg:empty { display: none; }
-.st-controls { margin-top: .5rem; }
+/* Guided derivation (.derive): a worked solution revealed line by line, the way it is
+   written on the board. Each row: the line (LTR, left) and a short note (right). */
+.dv { margin: .6rem 0 1.2rem; padding: .5rem .8rem; border: 1px solid #c7d2fe; border-radius: 10px; background: #f8faff; min-width: 0; }
+.dv-row { display: grid; grid-template-columns: minmax(0, 15rem) minmax(0, 1fr); column-gap: 1rem; align-items: start; padding: .3rem 0; border-bottom: 1px solid #e2e8f0; }
+.dv-row:last-child { border-bottom: 0; }
+.dv-math { grid-column: 2; grid-row: 1; min-width: 0; direction: ltr; text-align: left; }
+.dv-note { grid-column: 1; grid-row: 1; font-size: .9em; color: #475569; padding-top: .25rem; }
+.dv-note > :last-child { margin-bottom: 0; }
+.dv-f { overflow-x: auto; overflow-y: hidden; padding: .1rem 0; font-size: 1.05em; }
+.dv-f .ix-or { unicode-bidi: isolate; margin: 0 .4em; }
+.dv-in { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem .8rem; margin: .25rem 0 .1rem; }
+.dv-in[hidden], .dv-box[hidden], .dv-keys[hidden] { display: none !important; }
+.dv-box { display: inline-flex; align-items: center; gap: .25rem; }
+.dv-lab { font: 1em "Cambria Math", "Times New Roman", serif; color: #3730a3; }
+.dv-input { min-width: 3em; }
+.dv-sign { min-width: 2.2em; min-height: 34px; }
+.dv-check { min-height: 32px; padding: .1rem .7rem; font-size: .9em; }
+.dv-msg { margin: .2rem 0 0; font-size: .9em; direction: rtl; text-align: right; }
+.dv-done .dv-f { color: #0f172a; }
+.dv-keys { margin: .4rem 0 .1rem; }
 @media (max-width: 600px) {
-  .proof-ledger { padding: .35rem; }
-  .st-given, .proof-ledger .side-labelled.step-accepted { grid-template-columns: 3.6rem minmax(0, 1fr); column-gap: .3rem; }
-  .proof-ledger .step-compact > .step-edit { min-height: 44px; }
+  .dv-row { grid-template-columns: minmax(0, 1fr); }
+  .dv-math { grid-column: 1; grid-row: 1; }
+  .dv-note { grid-column: 1; grid-row: 2; padding-top: 0; }
 }
 
 /* References shown in place (assets/interactive.js, ported from the BGU book). */
@@ -622,7 +588,7 @@ a.xref-open { background: #ede9fe; border-radius: 3px; }
 .ord-card > p:first-child { margin-top: 0; }
 .ord-empty { color: #94a3b8; font-style: italic; list-style: none; }
 @media print {
-  .blank-input, .blank-mark, .ix-panel, .st-ui, .ord-ui { display: none !important; }
+  .blank-input, .blank-mark, .ix-panel, .dv-bar, .dv-in, .ord-ui { display: none !important; }
   .blank-answer { display: inline !important; background: transparent; text-decoration: underline; }
   .ix-hidden { display: block !important; }
 }
@@ -1085,7 +1051,7 @@ window.Quarto = {
 <p>המערכים בנויים לקריאה פעילה, גם בלימוד עצמי:</p>
 <ul>
 <li><strong>משבצות למילוי.</strong> במקום לקרוא את התשובה, כותבים אותה במשבצת ולוחצים <strong>בדיקה</strong>. התשובה יכולה להיות מספר, ביטוי, קטע או קבוצה. תשובה שגויה מקבלת הסבר קצר, למשל מספר שבו היא שונה מהתשובה הנכונה, ואפשר לנסות שוב, לבקש רמז או להציג את התשובה.</li>
-<li><strong>פתרון בצעדים.</strong> משוואות ואי-שוויונים פותרים צעד אחר צעד, כמו בהוכחה מודרכת. בכל צעד בוחרים מהרשימה מה עושים וכותבים את השורה שמתקבלת. השורה נבדקת מול השורה שלפניה: האם היא שקולה לה, והאם הכלל שבחרתם הוא הכלל שהופעל. צעד נכון נרשם בפתרון עם הנימוק שלו, והצעד הבא נפתח. מסיימים כשהמשתנה לבד.</li>
+<li><strong>פתרון בצעדים.</strong> פתרון של משוואה, אי-שוויון או חישוב גבול נחשף שורה אחר שורה, כמו על הלוח, ובצד כל שורה כתוב מה עשינו בה. בכל שורה חסרים כמה מספרים או ביטויים (בתיבות <span class="math inline">\(\boxed{\,?\,}\)</span>), ולפעמים סימן השוואה שבוחרים בלחיצה. משלימים את החסר ולוחצים “בדיקה”; שורה נכונה פותחת את השורה הבאה. “השלמת הצעד” ממלא את השורה הנוכחית, ו”כל הפתרון” מציג את כל השורות.</li>
 <li><strong>סידור צעדים.</strong> לוחצים על הצעדים של פתרון או של שיטה לפי הסדר הנכון.</li>
 <li><strong>בבדיקה עצמית</strong> 🎯 בוחרים תשובה, ומיד מקבלים משוב והסבר.</li>
 <li><strong>בפתרונות ארוכים</strong> אפשר לבקש רמז, ולחשוף את הפתרון צעד אחר צעד.</li>

@@ -391,11 +391,11 @@ details.lecture-solution { margin-top: -.4rem; }
 
 /* A small label in front of a hint or a step ("רמז", "צעד 2 מתוך 4"). */
 .solve > .hint::before, .solve > .step::before,
-.fill > .hint::before, .steps > .hint::before {
+.fill > .hint::before, .derive > .hint::before {
   display: inline-block; margin-inline-end: .5rem; padding: 0 .5rem; border-radius: 999px;
   font-size: .85em; font-weight: 700; background: #e2e8f0; color: #334155;
 }
-.solve > .hint::before, .fill > .hint::before, .steps > .hint::before {
+.solve > .hint::before, .fill > .hint::before, .derive > .hint::before {
   content: "רמז"; background: #fde68a; color: #92400e;
 }
 
@@ -432,7 +432,7 @@ details.lecture-solution { margin-top: -.4rem; }
 .solve-bar button.solve-main:hover:not(:disabled), .ix-btn.ix-main:hover:not(:disabled) { background: #4338ca; }
 .solve-bar button.solve-quiet, .ix-btn.ix-quiet { color: #475569; }
 .solve-bar button:focus-visible, .ix-btn:focus-visible, .ix-key:focus-visible,
-.blank-input:focus-visible, .st-in:focus-visible, .st-rule:focus-visible, .ord-card:focus-visible {
+.blank-input:focus-visible, .ord-card:focus-visible {
   outline: 3px solid #f59e0b; outline-offset: 2px;
 }
 
@@ -512,75 +512,41 @@ span.blank.warn .blank-mark { color: #b45309; }
 .ix-preview:empty { display: none; }
 .ix-preview { font-size: 1.05em; color: #1e293b; margin: .25rem 0; }
 .ix-preview.ix-preview-partial { opacity: .5; }
-.proof-step .ix-preview { direction: ltr; text-align: left; }
 .ix-or { margin: 0 .35em; font-weight: 600; }
-.fill > .hint, .steps > .hint {
+.fill > .hint, .derive > .hint {
   margin: .4rem 0; padding: .4rem .7rem; border-radius: 8px;
   border: 1px dashed #d97706; background: #fffbeb;
 }
-.fill > .hint > p:first-child, .steps > .hint > p:first-child { display: inline; }
-.fill > .explain, .steps > .solution, .order > .after {
+.fill > .hint > p:first-child, .derive > .hint > p:first-child { display: inline; }
+.fill > .explain, .order > .after {
   margin: .4rem 0; padding: .4rem .7rem; border-radius: 8px; border: 1px solid #bbf7d0; background: #f0fdf4;
 }
-.steps > .solution::before { content: "פתרון: "; font-weight: 700; color: #166534; }
-.steps > .solution > p:first-child { display: inline; }
-.fill > :last-child, .steps > :last-child { margin-bottom: 0; }
+.fill > :last-child, .derive > :last-child { margin-bottom: 0; }
 
-/* Step builder (.steps): a solution ledger, laid out like the directed proofs of
-   the Ramat Gan notes (their .proof-ledger / .proof-step / .step-compact rules).
-   On top the goal (blue strip) and the starting line; then one fieldset per step.
-   A checked step folds into one line: label | rule | the new line | עריכה. */
-.st-ui { margin: .6rem 0 1.2rem; min-width: 0; }
-.activity-help { margin: .5rem 0 .8rem; font-size: .92rem; }
-.activity-help summary { cursor: pointer; color: #4338ca; }
-.activity-help ol { padding: .7rem 1.7rem .7rem .7rem; background: #f8fafc; border-radius: 8px; }
-.activity-help li + li { margin-top: .5rem; }
-.proof-ledger { border: 1px solid #b7c8d8; border-radius: 7px; padding: .6rem; margin: .6rem 0; background: #fff; min-width: 0; }
-.proof-start { padding: .65rem; border-inline-start: 4px solid #075985; background: #f0f9ff; border-radius: 6px; color: #075985; font-weight: 600; }
-.st-given {
-  display: grid; grid-template-columns: 5.2rem minmax(0, 1fr); column-gap: .5rem; align-items: baseline;
-  padding: .45rem .2rem; border-bottom: 1px solid #dbe3ea;
-}
-.given-label { font-size: .85rem; line-height: 1.5; font-weight: 600; color: #475569; }
-/* The line itself reads left to right (⟺ first), like .proof-formula in Ramat Gan. */
-.st-formula { min-width: 0; overflow-x: auto; overflow-y: hidden; direction: ltr; unicode-bidi: isolate; text-align: left; }
-.proof-step { min-width: 0; margin: .35rem 0; padding: .45rem .7rem .6rem; border: 1px solid #c7d2fe; border-radius: 10px; background: #f8faff; }
-.proof-step > legend { float: none; width: auto; padding: 0 .4rem; margin: 0; font-size: 1.05em; font-weight: 700; color: #581c87; }
-.proof-field { display: grid; gap: .3rem; margin: .3rem 0; font-weight: 600; }
-.proof-rule { width: 100%; min-width: 0; max-width: 100%; min-height: 44px; padding: .4rem; border: 1px solid #94a3b8; border-radius: 8px; background: #fff; font: inherit; }
-.proof-rule:focus-visible { outline: 3px solid #f59e0b; outline-offset: 2px; }
-.st-in {
-  width: 100%; min-width: 0; min-height: 40px; box-sizing: border-box; direction: ltr; text-align: left;
-  padding: .3rem .6rem; border: 1px solid #94a3b8; border-radius: 8px; background: #fff;
-  font: 1.05rem "Cambria Math", "STIX Two Math", "Times New Roman", serif;
-}
-.st-in:focus { border-color: #4f46e5; }
-.st-in[aria-invalid="true"] { border: 2px solid #b91c1c; }
-.proof-step .ix-keys { margin: .35rem 0; }
-.step-compact[hidden], .step-editor[hidden], .proof-qed[hidden], .step-compact-reason[hidden] { display: none !important; }
-/* A checked step: no box, one line with the label at the side. */
-.proof-ledger .step-accepted { border: 0; border-bottom: 1px solid #dbe3ea; border-radius: 0; background: transparent; padding: .3rem .2rem; }
-.proof-ledger .side-labelled > .step-label { display: none; }
-.proof-ledger .side-labelled.step-accepted { display: grid; grid-template-columns: 5.2rem minmax(0, 1fr); column-gap: .5rem; align-items: start; }
-.proof-ledger .side-labelled.step-accepted > legend { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-.proof-ledger .side-labelled.step-accepted > .step-label { display: block; grid-column: 1; grid-row: 1; font-size: .85rem; font-weight: 600; color: #475569; padding-top: .35rem; }
-.proof-ledger .side-labelled.step-accepted > .step-compact { grid-column: 2; grid-row: 1; min-width: 0; }
-/* Physical left/right placement is explicit (as in Ramat Gan): עריכה on the left,
-   then the new line, then the rule in Hebrew. */
-.proof-ledger .step-compact { display: grid; direction: ltr; grid-template-columns: 4.2rem minmax(0, 1fr); align-items: start; gap: .25rem .65rem; font-size: .94rem; }
-.proof-ledger .step-compact > .step-edit { grid-column: 1; grid-row: 1; justify-self: start; margin: 0; direction: rtl; padding: .15rem .5rem; min-height: 32px; font-size: .85rem; }
-.proof-ledger .step-statement { grid-column: 2; grid-row: 1; min-width: 0; }
-.proof-ledger .step-statement > .st-formula { white-space: nowrap; padding: .15rem 0; }
-.proof-ledger .step-compact-reason { grid-column: 2; grid-row: 2; direction: rtl; text-align: right; font-size: .85rem; color: #475569; }
-.proof-ledger .proof-qed { grid-column: 2; grid-row: 3; direction: rtl; justify-self: end; color: #166534; font-weight: 700; }
-/* "או" between two formulas is its own bidi island, so the line keeps the typed order. */
-.st-formula .ix-or { unicode-bidi: isolate; }
-.proof-steps .ix-msg:empty { display: none; }
-.st-controls { margin-top: .5rem; }
+/* Guided derivation (.derive): a worked solution revealed line by line, the way it is
+   written on the board. Each row: the line (LTR, left) and a short note (right). */
+.dv { margin: .6rem 0 1.2rem; padding: .5rem .8rem; border: 1px solid #c7d2fe; border-radius: 10px; background: #f8faff; min-width: 0; }
+.dv-row { display: grid; grid-template-columns: minmax(0, 15rem) minmax(0, 1fr); column-gap: 1rem; align-items: start; padding: .3rem 0; border-bottom: 1px solid #e2e8f0; }
+.dv-row:last-child { border-bottom: 0; }
+.dv-math { grid-column: 2; grid-row: 1; min-width: 0; direction: ltr; text-align: left; }
+.dv-note { grid-column: 1; grid-row: 1; font-size: .9em; color: #475569; padding-top: .25rem; }
+.dv-note > :last-child { margin-bottom: 0; }
+.dv-f { overflow-x: auto; overflow-y: hidden; padding: .1rem 0; font-size: 1.05em; }
+.dv-f .ix-or { unicode-bidi: isolate; margin: 0 .4em; }
+.dv-in { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem .8rem; margin: .25rem 0 .1rem; }
+.dv-in[hidden], .dv-box[hidden], .dv-keys[hidden] { display: none !important; }
+.dv-box { display: inline-flex; align-items: center; gap: .25rem; }
+.dv-lab { font: 1em "Cambria Math", "Times New Roman", serif; color: #3730a3; }
+.dv-input { min-width: 3em; }
+.dv-sign { min-width: 2.2em; min-height: 34px; }
+.dv-check { min-height: 32px; padding: .1rem .7rem; font-size: .9em; }
+.dv-msg { margin: .2rem 0 0; font-size: .9em; direction: rtl; text-align: right; }
+.dv-done .dv-f { color: #0f172a; }
+.dv-keys { margin: .4rem 0 .1rem; }
 @media (max-width: 600px) {
-  .proof-ledger { padding: .35rem; }
-  .st-given, .proof-ledger .side-labelled.step-accepted { grid-template-columns: 3.6rem minmax(0, 1fr); column-gap: .3rem; }
-  .proof-ledger .step-compact > .step-edit { min-height: 44px; }
+  .dv-row { grid-template-columns: minmax(0, 1fr); }
+  .dv-math { grid-column: 1; grid-row: 1; }
+  .dv-note { grid-column: 1; grid-row: 2; padding-top: 0; }
 }
 
 /* References shown in place (assets/interactive.js, ported from the BGU book). */
@@ -621,7 +587,7 @@ a.xref-open { background: #ede9fe; border-radius: 3px; }
 .ord-card > p:first-child { margin-top: 0; }
 .ord-empty { color: #94a3b8; font-style: italic; list-style: none; }
 @media print {
-  .blank-input, .blank-mark, .ix-panel, .st-ui, .ord-ui { display: none !important; }
+  .blank-input, .blank-mark, .ix-panel, .dv-bar, .dv-in, .ord-ui { display: none !important; }
   .blank-answer { display: inline !important; background: transparent; text-decoration: underline; }
   .ix-hidden { display: block !important; }
 }
@@ -1114,15 +1080,22 @@ window.Quarto = {
 <figcaption>שלוש סדרות כנקודות. משמאל, <span class="math inline">\(\frac{1}{n}\)</span> יורדת לעבר <span class="math inline">\(.0\)</span> באמצע, <span class="math inline">\((-1)^n\)</span> קופצת בין <span class="math inline">\(-1\)</span> ל-<span class="math inline">\(.1\)</span> מימין, סדרת פיבונאצ’י גדלה מהר; האיבר ה-<span class="math inline">\(12\)</span> שלה הוא <span class="math inline">\(.144\)</span></figcaption>
 </figure>
 </div>
+<p>יש עוד דרך לצייר סדרה: מסמנים את האיברים עצמם כנקודות על הישר הממשי. בציור כזה לא רואים את המקום של כל איבר בסדרה, אבל רואים היטב איפה האיברים מצטופפים.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/ch02-seq-line.png" class="img-fluid figure-img" style="width:85.0%" alt="שלושה ישרים עם נקודות: נקודות שמצטופפות ליד אפס, שתי נקודות במינוס אחת ובאחת, ונקודות משני הצדדים של אחת שמצטופפות לידה"></p>
+<figcaption>אותן סדרות על הישר הממשי. למעלה, האיברים של <span class="math inline">\(\frac{1}{n}\)</span> מצטופפים ליד <span class="math inline">\(.0\)</span> באמצע, כל האיברים של <span class="math inline">\((-1)^n\)</span> נופלים על שתי נקודות בלבד, <span class="math inline">\(-1\)</span> ו-<span class="math inline">\(.1\)</span> למטה, האיברים של <span class="math inline">\(1 + \frac{(-1)^n}{n}\)</span> קופצים משני הצדדים של <span class="math inline">\(1\)</span> ומצטופפים לידו.</figcaption>
+</figure>
+</div>
 <div id="box-exm-seq-terms" class="thmbox thmbox-example" title="מחשבים איברים">
 <p><strong>דוגמה 2.1.3 — מחשבים איברים.</strong></p>
-<p><span>(שבר כותבים עם קו נטוי, למשל <code>3/2</code>. חזקה כותבים עם <code>^</code>, למשל <code>2^(n-1)</code>.)</span></p>
+<p><span>(שבר כותבים עם קו נטוי, למשל <code>3/2</code>. חזקה כותבים עם <code>^</code>, למשל <code>2^(n-1)</code>. כמה איברים כותבים מופרדים בפסיקים, למשל <code>1, 2, 3</code>.)</span></p>
 <div class="fill">
 <p><strong>(א)</strong> הסדרה <span class="math inline">\(a_n = \frac{n + 1}{n}\)</span></p>
 <p><span class="fill-ltr"><span class="math inline">\(a_1 =\)</span> <span class="blank" data-ans="2"><span class="math inline">\(2\)</span></span></span>, <span class="fill-ltr"><span class="math inline">\(a_2 =\)</span> <span class="blank" data-ans="3/2"><span class="math inline">\(\frac{3}{2}\)</span></span></span>, <span class="fill-ltr"><span class="math inline">\(a_{10} =\)</span> <span class="blank" data-ans="11/10"><span class="math inline">\(\frac{11}{10}\)</span></span></span></p>
 <p><strong>(ב)</strong> שמונת האיברים הראשונים של סדרת פיבונאצ’י:</p>
 <div class="eqline">
-<p><span class="fill-ltr"><span class="blank" data-ans="1"><span class="math inline">\(1\)</span></span><span class="math inline">\(,\;\)</span><span class="blank" data-ans="1"><span class="math inline">\(1\)</span></span><span class="math inline">\(,\;\)</span><span class="blank" data-ans="2"><span class="math inline">\(2\)</span></span><span class="math inline">\(,\;\)</span><span class="blank" data-ans="3"><span class="math inline">\(3\)</span></span><span class="math inline">\(,\;\)</span><span class="blank" data-ans="5"><span class="math inline">\(5\)</span></span><span class="math inline">\(,\;\)</span><span class="blank" data-ans="8"><span class="math inline">\(8\)</span></span><span class="math inline">\(,\;\)</span><span class="blank" data-ans="13"><span class="math inline">\(13\)</span></span><span class="math inline">\(,\;\)</span><span class="blank" data-ans="21"><span class="math inline">\(21\)</span></span></span></p>
+<p><span class="blank" kind="list" data-ans="1,1,2,3,5,8,13,21" data-w="24"><span class="math inline">\(1, 1, 2, 3, 5, 8, 13, 21\)</span></span></p>
 </div>
 <p><strong>(ג)</strong> הסדרה החשבונית שמתחילה ב-<span class="math inline">\(4, 7, 10, 13\)</span></p>
 <p><span class="fill-ltr"><span class="math inline">\(a_n =\)</span> <span class="blank" data-ans="3n+1" data-vars="n"><span class="math inline">\(3n + 1\)</span></span></span>, <span class="fill-ltr"><span class="math inline">\(a_{20} =\)</span> <span class="blank" data-ans="61"><span class="math inline">\(61\)</span></span></span></p>
@@ -1198,10 +1171,10 @@ window.Quarto = {
 </div>
 <div id="box-q-seq-geometric" class="thmbox thmbox-question" title="סדרה הנדסית עם מנה שלילית">
 <p><strong>שאלה 2.1.6 — סדרה הנדסית עם מנה שלילית.</strong></p>
-<p><span class="math inline">\(a_1 = 2\)</span> והמנה היא <span class="math inline">\(.q = -3\)</span> השלימו את חמשת האיברים הראשונים.</p>
+<p><span class="math inline">\(a_1 = 2\)</span> והמנה היא <span class="math inline">\(.q = -3\)</span> כתבו את חמשת האיברים הראשונים, מופרדים בפסיקים.</p>
 <div class="fill">
 <div class="eqline">
-<p><span class="fill-ltr"><span class="blank" data-ans="2"><span class="math inline">\(2\)</span></span><span class="math inline">\(,\;\)</span><span class="blank" data-ans="-6"><span class="math inline">\(-6\)</span></span><span class="math inline">\(,\;\)</span><span class="blank" data-ans="18"><span class="math inline">\(18\)</span></span><span class="math inline">\(,\;\)</span><span class="blank" data-ans="-54"><span class="math inline">\(-54\)</span></span><span class="math inline">\(,\;\)</span><span class="blank" data-ans="162"><span class="math inline">\(162\)</span></span></span></p>
+<p><span class="blank" kind="list" data-ans="2,-6,18,-54,162" data-w="24"><span class="math inline">\(2, -6, 18, -54, 162\)</span></span></p>
 </div>
 <div class="explain">
 <p>בכל צעד כופלים ב-<span class="math inline">\(,{-}3\)</span> ולכן הסימן מתחלף: זו גם סדרה מתחלפת.</p>
@@ -1219,7 +1192,7 @@ window.Quarto = {
 <p><strong>(ג)</strong> <span class="math inline">\(\frac{1}{2}, \frac{1}{4}, \frac{1}{8}, \frac{1}{16}\)</span></p>
 <p><span class="fill-ltr"><span class="math inline">\(a_n =\)</span> <span class="blank" data-ans="1/2^n" data-vars="n"><span class="math inline">\(\frac{1}{2^n}\)</span></span></span></p>
 <div class="explain">
-<p><strong>(א)</strong> חשבונית עם <span class="math inline">\(a_1 = 7\)</span> ו-<span class="math inline">\(:d = 5\)</span> <span class="math inline">\(.a_n = 7 + 5(n - 1) = 5n + 2\)</span></p>
+<p><strong>(א)</strong> חשבונית עם <span class="math inline">\(a_1 = 7\)</span> ו-<span class="math inline">\(:d = 5\)</span> <span class="math display">\[\begin{aligned} a_n &amp;= 7 + 5(n - 1) \\ &amp;= 7 + 5n - 5 \\ &amp;= 5n + 2 \end{aligned}\]</span></p>
 <p><strong>(ב)</strong> אלה הריבועים <span class="math inline">\(,1^2, 2^2, 3^2, 4^2\)</span> ולכן <span class="math inline">\(.a_n = n^2\)</span></p>
 <p><strong>(ג)</strong> הנדסית עם <span class="math inline">\(a_1 = \frac{1}{2}\)</span> ו-<span class="math inline">\(,q = \frac{1}{2}\)</span> ולכן <span class="math inline">\(.a_n = \frac{1}{2}\left(\frac{1}{2}\right)^{n-1} = \frac{1}{2^n}\)</span></p>
 </div>
@@ -1278,6 +1251,13 @@ window.Quarto = {
 <iframe class="widget-frame" src="widgets/ch02/error-band.html" loading="lazy" title="שגיאה מותרת ורצועה סביב הגבול"></iframe>
 <p>בחרו סדרה והקטינו את השגיאה המותרת <span class="math inline">\(.\varepsilon\)</span> הרצועה היא כל המספרים שהמרחק שלהם מ-<span class="math inline">\(L\)</span> קטן מ-<span class="math inline">\(.\varepsilon\)</span> ככל שהשגיאה המותרת קטנה, המקום שממנו והלאה כל האיברים בתוך הרצועה נדחה ימינה, אבל עבור סדרה מתכנסת הוא תמיד קיים. עבור <span class="math inline">\((-1)^n\)</span> ושגיאה מותרת קטנה מספיק אין מקום כזה, לא משנה סביב איזה מספר שמים את הרצועה.</p>
 </div>
+<p><strong>על הישר הממשי.</strong> האי-שוויון <span class="math inline">\(|a_n - L| &lt; \varepsilon\)</span> אומר ש-<span class="math inline">\(a_n\)</span> נמצא בקטע <span class="math inline">\(.(L - \varepsilon, L + \varepsilon)\)</span> לכן בציור על הישר הממשי ההגדרה אומרת: לכל שגיאה מותרת, <strong>כל האיברים חוץ ממספר סופי שלהם</strong> נמצאים בקטע הזה. מחוץ לקטע נשארים רק האיברים שלפני המקום שממנו והלאה כולם בפנים.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/ch02-limit-line.png" class="img-fluid figure-img" style="width:85.0%" alt="ישר ממשי עם קטע מוצלל סביב L; נקודות כחולות רבות מצטופפות בתוך הקטע, ושלוש נקודות אדומות מחוצה לו"></p>
+<figcaption>הסדרה <span class="math inline">\(1 + \frac{(-1)^n}{n}\)</span> על הישר הממשי, עם <span class="math inline">\(L = 1\)</span> ו-<span class="math inline">\(.\varepsilon = 0.3\)</span> רק <span class="math inline">\(a_1, a_2\)</span> ו-<span class="math inline">\(a_3\)</span> (באדום) מחוץ לקטע <span class="math inline">\(,(L - \varepsilon, L + \varepsilon)\)</span> וכל שאר האיברים בתוכו.</figcaption>
+</figure>
+</div>
 <div id="box-exm-one-over-n" class="thmbox thmbox-example" title="הסדרה ההרמונית שואפת לאפס">
 <p><strong>דוגמה 2.2.3 — הסדרה ההרמונית שואפת לאפס.</strong></p>
 <p>עבור <span class="math inline">\(a_n = \frac{1}{n}\)</span> ו-<span class="math inline">\(,L = 0\)</span> השגיאה היא <span class="math inline">\(.\left|\frac{1}{n} - 0\right| = \frac{1}{n}\)</span> מאיזה מקום היא קטנה מהשגיאה המותרת?</p>
@@ -1287,7 +1267,8 @@ window.Quarto = {
 <p><strong>(ב)</strong> השגיאה המותרת <span class="math inline">\(\varepsilon = 0.001\)</span></p>
 <p>החל מ-<span class="fill-ltr"><span class="math inline">\(n =\)</span> <span class="blank" data-ans="1001"><span class="math inline">\(1001\)</span></span></span></p>
 <div class="explain">
-<p><span class="math inline">\(\frac{1}{n} &lt; 0.1\)</span> בדיוק כאשר <span class="math inline">\(,n &gt; 10\)</span> כלומר החל מ-<span class="math inline">\(.n = 11\)</span> באותו אופן <span class="math inline">\(\frac{1}{n} &lt; 0.001\)</span> כאשר <span class="math inline">\(.n &gt; 1000\)</span> לכל שגיאה מותרת <span class="math inline">\(\varepsilon\)</span> זה קורה כאשר <span class="math inline">\(,n &gt; \frac{1}{\varepsilon}\)</span> ולכן <span class="math inline">\(.\frac{1}{n} \to 0\)</span></p>
+<p><strong>(א)</strong> <span class="math display">\[\begin{aligned} \tfrac{1}{n} &amp;&lt; 0.1 \\ 1 &amp;&lt; 0.1n \\ 10 &amp;&lt; n \end{aligned}\]</span> (כפלנו ב-<span class="math inline">\(n\)</span> וחילקנו ב-<span class="math inline">\(,0.1\)</span> שניהם חיוביים.) כלומר החל מ-<span class="math inline">\(.n = 11\)</span></p>
+<p><strong>(ב)</strong> <span class="math display">\[\begin{aligned} \tfrac{1}{n} &amp;&lt; 0.001 \\ 1 &amp;&lt; 0.001n \\ 1000 &amp;&lt; n \end{aligned}\]</span> כלומר החל מ-<span class="math inline">\(.n = 1001\)</span> לכל שגיאה מותרת <span class="math inline">\(\varepsilon\)</span> זה קורה כאשר <span class="math inline">\(,n &gt; \frac{1}{\varepsilon}\)</span> ולכן <span class="math inline">\(.\frac{1}{n} \to 0\)</span></p>
 </div>
 </div>
 </div>
@@ -1543,7 +1524,8 @@ window.Quarto = {
 <p><strong>(ד)</strong> <span class="fill-ltr"><span class="math inline">\(\frac{1}{n^5} \to\)</span> <span class="blank" data-ans="0"><span class="math inline">\(0\)</span></span></span></p>
 <p><strong>(ה)</strong> <span class="fill-ltr"><span class="math inline">\(\sqrt[n]{7} \to\)</span> <span class="blank" data-ans="1"><span class="math inline">\(1\)</span></span></span></p>
 <div class="explain">
-<p><strong>(א)</strong> ו-<strong>(ב)</strong> לפי סעיף 4 במשפט, כי <span class="math inline">\(.|q| &lt; 1\)</span></p>
+<p><strong>(א)</strong> זו <span class="math inline">\(q^n\)</span> עם <span class="math inline">\(,q = 0.9\)</span> ו-<span class="math inline">\(,|q| &lt; 1\)</span> ולכן לפי סעיף 4 במשפט הגבול הוא <span class="math inline">\(.0\)</span></p>
+<p><strong>(ב)</strong> זו <span class="math inline">\(q^n\)</span> עם <span class="math inline">\(,q = -\frac{1}{3}\)</span> ו-<span class="math inline">\(,|q| = \frac{1}{3} &lt; 1\)</span> ולכן לפי סעיף 4 הגבול הוא <span class="math inline">\(.0\)</span> הסימן מתחלף, אבל האיברים מתקרבים ל-<span class="math inline">\(.0\)</span></p>
 <p><strong>(ג)</strong> לפי סעיף 4, כי <span class="math inline">\(.q &gt; 1\)</span></p>
 <p><strong>(ד)</strong> לפי סעיף 2 עם <span class="math inline">\(.p = 5\)</span></p>
 <p><strong>(ה)</strong> לפי סעיף 5.</p>
@@ -1691,41 +1673,59 @@ window.Quarto = {
 </div>
 <div id="box-exm-lim-rational" class="thmbox thmbox-example" title="חשבון גבולות, צעד אחר צעד">
 <p><strong>דוגמה 2.4.2 — חשבון גבולות, צעד אחר צעד.</strong></p>
-<p>חשבו את הגבולות. כל שורה שעדיין מופיע בה <span class="math inline">\(n\)</span> כותבים עם סימן הגבול. <span>(שבר כותבים עם קו נטוי; את <span class="math inline">\(\frac{1}{n^2}\)</span> כותבים <code>1/n^2</code>, ואת <span class="math inline">\(\infty\)</span> כותבים <code>inf</code>.)</span></p>
+<p>חשבו את הגבולות. <span>(שבר כותבים עם קו נטוי; את <span class="math inline">\(\frac{1}{n^2}\)</span> כותבים <code>1/n^2</code>, ואת <span class="math inline">\(\infty\)</span> כותבים <code>inf</code>.)</span></p>
 <p><strong>(א)</strong> <span class="math inline">\(\lim\limits_{n\to\infty} \frac{3n^2 + 1}{n^2 + 4n}\)</span></p>
-<div class="steps" data-limit="n" start="(3n^2+1)/(n^2+4n)" data-rules="divide|simplify|limit|compute" data-model="(3+[1/n^2])/(1+[4/n]) :: divide || (3+[0])/(1+[0]) :: limit || 3 :: compute">
+<div class="derive" data-limit="n" start="(3n^2+1)/(n^2+4n)">
+<div class="step" data-line="(3+[1/n^2])/(1+[4/n])">
+<p>מחלקים את המונה ואת המכנה ב-<span class="math inline">\(.n^2\)</span></p>
+</div>
+<div class="step" data-line="(3+[0])/(1+[0])">
+<p>מחליפים כל סדרה סטנדרטית בגבול שלה.</p>
+</div>
+<div class="step" data-line="[3]">
+<p>מחשבים.</p>
+</div>
 <div class="hint">
 <p>המונה והמכנה שואפים שניהם ל-<span class="math inline">\(:\infty\)</span> זו הצורה <span class="math inline">\(.\frac{\infty}{\infty}\)</span> החזקה הגבוהה במכנה היא <span class="math inline">\(.n^2\)</span></p>
 </div>
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} \lim_{n\to\infty} \frac{3n^2 + 1}{n^2 + 4n} &amp;= \lim_{n\to\infty} \frac{3 + \frac{1}{n^2}}{1 + \frac{4}{n}} \\ &amp;= \frac{3 + 0}{1 + 0} \\ &amp;= 3 \end{aligned}\]</span></p>
-<p>חילקנו את המונה ואת המכנה ב-<span class="math inline">\(,n^2\)</span> ואז החלפנו את <span class="math inline">\(\frac{1}{n^2}\)</span> ואת <span class="math inline">\(\frac{4}{n}\)</span> ב-<span class="math inline">\(.0\)</span></p>
-</div>
 </div>
 <p><strong>(ב)</strong> <span class="math inline">\(\lim\limits_{n\to\infty} \frac{2n + 5}{n^2 + 1}\)</span></p>
-<div class="steps" data-limit="n" start="(2n+5)/(n^2+1)" data-rules="divide|simplify|limit|compute" data-model="([2/n]+[5/n^2])/(1+[1/n^2]) :: divide || ([0]+[0])/(1+[0]) :: limit || 0 :: compute">
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} \lim_{n\to\infty} \frac{2n + 5}{n^2 + 1} &amp;= \lim_{n\to\infty} \frac{\frac{2}{n} + \frac{5}{n^2}}{1 + \frac{1}{n^2}} \\ &amp;= \frac{0 + 0}{1 + 0} \\ &amp;= 0 \end{aligned}\]</span></p>
+<div class="derive" data-limit="n" start="(2n+5)/(n^2+1)">
+<div class="step" data-line="([2/n]+[5/n^2])/(1+[1/n^2])">
+<p>מחלקים את המונה ואת המכנה ב-<span class="math inline">\(,n^2\)</span> החזקה הגבוהה במכנה.</p>
+</div>
+<div class="step" data-line="([0]+[0])/(1+[0])">
+<p>מחליפים כל סדרה סטנדרטית בגבול שלה.</p>
+</div>
+<div class="step" data-line="[0]">
+<p>מחשבים.</p>
 </div>
 </div>
 <p><strong>(ג)</strong> <span class="math inline">\(\lim\limits_{n\to\infty} \frac{n^2 + 1}{2n + 3}\)</span></p>
-<div class="steps" data-limit="n" start="(n^2+1)/(2n+3)" data-rules="divide|simplify|limit|compute" data-model="(n+[1/n])/(2+[3/n]) :: divide || inf :: limit">
+<div class="derive" data-limit="n" start="(n^2+1)/(2n+3)">
+<div class="step" data-line="(n+[1/n])/(2+[3/n])">
+<p>מחלקים את המונה ואת המכנה ב-<span class="math inline">\(,n\)</span> החזקה הגבוהה במכנה.</p>
+</div>
+<div class="step" data-line="[inf]">
+<p>המונה שואף לאינסוף, והמכנה שואף למספר חיובי.</p>
+</div>
 <div class="hint">
 <p>כאן החזקה הגבוהה במכנה היא <span class="math inline">\(.n\)</span> אחרי החילוק המונה שואף לאינסוף והמכנה ל-<span class="math inline">\(.2\)</span></p>
 </div>
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} \lim_{n\to\infty} \frac{n^2 + 1}{2n + 3} &amp;= \lim_{n\to\infty} \frac{n + \frac{1}{n}}{2 + \frac{3}{n}} \\ &amp;= \infty \end{aligned}\]</span></p>
-<p>המונה שואף ל-<span class="math inline">\(\infty\)</span> והמכנה ל-<span class="math inline">\(,2\)</span> ולכן <span class="math inline">\(.\frac{\infty}{2} = \infty\)</span></p>
-</div>
 </div>
 <p><strong>(ד)</strong> <span class="math inline">\(\lim\limits_{n\to\infty} \frac{2^n + 3^n}{3^n}\)</span></p>
-<div class="steps" data-limit="n" start="(2^n+3^n)/3^n" data-rules="divide|simplify|limit|compute" data-model="([2/3])^n+1 :: simplify || [0]+1 :: limit || 1 :: compute">
+<div class="derive" data-limit="n" start="(2^n+3^n)/3^n">
+<div class="step" data-line="([2/3])^n+[1]">
+<p>מחלקים כל מחובר במונה ב-<span class="math inline">\(,3^n\)</span> וכותבים את <span class="math inline">\(\frac{2^n}{3^n}\)</span> כחזקה של שבר אחד.</p>
+</div>
+<div class="step" data-line="[0]+1">
+<p>סדרה הנדסית עם <span class="math inline">\(|q| &lt; 1\)</span> שואפת ל-<span class="math inline">\(.0\)</span></p>
+</div>
+<div class="step" data-line="[1]">
+<p>מחשבים.</p>
+</div>
 <div class="hint">
 <p>חלקו כל מחובר במונה ב-<span class="math inline">\(,3^n\)</span> והיעזרו בגבול של <span class="math inline">\(q^n\)</span> עבור <span class="math inline">\(.q = \frac{2}{3}\)</span></p>
-</div>
-<div class="proof solution">
-<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} \lim_{n\to\infty} \frac{2^n + 3^n}{3^n} &amp;= \lim_{n\to\infty} \left(\frac{2^n}{3^n} + \frac{3^n}{3^n}\right) \\ &amp;= \lim_{n\to\infty} \left(\left(\tfrac{2}{3}\right)^n + 1\right) \\ &amp;= 0 + 1 \\ &amp;= 1 \end{aligned}\]</span></p>
-<p>כי <span class="math inline">\(\left(\frac{2}{3}\right)^n \to 0\)</span> (סדרה הנדסית עם <span class="math inline">\(|q| &lt; 1\)</span>).</p>
 </div>
 </div>
 </div>
@@ -1838,26 +1838,64 @@ window.Quarto = {
 <p><strong>שאלה 2.4.7 — מנות של פולינומים.</strong></p>
 <p>חשבו צעד אחר צעד.</p>
 <p><strong>(א)</strong> <span class="math inline">\(\lim\limits_{n\to\infty} \frac{4n - 1}{2n + 7}\)</span></p>
-<div class="steps" data-limit="n" start="(4n-1)/(2n+7)" data-rules="divide|simplify|limit|compute" data-model="(4-[1/n])/(2+[7/n]) :: divide || (4-[0])/(2+[0]) :: limit || 2 :: compute">
-
+<div class="derive" data-limit="n" start="(4n-1)/(2n+7)">
+<div class="step" data-line="(4-[1/n])/(2+[7/n])">
+<p>מחלקים את המונה ואת המכנה בחזקה הגבוהה ביותר של <span class="math inline">\(n\)</span> במכנה.</p>
+</div>
+<div class="step" data-line="(4-[0])/(2+[0])">
+<p>מחליפים כל סדרה סטנדרטית בגבול שלה.</p>
+</div>
+<div class="step" data-line="[2]">
+<p>מחשבים.</p>
+</div>
 </div>
 <p><strong>(ב)</strong> <span class="math inline">\(\lim\limits_{n\to\infty} \frac{n^3 - 2n}{5n^3 + 1}\)</span></p>
-<div class="steps" data-limit="n" start="(n^3-2n)/(5n^3+1)" data-rules="divide|simplify|limit|compute" data-model="(1-[2/n^2])/(5+[1/n^3]) :: divide || (1-[0])/(5+[0]) :: limit || 1/5 :: compute">
-
+<div class="derive" data-limit="n" start="(n^3-2n)/(5n^3+1)">
+<div class="step" data-line="(1-[2/n^2])/(5+[1/n^3])">
+<p>מחלקים את המונה ואת המכנה בחזקה הגבוהה ביותר של <span class="math inline">\(n\)</span> במכנה.</p>
+</div>
+<div class="step" data-line="(1-[0])/(5+[0])">
+<p>מחליפים כל סדרה סטנדרטית בגבול שלה.</p>
+</div>
+<div class="step" data-line="[1/5]">
+<p>מחשבים.</p>
+</div>
 </div>
 <p><strong>(ג)</strong> <span class="math inline">\(\lim\limits_{n\to\infty} \frac{6n + 1}{n^2 + 3}\)</span></p>
-<div class="steps" data-limit="n" start="(6n+1)/(n^2+3)" data-rules="divide|simplify|limit|compute" data-model="([6/n]+[1/n^2])/(1+[3/n^2]) :: divide || ([0]+[0])/(1+[0]) :: limit || 0 :: compute">
-
+<div class="derive" data-limit="n" start="(6n+1)/(n^2+3)">
+<div class="step" data-line="([6/n]+[1/n^2])/(1+[3/n^2])">
+<p>מחלקים את המונה ואת המכנה בחזקה הגבוהה ביותר של <span class="math inline">\(n\)</span> במכנה.</p>
+</div>
+<div class="step" data-line="([0]+[0])/(1+[0])">
+<p>מחליפים כל סדרה סטנדרטית בגבול שלה.</p>
+</div>
+<div class="step" data-line="[0]">
+<p>מחשבים.</p>
+</div>
 </div>
 <p><strong>(ד)</strong> <span class="math inline">\(\lim\limits_{n\to\infty} \frac{n^2 - 5}{3n + 1}\)</span></p>
-<div class="steps" data-limit="n" start="(n^2-5)/(3n+1)" data-rules="divide|simplify|limit|compute" data-model="(n-[5/n])/(3+[1/n]) :: divide || inf :: limit">
-
+<div class="derive" data-limit="n" start="(n^2-5)/(3n+1)">
+<div class="step" data-line="(n-[5/n])/(3+[1/n])">
+<p>מחלקים את המונה ואת המכנה בחזקה הגבוהה ביותר של <span class="math inline">\(n\)</span> במכנה.</p>
+</div>
+<div class="step" data-line="[inf]">
+<p>מחליפים כל סדרה סטנדרטית בגבול שלה.</p>
+</div>
 </div>
 </div>
 <div id="box-q-lim-powers" class="thmbox thmbox-question" title="עם חזקות">
 <p><strong>שאלה 2.4.8 — עם חזקות.</strong></p>
 <p>חשבו צעד אחר צעד: <span class="math inline">\(\lim\limits_{n\to\infty} \frac{5 \cdot 2^n + 4^n}{4^n}\)</span></p>
-<div class="steps" data-limit="n" start="(5*2^n+4^n)/4^n" data-rules="divide|simplify|limit|compute" data-model="5([1/2])^n+1 :: simplify || 5*[0]+1 :: limit || 1 :: compute">
+<div class="derive" data-limit="n" start="(5*2^n+4^n)/4^n">
+<div class="step" data-line="5([1/2])^n+[1]">
+<p>מחלקים כל מחובר במונה ב-<span class="math inline">\(.4^n\)</span></p>
+</div>
+<div class="step" data-line="5*[0]+1">
+<p>מחליפים כל סדרה סטנדרטית בגבול שלה.</p>
+</div>
+<div class="step" data-line="[1]">
+<p>מחשבים.</p>
+</div>
 <div class="hint">
 <p>חלקו כל מחובר במונה ב-<span class="math inline">\(,4^n\)</span> וכתבו את <span class="math inline">\(\frac{2^n}{4^n}\)</span> כחזקה של שבר אחד.</p>
 </div>
@@ -1867,11 +1905,25 @@ window.Quarto = {
 <p><strong>שאלה 2.4.9 — חסומה כפול שואפת לאפס.</strong></p>
 <p>חשבו צעד אחר צעד.</p>
 <p><strong>(א)</strong> <span class="math inline">\(\lim\limits_{n\to\infty} \frac{\cos n}{n^2}\)</span></p>
-<div class="steps" data-limit="n" start="cos(n)/n^2" data-rules="simplify|limit|bounded|compute" data-model="0 :: bounded">
-
+<div class="derive" data-limit="n" start="cos(n)/n^2">
+<div class="step" data-line="cos(n)*[1/n^2]">
+<p>כותבים כמכפלה של סדרה חסומה בסדרה סטנדרטית.</p>
+</div>
+<div class="step" data-line="[0]">
+<p>חסומה כפול סדרה ששואפת לאפס.</p>
+</div>
 </div>
 <p><strong>(ב)</strong> <span class="math inline">\(\lim\limits_{n\to\infty} \frac{n + \cos n}{n}\)</span></p>
-<div class="steps" data-limit="n" start="(n+cos(n))/n" data-rules="divide|simplify|limit|bounded|compute" data-model="1+[cos(n)/n] :: simplify || 1+[0] :: bounded || 1 :: compute">
+<div class="derive" data-limit="n" start="(n+cos(n))/n">
+<div class="step" data-line="1+[cos(n)/n]">
+<p>מפרקים לשני שברים.</p>
+</div>
+<div class="step" data-line="1+[0]">
+<p>חסומה כפול סדרה ששואפת לאפס.</p>
+</div>
+<div class="step" data-line="[1]">
+<p>מחשבים.</p>
+</div>
 <div class="hint">
 <p>פרקו את השבר לשני שברים.</p>
 </div>

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>מזיזים את הגרף למקום</title>
+<!--
+  A plot question: the reader starts from a base graph and brings it to the target
+  y = a·f(b(x − c)) + d by dragging it (or with the arrows), flipping it and stretching it.
+  The formula of the reader's graph is shown live; "בדיקה" compares it with the target.
+
+  URL parameters:  f = sq | abs | sqrt | cube | exp2 | exp3 | log2 | inv | sin   (the base graph)
+                   a, b, c, d = the target (default 1, 1, 0, 0); fractions allowed: b=1/2
+                   view = x0,x1,y0,y1 (optional window)
+  Every operation acts on the reader's current graph as in the notes: a reflection in the
+  x-axis (y -> -y) or the y-axis (x -> -x), a vertical stretch from the x-axis, a horizontal
+  stretch from the y-axis, and a shift (drag or arrows). The orange dot is the key point
+  (vertex, start point, (0,1) of 2^x, ...) and moves with the graph.
+-->
+<style>
+  html, body { margin: 0; padding: 0; background: transparent; }
+  body { font: 15px/1.45 Arial, "Helvetica Neue", sans-serif; color: #1f2937; }
+  .w { border: 1px solid #9ca3af; background: #fff; padding: 0.6rem 0.8rem 0.8rem; }
+  canvas { display: block; width: 100%; height: auto; touch-action: none; cursor: grab; }
+  canvas.drag { cursor: grabbing; }
+  .row { display: flex; align-items: center; flex-wrap: wrap; gap: 0.45rem 0.7rem; margin-top: 0.5rem; }
+  .m { direction: ltr; unicode-bidi: isolate; display: inline-block; font: 18px "Cambria Math", "Times New Roman", serif; }
+  .m i { font-style: italic; }
+  .fr { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; font-size: .85em; line-height: 1.1; margin: 0 .08em; }
+  .fr > span:first-child { border-bottom: 1px solid currentColor; padding: 0 .12em; }
+  .sq { border-top: 1px solid currentColor; padding: 0 .1em; }
+  .now { text-align: center; color: #3730a3; }
+  button { font: inherit; font-size: 14px; padding: 0.25rem 0.7rem; border: 1px solid #94a3b8; border-radius: 8px; background: #fff; color: #1e293b; cursor: pointer; }
+  button:hover { background: #f1f5f9; }
+  button.main { background: #4f46e5; border-color: #4f46e5; color: #fff; font-weight: 700; }
+  button.main:hover { background: #4338ca; }
+  .grp { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.15rem 0.45rem; border: 1px solid #e2e8f0; border-radius: 8px; background: #f8fafc; }
+  .grp b { font-weight: 600; font-size: 14px; color: #334155; }
+  .k { min-width: 3.2em; text-align: center; }
+  .arrows button { padding: 0.2rem 0.5rem; }
+  .msg { margin-top: 0.5rem; padding: 0.35rem 0.6rem; border-radius: 8px; border-inline-start: 4px solid transparent; }
+  .msg:empty { display: none; }
+  .msg.good { background: #f0fdf4; border-color: #15803d; }
+  .msg.bad { background: #fff1f2; border-color: #be123c; }
+  .msg.info { background: #f8fafc; border-color: #64748b; }
+  .key { color: #475569; font-size: 13.5px; }
+  .line { display: inline-block; width: 1.6em; vertical-align: middle; }
+</style>
+</head>
+<body>
+<div class="w">
+  <div class="now">הגרף שלכם: <span class="m" id="now"></span></div>
+  <canvas id="cv" width="720" height="400" aria-label="הגרף; גררו אותו כדי להזיז"></canvas>
+  <div class="row key">
+    <span><span class="line" style="border-top:2px dashed #94a3b8"></span> הגרף הבסיסי</span>
+    <span><span class="line" style="border-top:3px solid #4f46e5"></span> הגרף שלכם (גררו אותו)</span>
+    <span id="goalKey" hidden><span class="line" style="border-top:3px dashed #15803d"></span> היעד</span>
+  </div>
+  <div class="row">
+    <span class="grp arrows"><b>הזזה:</b>
+      <button type="button" data-mv="-1,0" aria-label="שמאלה">←</button>
+      <button type="button" data-mv="1,0" aria-label="ימינה">→</button>
+      <button type="button" data-mv="0,1" aria-label="למעלה">↑</button>
+      <button type="button" data-mv="0,-1" aria-label="למטה">↓</button>
+    </span>
+    <span class="grp"><b>שיקוף:</b>
+      <button type="button" id="flipV">ביחס לציר <span class="m"><i>x</i></span></button>
+      <button type="button" id="flipH">ביחס לציר <span class="m"><i>y</i></span></button>
+    </span>
+  </div>
+  <div class="row">
+    <span class="grp"><b>מתיחה אנכית:</b>
+      <button type="button" data-st="v,-1" aria-label="כיווץ אנכי">−</button>
+      <span class="k m" id="vk"></span>
+      <button type="button" data-st="v,1" aria-label="מתיחה אנכית">+</button>
+    </span>
+    <span class="grp"><b>מתיחה אופקית:</b>
+      <button type="button" data-st="h,-1" aria-label="כיווץ אופקי">−</button>
+      <span class="k m" id="hk"></span>
+      <button type="button" data-st="h,1" aria-label="מתיחה אופקית">+</button>
+    </span>
+  </div>
+  <div class="row">
+    <button type="button" class="main" id="check">בדיקה</button>
+    <button type="button" id="show">הצגת היעד</button>
+    <button type="button" id="reset">התחלה מחדש</button>
+  </div>
+  <div class="msg" id="msg" aria-live="polite"></div>
+</div>
+<script src="../shared/autosize.js"></script>
+<script>
+(function () {
+  "use strict";
+  var Q = new URLSearchParams(location.search);
+  function num(s, dflt) {
+    if (s === null || s === "") return dflt;
+    var m = /^\s*(-?\d+(?:\.\d+)?)\s*(?:\/\s*(\d+(?:\.\d+)?))?\s*$/.exec(s);
+    return m ? (m[2] ? +m[1] / +m[2] : +m[1]) : dflt;
+  }
+  // base graphs: the function, its key point, and how it is written around an inner expression
+  function pw(base) { return function (s, simple) { return base + "<sup>" + s + "</sup>"; }; }
+  var BASES = {
+    sq:   { f: function (x) { return x * x; }, key: [0, 0], w: function (s, simple) { return (simple ? s : "(" + s + ")") + "<sup>2</sup>"; } },
+    cube: { f: function (x) { return x * x * x; }, key: [0, 0], w: function (s, simple) { return (simple ? s : "(" + s + ")") + "<sup>3</sup>"; } },
+    abs:  { f: Math.abs, key: [0, 0], w: function (s) { return "|" + s + "|"; } },
+    sqrt: { f: function (x) { return x >= 0 ? Math.sqrt(x) : NaN; }, key: [0, 0], w: function (s) { return "√<span class='sq'>" + s + "</span>"; } },
+    exp2: { f: function (x) { return Math.pow(2, x); }, key: [0, 1], w: pw("2") },
+    exp3: { f: function (x) { return Math.pow(3, x); }, key: [0, 1], w: pw("3") },
+    log2: { f: function (x) { return x > 0 ? Math.log2(x) : NaN; }, key: [1, 0], w: function (s) { return "log<sub>2</sub>(" + s + ")"; } },
+    inv:  { f: function (x) { return x === 0 ? NaN : 1 / x; }, key: [1, 1], w: function (s) { return fr("1", s); }, frac: true },
+    sin:  { f: Math.sin, key: [0, 0], w: function (s) { return "sin(" + s + ")"; } }
+  };
+  var B = BASES[Q.get("f")] || BASES.sq;
+  var T = { a: num(Q.get("a"), 1), b: num(Q.get("b"), 1), c: num(Q.get("c"), 0), d: num(Q.get("d"), 0) };
+  var view = (Q.get("view") || "-6.5,6.5,-5.5,7.5").split(",").map(Number);
+  var X0 = view[0], X1 = view[1], Y0 = view[2], Y1 = view[3];
+  var FACT = [1 / 4, 1 / 3, 1 / 2, 1, 2, 3, 4];
+  // the reader's graph: the shape (sign and factor of each direction) and the place of the key point
+  var S;
+  function reset() { S = { sv: 1, kv: 3, sh: 1, kh: 3, px: B.key[0], py: B.key[1] }; showGoal = false; say("", ""); draw(); }
+  function params(s) {
+    // y = a f(b(x - c)) + d whose key point is at (px, py)
+    var a = s.sv * FACT[s.kv], b = s.sh / FACT[s.kh];
+    var c = s.px - B.key[0] / b, d = s.py - a * B.key[1];
+    return { a: a, b: b, c: c, d: d };
+  }
+  function F(p, x) { return p.a * B.f(p.b * (x - p.c)) + p.d; }
+
+  var cv = document.getElementById("cv"), ctx = cv.getContext("2d");
+  var W = cv.width, H = cv.height, PAD = 18, showGoal = false;
+  function sx(x) { return PAD + (x - X0) / (X1 - X0) * (W - 2 * PAD); }
+  function sy(y) { return H - PAD - (y - Y0) / (Y1 - Y0) * (H - 2 * PAD); }
+  function wx(px) { return X0 + (px - PAD) / (W - 2 * PAD) * (X1 - X0); }
+  function wy(py) { return Y0 + (H - PAD - py) / (H - 2 * PAD) * (Y1 - Y0); }
+
+  function curve(p, color, width, dash) {
+    ctx.strokeStyle = color; ctx.lineWidth = width; ctx.setLineDash(dash || []);
+    ctx.beginPath();
+    var pen = false, prev = null, N = 900;
+    for (var i = 0; i <= N; i++) {
+      var x = X0 + (X1 - X0) * i / N, y = F(p, x);
+      if (!isFinite(y) || y < Y0 - 30 || y > Y1 + 30 || (prev !== null && Math.abs(y - prev) > (Y1 - Y0))) { pen = false; prev = isFinite(y) ? y : null; continue; }
+      if (pen) ctx.lineTo(sx(x), sy(y)); else ctx.moveTo(sx(x), sy(y));
+      pen = true; prev = y;
+    }
+    ctx.stroke(); ctx.setLineDash([]);
+  }
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.lineWidth = 1; ctx.strokeStyle = "#eef2f7";
+    for (var gx = Math.ceil(X0); gx <= X1; gx++) { ctx.beginPath(); ctx.moveTo(sx(gx), sy(Y0)); ctx.lineTo(sx(gx), sy(Y1)); ctx.stroke(); }
+    for (var gy = Math.ceil(Y0); gy <= Y1; gy++) { ctx.beginPath(); ctx.moveTo(sx(X0), sy(gy)); ctx.lineTo(sx(X1), sy(gy)); ctx.stroke(); }
+    ctx.strokeStyle = "#0f172a"; ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.moveTo(sx(X0), sy(0)); ctx.lineTo(sx(X1), sy(0)); ctx.moveTo(sx(0), sy(Y0)); ctx.lineTo(sx(0), sy(Y1)); ctx.stroke();
+    ctx.fillStyle = "#475569"; ctx.font = "12px Arial"; ctx.direction = "ltr"; ctx.textAlign = "center"; ctx.textBaseline = "top";
+    for (var t = Math.ceil(X0); t <= X1; t++) if (t) ctx.fillText(String(t).replace("-", "−"), sx(t), sy(0) + 4);
+    ctx.textAlign = "right"; ctx.textBaseline = "middle";
+    for (var u = Math.ceil(Y0); u <= Y1; u++) if (u) ctx.fillText(String(u).replace("-", "−"), sx(0) - 5, sy(u));
+    curve({ a: 1, b: 1, c: 0, d: 0 }, "#94a3b8", 2, [6, 5]);
+    if (showGoal) curve(T, "#15803d", 3, [9, 6]);
+    var p = params(S);
+    curve(p, "#4f46e5", 3);
+    ctx.fillStyle = "#ea580c"; ctx.beginPath(); ctx.arc(sx(S.px), sy(S.py), 5.5, 0, 2 * Math.PI); ctx.fill();
+    document.getElementById("now").innerHTML = "<i>y</i> = " + formula(p);
+    document.getElementById("vk").innerHTML = (S.sv < 0 ? "−" : "") + factText(FACT[S.kv]);
+    document.getElementById("hk").innerHTML = (S.sh < 0 ? "−" : "") + factText(FACT[S.kh]);
+    document.getElementById("goalKey").hidden = !showGoal;
+  }
+
+  // ---- the formula, written the usual way
+  function fr(a, b) { return "<span class='fr'><span>" + a + "</span><span>" + b + "</span></span>"; }
+  function factText(v) {
+    if (Math.abs(v - Math.round(v)) < 1e-9) return String(Math.round(v));
+    return fr("1", String(Math.round(1 / v)));
+  }
+  function signed(v) { return (v < 0 ? " − " : " + ") + factText(Math.abs(v)); }
+  function formula(p) {
+    var x = "<i>x</i>", inner, simple;
+    var shift = Math.abs(p.c) < 1e-9 ? x : "(" + x + signed(-p.c) + ")";
+    var xs = Math.abs(p.c) < 1e-9 ? x : x + signed(-p.c);       // x - c without brackets
+    var bb = Math.abs(p.b);
+    if (Math.abs(bb - 1) < 1e-9) { inner = (p.b < 0 ? "−" + (Math.abs(p.c) < 1e-9 ? x : shift) : xs); simple = Math.abs(p.c) < 1e-9 && p.b > 0; }
+    else if (bb > 1) { inner = (p.b < 0 ? "−" : "") + factText(bb) + (Math.abs(p.c) < 1e-9 ? x : shift); simple = false; }
+    else { inner = (p.b < 0 ? "−" : "") + fr(xs, String(Math.round(1 / bb))); simple = false; }
+    var body = B.w(inner, simple);
+    var aa = Math.abs(p.a), pre = "";
+    if (Math.abs(aa - 1) > 1e-9) pre = B.frac ? "" : factText(aa) + (Q.get("f") === "exp2" || Q.get("f") === "exp3" ? " · " : "");
+    if (B.frac && Math.abs(aa - 1) > 1e-9) body = fr(aa >= 1 ? String(Math.round(aa)) : "1", (aa < 1 ? String(Math.round(1 / aa)) + "(" : "") + inner + (aa < 1 ? ")" : ""));
+    var s = (p.a < 0 ? "−" : "") + pre + body;
+    if (Math.abs(p.d) > 1e-9) s += signed(p.d);
+    return s;
+  }
+
+  // ---- checking
+  function same(p, q) {
+    var n = 0;
+    for (var i = 0; i <= 400; i++) {
+      var x = X0 + (X1 - X0) * i / 400 + 1e-3, u = F(p, x), v = F(q, x);
+      if (isFinite(u) !== isFinite(v)) return false;
+      if (isFinite(u)) { if (Math.abs(u - v) > 1e-6 * (1 + Math.abs(u))) return false; n++; }
+    }
+    return n > 10;
+  }
+  function say(t, cls) { var m = document.getElementById("msg"); m.textContent = t; m.className = "msg" + (cls ? " " + cls : ""); }
+  function check() {
+    var p = params(S);
+    if (same(p, T)) { say("✓ הגרף במקום! הנוסחה של הגרף שלכם היא נוסחת היעד.", "good"); return; }
+    // the same shape at another place?
+    var tKey = [B.key[0] / T.b + T.c, T.a * B.key[1] + T.d];
+    var moved = { a: p.a, b: p.b, c: p.c + tKey[0] - S.px, d: p.d + tKey[1] - S.py };
+    if (same(moved, T)) say("הצורה נכונה, אבל הגרף עוד לא במקום. גררו אותו (או השתמשו בחצים).", "bad");
+    else say("הצורה עוד לא נכונה: בדקו את השיקוף ואת המתיחה.", "bad");
+  }
+
+  // ---- controls
+  function snap(v) { return Math.round(v); }
+  document.querySelectorAll("[data-mv]").forEach(function (bt) {
+    bt.addEventListener("click", function () {
+      var m = bt.getAttribute("data-mv").split(",").map(Number);
+      S.px += m[0]; S.py += m[1]; say("", ""); draw();
+    });
+  });
+  document.querySelectorAll("[data-st]").forEach(function (bt) {
+    bt.addEventListener("click", function () {
+      var m = bt.getAttribute("data-st").split(","), k = m[0] === "v" ? "kv" : "kh";
+      var old = FACT[S[k]];
+      S[k] = Math.max(0, Math.min(FACT.length - 1, S[k] + +m[1]));
+      // a vertical stretch is measured from the x-axis, a horizontal one from the y-axis
+      if (k === "kv") S.py *= FACT[S.kv] / old; else S.px *= FACT[S.kh] / old;
+      say("", ""); draw();
+    });
+  });
+  document.getElementById("flipV").addEventListener("click", function () { S.sv = -S.sv; S.py = -S.py; say("", ""); draw(); });
+  document.getElementById("flipH").addEventListener("click", function () { S.sh = -S.sh; S.px = -S.px; say("", ""); draw(); });
+  document.getElementById("check").addEventListener("click", check);
+  document.getElementById("show").addEventListener("click", function () { showGoal = !showGoal; this.textContent = showGoal ? "הסתרת היעד" : "הצגת היעד"; draw(); });
+  document.getElementById("reset").addEventListener("click", function () { document.getElementById("show").textContent = "הצגת היעד"; reset(); });
+  // dragging moves the key point, in whole steps
+  var drag = null;
+  function pos(e) { var r = cv.getBoundingClientRect(); return [(e.clientX - r.left) * W / r.width, (e.clientY - r.top) * H / r.height]; }
+  cv.addEventListener("pointerdown", function (e) {
+    var q = pos(e); drag = { x: wx(q[0]), y: wy(q[1]), px: S.px, py: S.py };
+    cv.setPointerCapture(e.pointerId); cv.classList.add("drag");
+  });
+  cv.addEventListener("pointermove", function (e) {
+    if (!drag) return;
+    var q = pos(e), nx = drag.px + snap(wx(q[0]) - drag.x), ny = drag.py + snap(wy(q[1]) - drag.y);
+    if (nx !== S.px || ny !== S.py) { S.px = nx; S.py = ny; say("", ""); draw(); }
+  });
+  function end() { drag = null; cv.classList.remove("drag"); }
+  cv.addEventListener("pointerup", end); cv.addEventListener("pointercancel", end);
+  reset();
+})();
+</script>
+</body>
+</html>
