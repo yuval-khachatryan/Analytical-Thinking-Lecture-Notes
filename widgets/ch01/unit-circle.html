@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>הולכים על מעגל היחידה</title>
+<style>
+  html, body { margin: 0; padding: 0; background: transparent; }
+  body { font: 15px/1.45 Arial, "Helvetica Neue", sans-serif; color: #1f2937; }
+  .w { border: 1px solid #9ca3af; background: #fff; padding: 0.7rem 0.8rem 0.9rem; }
+  canvas { display: block; width: 100%; height: auto; }
+  .row { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem 0.9rem; margin-top: 0.55rem; }
+  .row input[type=range] { flex: 1 1 260px; }
+  .num { direction: ltr; unicode-bidi: isolate; font-weight: 700; display: inline-block; }
+  .read { direction: ltr; unicode-bidi: isolate; font: 16px "Cambria Math", "Times New Roman", serif; }
+  .read b.c { color: #0d9488; } .read b.s { color: #e11d48; } .read b.t { color: #ea580c; }
+  button { font: inherit; padding: 0.2rem 0.9rem; border: 1px solid #a5b4fc; border-radius: 999px; background: #fff; color: #3730a3; cursor: pointer; }
+  button:hover { background: #eef2ff; }
+  .jumps button { padding: 0.1rem 0.6rem; }
+  .hint { color: #475569; font-size: 14px; }
+  .same { color: #9a3412; background: #fff7ed; border: 1px solid #fed7aa; border-radius: 8px; padding: .3rem .6rem; }
+  .same b { color: #c2410c; }
+</style>
+</head>
+<body>
+<div class="w">
+  <canvas id="cv" width="780" height="330"></canvas>
+  <div class="row">
+    <label for="th">הזווית <span class="num">θ</span> (ברדיאנים):</label>
+    <input type="range" id="th" min="0" max="96" step="1" value="4" aria-label="theta">
+    <button type="button" id="play">▶ הליכה</button>
+  </div>
+  <div class="row" id="read"></div>
+  <div class="row same"><span>ברדיאנים <b>הזווית שווה לאורך הקשת</b> שהולכים על המעגל. כאן שניהם <span class="read" id="same"></span>.</span></div>
+  <div class="row jumps">
+    <span class="hint">קפיצה אל:</span>
+    <button type="button" data-k="4">π/6</button>
+    <button type="button" data-k="6">π/4</button>
+    <button type="button" data-k="12">π/2</button>
+    <button type="button" data-k="24">π</button>
+    <button type="button" data-k="36">3π/2</button>
+    <button type="button" data-k="48">2π</button>
+    <label><input type="checkbox" id="showcos"> להציג גם את <span class="num">cos θ</span> בגרף</label>
+  </div>
+</div>
+<script src="../shared/autosize.js"></script>
+<script>
+(function () {
+  "use strict";
+  var cv = document.getElementById("cv"), ctx = cv.getContext("2d");
+  var th = document.getElementById("th"), read = document.getElementById("read");
+  var playBtn = document.getElementById("play"), showCos = document.getElementById("showcos");
+  var W = cv.width, H = cv.height, TAU = 2 * Math.PI, TMAX = 4 * Math.PI;
+  // left panel: the unit circle; right panel: the graph, on the SAME vertical scale
+  var R = 120, CX = 150, CY = H / 2;
+  var GX0 = 330, GX1 = W - 20;
+  function gx(t) { return GX0 + t / TMAX * (GX1 - GX0); }
+  function gy(v) { return CY - v * R; }
+  var C_COS = "#0d9488", C_SIN = "#e11d48", C_ARC = "#ea580c", C_TURN2 = "#7c3aed", C_PT = "#1e293b";
+
+  // θ lives on the grid kπ/24 (k = 0..96, i.e. up to 4π), so it is always an exact
+  // multiple of π. On the special angles (multiples of π/6 and π/4) cos and sin are
+  // shown exactly too.
+  var STEP = Math.PI / 24;
+  function gcd(a, b) { return b ? gcd(b, a % b) : a; }
+  function piLabel(k) {
+    if (k === 0) return "0";
+    var g = gcd(k, 24), num = k / g, den = 24 / g;
+    return (num === 1 ? "" : num) + "π" + (den === 1 ? "" : "/" + den);
+  }
+  function exact(v) {
+    var vals = [[0, "0"], [0.5, "1/2"], [Math.SQRT2 / 2, "√2/2"], [Math.sqrt(3) / 2, "√3/2"], [1, "1"]];
+    for (var i = 0; i < vals.length; i++) {
+      if (Math.abs(Math.abs(v) - vals[i][0]) < 1e-9) return (v < -1e-9 ? "−" : "") + vals[i][1];
+    }
+    return null;
+  }
+  function n3(v) { var s = (Math.abs(v) < 0.0005 ? 0 : v).toFixed(3); return s.replace("-", "−"); }
+
+  function text(s, x, y, color, align, base) {
+    ctx.fillStyle = color || "#334155"; ctx.direction = "ltr";
+    ctx.textAlign = align || "center"; ctx.textBaseline = base || "middle"; ctx.fillText(s, x, y);
+  }
+
+  function tag(str, x, y, color, align) {
+    ctx.direction = "ltr"; ctx.textAlign = align; ctx.textBaseline = "middle";
+    var w = ctx.measureText(str).width, x0 = align === "center" ? x - w / 2 : align === "right" ? x - w : x;
+    ctx.fillStyle = "rgba(255,255,255,0.85)"; ctx.fillRect(x0 - 2, y - 9, w + 4, 18);
+    ctx.fillStyle = color; ctx.fillText(str, x, y);
+  }
+
+  function draw() {
+    var k = +th.value, t = k * STEP, c = Math.cos(t), s = Math.sin(t);
+    ctx.clearRect(0, 0, W, H);
+    ctx.font = "13px Arial";
+    // circle panel
+    ctx.strokeStyle = "#0f172a"; ctx.lineWidth = 1.1;
+    ctx.beginPath(); ctx.moveTo(CX - R - 18, CY); ctx.lineTo(CX + R + 18, CY); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(CX, CY - R - 18); ctx.lineTo(CX, CY + R + 18); ctx.stroke();
+    ctx.strokeStyle = "#94a3b8"; ctx.lineWidth = 1.6;
+    ctx.beginPath(); ctx.arc(CX, CY, R, 0, TAU); ctx.stroke();
+    text("1", CX + R + 6, CY - 10, "#334155", "left");
+    text("−1", CX - R - 6, CY - 10, "#334155", "right");
+    var px = CX + R * c, py = CY - R * s;
+    // One turn is drawn in orange; past 2π the second turn is drawn over it, on the
+    // same circle, in violet. Used for the angle at the centre and for the walked arc.
+    var second = t > TAU;
+    function turns(r, width) {
+      if (k === 0) return;
+      ctx.lineCap = "round";
+      ctx.strokeStyle = C_ARC; ctx.lineWidth = width;
+      ctx.beginPath(); ctx.arc(CX, CY, r, 0, -Math.min(t, TAU), true); ctx.stroke();
+      if (second) {
+        ctx.strokeStyle = C_TURN2; ctx.lineWidth = width + 0.6;
+        ctx.beginPath(); ctx.arc(CX, CY, r, 0, -(t - TAU), true); ctx.stroke();
+      }
+      ctx.lineCap = "butt";
+    }
+    // the arc walked on the circle: no label of its own, the angle carries the name θ
+    turns(R, 3);
+    // the radius to the point, and the angle θ it makes with the positive x-axis
+    ctx.strokeStyle = "#0f172a"; ctx.lineWidth = 1.8;
+    ctx.beginPath(); ctx.moveTo(CX, CY); ctx.lineTo(px, py); ctx.stroke();
+    turns(26, 2.2);
+    if (k > 0) {
+      var a = second ? (t - TAU) / 2 : t / 2, rl = 39;
+      ctx.font = "italic 16px 'Cambria Math', 'Times New Roman', serif";
+      tag("θ", CX + rl * Math.cos(a), CY - rl * Math.sin(a), second ? C_TURN2 : C_ARC, "center");
+    }
+    // the coordinates as projections: drop to the x-axis (cos θ), across to the y-axis (sin θ)
+    ctx.setLineDash([5, 4]); ctx.lineWidth = 1.5;
+    ctx.strokeStyle = C_COS; ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(px, CY); ctx.stroke();
+    ctx.strokeStyle = C_SIN; ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(CX, py); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = C_COS; ctx.beginPath(); ctx.moveTo(CX, CY); ctx.lineTo(px, CY); ctx.stroke();
+    ctx.strokeStyle = C_SIN; ctx.beginPath(); ctx.moveTo(CX, CY); ctx.lineTo(CX, py); ctx.stroke();
+    ctx.fillStyle = C_COS; ctx.beginPath(); ctx.arc(px, CY, 4, 0, TAU); ctx.fill();
+    ctx.fillStyle = C_SIN; ctx.beginPath(); ctx.arc(CX, py, 4, 0, TAU); ctx.fill();
+    ctx.font = "italic 15px 'Cambria Math', 'Times New Roman', serif";
+    if (Math.abs(c) > 0.15) tag("cos θ", px, CY + (s >= 0 ? 15 : -15), C_COS, "center");
+    // sin θ at the foot on the y-axis, or halfway up when the point itself is near the y-axis
+    if (Math.abs(s) > 0.15) tag("sin θ", CX + (c >= 0 ? -8 : 8), Math.abs(c) < 0.35 ? (CY + py) / 2 : py,
+      C_SIN, c >= 0 ? "right" : "left");
+    ctx.fillStyle = "#0f172a"; ctx.beginPath(); ctx.arc(CX + R, CY, 3.5, 0, TAU); ctx.fill();
+    ctx.fillStyle = C_PT; ctx.beginPath(); ctx.arc(px, py, 6.5, 0, TAU); ctx.fill();
+    // the point itself is (cos θ, sin θ)
+    ctx.font = "italic 15px 'Cambria Math', 'Times New Roman', serif";
+    var lab = "(cos θ, sin θ)", lw = ctx.measureText(lab).width;
+    var lx = Math.max(lw / 2 + 4, Math.min(GX0 - 24 - lw / 2, px)), ly = py + (s >= 0 ? -17 : 18);
+    tag(lab, lx, ly, C_PT, "center");
+    ctx.font = "13px Arial";
+    // graph panel
+    ctx.strokeStyle = "#0f172a"; ctx.lineWidth = 1.1;
+    ctx.beginPath(); ctx.moveTo(GX0, CY); ctx.lineTo(GX1, CY); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(GX0, gy(1.15)); ctx.lineTo(GX0, gy(-1.15)); ctx.stroke();
+    ctx.strokeStyle = "#eef2f7"; ctx.lineWidth = 1;
+    [1, -1].forEach(function (v) { ctx.beginPath(); ctx.moveTo(GX0, gy(v)); ctx.lineTo(GX1, gy(v)); ctx.stroke(); });
+    text("1", GX0 - 6, gy(1), "#334155", "right"); text("−1", GX0 - 6, gy(-1), "#334155", "right");
+    ["π", "2π", "3π", "4π"].forEach(function (lab, i) {
+      var x = gx((i + 1) * Math.PI);
+      ctx.strokeStyle = "#0f172a"; ctx.beginPath(); ctx.moveTo(x, CY - 4); ctx.lineTo(x, CY + 4); ctx.stroke();
+      text(lab, x, CY + 16);
+    });
+    text("θ", GX1 - 4, CY - 14, "#334155", "right");
+    function trace(fn, color, upto, width, dash) {
+      ctx.strokeStyle = color; ctx.lineWidth = width; ctx.setLineDash(dash || []);
+      ctx.beginPath();
+      var N = 600;
+      for (var i = 0; i <= N; i++) {
+        var u = upto * i / N;
+        if (i) ctx.lineTo(gx(u), gy(fn(u))); else ctx.moveTo(gx(u), gy(fn(u)));
+      }
+      ctx.stroke(); ctx.setLineDash([]);
+    }
+    trace(Math.sin, "#fecdd3", TMAX, 1.5, [4, 4]);
+    trace(Math.sin, C_SIN, t, 3);
+    if (showCos.checked) { trace(Math.cos, "#99f6e4", TMAX, 1.5, [4, 4]); trace(Math.cos, C_COS, t, 3); }
+    // the same height on both panels
+    ctx.setLineDash([3, 4]); ctx.strokeStyle = "#a5b4fc"; ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(gx(t), gy(s)); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = C_SIN; ctx.beginPath(); ctx.arc(gx(t), gy(s), 5.5, 0, TAU); ctx.fill();
+    if (showCos.checked) { ctx.fillStyle = C_COS; ctx.beginPath(); ctx.arc(gx(t), gy(c), 5, 0, TAU); ctx.fill(); }
+    // readout
+    var turns = Math.floor(k / 48);
+    var turnsTxt = turns === 1 ? "עברנו סיבוב שלם אחד" : "עברנו " + turns + " סיבובים שלמים";
+    var special = k % 4 === 0 || k % 6 === 0, ec = exact(c), es = exact(s);
+    var vals = special && ec && es
+      ? " = (<b class='c'>" + ec + "</b>, <b class='s'>" + es + "</b>)"
+      : " ≈ (<b class='c'>" + n3(c) + "</b>, <b class='s'>" + n3(s) + "</b>)";
+    document.getElementById("same").innerHTML = "<b class='t'>" + piLabel(k) + "</b>";
+    read.innerHTML = "<span class='read'><b class='t'>θ = " + piLabel(k) + "</b>" +
+      " &nbsp; → &nbsp; (<b class='c'>cos θ</b>, <b class='s'>sin θ</b>)" + vals + "</span>" +
+      (turns >= 1 ? " <span class='hint'>(" + turnsTxt + ")</span>" : "");
+  }
+
+  var playing = false, last = 0, kf = 0;
+  function step(ts) {
+    if (!playing) return;
+    if (last) {
+      kf += (ts - last) / 1000 * 8;          // about 8 grid steps (8·π/24 = π/3) per second
+      if (kf > 96) kf = 0;
+      var k = Math.floor(kf);
+      if (k !== +th.value) { th.value = k; draw(); }
+    }
+    last = ts; requestAnimationFrame(step);
+  }
+  playBtn.addEventListener("click", function () {
+    playing = !playing; last = 0; kf = +th.value;
+    playBtn.textContent = playing ? "⏸ עצירה" : "▶ הליכה";
+    if (playing) requestAnimationFrame(step);
+  });
+  document.querySelectorAll(".jumps button").forEach(function (b) {
+    b.addEventListener("click", function () { th.value = b.getAttribute("data-k"); draw(); });
+  });
+  th.addEventListener("input", draw);
+  showCos.addEventListener("change", draw);
+  draw();
+})();
+</script>
+</body>
+</html>

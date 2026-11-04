@@ -122,6 +122,32 @@ def fig_real_line():
     save(fig, "real-line")
 
 
+def fig_order_line():
+    """The numbers of the 'who is on the right?' example, one colour per pair."""
+    pairs = [((5, r"$5$"), (2, r"$2$"), C1), ((-1, r"$-1$"), (-3, r"$-3$"), C2),
+             ((1, r"$1$"), (0.5, r"$0.5$"), C3)]
+    for (big, _), (small, _), _c in pairs:          # the caption: the larger one is on the right
+        assert big > small
+    fig, ax = plt.subplots(figsize=(7, 1.5))
+    number_line(ax, -4.6, 6.6)
+    for k in range(-4, 7):
+        ax.plot([k, k], [-0.08, 0.08], color=INK, lw=1.2)
+        ax.text(k, -0.24, f"${k}$", ha="center", va="top", fontsize=15)
+    # 0.5 and 1 are close: push their labels apart (0.5 to the left, 1 to the right)
+    nudge = {0.5: (0.47, "right"), 1: (1.03, "left")}
+    for a, b, c in pairs:
+        for x, lab in (a, b):
+            ax.plot([x], [0], "o", color=c, ms=9, zorder=5)
+            tx, ha = nudge.get(x, (x, "center"))
+            ax.text(tx, 0.2, lab, ha=ha, va="bottom", fontsize=19, color=c)
+    ax.plot([4], [0], "o", color=C4, ms=9, zorder=5)
+    ax.text(4, 0.2, r"$4$", ha="center", va="bottom", fontsize=19, color=C4)
+    ax.set_xlim(-4.8, 6.8)
+    ax.set_ylim(-0.6, 0.7)
+    ax.axis("off")
+    save(fig, "order-line")
+
+
 def fig_intervals():
     rows = [
         (r"$(a,b)$", "open", False, False, False),
@@ -340,6 +366,32 @@ def fig_unit_circle():
     save(fig, "unit-circle")
 
 
+def fig_radians():
+    """The angle theta at the centre and the arc it cuts on the unit circle are both
+    labelled theta: in radians they are equal (the radius is 1)."""
+    fig, ax = plt.subplots(figsize=(5, 5))
+    t = np.linspace(0, 2 * np.pi, 600)
+    th = 1.0
+    axes_through_origin(ax, (-1.45, 1.45), (-1.45, 1.45), grid=False)
+    ax.plot(np.cos(t), np.sin(t), color=GREY, lw=1.4)
+    arc = np.linspace(0, th, 200)
+    assert abs(th * 1.0 - th) < 1e-12        # caption: on a circle of radius 1 the arc has length theta
+    ax.plot(np.cos(arc), np.sin(arc), color=C2, lw=4.5)
+    ax.text(1.1 * np.cos(th / 2), 1.1 * np.sin(th / 2), r"$\theta$", color=C2, fontsize=18,
+            ha="left", va="center")
+    ax.plot([0, 1], [0, 0], color=C1, lw=2.4)
+    ax.plot([0, np.cos(th)], [0, np.sin(th)], color=INK, lw=1.2)
+    ax.text(0.5, -0.06, "$1$", color=C1, fontsize=15, ha="center", va="top")
+    wedge = np.linspace(0, th, 60)
+    ax.plot(0.24 * np.cos(wedge), 0.24 * np.sin(wedge), color=C2, lw=2)
+    ax.text(0.36 * np.cos(th / 2), 0.36 * np.sin(th / 2), r"$\theta$", color=C2, fontsize=16,
+            ha="center", va="center")                              # the angle has the same name as the arc
+    ax.plot([1], [0], "o", color=INK, ms=5, zorder=6)
+    ax.text(1.04, -0.06, "$(1,0)$", fontsize=11, va="top")
+    ax.set_xticks([]); ax.set_yticks([]); ax.set_aspect("equal")
+    save(fig, "radians")
+
+
 def fig_sin_cos():
     fig, ax = plt.subplots(figsize=(9, 3.2))
     axes_through_origin(ax, (-2 * np.pi - 0.3, 2 * np.pi + 0.3), (-1.5, 1.5))
@@ -402,6 +454,31 @@ def fig_horizontal_line():
     ax.set_yticks([-8, -4, 4, 8])
     fig.tight_layout()
     save(fig, "horizontal-line-test")
+
+
+def fig_onto():
+    """Onto, as a horizontal-line test: x^2 misses y = -2; x^3 meets y = -4 and y = 4."""
+    fig, axs = plt.subplots(1, 2, figsize=(8.4, 3.8))
+    x = np.linspace(-2.4, 2.4, 400)
+    ax = axs[0]
+    axes_through_origin(ax, (-2.6, 2.6), (-3, 6))
+    ax.plot(x, x ** 2, color=C1, lw=2.2)
+    ax.axhline(-2, color=C4, ls="--", lw=1.4)
+    ax.text(1.35, -1.7, "$y=-2$", color=C4, fontsize=13)
+    assert (x ** 2 > -2).all()            # caption: the line y = -2 misses the graph
+    ax.set_title(r"$x^2$")
+    ax = axs[1]
+    axes_through_origin(ax, (-2.6, 2.6), (-9, 9))
+    ax.plot(x, x ** 3, color=C1, lw=2.2)
+    for h in (-4, 4):
+        ax.axhline(h, color=C3, ls="--", lw=1.4)
+        xr = np.cbrt(float(h))
+        assert x.min() <= xr <= x.max()    # caption: every horizontal line meets x^3
+        ax.plot([xr], [h], "o", color=C3, ms=7, zorder=6)
+    ax.set_title(r"$x^3$")
+    ax.set_yticks([-8, -4, 4, 8])
+    fig.tight_layout()
+    save(fig, "onto-test")
 
 
 # ---------------------------------------------------------------- §13 logarithms
@@ -671,13 +748,291 @@ def fig_exp_rational_points():
     ax.set_yticks([1, 2, 3, 4])
     save(fig, "exp-rational-points")
 
+
+# ---------------------------------------------------------------- helpers for the lecture-1 additions
+IMGDIR = Path(__file__).resolve().parent / "images"
+
+
+def curly_brace(ax, x0, x1, y, height, down=False, color=INK, lw=1.6):
+    """A horizontal curly brace from x0 to x1 at height y, tip in the middle."""
+    n = 401
+    xs = np.linspace(x0, x1, n)
+    half = n // 2
+    beta = 40.0 / (x1 - x0)
+    xh = xs[:half + 1]
+    yh = 1 / (1 + np.exp(-beta * (xh - xh[0]))) + 1 / (1 + np.exp(-beta * (xh - xh[-1])))
+    ys = np.concatenate([yh, yh[-2::-1]])
+    ys = (ys - ys.min()) / (ys.max() - ys.min())
+    sign = -1 if down else 1
+    ax.plot(xs, y + sign * height * ys, color=color, lw=lw, solid_capstyle="round")
+    return y + sign * height
+
+
+# ---------------------------------------------------------------- §1: measuring a length
+def fig_triangle_1m():
+    fig, ax = plt.subplots(figsize=(3.4, 3.0))
+    ax.plot([0, 2, 0, 0], [0, 0, 2, 0], color=INK, lw=2)
+    ax.plot([0, 0.22, 0.22], [0.22, 0.22, 0], color=INK, lw=1)
+    ax.text(-0.12, 1.0, "$1$", ha="right", va="center", fontsize=15)
+    ax.text(1.0, -0.12, "$1$", ha="center", va="top", fontsize=15)
+    ax.text(1.12, 1.12, "$c$", ha="left", va="bottom", fontsize=16, color=C1)
+    ax.set_xlim(-0.5, 2.4); ax.set_ylim(-0.5, 2.3)
+    ax.set_aspect("equal"); ax.axis("off")
+    save(fig, "triangle-1m")
+
+
+def fig_circle_r1():
+    fig, ax = plt.subplots(figsize=(3.4, 3.4))
+    axes_through_origin(ax, (-1.5, 1.5), (-1.5, 1.5), grid=False)
+    t = np.linspace(0, 2 * np.pi, 400)
+    ax.plot(np.cos(t), np.sin(t), color=INK, lw=2)
+    ax.plot([0, np.cos(np.pi / 4)], [0, np.sin(np.pi / 4)], color=C4, lw=2.2)
+    ax.text(0.22, 0.42, "$1$", color=C4, fontsize=15)
+    ax.set_xticks([]); ax.set_yticks([])
+    ax.set_aspect("equal")
+    save(fig, "circle-r1")
+
+
+# ---------------------------------------------------------------- §2: sets as boxes
+def fig_coin_sets():
+    img = plt.imread(IMGDIR / "sheqel.png")
+    fig, ax = plt.subplots(figsize=(9, 1.3))
+    r = 0.42
+
+    def coin(x):
+        ax.imshow(img, extent=(x - r, x + r, -r, r), zorder=3)
+
+    def brace_text(x, ch):
+        ax.text(x, 0, ch, ha="center", va="center", fontsize=40, color=INK)
+
+    brace_text(0, r"$\{$"); coin(0.85); brace_text(1.7, r"$\}$")
+    ax.text(2.35, 0, "$=$", ha="center", va="center", fontsize=24)
+    x = 3.0
+    brace_text(x, r"$\{$")
+    for k in range(10):
+        cx = x + 0.85 + k * 1.05
+        coin(cx)
+        if k < 9:
+            ax.text(cx + 0.52, -0.32, ",", ha="center", va="center", fontsize=20)
+    brace_text(x + 0.85 + 9 * 1.05 + 0.85, r"$\}$")
+    ax.set_xlim(-0.6, x + 0.85 + 9 * 1.05 + 1.5)
+    ax.set_ylim(-0.75, 0.75)
+    ax.set_aspect("equal"); ax.axis("off")
+    save(fig, "coin-sets")
+
+
+def fig_subset_venn():
+    from matplotlib.patches import Ellipse, Circle
+    fig, ax = plt.subplots(figsize=(4.2, 2.8))
+    ax.add_patch(Ellipse((0, 0), 4.2, 2.7, fill=False, lw=2, ec=INK))
+    ax.add_patch(Circle((-0.85, -0.05), 0.48, fc=C1, alpha=0.15, ec="none"))
+    ax.add_patch(Circle((-0.85, -0.05), 0.48, fill=False, lw=2, ec=C1))
+    ax.text(-0.85, -0.05, "$A$", ha="center", va="center", fontsize=15, color=C1)
+    ax.text(0.35, 0.92, "$B$", ha="center", va="center", fontsize=15)
+    ax.plot([0.9], [-0.1], "o", color=C4, ms=6)
+    ax.text(1.0, -0.2, "$b$", color=C4, fontsize=15, va="top")
+    ax.set_xlim(-2.3, 2.3); ax.set_ylim(-1.5, 1.5)
+    ax.set_aspect("equal"); ax.axis("off")
+    save(fig, "subset-venn")
+
+
+def fig_union_boxes():
+    from matplotlib.patches import Circle
+    fig, ax = plt.subplots(figsize=(6.0, 4.0))
+
+    def box(x0, x1, y0, y1):
+        ax.plot([x0, x0, x1, x1], [y1, y0, y0, y1], color=INK, lw=2.4)
+
+    def item(x, y, lab):
+        ax.add_patch(Circle((x, y), 0.3, fc=C1, alpha=0.12, ec="none", zorder=2))
+        ax.add_patch(Circle((x, y), 0.3, fill=False, ec=C1, lw=1.6, zorder=3))
+        ax.text(x, y, f"${lab}$", ha="center", va="center", fontsize=14, zorder=4)
+
+    box(0, 2.6, 2.0, 3.2); ax.text(1.3, 3.55, "$A$", ha="center", fontsize=16)
+    for x, lab in ((0.5, 1), (1.3, 2), (2.1, 3)):
+        item(x, 2.4, lab)
+    box(3.6, 6.2, 2.0, 3.2); ax.text(4.9, 3.55, "$B$", ha="center", fontsize=16)
+    for x, lab in ((4.1, 1), (4.9, 3), (5.7, 5)):
+        item(x, 2.4, lab)
+    for (xa, ya), (xb, yb), rad in (((1.6, 1.85), (2.5, 1.1), 0.3), ((4.6, 1.85), (3.7, 1.1), -0.3)):
+        ax.annotate("", xy=(xb, yb), xytext=(xa, ya),
+                    arrowprops=dict(arrowstyle="-|>", color=GREY, lw=2.2,
+                                    connectionstyle=f"arc3,rad={rad}"))
+    box(1.3, 4.9, -0.4, 1.0)
+    for x, lab in ((1.9, 1), (2.7, 2), (3.5, 3), (4.3, 5)):
+        item(x, 0.0, lab)
+    ax.text(3.1, -0.85, r"$A\cup B$", ha="center", fontsize=16)
+    ax.set_xlim(-0.3, 6.5); ax.set_ylim(-1.2, 3.9)
+    ax.set_aspect("equal"); ax.axis("off")
+    save(fig, "union-boxes")
+
+
+def fig_intersection_venn():
+    from matplotlib.patches import Circle
+    fig, ax = plt.subplots(figsize=(4.6, 3.0))
+    r = 1.3
+    ca, cb = (0.0, 0.0), (1.6, 0.0)
+    # shade the overlap by clipping one disc to the other
+    a = Circle(ca, r, transform=ax.transData)
+    shade = Circle(cb, r, fc=C1, alpha=0.2, ec="none")
+    ax.add_patch(shade); shade.set_clip_path(a)
+    ax.add_patch(Circle(ca, r, fill=False, lw=2, ec=INK))
+    ax.add_patch(Circle(cb, r, fill=False, lw=2, ec=INK))
+    ax.text(-0.95, 1.2, "$A$", fontsize=16, ha="center")
+    ax.text(2.55, 1.2, "$B$", fontsize=16, ha="center")
+    for (x, y), lab in (((-0.55, 0), 1), ((0.8, 0.35), 3), ((0.8, -0.35), 5), ((2.15, 0), 2)):
+        ax.text(x, y, f"${lab}$", ha="center", va="center", fontsize=15)
+    ax.set_xlim(-1.6, 3.2); ax.set_ylim(-1.5, 1.6)
+    ax.set_aspect("equal"); ax.axis("off")
+    save(fig, "intersection-venn")
+
+
+# ---------------------------------------------------------------- §2: open and closed rays
+def fig_rays():
+    fig, ax = plt.subplots(figsize=(7.5, 2.4))
+    for y in (0, -1.3):
+        number_line(ax, -1.0, 7.0, y)
+    ax.plot([3, 6.9], [0, 0], color=C4, lw=5, solid_capstyle="butt", zorder=3)
+    ax.annotate("", xy=(7.05, 0), xytext=(6.6, 0),
+                arrowprops=dict(arrowstyle="-|>", color=C4, lw=3))
+    dot(ax, 3, 0, False, C4)
+    ax.text(3, -0.22, "$3$", ha="center", va="top", fontsize=13)
+    ax.text(-1.4, 0, r"$(3,\infty)$", ha="right", va="center", fontsize=15, color=C4)
+    ax.plot([-1.0, 3], [-1.3, -1.3], color=C1, lw=5, solid_capstyle="butt", zorder=3)
+    dot(ax, 3, -1.3, True, C1)
+    ax.text(3, -1.52, "$15$", ha="center", va="top", fontsize=13)
+    ax.text(-1.4, -1.3, r"$(-\infty,15]$", ha="right", va="center", fontsize=15, color=C1)
+    ax.set_xlim(-3.6, 7.3); ax.set_ylim(-1.95, 0.5)
+    ax.axis("off")
+    save(fig, "rays")
+
+
+# ---------------------------------------------------------------- §3: triangle inequality
+def fig_triangle_inequality():
+    fig, ax = plt.subplots(figsize=(7.5, 3.6))
+    b, z, apb, a = 0.0, 2.4, 4.6, 7.0
+    ax.plot([-0.4, 7.4], [0, 0], color=INK, lw=1.4)
+    for x, lab in ((b, "b"), (z, "0"), (apb, "a+b"), (a, "a")):
+        ax.plot([x, x], [-0.1, 0.1], color=INK, lw=1.4)
+        ax.text(x, -0.18, f"${lab}$", ha="center", va="top", fontsize=14)
+    top = curly_brace(ax, b, z, 0.25, 0.35, color=C2)
+    ax.text((b + z) / 2, top + 0.08, "$|b|$", ha="center", va="bottom", fontsize=14, color=C2)
+    top = curly_brace(ax, z, a, 0.25, 0.4, color=C2)
+    ax.text((z + a) / 2, top + 0.08, "$|a|$", ha="center", va="bottom", fontsize=14, color=C2)
+    low = curly_brace(ax, z, apb, -0.65, 0.35, down=True, color=C3)
+    ax.text((z + apb) / 2, low - 0.08, "$|a+b|$", ha="center", va="top", fontsize=14, color=C3)
+    low = curly_brace(ax, b, a, -1.55, 0.5, down=True, color=INK, lw=2.2)
+    ax.text((b + a) / 2, low - 0.1, "$|a|+|b|$", ha="center", va="top", fontsize=15)
+    assert apb - z < a - b          # |a+b| really is the shorter length
+    ax.set_xlim(-0.6, 7.6); ax.set_ylim(-2.75, 1.3)
+    ax.axis("off")
+    save(fig, "triangle-inequality")
+
+
+# ---------------------------------------------------------------- §3: solutions of the inequality examples
+def fig_ineq_solutions():
+    fig, axs = plt.subplots(2, 1, figsize=(7.0, 2.4))
+    for ax in axs:
+        ax.set_xlim(-4.8, 4.8); ax.set_ylim(-0.6, 0.4); ax.axis("off")
+    ax = axs[0]
+    number_line(ax, -4.6, 4.6)
+    ax.plot([-2, 4.4], [0, 0], color=C1, lw=5, solid_capstyle="butt", zorder=3)
+    dot(ax, -2, 0, False, C1)
+    for x, lab in ((-2, "-2"), (0, "0")):
+        ax.text(x, -0.15, f"${lab}$", ha="center", va="top", fontsize=13)
+    ax.plot([0, 0], [-0.06, 0.06], color=INK, lw=1)
+    ax = axs[1]
+    number_line(ax, -4.6, 4.6)
+    ax.plot([-4.4, 0], [0, 0], color=C1, lw=5, solid_capstyle="butt", zorder=3)
+    ax.plot([1.5, 4.4], [0, 0], color=C1, lw=5, solid_capstyle="butt", zorder=3)
+    dot(ax, 0, 0, False, C1); dot(ax, 1.5, 0, False, C1)
+    ax.text(0, -0.15, "$0$", ha="center", va="top", fontsize=13)
+    ax.text(1.5, -0.15, r"$\frac{1}{2}$", ha="center", va="top", fontsize=14)
+    fig.tight_layout()
+    save(fig, "ineq-solutions")
+
+
+# ---------------------------------------------------------------- §2: drawing a half-open interval
+def fig_half_open():
+    fig, ax = plt.subplots(figsize=(7.0, 1.9))
+    number_line(ax, -3.0, 5.0)
+    ax.plot([-1, 3], [0, 0], color=C1, lw=5, solid_capstyle="butt", zorder=3)
+    dot(ax, -1, 0, True, C1)
+    dot(ax, 3, 0, False, C1)
+    ax.plot([0, 0], [-0.07, 0.07], color=INK, lw=1)
+    for x, lab in ((-1, "-1"), (0, "0"), (3, "3")):
+        ax.text(x, -0.2, f"${lab}$", ha="center", va="top", fontsize=13)
+    ax.text(-1, 0.28, r"$-1\in[-1,3)$", ha="center", va="bottom", fontsize=13, color=C3)
+    ax.text(3, 0.28, r"$3\notin[-1,3)$", ha="center", va="bottom", fontsize=13, color=C4)
+    ax.set_xlim(-3.2, 5.2); ax.set_ylim(-0.65, 0.75)
+    ax.axis("off")
+    save(fig, "half-open-interval")
+
+
+# ------------------------------------- §6: print stand-in for the transformations lab
+def fig_transformations_lab():
+    """y = x^2 (dashed) and y = 2(x-1)^2 - 3: vertex (0,0) -> (c, d) = (1, -3)."""
+    fig, ax = plt.subplots(figsize=(6.0, 4.4))
+    axes_through_origin(ax, (-4.5, 4.5), (-4.2, 6.5))
+    x = np.linspace(-4.5, 4.5, 600)
+    ax.plot(x, x**2, color=GREY, lw=2, ls=(0, (6, 5)))
+    y = 2 * (x - 1) ** 2 - 3
+    ax.plot(x[y < 7], y[y < 7], color=C1, lw=2.6)
+    ax.plot(0, 0, "o", ms=8, mfc="white", mec=C2, mew=2, zorder=5)
+    ax.plot(1, -3, "o", ms=8, color=C2, zorder=5)
+    ax.annotate("", xy=(0.93, -2.85), xytext=(0.05, -0.15),
+                arrowprops=dict(arrowstyle="->", color=C2, lw=1.4))
+    ax.text(-3.9, 5.6, r"$y=x^2$", color=GREY, fontsize=14)
+    ax.text(-4.3, 1.3, r"$y=2(x-1)^2-3$", color=C1, fontsize=14)
+    ax.text(1.2, -3.35, r"$(1,-3)$", color=C2, fontsize=13, va="top")
+    assert abs(2 * (1 - 1) ** 2 - 3 - (-3)) < 1e-12   # the vertex moved to (c, d) = (1, -3)
+    save(fig, "transformations-lab")
+
+
+# ------------------------------------------- §9: print stand-in for the unit-circle walk
+def fig_unit_circle_walk():
+    """Circle with the point at theta = 2pi/3, and sin traced on [0, theta] beside it."""
+    t0 = 2 * np.pi / 3
+    fig, (a1, a2) = plt.subplots(1, 2, figsize=(9.6, 3.4), width_ratios=[1, 2.2])
+    a1.set_aspect("equal")
+    axes_through_origin(a1, (-1.35, 1.35), (-1.35, 1.35), grid=False)
+    s = np.linspace(0, 2 * np.pi, 400)
+    a1.plot(np.cos(s), np.sin(s), color=GREY, lw=1.6)
+    w = np.linspace(0, t0, 200)
+    a1.plot(np.cos(w), np.sin(w), color=C2, lw=4.5, solid_capstyle="round")
+    px, py = np.cos(t0), np.sin(t0)
+    a1.plot([0, px], [0, 0], color=C3, lw=3.5)
+    a1.plot([px, px], [0, py], color=C4, lw=3.5)
+    a1.plot(px, py, "o", color=C1, ms=9, zorder=5)
+    a1.text(px / 2, -0.17, r"$\cos\theta$", color=C3, ha="center", va="top", fontsize=13)
+    a1.text(px - 0.08, py / 2, r"$\sin\theta$", color=C4, ha="right", va="center", fontsize=13)
+    a1.text(0.62, 0.95, r"$\theta$", color=C2, fontsize=15)
+    a1.set_xticks([]); a1.set_yticks([])
+    axes_through_origin(a2, (0, 4 * np.pi + 0.3), (-1.3, 1.3), grid=False)
+    u = np.linspace(0, 4 * np.pi, 800)
+    a2.plot(u, np.sin(u), color="#fecdd3", lw=1.5, ls=(0, (4, 4)))
+    v = np.linspace(0, t0, 300)
+    a2.plot(v, np.sin(v), color=C4, lw=3)
+    a2.plot(t0, np.sin(t0), "o", color=C4, ms=8, zorder=5)
+    a2.set_xticks([np.pi, 2 * np.pi, 3 * np.pi, 4 * np.pi])
+    a2.set_xticklabels([r"$\pi$", r"$2\pi$", r"$3\pi$", r"$4\pi$"])
+    a2.set_yticks([-1, 1])
+    a2.text(t0 + 0.25, np.sin(t0) + 0.12, r"$(\theta,\ \sin\theta)$", color=C4, fontsize=13)
+    assert abs(np.sin(t0) - np.sqrt(3) / 2) < 1e-12
+    fig.tight_layout()
+    save(fig, "unit-circle-walk")
+
 FIGURES = [
     fig_real_line, fig_intervals, fig_distance, fig_square, fig_not_functions,
-    fig_even_odd, fig_sqrt_family, fig_polynomials, fig_unit_circle, fig_sin_cos,
-    fig_tan, fig_exponentials, fig_horizontal_line, fig_exp_ln, fig_powers_roots,
+    fig_even_odd, fig_sqrt_family, fig_polynomials, fig_unit_circle, fig_radians, fig_sin_cos,
+    fig_tan, fig_exponentials, fig_horizontal_line, fig_onto, fig_exp_ln, fig_powers_roots,
     fig_rational, fig_sgn_floor, fig_inverse_trig,
     fig_sqrt2, fig_function_examples, fig_plane_point, fig_parabola_points,
     fig_frac_part, fig_exp_rational_points,
+    fig_triangle_1m, fig_circle_r1, fig_coin_sets, fig_subset_venn, fig_union_boxes,
+    fig_intersection_venn, fig_rays, fig_triangle_inequality, fig_ineq_solutions,
+    fig_half_open, fig_transformations_lab, fig_unit_circle_walk,
+    fig_order_line,
 ]
 
 if __name__ == "__main__":

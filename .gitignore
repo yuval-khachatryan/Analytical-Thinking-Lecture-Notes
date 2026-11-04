@@ -2,6 +2,8 @@
 *.pdf
 *.html
 !_styles.html
+# the interactive widgets are source, not output
+!widgets/**/*.html
 *.tex
 *.aux
 *.log

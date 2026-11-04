@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>שגיאה מותרת ורצועה סביב הגבול</title>
+<style>
+  html, body { margin: 0; padding: 0; background: transparent; }
+  body { font: 15px/1.45 Arial, "Helvetica Neue", sans-serif; color: #1f2937; }
+  .w { border: 1px solid #9ca3af; background: #fff; padding: 0.7rem 0.8rem 0.9rem; }
+  canvas { display: block; width: 100%; height: auto; }
+  .row { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem 0.9rem; margin-top: 0.55rem; }
+  .row input[type=range] { flex: 1 1 220px; direction: ltr; }
+  select { font: inherit; padding: .2rem .4rem; border: 1px solid #94a3b8; border-radius: 8px; background: #fff; }
+  .m { direction: ltr; unicode-bidi: isolate; display: inline-block; font: 16px "Cambria Math", "Times New Roman", serif; }
+  .read { padding: .35rem .6rem; border-radius: 8px; background: #f8fafc; border: 1px solid #e2e8f0; }
+  .read.good { background: #f0fdf4; border-color: #bbf7d0; }
+  .read.bad { background: #fff1f2; border-color: #fecdd3; }
+</style>
+</head>
+<body>
+<div class="w">
+  <canvas id="cv" width="780" height="300"></canvas>
+  <div class="row">
+    <label for="seq">הסדרה:</label>
+    <select id="seq">
+      <option value="0">1/n</option>
+      <option value="1">(n+2)/n</option>
+      <option value="2">(−1)ⁿ/n</option>
+      <option value="3">1 + sin(n)/n</option>
+      <option value="4">(−1)ⁿ</option>
+    </select>
+    <span id="lim"></span>
+  </div>
+  <div class="row">
+    <label for="eps">השגיאה המותרת <span class="m">ε</span>:</label>
+    <input type="range" id="eps" min="0" max="6" step="1" value="1" aria-label="epsilon">
+    <span class="m" id="epsval"></span>
+  </div>
+  <div class="row read" id="read"></div>
+</div>
+<script src="../shared/autosize.js"></script>
+<script>
+(function () {
+  "use strict";
+  var cv = document.getElementById("cv"), ctx = cv.getContext("2d");
+  var W = cv.width, H = cv.height, PADL = 46, PADR = 16, PADT = 16, PADB = 34;
+  var EPS = [0.5, 0.2, 0.1, 0.05, 0.02, 0.01, 0.005];
+  // L: the limit (null: the sequence diverges; then the band is drawn around `around`)
+  var SEQS = [
+    { f: function (n) { return 1 / n; }, L: 0, tex: "1/n", lo: -0.15, hi: 1.05 },
+    { f: function (n) { return (n + 2) / n; }, L: 1, tex: "(n+2)/n", lo: 0.85, hi: 3.05 },
+    { f: function (n) { return (n % 2 ? -1 : 1) / n; }, L: 0, tex: "(−1)ⁿ/n", lo: -1.05, hi: 0.6 },
+    { f: function (n) { return 1 + Math.sin(n) / n; }, L: 1, tex: "1 + sin(n)/n", lo: 0.55, hi: 1.9 },
+    { f: function (n) { return n % 2 ? -1 : 1; }, L: null, around: 1, tex: "(−1)ⁿ", lo: -1.3, hi: 1.3 }
+  ];
+  var sel = document.getElementById("seq"), slider = document.getElementById("eps");
+  var read = document.getElementById("read"), epsval = document.getElementById("epsval"), limEl = document.getElementById("lim");
+  var SCAN = 20000;
+
+  // the first place from which on ALL terms are within eps (checked up to SCAN); null if none
+  function firstN(S, e) {
+    if (S.L === null) return null;
+    var last = 0;
+    for (var n = 1; n <= SCAN; n++) if (Math.abs(S.f(n) - S.L) >= e) last = n;
+    return last >= SCAN ? null : last + 1;
+  }
+  function text(s, x, y, color, align, base, font) {
+    ctx.fillStyle = color || "#334155"; ctx.direction = "ltr"; ctx.font = font || "13px Arial";
+    ctx.textAlign = align || "center"; ctx.textBaseline = base || "middle"; ctx.fillText(s, x, y);
+  }
+  function draw() {
+    var S = SEQS[+sel.value], e = EPS[+slider.value], N = firstN(S, e);
+    var center = S.L === null ? S.around : S.L;
+    var nMax = Math.min(400, Math.max(30, N ? Math.ceil(N * 1.6) : 40));
+    function X(n) { return PADL + (n - 0.5) / nMax * (W - PADL - PADR); }
+    function Y(v) { return PADT + (S.hi - v) / (S.hi - S.lo) * (H - PADT - PADB); }
+    ctx.clearRect(0, 0, W, H);
+    // the band (at least 2px, so a small error stays visible)
+    var y1 = Y(center + e), y2 = Y(center - e);
+    if (y2 - y1 < 2) { var mid = (y1 + y2) / 2; y1 = mid - 1; y2 = mid + 1; }
+    ctx.fillStyle = "rgba(79,70,229,.12)"; ctx.fillRect(PADL, y1, W - PADL - PADR, y2 - y1);
+    ctx.strokeStyle = "#4f46e5"; ctx.lineWidth = 1; ctx.setLineDash([5, 4]);
+    [y1, y2].forEach(function (y) { ctx.beginPath(); ctx.moveTo(PADL, y); ctx.lineTo(W - PADR, y); ctx.stroke(); });
+    ctx.setLineDash([]);
+    ctx.strokeStyle = "#4f46e5"; ctx.lineWidth = 1.4;
+    ctx.beginPath(); ctx.moveTo(PADL, Y(center)); ctx.lineTo(W - PADR, Y(center)); ctx.stroke();
+    text((S.L === null ? "" : "L = ") + center, PADL - 6, Y(center), "#4338ca", "right", "middle", "bold 13px Arial");
+    // axes
+    ctx.strokeStyle = "#0f172a"; ctx.lineWidth = 1.1;
+    ctx.beginPath(); ctx.moveTo(PADL, PADT); ctx.lineTo(PADL, H - PADB); ctx.lineTo(W - PADR, H - PADB); ctx.stroke();
+    var step = nMax <= 40 ? 5 : nMax <= 100 ? 10 : nMax <= 200 ? 20 : 50;
+    for (var t = step; t <= nMax; t += step) {
+      ctx.beginPath(); ctx.moveTo(X(t), H - PADB); ctx.lineTo(X(t), H - PADB + 4); ctx.stroke();
+      text(String(t), X(t), H - PADB + 14, "#475569");
+    }
+    text("n", W - PADR, H - PADB + 26, "#334155", "right", "middle", "italic 14px 'Cambria Math', serif");
+    // the place N
+    if (N) {
+      ctx.strokeStyle = "#15803d"; ctx.lineWidth = 1.5; ctx.setLineDash([4, 4]);
+      ctx.beginPath(); ctx.moveTo(X(N) - 0.5 * (X(2) - X(1)), PADT); ctx.lineTo(X(N) - 0.5 * (X(2) - X(1)), H - PADB); ctx.stroke();
+      ctx.setLineDash([]);
+      text("n = " + N, X(N) + 4, PADT + 6, "#15803d", "left", "top", "bold 13px Arial");
+    }
+    // the terms: inside the band blue, outside red
+    var r = nMax > 150 ? 2 : nMax > 60 ? 2.8 : 3.8;
+    for (var n = 1; n <= nMax; n++) {
+      var v = S.f(n), inside = Math.abs(v - center) < e;
+      ctx.fillStyle = inside ? "#1d4ed8" : "#dc2626";
+      ctx.beginPath(); ctx.arc(X(n), Y(Math.max(S.lo, Math.min(S.hi, v))), r, 0, 2 * Math.PI); ctx.fill();
+    }
+    epsval.textContent = "ε = " + e;
+    limEl.innerHTML = S.L === null ? "<span>אין לה גבול</span>" : "<span>הגבול: <span class='m'>L = " + S.L + "</span></span>";
+    if (N) {
+      read.className = "row read good";
+      read.innerHTML = "<span>החל מ-<span class='m'>n = " + N + "</span> <b>כל</b> האיברים בתוך הרצועה: <span class='m'>|a<sub>n</sub> − " + S.L + "| &lt; " + e + "</span>. האיברים האדומים, שלפני המקום הזה, אינם משנים את הגבול.</span>";
+    } else {
+      read.className = "row read bad";
+      read.innerHTML = "<span>אין מקום שממנו כל האיברים בתוך הרצועה סביב <span class='m'>" + center + "</span>: האיברים קופצים בין <span class='m'>1</span> ל-<span class='m'>−1</span>, ושום רצועה צרה לא מכילה את שניהם. כך גם סביב כל מספר אחר.</span>";
+    }
+  }
+  sel.addEventListener("change", draw);
+  slider.addEventListener("input", draw);
+  draw();
+})();
+</script>
+</body>
+</html>
