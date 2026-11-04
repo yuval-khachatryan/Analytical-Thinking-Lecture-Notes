@@ -2,13 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="he" xml:lang="he" dir="rtl"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.10.19">
+<meta name="generator" content="quarto-1.10.20">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="ד״ר יובל חצ׳טריאן-רזיאל">
 
-<title>חשיבה אנליטית — סיכומי הרצאה</title>
+<title>חשיבה אנליטית — מערכי הרצאה</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -44,7 +44,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-17888a1159294d3eb470f19f6f52f5a5.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap-d3f7f8e73c8d287b30bcf59c2b563615.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
@@ -340,7 +340,323 @@ details.thmcollapse[open] > summary { margin-bottom: 0.4rem; }
   border-bottom: 1px solid #9ca3af;
 }
 .extra > :last-child { margin-bottom: 0; }
+
+/* ---- interactive lecture notes ------------------------------------------
+   The look follows the Ramat Gan Discrete Mathematics notes (their
+   _styles.html, the .bk-* rules). */
+
+/* Pictures floated inside a box stay inside it. */
+.thmbox { display: flow-root; }
+/* Self-check (.thmchk) and section summary (.thmsummary): unnumbered. */
+.thmbox-self-check { border-color: #db2777; background: #fdf2f8; }
+.thmbox-self-check > p:first-child > strong::before { content: "🎯"; margin-inline-end: .4em; }
+.thmbox-summary { border-color: #0f766e; background: #f0fdfa; }
+.thmbox-summary > p:first-child > strong::before { content: "📋"; margin-inline-end: .4em; }
+
+/* Small tables (values, intervals, transformations): compact and centred, and on a
+   phone they scroll inside their own box instead of pushing the page sideways. */
+main table.table { width: auto; min-width: 10rem; margin-left: auto; margin-right: auto; }
+main table.table th, main table.table td { padding: 0.3rem 1rem; text-align: center; }
+/* A table of blanks has many narrow columns: keep it inside its box. */
+main .fill table.table th, main .fill table.table td { padding: 0.3rem 0.45rem; }
+main .fill table.table { max-width: 100%; }
+@media (max-width: 600px) {
+  main table.table { display: block; width: fit-content; max-width: 100%; overflow-x: auto; }
+  main table.table th, main table.table td { padding: 0.25rem 0.45rem; }
+}
+
+/* An answer inside an example or question, revealed on a click (.lecture-answer):
+   a plain link-coloured summary next to the grey edge of .thmfoldable. */
+details.lecture-answer { margin: .45rem 0 1rem; }
+details.lecture-answer > summary { color: #4338ca; cursor: pointer; font-weight: 600; }
+details.lecture-answer > summary:focus-visible { outline: 3px solid #f59e0b; outline-offset: 2px; }
+details.lecture-answer > :last-child { margin-bottom: 0; }
+/* An exercise's solution (.thmsol .foldable): its box has its own edge. */
+details.lecture-solution { margin-top: -.4rem; }
+@media print {
+  details.lecture-answer::details-content { content-visibility: visible; }
+  details.lecture-answer > :not(summary) { display: block !important; }
+}
+
+/* Click-to-answer quiz (.quiz in the source -> .tf-quiz): the explanation
+   (.tf-why) appears once the reader has answered. Without JS it simply shows. */
+.tf-quiz .tf-opt { min-height: 44px; max-width: 100%; margin: 0 0 .35rem .5rem; }
+.tf-quiz .tf-opt:focus-visible { outline: 3px solid #4338ca; outline-offset: 2px; }
+.tf-quiz.tf-js:not(.tf-answered) .tf-why { display: none; }
+.tf-quiz .tf-why {
+  margin-top: .4rem; padding: .4rem .7rem; border-radius: 8px;
+  background: #f8fafc; border: 1px solid #e2e8f0;
+}
+.tf-quiz .tf-why > :last-child { margin-bottom: 0; }
+.tf-quiz .tf-feedback:empty { display: none; }
+
+/* A small label in front of a hint or a step ("רמז", "צעד 2 מתוך 4"). */
+.solve > .hint::before, .solve > .step::before,
+.fill > .hint::before, .steps > .hint::before {
+  display: inline-block; margin-inline-end: .5rem; padding: 0 .5rem; border-radius: 999px;
+  font-size: .85em; font-weight: 700; background: #e2e8f0; color: #334155;
+}
+.solve > .hint::before, .fill > .hint::before, .steps > .hint::before {
+  content: "רמז"; background: #fde68a; color: #92400e;
+}
+
+/* Step-by-step solution (.solve): hints and steps revealed one at a time. */
+.solve {
+  counter-reset: solvestep solvehint;
+  border-inline-start: 4px solid #64748b; background: #f8fafc; border-radius: 4px;
+  padding: .5rem 1rem; margin: .6rem 0 1.2rem;
+}
+.solve > .hint, .solve > .step {
+  margin: .45rem 0; padding: .45rem .7rem; border-radius: 8px;
+  background: #fff; border: 1px solid #e2e8f0;
+}
+.solve > .hint { border-style: dashed; border-color: #d97706; background: #fffbeb; }
+.solve > .hint::before { counter-increment: solvehint; }
+.solve.solve-many-hints > .hint::before { content: "רמז " counter(solvehint); }
+.solve > .step::before { counter-increment: solvestep; content: "צעד " counter(solvestep); }
+.solve > .step[data-of]::before { content: "צעד " counter(solvestep) " מתוך " attr(data-of); }
+.solve > .hint > p:first-child, .solve > .step > p:first-child { display: inline; }
+.solve > .hint > :last-child, .solve > .step > :last-child { margin-bottom: 0; }
+.solve .solve-hidden { display: none !important; }
+.solve-bar { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; margin: .2rem 0 .5rem; }
+.solve-bar button[hidden] { display: none; }
+/* Buttons: the .bk-btn look of the Ramat Gan notes. */
+.solve-bar button, .ix-btn {
+  min-height: 40px; padding: .3rem .9rem; border: 1px solid #94a3b8; border-radius: 8px;
+  background: #fff; color: inherit; font: inherit; font-size: .95em; cursor: pointer;
+}
+.solve-bar button:hover:not(:disabled), .ix-btn:hover:not(:disabled) { background: #f1f5f9; }
+.solve-bar button:disabled, .ix-btn:disabled { opacity: .5; cursor: default; }
+.solve-bar button.solve-main, .ix-btn.ix-main {
+  background: #4f46e5; border-color: #4f46e5; color: #fff; font-weight: 700;
+}
+.solve-bar button.solve-main:hover:not(:disabled), .ix-btn.ix-main:hover:not(:disabled) { background: #4338ca; }
+.solve-bar button.solve-quiet, .ix-btn.ix-quiet { color: #475569; }
+.solve-bar button:focus-visible, .ix-btn:focus-visible, .ix-key:focus-visible,
+.blank-input:focus-visible, .st-in:focus-visible, .st-rule:focus-visible, .ord-card:focus-visible {
+  outline: 3px solid #f59e0b; outline-offset: 2px;
+}
+
+/* A new term where it is defined, and a one-line rule worth remembering. */
+.term {
+  white-space: nowrap; color: #6b21a8; background: #f3e8ff; border-radius: .22em; padding: .04em .2em;
+  font-weight: 700; box-decoration-break: clone; -webkit-box-decoration-break: clone;
+}
+.key-rule {
+  color: #075985; background: #e0f2fe; font-weight: 700; padding: .08em .25em;
+  border-radius: .2em; box-decoration-break: clone; -webkit-box-decoration-break: clone;
+}
+/* "What we are doing" note at the top of a section: a sticky note, unlike any box. */
+.lead {
+  font-size: 1.05em; color: #1e293b; background: #fefce8;
+  border: 1px solid #fde68a; padding: .55rem .9rem; border-radius: 10px;
+  margin: .6rem 0 1rem;
+}
+.lead > :last-child { margin-bottom: 0; }
+@media print {
+  .term, .key-rule { color: #111; background: transparent; }
+  .solve .solve-hidden { display: block !important; }
+  .solve-bar { display: none; }
+}
+
+/* ---- the reader writes answers (assets/interactive.js) -------------------- */
+/* A run of math and blanks is one LTR formula inside the RTL sentence. */
+.fill-ltr { direction: ltr; unicode-bidi: isolate; display: inline-block; white-space: nowrap; }
+/* What the reader types (`2/3`, `[0,5)`, ...) is LTR inside the Hebrew sentence. */
+p code, li code, td code, .ix-msg code { direction: ltr; unicode-bidi: isolate; white-space: nowrap; }
+.eqline { text-align: center; margin: .5rem 0; }
+.eqline > p { margin: 0; }
+span.blank { white-space: nowrap; }
+span.blank:not(.blank-ready) { text-decoration: underline; text-underline-offset: .25em; }
+.blank-input {
+  font: inherit; font-size: .95em; direction: ltr; text-align: center;
+  padding: .05rem .35rem; margin: 0 .15rem; min-width: 3.2em;
+  border: 1px solid #94a3b8; border-radius: 6px; background: #fff;
+  box-sizing: content-box;
+}
+.blank-input:focus { border-color: #4f46e5; }
+td .blank-input, th .blank-input { min-width: 2.4em; padding: .05rem .2rem; }
+.fill table { margin-inline: auto; }
+span.blank.ok .blank-input { border-color: #16a34a; background: #f0fdf4; }
+span.blank.bad .blank-input { border-color: #e11d48; background: #fff1f2; }
+.blank-mark { font-weight: 700; font-size: .9em; }
+span.blank.ok .blank-mark { color: #15803d; }
+span.blank.bad .blank-mark { color: #be123c; }
+span.blank.warn .blank-input { border-color: #d97706; background: #fffbeb; }
+span.blank.warn .blank-mark { color: #b45309; }
+.blank-answer { background: #fef9c3; border-radius: 4px; padding: 0 .25em; }
+.ix-hidden { display: none !important; }
+.ix-panel { margin: .35rem 0 .8rem; }
+.ix-panel .ix-keys { display: none; }
+.ix-panel.ix-active .ix-keys { display: flex; }
+.ix-keys { flex-wrap: wrap; gap: .3rem; margin: .3rem 0; direction: ltr; justify-content: flex-end; }
+/* Keypad: the .bk-key look of the Ramat Gan notes. */
+.ix-key {
+  min-width: 40px; min-height: 40px; padding: 0 .4rem; cursor: pointer;
+  border: 1px solid #94a3b8; border-radius: 8px; background: #fff; color: #1e293b;
+  font: 1.1rem "Cambria Math", "STIX Two Math", serif;
+}
+.ix-key:hover { background: #eef2ff; }
+.ix-bar { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; margin: .2rem 0 .5rem; }
+/* Feedback: the .bk-msg look (a coloured edge, a light fill). */
+.ix-msg:empty { display: none; }
+.ix-msg {
+  margin: .3rem 0; padding: .45rem .8rem; border-radius: 8px; font-size: .95em;
+  border-inline-start: 4px solid #64748b; background: #fff;
+}
+.ix-msg.ix-good { border-color: #15803d; background: #dcfce7; }
+.ix-msg.ix-bad { border-color: #b91c1c; background: #fee2e2; }
+.ix-msg.ix-warn { border-color: #d97706; background: #fef3c7; }
+.ix-msg.ix-info { border-color: #1d4ed8; background: #dbeafe; }
+/* Under an input: what has been typed so far, as a formula (no words). Dimmed while
+   the input is still unfinished and only its beginning can be read. */
+.ix-preview:empty { display: none; }
+.ix-preview { font-size: 1.05em; color: #1e293b; margin: .25rem 0; }
+.ix-preview.ix-preview-partial { opacity: .5; }
+.proof-step .ix-preview { direction: ltr; text-align: left; }
+.ix-or { margin: 0 .35em; font-weight: 600; }
+.fill > .hint, .steps > .hint {
+  margin: .4rem 0; padding: .4rem .7rem; border-radius: 8px;
+  border: 1px dashed #d97706; background: #fffbeb;
+}
+.fill > .hint > p:first-child, .steps > .hint > p:first-child { display: inline; }
+.fill > .explain, .steps > .solution, .order > .after {
+  margin: .4rem 0; padding: .4rem .7rem; border-radius: 8px; border: 1px solid #bbf7d0; background: #f0fdf4;
+}
+.steps > .solution::before { content: "פתרון: "; font-weight: 700; color: #166534; }
+.steps > .solution > p:first-child { display: inline; }
+.fill > :last-child, .steps > :last-child { margin-bottom: 0; }
+
+/* Step builder (.steps): a solution ledger, laid out like the directed proofs of
+   the Ramat Gan notes (their .proof-ledger / .proof-step / .step-compact rules).
+   On top the goal (blue strip) and the starting line; then one fieldset per step.
+   A checked step folds into one line: label | rule | the new line | עריכה. */
+.st-ui { margin: .6rem 0 1.2rem; min-width: 0; }
+.activity-help { margin: .5rem 0 .8rem; font-size: .92rem; }
+.activity-help summary { cursor: pointer; color: #4338ca; }
+.activity-help ol { padding: .7rem 1.7rem .7rem .7rem; background: #f8fafc; border-radius: 8px; }
+.activity-help li + li { margin-top: .5rem; }
+.proof-ledger { border: 1px solid #b7c8d8; border-radius: 7px; padding: .6rem; margin: .6rem 0; background: #fff; min-width: 0; }
+.proof-start { padding: .65rem; border-inline-start: 4px solid #075985; background: #f0f9ff; border-radius: 6px; color: #075985; font-weight: 600; }
+.st-given {
+  display: grid; grid-template-columns: 5.2rem minmax(0, 1fr); column-gap: .5rem; align-items: baseline;
+  padding: .45rem .2rem; border-bottom: 1px solid #dbe3ea;
+}
+.given-label { font-size: .85rem; line-height: 1.5; font-weight: 600; color: #475569; }
+/* The line itself reads left to right (⟺ first), like .proof-formula in Ramat Gan. */
+.st-formula { min-width: 0; overflow-x: auto; overflow-y: hidden; direction: ltr; unicode-bidi: isolate; text-align: left; }
+.proof-step { min-width: 0; margin: .35rem 0; padding: .45rem .7rem .6rem; border: 1px solid #c7d2fe; border-radius: 10px; background: #f8faff; }
+.proof-step > legend { float: none; width: auto; padding: 0 .4rem; margin: 0; font-size: 1.05em; font-weight: 700; color: #581c87; }
+.proof-field { display: grid; gap: .3rem; margin: .3rem 0; font-weight: 600; }
+.proof-rule { width: 100%; min-width: 0; max-width: 100%; min-height: 44px; padding: .4rem; border: 1px solid #94a3b8; border-radius: 8px; background: #fff; font: inherit; }
+.proof-rule:focus-visible { outline: 3px solid #f59e0b; outline-offset: 2px; }
+.st-in {
+  width: 100%; min-width: 0; min-height: 40px; box-sizing: border-box; direction: ltr; text-align: left;
+  padding: .3rem .6rem; border: 1px solid #94a3b8; border-radius: 8px; background: #fff;
+  font: 1.05rem "Cambria Math", "STIX Two Math", "Times New Roman", serif;
+}
+.st-in:focus { border-color: #4f46e5; }
+.st-in[aria-invalid="true"] { border: 2px solid #b91c1c; }
+.proof-step .ix-keys { margin: .35rem 0; }
+.step-compact[hidden], .step-editor[hidden], .proof-qed[hidden], .step-compact-reason[hidden] { display: none !important; }
+/* A checked step: no box, one line with the label at the side. */
+.proof-ledger .step-accepted { border: 0; border-bottom: 1px solid #dbe3ea; border-radius: 0; background: transparent; padding: .3rem .2rem; }
+.proof-ledger .side-labelled > .step-label { display: none; }
+.proof-ledger .side-labelled.step-accepted { display: grid; grid-template-columns: 5.2rem minmax(0, 1fr); column-gap: .5rem; align-items: start; }
+.proof-ledger .side-labelled.step-accepted > legend { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.proof-ledger .side-labelled.step-accepted > .step-label { display: block; grid-column: 1; grid-row: 1; font-size: .85rem; font-weight: 600; color: #475569; padding-top: .35rem; }
+.proof-ledger .side-labelled.step-accepted > .step-compact { grid-column: 2; grid-row: 1; min-width: 0; }
+/* Physical left/right placement is explicit (as in Ramat Gan): עריכה on the left,
+   then the new line, then the rule in Hebrew. */
+.proof-ledger .step-compact { display: grid; direction: ltr; grid-template-columns: 4.2rem minmax(0, 1fr); align-items: start; gap: .25rem .65rem; font-size: .94rem; }
+.proof-ledger .step-compact > .step-edit { grid-column: 1; grid-row: 1; justify-self: start; margin: 0; direction: rtl; padding: .15rem .5rem; min-height: 32px; font-size: .85rem; }
+.proof-ledger .step-statement { grid-column: 2; grid-row: 1; min-width: 0; }
+.proof-ledger .step-statement > .st-formula { white-space: nowrap; padding: .15rem 0; }
+.proof-ledger .step-compact-reason { grid-column: 2; grid-row: 2; direction: rtl; text-align: right; font-size: .85rem; color: #475569; }
+.proof-ledger .proof-qed { grid-column: 2; grid-row: 3; direction: rtl; justify-self: end; color: #166534; font-weight: 700; }
+/* "או" between two formulas is its own bidi island, so the line keeps the typed order. */
+.st-formula .ix-or { unicode-bidi: isolate; }
+.proof-steps .ix-msg:empty { display: none; }
+.st-controls { margin-top: .5rem; }
+@media (max-width: 600px) {
+  .proof-ledger { padding: .35rem; }
+  .st-given, .proof-ledger .side-labelled.step-accepted { grid-template-columns: 3.6rem minmax(0, 1fr); column-gap: .3rem; }
+  .proof-ledger .step-compact > .step-edit { min-height: 44px; }
+}
+
+/* References shown in place (assets/interactive.js, ported from the BGU book). */
+.xref-panel {
+  border: 1px solid #cbd5e1; border-inline-start: 4px solid #4338ca;
+  background: #f8fafc; margin: .5rem 0 1rem; padding: .65rem; min-width: 0;
+}
+.xref-head {
+  display: flex; justify-content: space-between; align-items: center; gap: .8rem;
+  font-size: .9rem; color: #475569; margin-bottom: .5rem;
+}
+.xref-head .xref-jump { font-weight: 600; }
+.xref-head .xref-close {
+  border: 1px solid #cbd5e1; border-radius: 4px; background: #fff; color: #334155;
+  cursor: pointer; padding: .2rem .5rem; line-height: 1.2;
+}
+.xref-panel > .thmbox { margin: 0; }
+.xref-panel .tf-quiz { margin: .3rem 0 .6rem; }
+.xref-panel details.lecture-answer > summary { pointer-events: none; }
+a.xref-open { background: #ede9fe; border-radius: 3px; }
+
+/* Ordering (.order): click the steps into place. */
+.order > .step { margin: .3rem 0; padding: .4rem .7rem; border: 1px solid #e2e8f0; border-radius: 8px; }
+.ord-ui { margin: .6rem 0 1.2rem; padding: .6rem .9rem; border: 1px solid #c7d2fe; border-radius: 10px; background: #f8faff; }
+.ord-head { font-weight: 700; color: #3730a3; margin: .3rem 0; }
+.ord-pool { display: flex; flex-wrap: wrap; gap: .45rem; min-height: 2.5rem; padding: .4rem; border-radius: 8px; background: #f8fafc; }
+.ord-placed { margin: .3rem 0; padding-inline-start: 1.8rem; min-height: 2.5rem; }
+.ord-placed > li { margin: .3rem 0; }
+.ord-card {
+  cursor: pointer; padding: .35rem .7rem; border: 1px solid #c7d2fe; border-radius: 8px; background: #fff;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, .06);
+}
+.ord-pool .ord-card { flex: 1 1 15rem; }
+.ord-card:hover, .ord-card:focus { border-color: #4f46e5; outline: none; background: #eef2ff; }
+.ord-card.good { border-color: #16a34a; background: #f0fdf4; }
+.ord-card.bad { border-color: #e11d48; background: #fff1f2; }
+.ord-card > :last-child { margin-bottom: 0; }
+.ord-card > p:first-child { margin-top: 0; }
+.ord-empty { color: #94a3b8; font-style: italic; list-style: none; }
+@media print {
+  .blank-input, .blank-mark, .ix-panel, .st-ui, .ord-ui { display: none !important; }
+  .blank-answer { display: inline !important; background: transparent; text-decoration: underline; }
+  .ix-hidden { display: block !important; }
+}
 </style>
+<style>
+/* One RTL navigation tree in the right sidebar: chapters, sections, then
+   subsections (assets/navigation.js; copied from the Ramat Gan notes). */
+#quarto-content { direction: rtl; }
+#quarto-sidebar .toc-tree { display: none; direction: rtl; text-align: right; }
+#quarto-sidebar .toc-chapter.toc-open > .toc-tree { display: block; }
+.toc-tree li.toc-parent > ul { display: none !important; }
+.toc-tree li.toc-parent.toc-open > ul { display: block !important; }
+.toc-tree ul { list-style: none; padding: 0; padding-inline-start: .7rem; margin: 0; border-inline-start: 1px solid #e2e8f0; }
+.toc-tree li { position: relative; margin: .2rem 0; }
+.toc-tree li > a { margin-inline-start: 1.9rem; }
+#quarto-sidebar .toc-tree a { display: block; padding: .35rem 0; line-height: 1.5; font-size: .875rem; white-space: normal; }
+.toc-chapter-row { position: relative; padding-inline-start: 1.9rem; }
+.toc-chapter-toggle, .toc-branch-toggle { position: absolute; inset-inline-start: 0; top: 0; width: 1.8rem; min-height: 1.8rem; padding: 0; color: #334155; background: transparent; border: 0; cursor: pointer; font: inherit; border-radius: 5px; }
+.toc-disclosure-arrow { display: inline-block; transition: transform .12s; }
+[aria-expanded=true] > .toc-disclosure-arrow { transform: rotate(-90deg); }
+.toc-chapter-toggle:hover, .toc-branch-toggle:hover { background: #eef2ff; }
+.toc-chapter-toggle:focus-visible, .toc-branch-toggle:focus-visible { outline: 2px solid #4f46e5; outline-offset: 1px; }
+@media (max-width: 991px) {
+  #quarto-sidebar { max-width: 100vw; box-sizing: border-box; right: 0; left: auto; }
+  #quarto-sidebar .sidebar-menu-container { white-space: normal; min-width: 0; }
+  #quarto-sidebar .sidebar-title { white-space: normal; }
+  .toc-chapter-toggle, .toc-branch-toggle { min-height: 44px; width: 44px; }
+  .toc-tree li > a { margin-inline-start: 44px; min-height: 44px; }
+  .toc-chapter-row { padding-inline-start: 44px; min-height: 44px; }
+}
+@media (prefers-reduced-motion: reduce) { .toc-disclosure-arrow { transition: none; } }
+</style>
+<script src="assets/navigation.js" defer=""></script>
+<script src="assets/interactive.js" defer=""></script>
 <script>
 /* ---------------------------------------------------------------------------
    MathJax line breaking.
@@ -385,20 +701,92 @@ document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll(".tf-quiz").forEach(function (quiz) {
     var correct = quiz.getAttribute("data-correct");
     var feedback = quiz.querySelector(".tf-feedback");
+    var hasWhy = !!quiz.querySelector(".tf-why");
+    quiz.classList.add("tf-js");          // the explanation now waits for an answer
     quiz.querySelectorAll(".tf-opt").forEach(function (btn) {
       btn.addEventListener("click", function () {
         quiz.querySelectorAll(".tf-opt").forEach(function (b) {
           b.classList.remove("correct", "incorrect");
         });
+        quiz.classList.add("tf-answered");
         if (btn.getAttribute("data-val") === correct) {
           btn.classList.add("correct");
           if (feedback) feedback.textContent = "✓ נכון!";
         } else {
           btn.classList.add("incorrect");
-          if (feedback) feedback.textContent = "✗ לא מדויק — נסו שוב, או פתחו את הפתרון.";
+          if (feedback) feedback.textContent = hasWhy
+            ? "✗ לא בדיוק. קראו את ההסבר."
+            : "✗ לא מדויק — נסו שוב, או פתחו את הפתרון.";
         }
       });
     });
+  });
+});
+</script>
+<script>
+/* Step-by-step solutions (.solve): the hints and the steps are revealed one at a
+   time. The button bar always sits right after the last revealed hint or step, where
+   the next one will appear. Inside a proof box, "כל הפתרון" reads "כל ההוכחה".
+   Without JavaScript everything simply stays visible. */
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll(".solve").forEach(function (box) {
+    var kids = Array.prototype.slice.call(box.children);
+    var hints = kids.filter(function (c) { return c.classList.contains("hint"); });
+    var steps = kids.filter(function (c) { return c.classList.contains("step"); });
+    if (!hints.length && !steps.length) return;
+    var shownH = 0, shownS = 0;
+    // Labels in front of the hints and steps ("רמז 2", "צעד 3 מתוך 5"): see the CSS.
+    if (hints.length > 1) box.classList.add("solve-many-hints");
+    steps.forEach(function (s) { s.setAttribute("data-of", steps.length); });
+    var bar = document.createElement("div");
+    bar.className = "solve-bar";
+    function button(label, cls, action) {
+      var b = document.createElement("button");
+      b.type = "button"; b.textContent = label;
+      if (cls) b.className = cls;
+      b.addEventListener("click", function () { action(); sync(); });
+      bar.appendChild(b); return b;
+    }
+    var bHint = hints.length ? button("רמז", "", function () { shownH++; }) : null;
+    var bStep = steps.length ? button("הצעד הבא", "solve-main", function () { shownS++; }) : null;
+    var inProof = !!box.closest(".thmbox-proof");
+    var allLabel = box.getAttribute("data-all") || (inProof ? "כל ההוכחה" : "כל הפתרון");
+    var doneLabel = inProof ? "ההוכחה כולה מוצגת" : "הפתרון כולו מוצג";
+    var bAll  = button(allLabel, "solve-quiet", function () { shownH = hints.length; shownS = steps.length; });
+    var parts = kids.filter(function (c) { return c.classList.contains("hint") || c.classList.contains("step"); });
+    var bHide = button("הסתרה", "solve-quiet", function () { shownH = 0; shownS = 0; });
+    function sync() {
+      hints.forEach(function (h, i) { h.classList.toggle("solve-hidden", i >= shownH); });
+      steps.forEach(function (s, i) { s.classList.toggle("solve-hidden", i >= shownS); });
+      if (bHint) {
+        bHint.disabled = shownH >= hints.length;
+        bHint.textContent = "רמז (" + shownH + "/" + hints.length + ")";
+      }
+      if (bStep) {
+        bStep.disabled = shownS >= steps.length;
+        bStep.textContent = shownS >= steps.length ? doneLabel
+          : shownS === 0 ? "הצעד הראשון (1/" + steps.length + ")"
+          : "הצעד הבא (" + (shownS + 1) + "/" + steps.length + ")";
+      }
+      bAll.disabled = shownS >= steps.length && shownH >= hints.length;
+      bHide.hidden = shownS === 0 && shownH === 0;
+      var shown = parts.filter(function (c) { return !c.classList.contains("solve-hidden"); });
+      var last = shown[shown.length - 1];
+      if (last) box.insertBefore(bar, last.nextSibling);
+      else box.insertBefore(bar, parts[0]);
+    }
+    sync();
+  });
+  // Print everything: open every answer before printing, restore afterwards.
+  var answers = Array.prototype.slice.call(document.querySelectorAll("details.lecture-answer"));
+  var before = null;
+  window.addEventListener("beforeprint", function () {
+    before = answers.map(function (a) { return a.open; });
+    answers.forEach(function (a) { a.open = true; });
+  });
+  window.addEventListener("afterprint", function () {
+    if (before) answers.forEach(function (a, i) { a.open = before[i]; });
+    before = null;
   });
 });
 </script>
@@ -541,7 +929,37 @@ window.addEventListener("message", function (e) {
 });
 </script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
 
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<script id="book-toc-data" type="application/json">[{"file":"01-Introduction.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#מערכות-המספרים-מהטבעיים-אל-הממשיים\" id=\"toc-מערכות-המספרים-מהטבעיים-אל-הממשיים\" class=\"nav-link active\" data-scroll-target=\"#מערכות-המספרים-מהטבעיים-אל-הממשיים\">\u003cspan class=\"header-section-number\">1.1\u003c/span> מערכות המספרים: מהטבעיים אל הממשיים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#ספירה-המספרים-הטבעיים-השלמים-והרציונליים\" id=\"toc-ספירה-המספרים-הטבעיים-השלמים-והרציונליים\" class=\"nav-link\" data-scroll-target=\"#ספירה-המספרים-הטבעיים-השלמים-והרציונליים\">ספירה: המספרים הטבעיים, השלמים והרציונליים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מדידה-המספרים-האי-רציונליים\" id=\"toc-מדידה-המספרים-האי-רציונליים\" class=\"nav-link\" data-scroll-target=\"#מדידה-המספרים-האי-רציונליים\">מדידה: המספרים האי-רציונליים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הישר-הממשי\" id=\"toc-הישר-הממשי\" class=\"nav-link\" data-scroll-target=\"#הישר-הממשי\">הישר הממשי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים\" id=\"toc-תרגילים\" class=\"nav-link\" data-scroll-target=\"#תרגילים\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#קבוצות-וקטעים\" id=\"toc-קבוצות-וקטעים\" class=\"nav-link\" data-scroll-target=\"#קבוצות-וקטעים\">\u003cspan class=\"header-section-number\">1.2\u003c/span> קבוצות וקטעים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#רישום-של-קבוצות\" id=\"toc-רישום-של-קבוצות\" class=\"nav-link\" data-scroll-target=\"#רישום-של-קבוצות\">רישום של קבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#שוויון-קבוצות\" id=\"toc-שוויון-קבוצות\" class=\"nav-link\" data-scroll-target=\"#שוויון-קבוצות\">שוויון קבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הכלה\" id=\"toc-הכלה\" class=\"nav-link\" data-scroll-target=\"#הכלה\">הכלה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#פעולות-על-קבוצות\" id=\"toc-פעולות-על-קבוצות\" class=\"nav-link\" data-scroll-target=\"#פעולות-על-קבוצות\">פעולות על קבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#קטעים\" id=\"toc-קטעים\" class=\"nav-link\" data-scroll-target=\"#קטעים\">קטעים\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#סרטוט-קטעים\" id=\"toc-סרטוט-קטעים\" class=\"nav-link\" data-scroll-target=\"#סרטוט-קטעים\">סרטוט קטעים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-1\" id=\"toc-תרגילים-1\" class=\"nav-link\" data-scroll-target=\"#תרגילים-1\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#ערך-מוחלט\" id=\"toc-ערך-מוחלט\" class=\"nav-link\" data-scroll-target=\"#ערך-מוחלט\">\u003cspan class=\"header-section-number\">1.3\u003c/span> ערך מוחלט\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#כללי-אי-שוויונים\" id=\"toc-כללי-אי-שוויונים\" class=\"nav-link\" data-scroll-target=\"#כללי-אי-שוויונים\">כללי אי-שוויונים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#ערך-מוחלט-מרחק-וקטעים\" id=\"toc-ערך-מוחלט-מרחק-וקטעים\" class=\"nav-link\" data-scroll-target=\"#ערך-מוחלט-מרחק-וקטעים\">ערך מוחלט, מרחק וקטעים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-2\" id=\"toc-תרגילים-2\" class=\"nav-link\" data-scroll-target=\"#תרגילים-2\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-וגרפים\" id=\"toc-פונקציות-וגרפים\" class=\"nav-link\" data-scroll-target=\"#פונקציות-וגרפים\">\u003cspan class=\"header-section-number\">1.4\u003c/span> פונקציות וגרפים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#המישור-מכפלה-קרטזית\" id=\"toc-המישור-מכפלה-קרטזית\" class=\"nav-link\" data-scroll-target=\"#המישור-מכפלה-קרטזית\">המישור: מכפלה קרטזית\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרף-של-פונקציה\" id=\"toc-הגרף-של-פונקציה\" class=\"nav-link\" data-scroll-target=\"#הגרף-של-פונקציה\">הגרף של פונקציה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציית-הסימן-והערך-השלם\" id=\"toc-פונקציית-הסימן-והערך-השלם\" class=\"nav-link\" data-scroll-target=\"#פונקציית-הסימן-והערך-השלם\">פונקציית הסימן והערך השלם\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מה-אינו-פונקציה\" id=\"toc-מה-אינו-פונקציה\" class=\"nav-link\" data-scroll-target=\"#מה-אינו-פונקציה\">מה אינו פונקציה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תחום-ההגדרה-הטבעי\" id=\"toc-תחום-ההגדרה-הטבעי\" class=\"nav-link\" data-scroll-target=\"#תחום-ההגדרה-הטבעי\">תחום ההגדרה הטבעי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-3\" id=\"toc-תרגילים-3\" class=\"nav-link\" data-scroll-target=\"#תרגילים-3\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-זוגיות-ואי-זוגיות\" id=\"toc-פונקציות-זוגיות-ואי-זוגיות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-זוגיות-ואי-זוגיות\">\u003cspan class=\"header-section-number\">1.5\u003c/span> פונקציות זוגיות ואי-זוגיות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-4\" id=\"toc-תרגילים-4\" class=\"nav-link\" data-scroll-target=\"#תרגילים-4\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הזזה-ומתיחה-של-גרפים\" id=\"toc-הזזה-ומתיחה-של-גרפים\" class=\"nav-link\" data-scroll-target=\"#הזזה-ומתיחה-של-גרפים\">\u003cspan class=\"header-section-number\">1.6\u003c/span> הזזה ומתיחה של גרפים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-5\" id=\"toc-תרגילים-5\" class=\"nav-link\" data-scroll-target=\"#תרגילים-5\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הרכבת-פונקציות\" id=\"toc-הרכבת-פונקציות\" class=\"nav-link\" data-scroll-target=\"#הרכבת-פונקציות\">\u003cspan class=\"header-section-number\">1.7\u003c/span> הרכבת פונקציות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-6\" id=\"toc-תרגילים-6\" class=\"nav-link\" data-scroll-target=\"#תרגילים-6\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פולינומים-ושורשיהם\" id=\"toc-פולינומים-ושורשיהם\" class=\"nav-link\" data-scroll-target=\"#פולינומים-ושורשיהם\">\u003cspan class=\"header-section-number\">1.8\u003c/span> פולינומים ושורשיהם\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-7\" id=\"toc-תרגילים-7\" class=\"nav-link\" data-scroll-target=\"#תרגילים-7\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הפונקציות-הטריגונומטריות\" id=\"toc-הפונקציות-הטריגונומטריות\" class=\"nav-link\" data-scroll-target=\"#הפונקציות-הטריגונומטריות\">\u003cspan class=\"header-section-number\">1.9\u003c/span> הפונקציות הטריגונומטריות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#רדיאנים\" id=\"toc-רדיאנים\" class=\"nav-link\" data-scroll-target=\"#רדיאנים\">רדיאנים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#ההגדרה-הגאומטרית\" id=\"toc-ההגדרה-הגאומטרית\" class=\"nav-link\" data-scroll-target=\"#ההגדרה-הגאומטרית\">ההגדרה הגאומטרית\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מה-רואים-בציור\" id=\"toc-מה-רואים-בציור\" class=\"nav-link\" data-scroll-target=\"#מה-רואים-בציור\">מה רואים בציור\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#ערכים-מיוחדים\" id=\"toc-ערכים-מיוחדים\" class=\"nav-link\" data-scroll-target=\"#ערכים-מיוחדים\">ערכים מיוחדים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרפים\" id=\"toc-הגרפים\" class=\"nav-link\" data-scroll-target=\"#הגרפים\">הגרפים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#טנגנס\" id=\"toc-טנגנס\" class=\"nav-link\" data-scroll-target=\"#טנגנס\">טנגנס\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הזזה-ומתיחה-של-פונקציות-טריגונומטריות\" id=\"toc-הזזה-ומתיחה-של-פונקציות-טריגונומטריות\" class=\"nav-link\" data-scroll-target=\"#הזזה-ומתיחה-של-פונקציות-טריגונומטריות\">הזזה ומתיחה של פונקציות טריגונומטריות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-8\" id=\"toc-תרגילים-8\" class=\"nav-link\" data-scroll-target=\"#תרגילים-8\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הפונקציה-המעריכית\" id=\"toc-הפונקציה-המעריכית\" class=\"nav-link\" data-scroll-target=\"#הפונקציה-המעריכית\">\u003cspan class=\"header-section-number\">1.10\u003c/span> הפונקציה המעריכית\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#חזקות-עם-מעריך-שאינו-טבעי\" id=\"toc-חזקות-עם-מעריך-שאינו-טבעי\" class=\"nav-link\" data-scroll-target=\"#חזקות-עם-מעריך-שאינו-טבעי\">חזקות עם מעריך שאינו טבעי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרפים-1\" id=\"toc-הגרפים-1\" class=\"nav-link\" data-scroll-target=\"#הגרפים-1\">הגרפים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-9\" id=\"toc-תרגילים-9\" class=\"nav-link\" data-scroll-target=\"#תרגילים-9\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-הפוכות\" id=\"toc-פונקציות-הפוכות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-הפוכות\">\u003cspan class=\"header-section-number\">1.11\u003c/span> פונקציות הפוכות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-10\" id=\"toc-תרגילים-10\" class=\"nav-link\" data-scroll-target=\"#תרגילים-10\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-נוספות\" id=\"toc-פונקציות-נוספות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-נוספות\">\u003cspan class=\"header-section-number\">1.12\u003c/span> פונקציות נוספות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#לוגריתמים\" id=\"toc-לוגריתמים\" class=\"nav-link\" data-scroll-target=\"#לוגריתמים\">לוגריתמים\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#חוקי-הלוגריתמים\" id=\"toc-חוקי-הלוגריתמים\" class=\"nav-link\" data-scroll-target=\"#חוקי-הלוגריתמים\">חוקי הלוגריתמים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרף\" id=\"toc-הגרף\" class=\"nav-link\" data-scroll-target=\"#הגרף\">הגרף\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#חזקות-ושורשים\" id=\"toc-חזקות-ושורשים\" class=\"nav-link\" data-scroll-target=\"#חזקות-ושורשים\">חזקות ושורשים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-רציונליות\" id=\"toc-פונקציות-רציונליות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-רציונליות\">פונקציות רציונליות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הפונקציות-הטריגונומטריות-ההפוכות\" id=\"toc-הפונקציות-הטריגונומטריות-ההפוכות\" class=\"nav-link\" data-scroll-target=\"#הפונקציות-הטריגונומטריות-ההפוכות\">הפונקציות הטריגונומטריות ההפוכות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-11\" id=\"toc-תרגילים-11\" class=\"nav-link\" data-scroll-target=\"#תרגילים-11\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"},{"file":"02-Sequences.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#סדרות\" id=\"toc-סדרות\" class=\"nav-link active\" data-scroll-target=\"#סדרות\">\u003cspan class=\"header-section-number\">2.1\u003c/span> סדרות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים\" id=\"toc-תרגילים\" class=\"nav-link\" data-scroll-target=\"#תרגילים\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#גבול-של-סדרה\" id=\"toc-גבול-של-סדרה\" class=\"nav-link\" data-scroll-target=\"#גבול-של-סדרה\">\u003cspan class=\"header-section-number\">2.2\u003c/span> גבול של סדרה\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#שאיפה-לאינסוף\" id=\"toc-שאיפה-לאינסוף\" class=\"nav-link\" data-scroll-target=\"#שאיפה-לאינסוף\">שאיפה לאינסוף\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-1\" id=\"toc-תרגילים-1\" class=\"nav-link\" data-scroll-target=\"#תרגילים-1\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#סדרות-סטנדרטיות\" id=\"toc-סדרות-סטנדרטיות\" class=\"nav-link\" data-scroll-target=\"#סדרות-סטנדרטיות\">\u003cspan class=\"header-section-number\">2.3\u003c/span> סדרות סטנדרטיות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-2\" id=\"toc-תרגילים-2\" class=\"nav-link\" data-scroll-target=\"#תרגילים-2\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#משפטי-גבולות-בסיסיים\" id=\"toc-משפטי-גבולות-בסיסיים\" class=\"nav-link\" data-scroll-target=\"#משפטי-גבולות-בסיסיים\">\u003cspan class=\"header-section-number\">2.4\u003c/span> משפטי גבולות בסיסיים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#כלל-הסנדוויץ\" id=\"toc-כלל-הסנדוויץ\" class=\"nav-link\" data-scroll-target=\"#כלל-הסנדוויץ\">כלל הסנדוויץ’\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-3\" id=\"toc-תרגילים-3\" class=\"nav-link\" data-scroll-target=\"#תרגילים-3\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"},{"file":"index.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#פתח-דבר\" id=\"toc-פתח-דבר\" class=\"nav-link active\" data-scroll-target=\"#פתח-דבר\">פתח דבר\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#על-הקורס\" id=\"toc-על-הקורס\" class=\"nav-link\" data-scroll-target=\"#על-הקורס\">על הקורס\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#איך-לקרוא-את-המערכים\" id=\"toc-איך-לקרוא-את-המערכים\" class=\"nav-link\" data-scroll-target=\"#איך-לקרוא-את-המערכים\">איך לקרוא את המערכים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תוכנית-הקורס\" id=\"toc-תוכנית-הקורס\" class=\"nav-link\" data-scroll-target=\"#תוכנית-הקורס\">תוכנית הקורס\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מקורות\" id=\"toc-מקורות\" class=\"nav-link\" data-scroll-target=\"#מקורות\">מקורות\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"}]</script>
 </head>
 
 <body class="nav-sidebar floating quarto-light">
@@ -568,10 +986,9 @@ window.addEventListener("message", function (e) {
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">חשיבה אנליטית — סיכומי הרצאה</a> 
-        <div class="sidebar-tools-main tools-wide">
+      <a href="./">חשיבה אנליטית — מערכי הרצאה</a> 
+        <div class="sidebar-tools-main">
     <a href="https://github.com/yuval-khachatryan/Analytical-Thinking-Lecture-Notes" title="קוד מקור" class="quarto-navigation-tool px-1" aria-label="קוד מקור"><i class="bi bi-github"></i></a>
-    <a href="./Analytical-Thinking-Lecture-Notes.pdf" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="הצג/הסתר מצב קריאה">
   <div class="quarto-reader-toggle-btn">
   <i class="bi"></i>
@@ -599,31 +1016,38 @@ window.addEventListener("message", function (e) {
  <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">הרצאה 1: מבוא — מספרים ממשיים ופונקציות</span></span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-Sequences.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">סדרות וגבולות</span></span></a>
+  </div>
+</li>
     </ul>
     </div>
-</nav>
-<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
-<!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
-    <h2 id="toc-title">תוכן העניינים</h2>
+    <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="-1">
+    <h2 id="toc-title">סעיפי הפרק</h2>
    
   <ul>
   <li><a href="#פתח-דבר" id="toc-פתח-דבר" class="nav-link active" data-scroll-target="#פתח-דבר">פתח דבר</a>
   <ul>
   <li><a href="#על-הקורס" id="toc-על-הקורס" class="nav-link" data-scroll-target="#על-הקורס">על הקורס</a></li>
+  <li><a href="#איך-לקרוא-את-המערכים" id="toc-איך-לקרוא-את-המערכים" class="nav-link" data-scroll-target="#איך-לקרוא-את-המערכים">איך לקרוא את המערכים</a></li>
   <li><a href="#תוכנית-הקורס" id="toc-תוכנית-הקורס" class="nav-link" data-scroll-target="#תוכנית-הקורס">תוכנית הקורס</a></li>
   <li><a href="#מקורות" id="toc-מקורות" class="nav-link" data-scroll-target="#מקורות">מקורות</a></li>
   </ul></li>
   </ul>
 </nav>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">חשיבה אנליטית — סיכומי הרצאה</h1>
+<h1 class="title">חשיבה אנליטית — מערכי הרצאה</h1>
 </div>
 
 
@@ -648,14 +1072,82 @@ window.addEventListener("message", function (e) {
 
 <section id="פתח-דבר" class="level1 unnumbered">
 <h1 class="unnumbered">פתח דבר</h1>
-<p>סיכומי הרצאה לקורס <strong>חשיבה אנליטית</strong> (7771160-1), סמסטר א׳, תשפ״ז. בית הספר למדעי המחשב, המחלקה למדעי הנתונים ובינה מלאכותית, אוניברסיטת אריאל.</p>
+<p>מערכי הרצאה לקורס <strong>חשיבה אנליטית</strong> (7771160-1), סמסטר א׳, תשפ״ז. בית הספר למדעי המחשב, המחלקה למדעי הנתונים ובינה מלאכותית, אוניברסיטת אריאל.</p>
 <p><strong>מרצה:</strong> ד״ר יובל חצ׳טריאן-רזיאל</p>
 <p><strong>מתרגל:</strong> מר דורון מור</p>
 <p><strong>היקף:</strong> 4 שעות הרצאה ו-2 שעות תרגול בשבוע. <strong>ציון סופי:</strong> 20% מטלות ו-80% בחינה.</p>
-<p><a href="Analytical-Thinking-Lecture-Notes.pdf">הורדת סיכומי ההרצאה כקובץ PDF</a></p>
 <section id="על-הקורס" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="על-הקורס">על הקורס</h2>
 <p>הקורס הוא היכרות עם החשבון הדיפרנציאלי והאינטגרלי עבור סטודנטים למדעי הנתונים ובינה מלאכותית. הדגש הוא על הבנה ועל שימוש, ולא על הוכחות. לכל מושג נציג את ההגדרה, נסביר מה היא אומרת באופן אינטואיטיבי, ונראה דוגמאות רבות. לכל משפט נראה מתי משתמשים בו, ונראה מה משתבש כאשר אחת ההנחות שלו אינה מתקיימת.</p>
+</section>
+<section id="איך-לקרוא-את-המערכים" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="איך-לקרוא-את-המערכים">איך לקרוא את המערכים</h2>
+<p>המערכים בנויים לקריאה פעילה, גם בלימוד עצמי:</p>
+<ul>
+<li><strong>משבצות למילוי.</strong> במקום לקרוא את התשובה, כותבים אותה במשבצת ולוחצים <strong>בדיקה</strong>. התשובה יכולה להיות מספר, ביטוי, קטע או קבוצה. תשובה שגויה מקבלת הסבר קצר, למשל מספר שבו היא שונה מהתשובה הנכונה, ואפשר לנסות שוב, לבקש רמז או להציג את התשובה.</li>
+<li><strong>פתרון בצעדים.</strong> משוואות ואי-שוויונים פותרים צעד אחר צעד, כמו בהוכחה מודרכת. בכל צעד בוחרים מהרשימה מה עושים וכותבים את השורה שמתקבלת. השורה נבדקת מול השורה שלפניה: האם היא שקולה לה, והאם הכלל שבחרתם הוא הכלל שהופעל. צעד נכון נרשם בפתרון עם הנימוק שלו, והצעד הבא נפתח. מסיימים כשהמשתנה לבד.</li>
+<li><strong>סידור צעדים.</strong> לוחצים על הצעדים של פתרון או של שיטה לפי הסדר הנכון.</li>
+<li><strong>בבדיקה עצמית</strong> 🎯 בוחרים תשובה, ומיד מקבלים משוב והסבר.</li>
+<li><strong>בפתרונות ארוכים</strong> אפשר לבקש רמז, ולחשוף את הפתרון צעד אחר צעד.</li>
+<li><strong>בסימולציות</strong> אפשר להזיז פרמטרים ולראות מה קורה לגרף.</li>
+<li>בתחילת כל סעיף מופיע בקצרה <strong>מה עושים בו</strong>, ובסופו <strong>סיכום</strong> 📋 של הדברים החשובים ו<strong>תרגילים</strong>.</li>
+</ul>
+<p><strong>איך מקלידים מתמטיקה במשבצת:</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">מה כותבים</th>
+<th style="text-align: left;">איך מקלידים</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">שבר</td>
+<td style="text-align: left;"><code>3/4</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">חזקה</td>
+<td style="text-align: left;"><code>x^2</code> או <code>2^(3x)</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">שורש, שורש שלישי</td>
+<td style="text-align: left;"><code>sqrt(x)</code>, <code>cbrt(x)</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ערך מוחלט</td>
+<td style="text-align: left;"><code>abs(x-1)</code>, או בין שני קווים אנכיים</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">לוגריתם לפי בסיס <span class="math inline">\(2\)</span></td>
+<td style="text-align: left;"><code>log_2(x)</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(\pi\)</span></td>
+<td style="text-align: left;"><code>pi</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">קטע</td>
+<td style="text-align: left;"><code>(1,3]</code> או <code>[2,inf)</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">איחוד</td>
+<td style="text-align: left;"><code>U</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">קבוצה, קבוצה ריקה</td>
+<td style="text-align: left;"><code>{1,2}</code>, <code>{}</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">שתי אפשרויות בשורה אחת</td>
+<td style="text-align: left;"><code>x=4 או x=-1</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">קטן או שווה, גדול או שווה</td>
+<td style="text-align: left;"><code>&lt;=</code>, <code>&gt;=</code></td>
+</tr>
+</tbody>
+</table>
+<p>כשמקלידים במשבצת, מופיעים מתחתיה כפתורים לסימנים האלה, ומה שכתבתם עד עכשיו בכתיב מתמטי (בצבע חיוור, כל עוד הביטוי עוד לא שלם).</p>
 </section>
 <section id="תוכנית-הקורס" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="תוכנית-הקורס">תוכנית הקורס</h2>

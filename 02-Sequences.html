@@ -1,0 +1,2151 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="he" xml:lang="he" dir="rtl"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.20">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>2&nbsp; סדרות וגבולות – חשיבה אנליטית — מערכי הרצאה</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./01-Introduction.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-17888a1159294d3eb470f19f6f52f5a5.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-d3f7f8e73c8d287b30bcf59c2b563615.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "אין תוצאות",
+    "search-matching-documents-text": "מסמכים תואמים",
+    "search-copy-link-title": "העתק קישור לחיפוש",
+    "search-hide-matches-text": "הסתר התאמות נוספות",
+    "search-more-match-text": "התאמה נוספת במסמך זה",
+    "search-more-matches-text": "התאמות נוספות במסמך זה",
+    "search-clear-button-title": "נקה",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "בטל",
+    "search-submit-button-title": "שלח",
+    "search-label": "חפש"
+  }
+}</script>
+<style>
+.todo {
+  color: #8a8a8a;
+  font-style: italic;
+  background: #fafafa;
+  border: 1px dashed #cccccc;
+  border-radius: 4px;
+  padding: 1.2rem 1rem;
+  margin: 0.4rem 0 1.2rem;
+}
+.tf-quiz {
+  margin: 0.6rem 0 1rem;
+}
+.tf-quiz .tf-opt {
+  margin: 0 0 0 0.5rem;
+  padding: 0.35rem 1.4rem;
+  cursor: pointer;
+  border: 1px solid #bbbbbb;
+  border-radius: 4px;
+  background: #f5f5f5;
+  font: inherit;
+  color: inherit;
+}
+.tf-quiz .tf-opt:hover {
+  background: #ececec;
+}
+.tf-quiz .tf-opt.correct {
+  background: #d4edda;
+  border-color: #28a745;
+}
+.tf-quiz .tf-opt.incorrect {
+  background: #f8d7da;
+  border-color: #dc3545;
+}
+.tf-quiz .tf-feedback {
+  margin-top: 0.45rem;
+  font-weight: bold;
+  min-height: 1.2em;
+}
+.set-quiz {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.4rem 0;
+}
+.set-quiz .set-label {
+  min-width: 5rem;
+}
+.set-quiz .set-input {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid #bbbbbb;
+  border-radius: 4px;
+  font: inherit;
+  direction: ltr;
+  text-align: left;
+  min-width: 12rem;
+}
+.set-quiz .set-input.correct {
+  border-color: #28a745;
+  background: #d4edda;
+}
+.set-quiz .set-input.incorrect {
+  border-color: #dc3545;
+  background: #f8d7da;
+}
+.set-quiz .set-check {
+  padding: 0.25rem 0.9rem;
+  cursor: pointer;
+  border: 1px solid #bbbbbb;
+  border-radius: 4px;
+  background: #f5f5f5;
+  font: inherit;
+  color: inherit;
+}
+.set-quiz .set-check:hover {
+  background: #ececec;
+}
+.set-quiz .set-feedback {
+  font-weight: bold;
+  min-height: 1.2em;
+}
+.seq-quiz, .formula-quiz {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.4rem 0;
+}
+.seq-quiz .seq-label, .formula-quiz .seq-label { min-width: 12rem; }
+.seq-quiz .seq-input, .formula-quiz .seq-input {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid #bbbbbb;
+  border-radius: 4px;
+  font: inherit;
+  direction: ltr;
+  text-align: left;
+  min-width: 16rem;
+}
+.seq-quiz .seq-input.correct, .formula-quiz .seq-input.correct { border-color: #28a745; background: #d4edda; }
+.seq-quiz .seq-input.incorrect, .formula-quiz .seq-input.incorrect { border-color: #dc3545; background: #f8d7da; }
+.seq-quiz .seq-check, .formula-quiz .seq-check {
+  padding: 0.25rem 0.9rem;
+  cursor: pointer;
+  border: 1px solid #bbbbbb;
+  border-radius: 4px;
+  background: #f5f5f5;
+  font: inherit;
+  color: inherit;
+}
+.seq-quiz .seq-check:hover, .formula-quiz .seq-check:hover { background: #ececec; }
+.seq-quiz .seq-feedback, .formula-quiz .seq-feedback { font-weight: bold; min-height: 1.2em; }
+/* Interactive widgets embedded from widgets/<chapter>/*.html.
+   They live in an iframe so their CSS (which styles body/table/button
+   unscoped) cannot leak into the page, and so several copies on one
+   page do not collide on element ids. The height below is a first guess;
+   each widget posts its real height and the listener at the bottom of this
+   file applies it. */
+iframe.widget-frame {
+  display: block;
+  width: 100%;
+  height: 440px;      /* replaced by the widget's own reported height */
+  border: 0;          /* the widget draws its own frame */
+  background: transparent;
+  margin: 1.2rem 0 0;
+}
+/* Inside a .thmsim box the frame sits flush; the box supplies the padding. */
+.thmbox-simulation iframe.widget-frame { margin: 0.5rem 0 0.2rem; }
+.thmbox {
+  border-inline-start: 4px solid #9ca3af;
+  background: #fafafa;
+  border-radius: 4px;
+  padding: 0.6rem 1rem;
+  margin: 1rem 0;
+}
+.thmbox > :first-child { margin-top: 0; }
+.thmbox > :last-child { margin-bottom: 0; }
+.thmbox-definition  { border-color: #4f46e5; background: #eef2ff; }
+.thmbox-theorem     { border-color: #0d9488; background: #f0fdfa; }
+.thmbox-proposition { border-color: #0d9488; background: #f0fdfa; }
+.thmbox-lemma       { border-color: #14b8a6; background: #f0fdfa; }
+.thmbox-corollary   { border-color: #14b8a6; background: #f0fdfa; }
+.thmbox-example     { border-color: #ea580c; background: #fff7ed; }
+/* Question: kin to .thmbox-example, so same hue family, one shade deeper. Its
+   solution reuses the proof's slate — a solution is to a question what a proof
+   is to a theorem, and the reader already reads that grey as "the working". */
+.thmbox-question    { border-color: #9333ea; background: #faf5ff; }
+.thmbox-solution    { border-color: #64748b; background: #f8fafc; }
+.thmbox-solution > p:first-child > strong { font-weight: 600; color: #64748b; }
+.thmbox-simulation  { border-color: #7c3aed; background: #f7f5ff; }
+.thmbox-proof       { border-color: #64748b; background: #f8fafc; }
+.thmbox-proof > p:first-child > strong { font-weight: 600; color: #64748b; }
+.thmbox-remark      { border-color: #94a3b8; background: #f8fafc; }
+.thmbox-remark > p:first-child > strong { font-weight: 600; color: #64748b; }
+/* Warning (.thmwarn, red) and key point (.thmkey, blue): ported from the BGU book with
+   this course's own hues. Thicker edge, because they mark what students must not miss. */
+.thmbox-warning     { border-color: #e11d48; border-inline-start-width: 6px; background: #fff1f2; }
+.thmbox-warning > p:first-child > strong { font-weight: 700; color: #be123c; }
+.thmbox-key-point   { border-color: #0891b2; border-inline-start-width: 6px; background: #ecfeff; }
+.thmbox-key-point > p:first-child > strong { font-weight: 700; color: #0e7490; }
+/* Role badges (icon="..."), HTML only. */
+.thmbox[class*="thmicon-"] > p:first-child > strong::before {
+  margin-inline-end: 0.35em;
+  font-size: 1.45em;
+  vertical-align: -0.18em;
+}
+.thmbox.thmicon-method     > p:first-child > strong::before { content: "🛠️"; }
+.thmbox.thmicon-calc       > p:first-child > strong::before { content: "🧮"; }
+.thmbox.thmicon-rule       > p:first-child > strong::before { content: "✅"; }
+.thmbox.thmicon-convention > p:first-child > strong::before { content: "🤝"; }
+.thmbox.thmicon-idea       > p:first-child > strong::before { content: "💡"; }
+/* ---------------------------------------------------------------------------
+   Math must never inherit the page's RTL direction. <html dir="rtl"> makes the
+   whole document a right-to-left bidi context, and two things go wrong inside it:
+
+   1. The renderer's own output boxes lay out right-to-left, so a formula mixed
+      into a Hebrew sentence reads backwards.
+   2. Until MathJax runs, the page literally contains the raw source \( ... \).
+      If the CDN is slow or unreachable that source is what stays on screen, and
+      the bidi algorithm reorders it -- the same failure the widgets have with
+      KaTeX (see mathrender.js).
+
+   `unicode-bidi: isolate` makes every formula its own bidi context: it can
+   neither be reordered by the Hebrew around it nor reorder that Hebrew.
+   --------------------------------------------------------------------------- */
+span.math,
+mjx-container,
+.katex,
+.katex-display {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+mjx-container *,
+.katex * {
+  direction: ltr;
+}
+
+/* Keep inline math on one line. This backs up the MathJax linebreak config
+   below; see the comment there for why v4 needs it at all. Display math is
+   left alone -- MathJax gives it its own scroll box. */
+mjx-container:not([display="true"]),
+.katex:not(.katex-display) {
+  white-space: nowrap;
+}
+
+/* Optional box (.optional): foldable, collapsed by default; same gray look as .extra,
+   but the gray bar is the clickable <summary>. */
+details.thmoptional {
+  border: 1px solid #9ca3af;
+  border-radius: 0;
+  margin: 1.5rem 0;
+  background: #ffffff;
+  overflow: hidden;
+}
+details.thmoptional > summary {
+  background: #d1d5db;
+  color: #374151;
+  font-weight: 700;
+  padding: 0.45rem 0.8rem;
+  cursor: pointer;
+}
+details.thmoptional[open] > summary { border-bottom: 1px solid #9ca3af; }
+details.thmoptional > .optional { padding: 0.7rem 0.9rem; }
+details.thmoptional > .optional > :first-child { margin-top: 0; }
+details.thmoptional > .optional > :last-child { margin-bottom: 0; }
+/* .foldable: hidden calculations / derivations. Distinct from .optional (which is a
+   whole gray-boxed aside) — this is a light inline disclosure inside the running text. */
+details.thmfoldable {
+  margin: 1rem 0;
+  border-inline-start: 3px solid #cbd5e1;
+  padding-inline-start: 0.8rem;
+}
+details.thmfoldable > summary {
+  cursor: pointer;
+  color: #475569;
+  font-weight: 600;
+}
+details.thmfoldable[open] > summary { margin-bottom: 0.5rem; }
+details.thmcollapse { margin: 1rem 0; }
+details.thmcollapse > summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: #475569;
+  padding: 0.2rem 0;
+}
+details.thmcollapse[open] > summary { margin-bottom: 0.4rem; }
+/* Enrichment box (.extra): non-foldable, gray box; the section heading becomes a gray
+   header bar. Quarto merges the div into <section class="... extra">, so we style .extra. */
+.extra {
+  border: 1px solid #9ca3af;
+  border-radius: 0;
+  margin: 1.5rem 0;
+  background: #ffffff;
+  padding: 0.7rem 0.9rem;
+}
+.extra > h2, .extra > h3, .extra > .extra-title {
+  background: #d1d5db;
+  color: #374151;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: -0.7rem -0.9rem 0.8rem;
+  padding: 0.45rem 0.8rem;
+  border-bottom: 1px solid #9ca3af;
+}
+.extra > :last-child { margin-bottom: 0; }
+
+/* ---- interactive lecture notes ------------------------------------------
+   The look follows the Ramat Gan Discrete Mathematics notes (their
+   _styles.html, the .bk-* rules). */
+
+/* Pictures floated inside a box stay inside it. */
+.thmbox { display: flow-root; }
+/* Self-check (.thmchk) and section summary (.thmsummary): unnumbered. */
+.thmbox-self-check { border-color: #db2777; background: #fdf2f8; }
+.thmbox-self-check > p:first-child > strong::before { content: "🎯"; margin-inline-end: .4em; }
+.thmbox-summary { border-color: #0f766e; background: #f0fdfa; }
+.thmbox-summary > p:first-child > strong::before { content: "📋"; margin-inline-end: .4em; }
+
+/* Small tables (values, intervals, transformations): compact and centred, and on a
+   phone they scroll inside their own box instead of pushing the page sideways. */
+main table.table { width: auto; min-width: 10rem; margin-left: auto; margin-right: auto; }
+main table.table th, main table.table td { padding: 0.3rem 1rem; text-align: center; }
+/* A table of blanks has many narrow columns: keep it inside its box. */
+main .fill table.table th, main .fill table.table td { padding: 0.3rem 0.45rem; }
+main .fill table.table { max-width: 100%; }
+@media (max-width: 600px) {
+  main table.table { display: block; width: fit-content; max-width: 100%; overflow-x: auto; }
+  main table.table th, main table.table td { padding: 0.25rem 0.45rem; }
+}
+
+/* An answer inside an example or question, revealed on a click (.lecture-answer):
+   a plain link-coloured summary next to the grey edge of .thmfoldable. */
+details.lecture-answer { margin: .45rem 0 1rem; }
+details.lecture-answer > summary { color: #4338ca; cursor: pointer; font-weight: 600; }
+details.lecture-answer > summary:focus-visible { outline: 3px solid #f59e0b; outline-offset: 2px; }
+details.lecture-answer > :last-child { margin-bottom: 0; }
+/* An exercise's solution (.thmsol .foldable): its box has its own edge. */
+details.lecture-solution { margin-top: -.4rem; }
+@media print {
+  details.lecture-answer::details-content { content-visibility: visible; }
+  details.lecture-answer > :not(summary) { display: block !important; }
+}
+
+/* Click-to-answer quiz (.quiz in the source -> .tf-quiz): the explanation
+   (.tf-why) appears once the reader has answered. Without JS it simply shows. */
+.tf-quiz .tf-opt { min-height: 44px; max-width: 100%; margin: 0 0 .35rem .5rem; }
+.tf-quiz .tf-opt:focus-visible { outline: 3px solid #4338ca; outline-offset: 2px; }
+.tf-quiz.tf-js:not(.tf-answered) .tf-why { display: none; }
+.tf-quiz .tf-why {
+  margin-top: .4rem; padding: .4rem .7rem; border-radius: 8px;
+  background: #f8fafc; border: 1px solid #e2e8f0;
+}
+.tf-quiz .tf-why > :last-child { margin-bottom: 0; }
+.tf-quiz .tf-feedback:empty { display: none; }
+
+/* A small label in front of a hint or a step ("רמז", "צעד 2 מתוך 4"). */
+.solve > .hint::before, .solve > .step::before,
+.fill > .hint::before, .steps > .hint::before {
+  display: inline-block; margin-inline-end: .5rem; padding: 0 .5rem; border-radius: 999px;
+  font-size: .85em; font-weight: 700; background: #e2e8f0; color: #334155;
+}
+.solve > .hint::before, .fill > .hint::before, .steps > .hint::before {
+  content: "רמז"; background: #fde68a; color: #92400e;
+}
+
+/* Step-by-step solution (.solve): hints and steps revealed one at a time. */
+.solve {
+  counter-reset: solvestep solvehint;
+  border-inline-start: 4px solid #64748b; background: #f8fafc; border-radius: 4px;
+  padding: .5rem 1rem; margin: .6rem 0 1.2rem;
+}
+.solve > .hint, .solve > .step {
+  margin: .45rem 0; padding: .45rem .7rem; border-radius: 8px;
+  background: #fff; border: 1px solid #e2e8f0;
+}
+.solve > .hint { border-style: dashed; border-color: #d97706; background: #fffbeb; }
+.solve > .hint::before { counter-increment: solvehint; }
+.solve.solve-many-hints > .hint::before { content: "רמז " counter(solvehint); }
+.solve > .step::before { counter-increment: solvestep; content: "צעד " counter(solvestep); }
+.solve > .step[data-of]::before { content: "צעד " counter(solvestep) " מתוך " attr(data-of); }
+.solve > .hint > p:first-child, .solve > .step > p:first-child { display: inline; }
+.solve > .hint > :last-child, .solve > .step > :last-child { margin-bottom: 0; }
+.solve .solve-hidden { display: none !important; }
+.solve-bar { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; margin: .2rem 0 .5rem; }
+.solve-bar button[hidden] { display: none; }
+/* Buttons: the .bk-btn look of the Ramat Gan notes. */
+.solve-bar button, .ix-btn {
+  min-height: 40px; padding: .3rem .9rem; border: 1px solid #94a3b8; border-radius: 8px;
+  background: #fff; color: inherit; font: inherit; font-size: .95em; cursor: pointer;
+}
+.solve-bar button:hover:not(:disabled), .ix-btn:hover:not(:disabled) { background: #f1f5f9; }
+.solve-bar button:disabled, .ix-btn:disabled { opacity: .5; cursor: default; }
+.solve-bar button.solve-main, .ix-btn.ix-main {
+  background: #4f46e5; border-color: #4f46e5; color: #fff; font-weight: 700;
+}
+.solve-bar button.solve-main:hover:not(:disabled), .ix-btn.ix-main:hover:not(:disabled) { background: #4338ca; }
+.solve-bar button.solve-quiet, .ix-btn.ix-quiet { color: #475569; }
+.solve-bar button:focus-visible, .ix-btn:focus-visible, .ix-key:focus-visible,
+.blank-input:focus-visible, .st-in:focus-visible, .st-rule:focus-visible, .ord-card:focus-visible {
+  outline: 3px solid #f59e0b; outline-offset: 2px;
+}
+
+/* A new term where it is defined, and a one-line rule worth remembering. */
+.term {
+  white-space: nowrap; color: #6b21a8; background: #f3e8ff; border-radius: .22em; padding: .04em .2em;
+  font-weight: 700; box-decoration-break: clone; -webkit-box-decoration-break: clone;
+}
+.key-rule {
+  color: #075985; background: #e0f2fe; font-weight: 700; padding: .08em .25em;
+  border-radius: .2em; box-decoration-break: clone; -webkit-box-decoration-break: clone;
+}
+/* "What we are doing" note at the top of a section: a sticky note, unlike any box. */
+.lead {
+  font-size: 1.05em; color: #1e293b; background: #fefce8;
+  border: 1px solid #fde68a; padding: .55rem .9rem; border-radius: 10px;
+  margin: .6rem 0 1rem;
+}
+.lead > :last-child { margin-bottom: 0; }
+@media print {
+  .term, .key-rule { color: #111; background: transparent; }
+  .solve .solve-hidden { display: block !important; }
+  .solve-bar { display: none; }
+}
+
+/* ---- the reader writes answers (assets/interactive.js) -------------------- */
+/* A run of math and blanks is one LTR formula inside the RTL sentence. */
+.fill-ltr { direction: ltr; unicode-bidi: isolate; display: inline-block; white-space: nowrap; }
+/* What the reader types (`2/3`, `[0,5)`, ...) is LTR inside the Hebrew sentence. */
+p code, li code, td code, .ix-msg code { direction: ltr; unicode-bidi: isolate; white-space: nowrap; }
+.eqline { text-align: center; margin: .5rem 0; }
+.eqline > p { margin: 0; }
+span.blank { white-space: nowrap; }
+span.blank:not(.blank-ready) { text-decoration: underline; text-underline-offset: .25em; }
+.blank-input {
+  font: inherit; font-size: .95em; direction: ltr; text-align: center;
+  padding: .05rem .35rem; margin: 0 .15rem; min-width: 3.2em;
+  border: 1px solid #94a3b8; border-radius: 6px; background: #fff;
+  box-sizing: content-box;
+}
+.blank-input:focus { border-color: #4f46e5; }
+td .blank-input, th .blank-input { min-width: 2.4em; padding: .05rem .2rem; }
+.fill table { margin-inline: auto; }
+span.blank.ok .blank-input { border-color: #16a34a; background: #f0fdf4; }
+span.blank.bad .blank-input { border-color: #e11d48; background: #fff1f2; }
+.blank-mark { font-weight: 700; font-size: .9em; }
+span.blank.ok .blank-mark { color: #15803d; }
+span.blank.bad .blank-mark { color: #be123c; }
+span.blank.warn .blank-input { border-color: #d97706; background: #fffbeb; }
+span.blank.warn .blank-mark { color: #b45309; }
+.blank-answer { background: #fef9c3; border-radius: 4px; padding: 0 .25em; }
+.ix-hidden { display: none !important; }
+.ix-panel { margin: .35rem 0 .8rem; }
+.ix-panel .ix-keys { display: none; }
+.ix-panel.ix-active .ix-keys { display: flex; }
+.ix-keys { flex-wrap: wrap; gap: .3rem; margin: .3rem 0; direction: ltr; justify-content: flex-end; }
+/* Keypad: the .bk-key look of the Ramat Gan notes. */
+.ix-key {
+  min-width: 40px; min-height: 40px; padding: 0 .4rem; cursor: pointer;
+  border: 1px solid #94a3b8; border-radius: 8px; background: #fff; color: #1e293b;
+  font: 1.1rem "Cambria Math", "STIX Two Math", serif;
+}
+.ix-key:hover { background: #eef2ff; }
+.ix-bar { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; margin: .2rem 0 .5rem; }
+/* Feedback: the .bk-msg look (a coloured edge, a light fill). */
+.ix-msg:empty { display: none; }
+.ix-msg {
+  margin: .3rem 0; padding: .45rem .8rem; border-radius: 8px; font-size: .95em;
+  border-inline-start: 4px solid #64748b; background: #fff;
+}
+.ix-msg.ix-good { border-color: #15803d; background: #dcfce7; }
+.ix-msg.ix-bad { border-color: #b91c1c; background: #fee2e2; }
+.ix-msg.ix-warn { border-color: #d97706; background: #fef3c7; }
+.ix-msg.ix-info { border-color: #1d4ed8; background: #dbeafe; }
+/* Under an input: what has been typed so far, as a formula (no words). Dimmed while
+   the input is still unfinished and only its beginning can be read. */
+.ix-preview:empty { display: none; }
+.ix-preview { font-size: 1.05em; color: #1e293b; margin: .25rem 0; }
+.ix-preview.ix-preview-partial { opacity: .5; }
+.proof-step .ix-preview { direction: ltr; text-align: left; }
+.ix-or { margin: 0 .35em; font-weight: 600; }
+.fill > .hint, .steps > .hint {
+  margin: .4rem 0; padding: .4rem .7rem; border-radius: 8px;
+  border: 1px dashed #d97706; background: #fffbeb;
+}
+.fill > .hint > p:first-child, .steps > .hint > p:first-child { display: inline; }
+.fill > .explain, .steps > .solution, .order > .after {
+  margin: .4rem 0; padding: .4rem .7rem; border-radius: 8px; border: 1px solid #bbf7d0; background: #f0fdf4;
+}
+.steps > .solution::before { content: "פתרון: "; font-weight: 700; color: #166534; }
+.steps > .solution > p:first-child { display: inline; }
+.fill > :last-child, .steps > :last-child { margin-bottom: 0; }
+
+/* Step builder (.steps): a solution ledger, laid out like the directed proofs of
+   the Ramat Gan notes (their .proof-ledger / .proof-step / .step-compact rules).
+   On top the goal (blue strip) and the starting line; then one fieldset per step.
+   A checked step folds into one line: label | rule | the new line | עריכה. */
+.st-ui { margin: .6rem 0 1.2rem; min-width: 0; }
+.activity-help { margin: .5rem 0 .8rem; font-size: .92rem; }
+.activity-help summary { cursor: pointer; color: #4338ca; }
+.activity-help ol { padding: .7rem 1.7rem .7rem .7rem; background: #f8fafc; border-radius: 8px; }
+.activity-help li + li { margin-top: .5rem; }
+.proof-ledger { border: 1px solid #b7c8d8; border-radius: 7px; padding: .6rem; margin: .6rem 0; background: #fff; min-width: 0; }
+.proof-start { padding: .65rem; border-inline-start: 4px solid #075985; background: #f0f9ff; border-radius: 6px; color: #075985; font-weight: 600; }
+.st-given {
+  display: grid; grid-template-columns: 5.2rem minmax(0, 1fr); column-gap: .5rem; align-items: baseline;
+  padding: .45rem .2rem; border-bottom: 1px solid #dbe3ea;
+}
+.given-label { font-size: .85rem; line-height: 1.5; font-weight: 600; color: #475569; }
+/* The line itself reads left to right (⟺ first), like .proof-formula in Ramat Gan. */
+.st-formula { min-width: 0; overflow-x: auto; overflow-y: hidden; direction: ltr; unicode-bidi: isolate; text-align: left; }
+.proof-step { min-width: 0; margin: .35rem 0; padding: .45rem .7rem .6rem; border: 1px solid #c7d2fe; border-radius: 10px; background: #f8faff; }
+.proof-step > legend { float: none; width: auto; padding: 0 .4rem; margin: 0; font-size: 1.05em; font-weight: 700; color: #581c87; }
+.proof-field { display: grid; gap: .3rem; margin: .3rem 0; font-weight: 600; }
+.proof-rule { width: 100%; min-width: 0; max-width: 100%; min-height: 44px; padding: .4rem; border: 1px solid #94a3b8; border-radius: 8px; background: #fff; font: inherit; }
+.proof-rule:focus-visible { outline: 3px solid #f59e0b; outline-offset: 2px; }
+.st-in {
+  width: 100%; min-width: 0; min-height: 40px; box-sizing: border-box; direction: ltr; text-align: left;
+  padding: .3rem .6rem; border: 1px solid #94a3b8; border-radius: 8px; background: #fff;
+  font: 1.05rem "Cambria Math", "STIX Two Math", "Times New Roman", serif;
+}
+.st-in:focus { border-color: #4f46e5; }
+.st-in[aria-invalid="true"] { border: 2px solid #b91c1c; }
+.proof-step .ix-keys { margin: .35rem 0; }
+.step-compact[hidden], .step-editor[hidden], .proof-qed[hidden], .step-compact-reason[hidden] { display: none !important; }
+/* A checked step: no box, one line with the label at the side. */
+.proof-ledger .step-accepted { border: 0; border-bottom: 1px solid #dbe3ea; border-radius: 0; background: transparent; padding: .3rem .2rem; }
+.proof-ledger .side-labelled > .step-label { display: none; }
+.proof-ledger .side-labelled.step-accepted { display: grid; grid-template-columns: 5.2rem minmax(0, 1fr); column-gap: .5rem; align-items: start; }
+.proof-ledger .side-labelled.step-accepted > legend { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.proof-ledger .side-labelled.step-accepted > .step-label { display: block; grid-column: 1; grid-row: 1; font-size: .85rem; font-weight: 600; color: #475569; padding-top: .35rem; }
+.proof-ledger .side-labelled.step-accepted > .step-compact { grid-column: 2; grid-row: 1; min-width: 0; }
+/* Physical left/right placement is explicit (as in Ramat Gan): עריכה on the left,
+   then the new line, then the rule in Hebrew. */
+.proof-ledger .step-compact { display: grid; direction: ltr; grid-template-columns: 4.2rem minmax(0, 1fr); align-items: start; gap: .25rem .65rem; font-size: .94rem; }
+.proof-ledger .step-compact > .step-edit { grid-column: 1; grid-row: 1; justify-self: start; margin: 0; direction: rtl; padding: .15rem .5rem; min-height: 32px; font-size: .85rem; }
+.proof-ledger .step-statement { grid-column: 2; grid-row: 1; min-width: 0; }
+.proof-ledger .step-statement > .st-formula { white-space: nowrap; padding: .15rem 0; }
+.proof-ledger .step-compact-reason { grid-column: 2; grid-row: 2; direction: rtl; text-align: right; font-size: .85rem; color: #475569; }
+.proof-ledger .proof-qed { grid-column: 2; grid-row: 3; direction: rtl; justify-self: end; color: #166534; font-weight: 700; }
+/* "או" between two formulas is its own bidi island, so the line keeps the typed order. */
+.st-formula .ix-or { unicode-bidi: isolate; }
+.proof-steps .ix-msg:empty { display: none; }
+.st-controls { margin-top: .5rem; }
+@media (max-width: 600px) {
+  .proof-ledger { padding: .35rem; }
+  .st-given, .proof-ledger .side-labelled.step-accepted { grid-template-columns: 3.6rem minmax(0, 1fr); column-gap: .3rem; }
+  .proof-ledger .step-compact > .step-edit { min-height: 44px; }
+}
+
+/* References shown in place (assets/interactive.js, ported from the BGU book). */
+.xref-panel {
+  border: 1px solid #cbd5e1; border-inline-start: 4px solid #4338ca;
+  background: #f8fafc; margin: .5rem 0 1rem; padding: .65rem; min-width: 0;
+}
+.xref-head {
+  display: flex; justify-content: space-between; align-items: center; gap: .8rem;
+  font-size: .9rem; color: #475569; margin-bottom: .5rem;
+}
+.xref-head .xref-jump { font-weight: 600; }
+.xref-head .xref-close {
+  border: 1px solid #cbd5e1; border-radius: 4px; background: #fff; color: #334155;
+  cursor: pointer; padding: .2rem .5rem; line-height: 1.2;
+}
+.xref-panel > .thmbox { margin: 0; }
+.xref-panel .tf-quiz { margin: .3rem 0 .6rem; }
+.xref-panel details.lecture-answer > summary { pointer-events: none; }
+a.xref-open { background: #ede9fe; border-radius: 3px; }
+
+/* Ordering (.order): click the steps into place. */
+.order > .step { margin: .3rem 0; padding: .4rem .7rem; border: 1px solid #e2e8f0; border-radius: 8px; }
+.ord-ui { margin: .6rem 0 1.2rem; padding: .6rem .9rem; border: 1px solid #c7d2fe; border-radius: 10px; background: #f8faff; }
+.ord-head { font-weight: 700; color: #3730a3; margin: .3rem 0; }
+.ord-pool { display: flex; flex-wrap: wrap; gap: .45rem; min-height: 2.5rem; padding: .4rem; border-radius: 8px; background: #f8fafc; }
+.ord-placed { margin: .3rem 0; padding-inline-start: 1.8rem; min-height: 2.5rem; }
+.ord-placed > li { margin: .3rem 0; }
+.ord-card {
+  cursor: pointer; padding: .35rem .7rem; border: 1px solid #c7d2fe; border-radius: 8px; background: #fff;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, .06);
+}
+.ord-pool .ord-card { flex: 1 1 15rem; }
+.ord-card:hover, .ord-card:focus { border-color: #4f46e5; outline: none; background: #eef2ff; }
+.ord-card.good { border-color: #16a34a; background: #f0fdf4; }
+.ord-card.bad { border-color: #e11d48; background: #fff1f2; }
+.ord-card > :last-child { margin-bottom: 0; }
+.ord-card > p:first-child { margin-top: 0; }
+.ord-empty { color: #94a3b8; font-style: italic; list-style: none; }
+@media print {
+  .blank-input, .blank-mark, .ix-panel, .st-ui, .ord-ui { display: none !important; }
+  .blank-answer { display: inline !important; background: transparent; text-decoration: underline; }
+  .ix-hidden { display: block !important; }
+}
+</style>
+<style>
+/* One RTL navigation tree in the right sidebar: chapters, sections, then
+   subsections (assets/navigation.js; copied from the Ramat Gan notes). */
+#quarto-content { direction: rtl; }
+#quarto-sidebar .toc-tree { display: none; direction: rtl; text-align: right; }
+#quarto-sidebar .toc-chapter.toc-open > .toc-tree { display: block; }
+.toc-tree li.toc-parent > ul { display: none !important; }
+.toc-tree li.toc-parent.toc-open > ul { display: block !important; }
+.toc-tree ul { list-style: none; padding: 0; padding-inline-start: .7rem; margin: 0; border-inline-start: 1px solid #e2e8f0; }
+.toc-tree li { position: relative; margin: .2rem 0; }
+.toc-tree li > a { margin-inline-start: 1.9rem; }
+#quarto-sidebar .toc-tree a { display: block; padding: .35rem 0; line-height: 1.5; font-size: .875rem; white-space: normal; }
+.toc-chapter-row { position: relative; padding-inline-start: 1.9rem; }
+.toc-chapter-toggle, .toc-branch-toggle { position: absolute; inset-inline-start: 0; top: 0; width: 1.8rem; min-height: 1.8rem; padding: 0; color: #334155; background: transparent; border: 0; cursor: pointer; font: inherit; border-radius: 5px; }
+.toc-disclosure-arrow { display: inline-block; transition: transform .12s; }
+[aria-expanded=true] > .toc-disclosure-arrow { transform: rotate(-90deg); }
+.toc-chapter-toggle:hover, .toc-branch-toggle:hover { background: #eef2ff; }
+.toc-chapter-toggle:focus-visible, .toc-branch-toggle:focus-visible { outline: 2px solid #4f46e5; outline-offset: 1px; }
+@media (max-width: 991px) {
+  #quarto-sidebar { max-width: 100vw; box-sizing: border-box; right: 0; left: auto; }
+  #quarto-sidebar .sidebar-menu-container { white-space: normal; min-width: 0; }
+  #quarto-sidebar .sidebar-title { white-space: normal; }
+  .toc-chapter-toggle, .toc-branch-toggle { min-height: 44px; width: 44px; }
+  .toc-tree li > a { margin-inline-start: 44px; min-height: 44px; }
+  .toc-chapter-row { padding-inline-start: 44px; min-height: 44px; }
+}
+@media (prefers-reduced-motion: reduce) { .toc-disclosure-arrow { transition: none; } }
+</style>
+<script src="assets/navigation.js" defer=""></script>
+<script src="assets/interactive.js" defer=""></script>
+<script>
+/* ---------------------------------------------------------------------------
+   MathJax line breaking.
+
+   Quarto now loads mathjax@4, and v4 switched on automatic line breaking that
+   v3 did not do:
+
+     * inline math may be broken at a relation or a binary operator, so a short
+       formula such as \( \phi : U \to V \) comes out split after the U;
+     * display math wider than the column is broken instead of being left to
+       run on.
+
+   Inside an RTL paragraph a break in the middle of a formula does not read as
+   a wrap, it reads as a mistake. So turn the AUTOMATIC breaking off:
+   `linebreaks.inline = false` for inline math, and `displayOverflow = scroll`
+   so that over-wide display math gets a scroll box rather than being chopped.
+
+   Breaks we wrote ourselves are unaffected: `\\` inside aligned/cases/matrix
+   still starts a new row, which is the "unless specifically required" case.
+
+   Both `output` and `chtml` are set because v4 accepts these keys on the
+   generic output block and on the specific output jax, and tex-chtml.js loads
+   CHTML. The more specific one wins; setting both costs nothing.
+
+   This has to run before the MathJax script does. That script carries `defer`,
+   so it runs after parsing, while this inline script runs during parsing --
+   hence anywhere in the head is early enough.
+   --------------------------------------------------------------------------- */
+window.MathJax = {
+  output: {
+    displayOverflow: "scroll",
+    linebreaks: { inline: false }
+  },
+  chtml: {
+    displayOverflow: "scroll",
+    linebreaks: { inline: false }
+  }
+};
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll(".tf-quiz").forEach(function (quiz) {
+    var correct = quiz.getAttribute("data-correct");
+    var feedback = quiz.querySelector(".tf-feedback");
+    var hasWhy = !!quiz.querySelector(".tf-why");
+    quiz.classList.add("tf-js");          // the explanation now waits for an answer
+    quiz.querySelectorAll(".tf-opt").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        quiz.querySelectorAll(".tf-opt").forEach(function (b) {
+          b.classList.remove("correct", "incorrect");
+        });
+        quiz.classList.add("tf-answered");
+        if (btn.getAttribute("data-val") === correct) {
+          btn.classList.add("correct");
+          if (feedback) feedback.textContent = "✓ נכון!";
+        } else {
+          btn.classList.add("incorrect");
+          if (feedback) feedback.textContent = hasWhy
+            ? "✗ לא בדיוק. קראו את ההסבר."
+            : "✗ לא מדויק — נסו שוב, או פתחו את הפתרון.";
+        }
+      });
+    });
+  });
+});
+</script>
+<script>
+/* Step-by-step solutions (.solve): the hints and the steps are revealed one at a
+   time. The button bar always sits right after the last revealed hint or step, where
+   the next one will appear. Inside a proof box, "כל הפתרון" reads "כל ההוכחה".
+   Without JavaScript everything simply stays visible. */
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll(".solve").forEach(function (box) {
+    var kids = Array.prototype.slice.call(box.children);
+    var hints = kids.filter(function (c) { return c.classList.contains("hint"); });
+    var steps = kids.filter(function (c) { return c.classList.contains("step"); });
+    if (!hints.length && !steps.length) return;
+    var shownH = 0, shownS = 0;
+    // Labels in front of the hints and steps ("רמז 2", "צעד 3 מתוך 5"): see the CSS.
+    if (hints.length > 1) box.classList.add("solve-many-hints");
+    steps.forEach(function (s) { s.setAttribute("data-of", steps.length); });
+    var bar = document.createElement("div");
+    bar.className = "solve-bar";
+    function button(label, cls, action) {
+      var b = document.createElement("button");
+      b.type = "button"; b.textContent = label;
+      if (cls) b.className = cls;
+      b.addEventListener("click", function () { action(); sync(); });
+      bar.appendChild(b); return b;
+    }
+    var bHint = hints.length ? button("רמז", "", function () { shownH++; }) : null;
+    var bStep = steps.length ? button("הצעד הבא", "solve-main", function () { shownS++; }) : null;
+    var inProof = !!box.closest(".thmbox-proof");
+    var allLabel = box.getAttribute("data-all") || (inProof ? "כל ההוכחה" : "כל הפתרון");
+    var doneLabel = inProof ? "ההוכחה כולה מוצגת" : "הפתרון כולו מוצג";
+    var bAll  = button(allLabel, "solve-quiet", function () { shownH = hints.length; shownS = steps.length; });
+    var parts = kids.filter(function (c) { return c.classList.contains("hint") || c.classList.contains("step"); });
+    var bHide = button("הסתרה", "solve-quiet", function () { shownH = 0; shownS = 0; });
+    function sync() {
+      hints.forEach(function (h, i) { h.classList.toggle("solve-hidden", i >= shownH); });
+      steps.forEach(function (s, i) { s.classList.toggle("solve-hidden", i >= shownS); });
+      if (bHint) {
+        bHint.disabled = shownH >= hints.length;
+        bHint.textContent = "רמז (" + shownH + "/" + hints.length + ")";
+      }
+      if (bStep) {
+        bStep.disabled = shownS >= steps.length;
+        bStep.textContent = shownS >= steps.length ? doneLabel
+          : shownS === 0 ? "הצעד הראשון (1/" + steps.length + ")"
+          : "הצעד הבא (" + (shownS + 1) + "/" + steps.length + ")";
+      }
+      bAll.disabled = shownS >= steps.length && shownH >= hints.length;
+      bHide.hidden = shownS === 0 && shownH === 0;
+      var shown = parts.filter(function (c) { return !c.classList.contains("solve-hidden"); });
+      var last = shown[shown.length - 1];
+      if (last) box.insertBefore(bar, last.nextSibling);
+      else box.insertBefore(bar, parts[0]);
+    }
+    sync();
+  });
+  // Print everything: open every answer before printing, restore afterwards.
+  var answers = Array.prototype.slice.call(document.querySelectorAll("details.lecture-answer"));
+  var before = null;
+  window.addEventListener("beforeprint", function () {
+    before = answers.map(function (a) { return a.open; });
+    answers.forEach(function (a) { a.open = true; });
+  });
+  window.addEventListener("afterprint", function () {
+    if (before) answers.forEach(function (a, i) { a.open = before[i]; });
+    before = null;
+  });
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  function normSet(str) {
+    if (!str) return [];
+    return Array.from(new Set(
+      str.split(/[\s,;]+/).filter(function (s) { return s.length; }).map(Number)
+    )).filter(function (n) { return !Number.isNaN(n); }).sort(function (a, b) { return a - b; });
+  }
+  function eqSet(a, b) {
+    if (a.length !== b.length) return false;
+    for (var i = 0; i < a.length; i++) { if (a[i] !== b[i]) return false; }
+    return true;
+  }
+  document.querySelectorAll(".set-quiz").forEach(function (q) {
+    var answer = normSet(q.getAttribute("data-answer"));
+    var input = q.querySelector(".set-input");
+    var feedback = q.querySelector(".set-feedback");
+    var btn = q.querySelector(".set-check");
+    function check() {
+      input.classList.remove("correct", "incorrect");
+      if (eqSet(normSet(input.value), answer)) {
+        input.classList.add("correct");
+        if (feedback) feedback.textContent = "✓ נכון!";
+      } else {
+        input.classList.add("incorrect");
+        if (feedback) feedback.textContent = "✗ נסו שוב";
+      }
+    }
+    if (btn) btn.addEventListener("click", check);
+    if (input) input.addEventListener("keydown", function (e) { if (e.key === "Enter") check(); });
+  });
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  // Evaluate one entered term as arithmetic (whitelisted chars only: digits + - * / ^ ( ) . )
+  function evalTerm(s) {
+    s = String(s).trim();
+    if (!s) return null;
+    if (!/^[0-9+\-*/^().\s]+$/.test(s)) return null;
+    try {
+      var v = Function('"use strict"; return (' + s.replace(/\^/g, "**") + ');')();
+      return (typeof v === "number" && isFinite(v)) ? v : null;
+    } catch (e) { return null; }
+  }
+  function parseSeq(str) { return String(str || "").split(",").map(evalTerm); }
+  function eqSeq(a, b) {
+    if (a.length !== b.length) return false;
+    for (var i = 0; i < a.length; i++) {
+      if (a[i] == null || b[i] == null || Math.abs(a[i] - b[i]) > 1e-9) return false;
+    }
+    return true;
+  }
+  document.querySelectorAll(".seq-quiz").forEach(function (q) {
+    var answer = parseSeq(q.getAttribute("data-answer"));
+    var input = q.querySelector(".seq-input");
+    var feedback = q.querySelector(".seq-feedback");
+    var btn = q.querySelector(".seq-check");
+    function check() {
+      input.classList.remove("correct", "incorrect");
+      if (eqSeq(parseSeq(input.value), answer)) {
+        input.classList.add("correct");
+        if (feedback) feedback.textContent = "✓ נכון!";
+      } else {
+        input.classList.add("incorrect");
+        if (feedback) feedback.textContent = "✗ נסו שוב";
+      }
+    }
+    if (btn) btn.addEventListener("click", check);
+    if (input) input.addEventListener("keydown", function (e) { if (e.key === "Enter") check(); });
+  });
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  // Build n -> value from a formula in n (whitelisted: digits, n, + - * / ^ ! ( ) . )
+  function makeFormula(s) {
+    s = String(s || "").trim();
+    if (!s || !/^[0-9n+\-*/^!().\s]+$/.test(s)) return null;
+    s = s.replace(/(\d)\s*([n(])/g, "$1*$2")             // 2n, 2(  -> 2*n, 2*(
+         .replace(/([n)])\s*([n(])/g, "$1*$2")           // )n, )(, n(  -> insert *
+         .replace(/(\([^()]*\)|\d+|n)!/g, "fact($1)")    // n!, 5!, (n+1)!  -> fact(...)
+         .replace(/\^/g, "**");
+    try {
+      var f = Function("n", '"use strict"; var fact=function(k){k=Math.round(k);var r=1;for(var i=2;i<=k;i++)r*=i;return r;}; return (' + s + ");");
+      var t = f(1);
+      return (typeof t === "number" && isFinite(t)) ? f : null;
+    } catch (e) { return null; }
+  }
+  function parseTargets(str) {
+    return String(str || "").split(",").map(function (t) {
+      t = t.trim();
+      if (!/^-?[0-9]+(?:\/[0-9]+)?$/.test(t)) return NaN;
+      var p = t.split("/");
+      return p.length === 2 ? Number(p[0]) / Number(p[1]) : Number(p[0]);
+    });
+  }
+  document.querySelectorAll(".formula-quiz").forEach(function (q) {
+    var targets = parseTargets(q.getAttribute("data-answer"));
+    var input = q.querySelector(".seq-input");
+    var feedback = q.querySelector(".seq-feedback");
+    var btn = q.querySelector(".seq-check");
+    function check() {
+      input.classList.remove("correct", "incorrect");
+      var f = makeFormula(input.value), ok = !!f;
+      for (var i = 0; ok && i < targets.length; i++) {
+        var v; try { v = f(i + 1); } catch (e) { ok = false; break; }
+        if (typeof v !== "number" || !isFinite(v) || Math.abs(v - targets[i]) > 1e-9) ok = false;
+      }
+      if (ok) {
+        input.classList.add("correct");
+        if (feedback) feedback.textContent = "✓ נכון!";
+      } else {
+        input.classList.add("incorrect");
+        if (feedback) feedback.textContent = "✗ נסו שוב";
+      }
+    }
+    if (btn) btn.addEventListener("click", check);
+    if (input) input.addEventListener("keydown", function (e) { if (e.key === "Enter") check(); });
+  });
+});
+</script>
+<script>
+// Widgets embedded from widgets/<chapter>/ report their own height, so the
+// iframe does not need a hard-coded one (which breaks on narrow screens,
+// where the control panel stacks above the plot).
+window.addEventListener("message", function (e) {
+  var d = e.data;
+  if (!d || d.type !== "widget-height" || typeof d.height !== "number") return;
+  var frames = document.querySelectorAll("iframe.widget-frame");
+  for (var i = 0; i < frames.length; i++) {
+    if (frames[i].contentWindow === e.source) {
+      frames[i].style.height = Math.max(320, Math.min(2000, d.height)) + "px";
+      return;
+    }
+  }
+});
+</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<script id="book-toc-data" type="application/json">[{"file":"01-Introduction.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#מערכות-המספרים-מהטבעיים-אל-הממשיים\" id=\"toc-מערכות-המספרים-מהטבעיים-אל-הממשיים\" class=\"nav-link active\" data-scroll-target=\"#מערכות-המספרים-מהטבעיים-אל-הממשיים\">\u003cspan class=\"header-section-number\">1.1\u003c/span> מערכות המספרים: מהטבעיים אל הממשיים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#ספירה-המספרים-הטבעיים-השלמים-והרציונליים\" id=\"toc-ספירה-המספרים-הטבעיים-השלמים-והרציונליים\" class=\"nav-link\" data-scroll-target=\"#ספירה-המספרים-הטבעיים-השלמים-והרציונליים\">ספירה: המספרים הטבעיים, השלמים והרציונליים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מדידה-המספרים-האי-רציונליים\" id=\"toc-מדידה-המספרים-האי-רציונליים\" class=\"nav-link\" data-scroll-target=\"#מדידה-המספרים-האי-רציונליים\">מדידה: המספרים האי-רציונליים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הישר-הממשי\" id=\"toc-הישר-הממשי\" class=\"nav-link\" data-scroll-target=\"#הישר-הממשי\">הישר הממשי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים\" id=\"toc-תרגילים\" class=\"nav-link\" data-scroll-target=\"#תרגילים\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#קבוצות-וקטעים\" id=\"toc-קבוצות-וקטעים\" class=\"nav-link\" data-scroll-target=\"#קבוצות-וקטעים\">\u003cspan class=\"header-section-number\">1.2\u003c/span> קבוצות וקטעים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#רישום-של-קבוצות\" id=\"toc-רישום-של-קבוצות\" class=\"nav-link\" data-scroll-target=\"#רישום-של-קבוצות\">רישום של קבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#שוויון-קבוצות\" id=\"toc-שוויון-קבוצות\" class=\"nav-link\" data-scroll-target=\"#שוויון-קבוצות\">שוויון קבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הכלה\" id=\"toc-הכלה\" class=\"nav-link\" data-scroll-target=\"#הכלה\">הכלה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#פעולות-על-קבוצות\" id=\"toc-פעולות-על-קבוצות\" class=\"nav-link\" data-scroll-target=\"#פעולות-על-קבוצות\">פעולות על קבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#קטעים\" id=\"toc-קטעים\" class=\"nav-link\" data-scroll-target=\"#קטעים\">קטעים\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#סרטוט-קטעים\" id=\"toc-סרטוט-קטעים\" class=\"nav-link\" data-scroll-target=\"#סרטוט-קטעים\">סרטוט קטעים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-1\" id=\"toc-תרגילים-1\" class=\"nav-link\" data-scroll-target=\"#תרגילים-1\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#ערך-מוחלט\" id=\"toc-ערך-מוחלט\" class=\"nav-link\" data-scroll-target=\"#ערך-מוחלט\">\u003cspan class=\"header-section-number\">1.3\u003c/span> ערך מוחלט\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#כללי-אי-שוויונים\" id=\"toc-כללי-אי-שוויונים\" class=\"nav-link\" data-scroll-target=\"#כללי-אי-שוויונים\">כללי אי-שוויונים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#ערך-מוחלט-מרחק-וקטעים\" id=\"toc-ערך-מוחלט-מרחק-וקטעים\" class=\"nav-link\" data-scroll-target=\"#ערך-מוחלט-מרחק-וקטעים\">ערך מוחלט, מרחק וקטעים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-2\" id=\"toc-תרגילים-2\" class=\"nav-link\" data-scroll-target=\"#תרגילים-2\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-וגרפים\" id=\"toc-פונקציות-וגרפים\" class=\"nav-link\" data-scroll-target=\"#פונקציות-וגרפים\">\u003cspan class=\"header-section-number\">1.4\u003c/span> פונקציות וגרפים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#המישור-מכפלה-קרטזית\" id=\"toc-המישור-מכפלה-קרטזית\" class=\"nav-link\" data-scroll-target=\"#המישור-מכפלה-קרטזית\">המישור: מכפלה קרטזית\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרף-של-פונקציה\" id=\"toc-הגרף-של-פונקציה\" class=\"nav-link\" data-scroll-target=\"#הגרף-של-פונקציה\">הגרף של פונקציה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציית-הסימן-והערך-השלם\" id=\"toc-פונקציית-הסימן-והערך-השלם\" class=\"nav-link\" data-scroll-target=\"#פונקציית-הסימן-והערך-השלם\">פונקציית הסימן והערך השלם\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מה-אינו-פונקציה\" id=\"toc-מה-אינו-פונקציה\" class=\"nav-link\" data-scroll-target=\"#מה-אינו-פונקציה\">מה אינו פונקציה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תחום-ההגדרה-הטבעי\" id=\"toc-תחום-ההגדרה-הטבעי\" class=\"nav-link\" data-scroll-target=\"#תחום-ההגדרה-הטבעי\">תחום ההגדרה הטבעי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-3\" id=\"toc-תרגילים-3\" class=\"nav-link\" data-scroll-target=\"#תרגילים-3\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-זוגיות-ואי-זוגיות\" id=\"toc-פונקציות-זוגיות-ואי-זוגיות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-זוגיות-ואי-זוגיות\">\u003cspan class=\"header-section-number\">1.5\u003c/span> פונקציות זוגיות ואי-זוגיות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-4\" id=\"toc-תרגילים-4\" class=\"nav-link\" data-scroll-target=\"#תרגילים-4\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הזזה-ומתיחה-של-גרפים\" id=\"toc-הזזה-ומתיחה-של-גרפים\" class=\"nav-link\" data-scroll-target=\"#הזזה-ומתיחה-של-גרפים\">\u003cspan class=\"header-section-number\">1.6\u003c/span> הזזה ומתיחה של גרפים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-5\" id=\"toc-תרגילים-5\" class=\"nav-link\" data-scroll-target=\"#תרגילים-5\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הרכבת-פונקציות\" id=\"toc-הרכבת-פונקציות\" class=\"nav-link\" data-scroll-target=\"#הרכבת-פונקציות\">\u003cspan class=\"header-section-number\">1.7\u003c/span> הרכבת פונקציות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-6\" id=\"toc-תרגילים-6\" class=\"nav-link\" data-scroll-target=\"#תרגילים-6\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פולינומים-ושורשיהם\" id=\"toc-פולינומים-ושורשיהם\" class=\"nav-link\" data-scroll-target=\"#פולינומים-ושורשיהם\">\u003cspan class=\"header-section-number\">1.8\u003c/span> פולינומים ושורשיהם\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-7\" id=\"toc-תרגילים-7\" class=\"nav-link\" data-scroll-target=\"#תרגילים-7\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הפונקציות-הטריגונומטריות\" id=\"toc-הפונקציות-הטריגונומטריות\" class=\"nav-link\" data-scroll-target=\"#הפונקציות-הטריגונומטריות\">\u003cspan class=\"header-section-number\">1.9\u003c/span> הפונקציות הטריגונומטריות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#רדיאנים\" id=\"toc-רדיאנים\" class=\"nav-link\" data-scroll-target=\"#רדיאנים\">רדיאנים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#ההגדרה-הגאומטרית\" id=\"toc-ההגדרה-הגאומטרית\" class=\"nav-link\" data-scroll-target=\"#ההגדרה-הגאומטרית\">ההגדרה הגאומטרית\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מה-רואים-בציור\" id=\"toc-מה-רואים-בציור\" class=\"nav-link\" data-scroll-target=\"#מה-רואים-בציור\">מה רואים בציור\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#ערכים-מיוחדים\" id=\"toc-ערכים-מיוחדים\" class=\"nav-link\" data-scroll-target=\"#ערכים-מיוחדים\">ערכים מיוחדים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרפים\" id=\"toc-הגרפים\" class=\"nav-link\" data-scroll-target=\"#הגרפים\">הגרפים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#טנגנס\" id=\"toc-טנגנס\" class=\"nav-link\" data-scroll-target=\"#טנגנס\">טנגנס\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הזזה-ומתיחה-של-פונקציות-טריגונומטריות\" id=\"toc-הזזה-ומתיחה-של-פונקציות-טריגונומטריות\" class=\"nav-link\" data-scroll-target=\"#הזזה-ומתיחה-של-פונקציות-טריגונומטריות\">הזזה ומתיחה של פונקציות טריגונומטריות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-8\" id=\"toc-תרגילים-8\" class=\"nav-link\" data-scroll-target=\"#תרגילים-8\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הפונקציה-המעריכית\" id=\"toc-הפונקציה-המעריכית\" class=\"nav-link\" data-scroll-target=\"#הפונקציה-המעריכית\">\u003cspan class=\"header-section-number\">1.10\u003c/span> הפונקציה המעריכית\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#חזקות-עם-מעריך-שאינו-טבעי\" id=\"toc-חזקות-עם-מעריך-שאינו-טבעי\" class=\"nav-link\" data-scroll-target=\"#חזקות-עם-מעריך-שאינו-טבעי\">חזקות עם מעריך שאינו טבעי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרפים-1\" id=\"toc-הגרפים-1\" class=\"nav-link\" data-scroll-target=\"#הגרפים-1\">הגרפים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-9\" id=\"toc-תרגילים-9\" class=\"nav-link\" data-scroll-target=\"#תרגילים-9\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-הפוכות\" id=\"toc-פונקציות-הפוכות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-הפוכות\">\u003cspan class=\"header-section-number\">1.11\u003c/span> פונקציות הפוכות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-10\" id=\"toc-תרגילים-10\" class=\"nav-link\" data-scroll-target=\"#תרגילים-10\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-נוספות\" id=\"toc-פונקציות-נוספות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-נוספות\">\u003cspan class=\"header-section-number\">1.12\u003c/span> פונקציות נוספות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#לוגריתמים\" id=\"toc-לוגריתמים\" class=\"nav-link\" data-scroll-target=\"#לוגריתמים\">לוגריתמים\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#חוקי-הלוגריתמים\" id=\"toc-חוקי-הלוגריתמים\" class=\"nav-link\" data-scroll-target=\"#חוקי-הלוגריתמים\">חוקי הלוגריתמים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרף\" id=\"toc-הגרף\" class=\"nav-link\" data-scroll-target=\"#הגרף\">הגרף\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#חזקות-ושורשים\" id=\"toc-חזקות-ושורשים\" class=\"nav-link\" data-scroll-target=\"#חזקות-ושורשים\">חזקות ושורשים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-רציונליות\" id=\"toc-פונקציות-רציונליות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-רציונליות\">פונקציות רציונליות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הפונקציות-הטריגונומטריות-ההפוכות\" id=\"toc-הפונקציות-הטריגונומטריות-ההפוכות\" class=\"nav-link\" data-scroll-target=\"#הפונקציות-הטריגונומטריות-ההפוכות\">הפונקציות הטריגונומטריות ההפוכות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-11\" id=\"toc-תרגילים-11\" class=\"nav-link\" data-scroll-target=\"#תרגילים-11\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"},{"file":"02-Sequences.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#סדרות\" id=\"toc-סדרות\" class=\"nav-link active\" data-scroll-target=\"#סדרות\">\u003cspan class=\"header-section-number\">2.1\u003c/span> סדרות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים\" id=\"toc-תרגילים\" class=\"nav-link\" data-scroll-target=\"#תרגילים\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#גבול-של-סדרה\" id=\"toc-גבול-של-סדרה\" class=\"nav-link\" data-scroll-target=\"#גבול-של-סדרה\">\u003cspan class=\"header-section-number\">2.2\u003c/span> גבול של סדרה\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#שאיפה-לאינסוף\" id=\"toc-שאיפה-לאינסוף\" class=\"nav-link\" data-scroll-target=\"#שאיפה-לאינסוף\">שאיפה לאינסוף\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-1\" id=\"toc-תרגילים-1\" class=\"nav-link\" data-scroll-target=\"#תרגילים-1\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#סדרות-סטנדרטיות\" id=\"toc-סדרות-סטנדרטיות\" class=\"nav-link\" data-scroll-target=\"#סדרות-סטנדרטיות\">\u003cspan class=\"header-section-number\">2.3\u003c/span> סדרות סטנדרטיות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-2\" id=\"toc-תרגילים-2\" class=\"nav-link\" data-scroll-target=\"#תרגילים-2\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#משפטי-גבולות-בסיסיים\" id=\"toc-משפטי-גבולות-בסיסיים\" class=\"nav-link\" data-scroll-target=\"#משפטי-גבולות-בסיסיים\">\u003cspan class=\"header-section-number\">2.4\u003c/span> משפטי גבולות בסיסיים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#כלל-הסנדוויץ\" id=\"toc-כלל-הסנדוויץ\" class=\"nav-link\" data-scroll-target=\"#כלל-הסנדוויץ\">כלל הסנדוויץ’\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-3\" id=\"toc-תרגילים-3\" class=\"nav-link\" data-scroll-target=\"#תרגילים-3\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"},{"file":"index.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#פתח-דבר\" id=\"toc-פתח-דבר\" class=\"nav-link active\" data-scroll-target=\"#פתח-דבר\">פתח דבר\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#על-הקורס\" id=\"toc-על-הקורס\" class=\"nav-link\" data-scroll-target=\"#על-הקורס\">על הקורס\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#איך-לקרוא-את-המערכים\" id=\"toc-איך-לקרוא-את-המערכים\" class=\"nav-link\" data-scroll-target=\"#איך-לקרוא-את-המערכים\">איך לקרוא את המערכים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תוכנית-הקורס\" id=\"toc-תוכנית-הקורס\" class=\"nav-link\" data-scroll-target=\"#תוכנית-הקורס\">תוכנית הקורס\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מקורות\" id=\"toc-מקורות\" class=\"nav-link\" data-scroll-target=\"#מקורות\">מקורות\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"}]</script>
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="הצג/הסתר את סרגל הניווט" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-Sequences.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">סדרות וגבולות</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="הצג/הסתר את סרגל הניווט" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="חפש" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">חשיבה אנליטית — מערכי הרצאה</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/yuval-khachatryan/Analytical-Thinking-Lecture-Notes" title="קוד מקור" class="quarto-navigation-tool px-1" aria-label="קוד מקור"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="הצג/הסתר מצב קריאה">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="חפש"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">פתח דבר</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-Introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">הרצאה 1: מבוא — מספרים ממשיים ופונקציות</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-Sequences.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">סדרות וגבולות</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+    <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="-1">
+    <h2 id="toc-title">סעיפי הפרק</h2>
+   
+  <ul>
+  <li><a href="#סדרות" id="toc-סדרות" class="nav-link active" data-scroll-target="#סדרות"><span class="header-section-number">2.1</span> סדרות</a>
+  <ul>
+  <li><a href="#תרגילים" id="toc-תרגילים" class="nav-link" data-scroll-target="#תרגילים">תרגילים</a></li>
+  </ul></li>
+  <li><a href="#גבול-של-סדרה" id="toc-גבול-של-סדרה" class="nav-link" data-scroll-target="#גבול-של-סדרה"><span class="header-section-number">2.2</span> גבול של סדרה</a>
+  <ul>
+  <li><a href="#שאיפה-לאינסוף" id="toc-שאיפה-לאינסוף" class="nav-link" data-scroll-target="#שאיפה-לאינסוף">שאיפה לאינסוף</a></li>
+  <li><a href="#תרגילים-1" id="toc-תרגילים-1" class="nav-link" data-scroll-target="#תרגילים-1">תרגילים</a></li>
+  </ul></li>
+  <li><a href="#סדרות-סטנדרטיות" id="toc-סדרות-סטנדרטיות" class="nav-link" data-scroll-target="#סדרות-סטנדרטיות"><span class="header-section-number">2.3</span> סדרות סטנדרטיות</a>
+  <ul>
+  <li><a href="#תרגילים-2" id="toc-תרגילים-2" class="nav-link" data-scroll-target="#תרגילים-2">תרגילים</a></li>
+  </ul></li>
+  <li><a href="#משפטי-גבולות-בסיסיים" id="toc-משפטי-גבולות-בסיסיים" class="nav-link" data-scroll-target="#משפטי-גבולות-בסיסיים"><span class="header-section-number">2.4</span> משפטי גבולות בסיסיים</a>
+  <ul>
+  <li><a href="#כלל-הסנדוויץ" id="toc-כלל-הסנדוויץ" class="nav-link" data-scroll-target="#כלל-הסנדוויץ">כלל הסנדוויץ’</a></li>
+  <li><a href="#תרגילים-3" id="toc-תרגילים-3" class="nav-link" data-scroll-target="#תרגילים-3">תרגילים</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">סדרות וגבולות</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>בפרק הזה נלמד מהי סדרה ומהו הגבול שלה, ונכיר את הכלים הבסיסיים לחישוב גבולות.</p>
+<section id="סדרות" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="סדרות"><span class="header-section-number">2.1</span> סדרות</h2>
+<div class="lead">
+<p><strong>מה עושים כאן?</strong> סדרה היא רשימה אינסופית של מספרים, אחד אחרי השני. נראה איך כותבים סדרה, ונכיר כמה סדרות מפורסמות.</p>
+</div>
+<p>בהרצאה 1 ראינו ש-<span class="math inline">\(\sqrt{2}\)</span> אינו רציונלי, ולכן אין לו פיתוח עשרוני סופי. מחשבון מציג אחד מהקירובים <span class="math display">\[,1, \quad 1.4, \quad 1.41, \quad 1.414, \quad 1.4142, \quad \ldots\]</span> וכל קירוב מוסיף ספרה אחת. רשימה כזו, שיש בה סדר ואין לה סוף, היא סדרה.</p>
+<div id="box-def-sequence" class="thmbox thmbox-definition" title="סדרה">
+<p><strong>הגדרה 2.1.1 — סדרה.</strong></p>
+<p><span class="term"><strong>סדרה</strong></span> היא רשימה אינסופית של מספרים ממשיים לפי סדר: <span class="math display">\[.a_1, \ a_2, \ a_3, \ \ldots\]</span> המספר <span class="math inline">\(a_n\)</span> נקרא <span class="term"><strong>האיבר</strong></span> שבמקום <span class="math inline">\(,n\)</span> ו-<span class="math inline">\(n\)</span> נקרא <span class="term"><strong>האינדקס</strong></span>. את הסדרה כולה מסמנים <span class="math inline">\(a_n\)</span> או <span class="math inline">\(.(a_n)\)</span></p>
+<p>במונחים של הרצאה 1: סדרה היא פונקציה שתחום ההגדרה שלה הוא <span class="math inline">\(,\mathbb{N}\)</span> ו-<span class="math inline">\(a_n\)</span> הוא הערך שלה ב-<span class="math inline">\(.n\)</span></p>
+</div>
+<div class="thmbox thmbox-key-point thmicon-idea" data-icon="idea" title="שתי דרכים לתאר סדרה">
+<p><strong>חשוב לזכור — שתי דרכים לתאר סדרה.</strong></p>
+<ul>
+<li><strong>נוסחה:</strong> כלל שמחשב את <span class="math inline">\(a_n\)</span> ישירות מ-<span class="math inline">\(.n\)</span> למשל, <span class="math inline">\(a_n = 2n - 1\)</span> נותנת <span class="math inline">\(.1, 3, 5, 7, \ldots\)</span></li>
+<li><strong>רקורסיה:</strong> נותנים את האיבר הראשון (או כמה ראשונים), וכלל שמחשב כל איבר מהקודמים לו. למשל, <span class="math inline">\(a_1 = 1\)</span> ו-<span class="math inline">\(a_{n+1} = 2a_n\)</span> נותנים <span class="math inline">\(.1, 2, 4, 8, \ldots\)</span></li>
+</ul>
+</div>
+<div id="box-def-famous" class="thmbox thmbox-definition" title="סדרות מפורסמות">
+<p><strong>הגדרה 2.1.2 — סדרות מפורסמות.</strong></p>
+<ul>
+<li><span class="term"><strong>הסדרה הקבועה</strong></span> <span class="math inline">\(:a_n = c\)</span> <span class="math inline">\(.c, c, c, \ldots\)</span></li>
+<li><span class="term"><strong>הסדרה ההרמונית</strong></span> <span class="math inline">\(:a_n = \frac{1}{n}\)</span> <span class="math inline">\(.1, \frac{1}{2}, \frac{1}{3}, \frac{1}{4}, \ldots\)</span></li>
+<li><span class="term"><strong>סדרה מתחלפת</strong></span>, למשל <span class="math inline">\(:a_n = (-1)^n\)</span> <span class="math inline">\(.{-}1, 1, -1, 1, \ldots\)</span></li>
+<li><span class="term"><strong>סדרה חשבונית</strong></span>: בכל צעד מוסיפים אותו מספר <span class="math inline">\(d\)</span> (ההפרש), ולכן <span class="math inline">\(.a_n = a_1 + (n - 1)d\)</span></li>
+<li><span class="term"><strong>סדרה הנדסית</strong></span>: בכל צעד כופלים באותו מספר <span class="math inline">\(q\)</span> (המנה), ולכן <span class="math inline">\(.a_n = a_1 q^{n-1}\)</span></li>
+<li><span class="term"><strong>סדרת פיבונאצ’י</strong></span>: <span class="math inline">\(,a_1 = a_2 = 1\)</span> וכל איבר הוא סכום שני הקודמים לו, <span class="math inline">\(.a_{n+2} = a_{n+1} + a_n\)</span> מתקבל <span class="math inline">\(.1, 1, 2, 3, 5, 8, 13, \ldots\)</span></li>
+</ul>
+</div>
+<p>את הסדרה מציירים כנקודות <span class="math inline">\(,(n, a_n)\)</span> בלי לחבר ביניהן: בין <span class="math inline">\(n = 1\)</span> ל-<span class="math inline">\(n = 2\)</span> אין איבר.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/ch02-seq-points.png" class="img-fluid figure-img" style="width:95.0%" alt="שלושה גרפים של נקודות: נקודות שיורדות לעבר אפס, נקודות שקופצות בין מינוס אחת לאחת, ונקודות שעולות מהר"></p>
+<figcaption>שלוש סדרות כנקודות. משמאל, <span class="math inline">\(\frac{1}{n}\)</span> יורדת לעבר <span class="math inline">\(.0\)</span> באמצע, <span class="math inline">\((-1)^n\)</span> קופצת בין <span class="math inline">\(-1\)</span> ל-<span class="math inline">\(.1\)</span> מימין, סדרת פיבונאצ’י גדלה מהר; האיבר ה-<span class="math inline">\(12\)</span> שלה הוא <span class="math inline">\(.144\)</span></figcaption>
+</figure>
+</div>
+<div id="box-exm-seq-terms" class="thmbox thmbox-example" title="מחשבים איברים">
+<p><strong>דוגמה 2.1.3 — מחשבים איברים.</strong></p>
+<p><span>(שבר כותבים עם קו נטוי, למשל <code>3/2</code>. חזקה כותבים עם <code>^</code>, למשל <code>2^(n-1)</code>.)</span></p>
+<div class="fill">
+<p><strong>(א)</strong> עבור <span class="fill-ltr"><span class="math inline">\(:a_n = \frac{n + 1}{n}\)</span> <span class="math inline">\(a_1 =\)</span> <span class="blank" data-ans="2"><span class="math inline">\(2\)</span></span></span>, <span class="fill-ltr"><span class="math inline">\(a_2 =\)</span> <span class="blank" data-ans="3/2"><span class="math inline">\(\frac{3}{2}\)</span></span></span>, <span class="fill-ltr"><span class="math inline">\(a_{10} =\)</span> <span class="blank" data-ans="11/10"><span class="math inline">\(\frac{11}{10}\)</span></span></span></p>
+<p><strong>(ב)</strong> בסדרת פיבונאצ’י: <span class="fill-ltr"><span class="math inline">\(a_8 =\)</span> <span class="blank" data-ans="21"><span class="math inline">\(21\)</span></span></span>, <span class="fill-ltr"><span class="math inline">\(a_{10} =\)</span> <span class="blank" data-ans="55"><span class="math inline">\(55\)</span></span></span></p>
+<p><strong>(ג)</strong> הסדרה החשבונית <span class="fill-ltr"><span class="math inline">\(:4, 7, 10, 13, \ldots\)</span> <span class="math inline">\(a_n =\)</span> <span class="blank" data-ans="3n+1" data-vars="n"><span class="math inline">\(3n + 1\)</span></span></span>, <span class="fill-ltr"><span class="math inline">\(a_{20} =\)</span> <span class="blank" data-ans="61"><span class="math inline">\(61\)</span></span></span></p>
+<p><strong>(ד)</strong> הסדרה ההנדסית <span class="fill-ltr"><span class="math inline">\(:3, 6, 12, 24, \ldots\)</span> <span class="math inline">\(a_n =\)</span> <span class="blank" data-ans="3*2^(n-1)" data-vars="n"><span class="math inline">\(3 \cdot 2^{n-1}\)</span></span></span></p>
+<div class="hint">
+<p>ב-(ג) ההפרש הוא <span class="math inline">\(,d = 3\)</span> וב-(ד) המנה היא <span class="math inline">\(.q = 2\)</span></p>
+</div>
+<div class="explain">
+<p><strong>(א)</strong> <span class="math inline">\(,a_1 = \frac{2}{1} = 2\)</span> <span class="math inline">\(,a_2 = \frac{3}{2}\)</span> <span class="math inline">\(.a_{10} = \frac{11}{10}\)</span></p>
+<p><strong>(ב)</strong> ממשיכים את <span class="math inline">\(1, 1, 2, 3, 5, 8, 13\)</span> בסכום שני הקודמים: <span class="math inline">\(,a_8 = 8 + 13 = 21\)</span> <span class="math inline">\(,a_9 = 13 + 21 = 34\)</span> <span class="math inline">\(.a_{10} = 21 + 34 = 55\)</span></p>
+<p><strong>(ג)</strong> <span class="math inline">\(,a_n = 4 + (n - 1) \cdot 3 = 3n + 1\)</span> ולכן <span class="math inline">\(.a_{20} = 61\)</span></p>
+<p><strong>(ד)</strong> <span class="math inline">\(.a_n = 3 \cdot 2^{n-1}\)</span></p>
+</div>
+</div>
+</div>
+<div class="thmbox thmbox-warning" title="כמה איברים ראשונים לא קובעים סדרה">
+<p><strong>שימו לב — כמה איברים ראשונים לא קובעים סדרה.</strong></p>
+<p>איך ממשיכים את <span class="math inline">\(?2, 4, 8, \ldots\)</span> אולי <span class="math inline">\(16\)</span> (חזקות של <span class="math inline">\(2\)</span>), ואולי <span class="math inline">\(14\)</span> (ההפרשים <span class="math inline">\(2, 4, 6, \ldots\)</span>). לכן סדרה נותנים בנוסחה או ברקורסיה, ולא בכמה איברים ראשונים ושלוש נקודות.</p>
+</div>
+<div class="thmbox thmbox-self-check">
+<p><strong>בדיקה עצמית.</strong></p>
+<p><strong>(א)</strong> האם <span class="math inline">\(1, 1, 1, \ldots\)</span> היא סדרה?</p>
+<div class="tf-quiz" data-correct="1">
+<button type="button" class="tf-opt" data-val="1">כן</button>
+<button type="button" class="tf-opt" data-val="2">לא</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p>כן, זו הסדרה הקבועה <span class="math inline">\(.a_n = 1\)</span> בסדרה מותר לאיברים לחזור.</p>
+</div>
+</div>
+<p><strong>(ב)</strong> מהו האיבר החמישי של <span class="math inline">\(?a_n = (-1)^n n\)</span></p>
+<div class="tf-quiz" data-correct="2">
+<button type="button" class="tf-opt" data-val="1">\(5\)</button>
+<button type="button" class="tf-opt" data-val="2">\(-5\)</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p><span class="math inline">\(.a_5 = (-1)^5 \cdot 5 = -5\)</span> החזקה האי-זוגית של <span class="math inline">\(-1\)</span> היא <span class="math inline">\(.{-}1\)</span></p>
+</div>
+</div>
+</div>
+<div class="thmbox thmbox-summary">
+<p><strong>סיכום.</strong></p>
+<ul>
+<li>סדרה היא רשימה אינסופית <span class="math inline">\(a_1, a_2, a_3, \ldots\)</span> ו-<span class="math inline">\(a_n\)</span> הוא האיבר שבמקום <span class="math inline">\(.n\)</span></li>
+<li>מתארים סדרה בנוסחה או ברקורסיה, ולא בכמה איברים ראשונים.</li>
+<li>סדרות מפורסמות: קבועה, הרמונית, מתחלפת, חשבונית, הנדסית, פיבונאצ’י.</li>
+</ul>
+</div>
+<section id="תרגילים" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="תרגילים">תרגילים</h3>
+<div id="box-q-seq-terms" class="thmbox thmbox-question" title="איברים מנוסחה">
+<p><strong>שאלה 2.1.4 — איברים מנוסחה.</strong></p>
+<div class="fill">
+<p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\(:a_n = n^2 - n\)</span> <span class="math inline">\(a_3 =\)</span> <span class="blank" data-ans="6"><span class="math inline">\(6\)</span></span></span></p>
+<p><strong>(ב)</strong> <span class="fill-ltr"><span class="math inline">\(:a_n = \frac{(-1)^n}{n}\)</span> <span class="math inline">\(a_4 =\)</span> <span class="blank" data-ans="1/4"><span class="math inline">\(\frac{1}{4}\)</span></span></span>, <span class="fill-ltr"><span class="math inline">\(a_5 =\)</span> <span class="blank" data-ans="-1/5"><span class="math inline">\(-\frac{1}{5}\)</span></span></span></p>
+<p><strong>(ג)</strong> <span class="fill-ltr"><span class="math inline">\(:a_n = \frac{2^n}{n}\)</span> <span class="math inline">\(a_3 =\)</span> <span class="blank" data-ans="8/3"><span class="math inline">\(\frac{8}{3}\)</span></span></span></p>
+</div>
+</div>
+<div id="box-q-seq-recursion" class="thmbox thmbox-question" title="איברים מרקורסיה">
+<p><strong>שאלה 2.1.5 — איברים מרקורסיה.</strong></p>
+<p><span class="math inline">\(a_1 = 2\)</span> ו-<span class="math inline">\(.a_{n+1} = 3a_n - 1\)</span></p>
+<div class="fill">
+<p><span class="fill-ltr"><span class="math inline">\(a_2 =\)</span> <span class="blank" data-ans="5"><span class="math inline">\(5\)</span></span></span>, <span class="fill-ltr"><span class="math inline">\(a_3 =\)</span> <span class="blank" data-ans="14"><span class="math inline">\(14\)</span></span></span>, <span class="fill-ltr"><span class="math inline">\(a_4 =\)</span> <span class="blank" data-ans="41"><span class="math inline">\(41\)</span></span></span></p>
+<div class="explain">
+<p><span class="math inline">\(,a_2 = 3 \cdot 2 - 1 = 5\)</span> <span class="math inline">\(,a_3 = 3 \cdot 5 - 1 = 14\)</span> <span class="math inline">\(.a_4 = 3 \cdot 14 - 1 = 41\)</span></p>
+</div>
+</div>
+</div>
+<div id="box-q-seq-formula" class="thmbox thmbox-question" title="נוסחה מאיברים">
+<p><strong>שאלה 2.1.6 — נוסחה מאיברים.</strong></p>
+<p>מצאו נוסחה לכל סדרה.</p>
+<div class="fill">
+<p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\(:7, 12, 17, 22, \ldots\)</span> <span class="math inline">\(a_n =\)</span> <span class="blank" data-ans="5n+2" data-vars="n"><span class="math inline">\(5n + 2\)</span></span></span></p>
+<p><strong>(ב)</strong> <span class="fill-ltr"><span class="math inline">\(:1, 4, 9, 16, \ldots\)</span> <span class="math inline">\(a_n =\)</span> <span class="blank" data-ans="n^2" data-vars="n"><span class="math inline">\(n^2\)</span></span></span></p>
+<p><strong>(ג)</strong> <span class="fill-ltr"><span class="math inline">\(:\frac{1}{2}, \frac{1}{4}, \frac{1}{8}, \frac{1}{16}, \ldots\)</span> <span class="math inline">\(a_n =\)</span> <span class="blank" data-ans="1/2^n" data-vars="n"><span class="math inline">\(\frac{1}{2^n}\)</span></span></span></p>
+<div class="explain">
+<p><strong>(א)</strong> חשבונית עם <span class="math inline">\(a_1 = 7\)</span> ו-<span class="math inline">\(:d = 5\)</span> <span class="math inline">\(.a_n = 7 + 5(n - 1) = 5n + 2\)</span> <strong>(ב)</strong> ריבועים. <strong>(ג)</strong> הנדסית עם <span class="math inline">\(a_1 = \frac{1}{2}\)</span> ו-<span class="math inline">\(.q = \frac{1}{2}\)</span></p>
+</div>
+</div>
+</div>
+<div id="box-q-seq-kind" class="thmbox thmbox-question" title="חשבונית או הנדסית?">
+<p><strong>שאלה 2.1.7 — חשבונית או הנדסית?</strong></p>
+<p><strong>(א)</strong> <span class="math inline">\(5, 2, -1, -4, \ldots\)</span></p>
+<div class="tf-quiz" data-correct="1">
+<button type="button" class="tf-opt" data-val="1">חשבונית</button>
+<button type="button" class="tf-opt" data-val="2">הנדסית</button>
+<button type="button" class="tf-opt" data-val="3">אף אחת</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p>בכל צעד מוסיפים <span class="math inline">\(.{-}3\)</span></p>
+</div>
+</div>
+<p><strong>(ב)</strong> <span class="math inline">\(2, -6, 18, -54, \ldots\)</span></p>
+<div class="tf-quiz" data-correct="2">
+<button type="button" class="tf-opt" data-val="1">חשבונית</button>
+<button type="button" class="tf-opt" data-val="2">הנדסית</button>
+<button type="button" class="tf-opt" data-val="3">אף אחת</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p>בכל צעד כופלים ב-<span class="math inline">\(.{-}3\)</span></p>
+</div>
+</div>
+<p><strong>(ג)</strong> <span class="math inline">\(1, 2, 4, 7, 11, \ldots\)</span></p>
+<div class="tf-quiz" data-correct="3">
+<button type="button" class="tf-opt" data-val="1">חשבונית</button>
+<button type="button" class="tf-opt" data-val="2">הנדסית</button>
+<button type="button" class="tf-opt" data-val="3">אף אחת</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p>ההפרשים הם <span class="math inline">\(,1, 2, 3, 4\)</span> ולא קבועים, וגם המנות אינן קבועות.</p>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="גבול-של-סדרה" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="גבול-של-סדרה"><span class="header-section-number">2.2</span> גבול של סדרה</h2>
+<div class="lead">
+<p><strong>מה עושים כאן?</strong> נגדיר מה פירוש “הסדרה מתקרבת למספר”, ונראה סדרות שמתקרבות לגבול וסדרות שלא.</p>
+</div>
+<p>הקירובים העשרוניים מתקרבים אל <span class="math inline">\(\sqrt{2}\)</span> כמה שרוצים, ואילו <span class="math inline">\((-1)^n\)</span> קופצת בין <span class="math inline">\(-1\)</span> ל-<span class="math inline">\(1\)</span> ולא מתייצבת. התיאור הרגיל של התקרבות: אפשר להביא את <span class="math inline">\(a_n\)</span> קרוב ל-<span class="math inline">\(L\)</span> כמה שרוצים, אם לוקחים <span class="math inline">\(n\)</span> גדול מספיק.</p>
+<p>כדי לבדוק “קרוב כמה שרוצים” מדברים על <strong>שגיאה</strong>: המרחק <span class="math inline">\(|a_n - L|\)</span> בין האיבר לגבול. מישהו קובע שגיאה מותרת, מספר חיובי <span class="math inline">\(\varepsilon\)</span> (למשל <span class="math inline">\(0.1\)</span> או <span class="math inline">\(,0.001\)</span>) ואנחנו צריכים להראות שמנקודה מסוימת והלאה <strong>כל</strong> האיברים בשגיאה קטנה ממנה.</p>
+<div id="box-def-limit" class="thmbox thmbox-definition" title="גבול של סדרה">
+<p><strong>הגדרה 2.2.1 — גבול של סדרה.</strong></p>
+<p>נאמר שהסדרה <span class="math inline">\(a_n\)</span> <span class="term"><strong>מתכנסת</strong></span> ל-<span class="math inline">\(,L\)</span> ונסמן <span class="math inline">\(\lim\limits_{n\to\infty} a_n = L\)</span> או <span class="math inline">\(,a_n \to L\)</span> אם לכל שגיאה מותרת <span class="math inline">\(\varepsilon &gt; 0\)</span> יש מקום בסדרה שממנו והלאה כל האיברים מקיימים <span class="math display">\[.|a_n - L| &lt; \varepsilon\]</span> המספר <span class="math inline">\(L\)</span> נקרא <span class="term"><strong>הגבול</strong></span> של הסדרה. סדרה שאין לה גבול נקראת <span class="term"><strong>מתבדרת</strong></span>.</p>
+</div>
+<div id="box-sim-error-band" class="thmbox thmbox-simulation" title="שגיאה מותרת ורצועה סביב הגבול">
+<p><strong>סימולציה 2.2.2 — שגיאה מותרת ורצועה סביב הגבול.</strong></p>
+<iframe class="widget-frame" src="widgets/ch02/error-band.html" loading="lazy" title="שגיאה מותרת ורצועה סביב הגבול"></iframe>
+<p>בחרו סדרה והקטינו את השגיאה <span class="math inline">\(.\varepsilon\)</span> הרצועה היא כל המספרים שהמרחק שלהם מ-<span class="math inline">\(L\)</span> קטן מ-<span class="math inline">\(.\varepsilon\)</span> ככל שהשגיאה קטנה, המקום שממנו כל האיברים בתוך הרצועה מתרחק, אבל עבור סדרה מתכנסת הוא תמיד קיים. עבור <span class="math inline">\((-1)^n\)</span> אין מקום כזה.</p>
+</div>
+<div id="box-exm-one-over-n" class="thmbox thmbox-example" title="הסדרה ההרמונית שואפת לאפס">
+<p><strong>דוגמה 2.2.3 — הסדרה ההרמונית שואפת לאפס.</strong></p>
+<p>עבור <span class="math inline">\(a_n = \frac{1}{n}\)</span> ו-<span class="math inline">\(L = 0\)</span> השגיאה היא <span class="math inline">\(.|\frac{1}{n} - 0| = \frac{1}{n}\)</span> מאיזה מקום היא קטנה מהשגיאה המותרת?</p>
+<div class="fill">
+<p><strong>(א)</strong> עבור <span class="math inline">\(:\varepsilon = 0.1\)</span> החל מ-<span class="fill-ltr"><span class="math inline">\(n =\)</span> <span class="blank" data-ans="11"><span class="math inline">\(11\)</span></span></span></p>
+<p><strong>(ב)</strong> עבור <span class="math inline">\(:\varepsilon = 0.001\)</span> החל מ-<span class="fill-ltr"><span class="math inline">\(n =\)</span> <span class="blank" data-ans="1001"><span class="math inline">\(1001\)</span></span></span></p>
+<div class="explain">
+<p><span class="math inline">\(\frac{1}{n} &lt; 0.1\)</span> בדיוק כאשר <span class="math inline">\(,n &gt; 10\)</span> כלומר החל מ-<span class="math inline">\(.n = 11\)</span> באותו אופן <span class="math inline">\(\frac{1}{n} &lt; 0.001\)</span> כאשר <span class="math inline">\(.n &gt; 1000\)</span> לכל שגיאה <span class="math inline">\(\varepsilon\)</span> זה קורה כאשר <span class="math inline">\(,n &gt; \frac{1}{\varepsilon}\)</span> ולכן <span class="math inline">\(.\frac{1}{n} \to 0\)</span></p>
+</div>
+</div>
+</div>
+<div class="thmbox thmbox-key-point thmicon-rule" data-icon="rule" title="רק הזנב קובע">
+<p><strong>כלל — רק הזנב קובע.</strong></p>
+<ul>
+<li>הגבול תלוי רק באיברים שמנקודה מסוימת והלאה. שינוי של <span class="math inline">\(1000\)</span> האיברים הראשונים לא משנה אותו.</li>
+<li>לסדרה יש <strong>לכל היותר גבול אחד</strong>: אי אפשר להתקרב כמה שרוצים לשני מספרים שונים בבת אחת.</li>
+<li>הגבול לא חייב להיות אחד האיברים, והסדרה לא חייבת להתקרב אליו בכל צעד. למשל, <span class="math inline">\(1 + \frac{(-1)^n}{n}\)</span> קופצת מעל <span class="math inline">\(1\)</span> ומתחתיו, ובכל זאת שואפת ל-<span class="math inline">\(.1\)</span></li>
+</ul>
+</div>
+<div class="thmbox thmbox-self-check">
+<p><strong>בדיקה עצמית.</strong></p>
+<p><strong>(א)</strong> לאן שואפת <span class="math inline">\(?0.9, \ 0.99, \ 0.999, \ \ldots\)</span></p>
+<div class="tf-quiz" data-correct="1">
+<button type="button" class="tf-opt" data-val="1">\(1\)</button>
+<button type="button" class="tf-opt" data-val="2">\(0.999\ldots\), לא ממש \(1\)</button>
+<button type="button" class="tf-opt" data-val="3">אין לה גבול</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p>השגיאה היא <span class="math inline">\(,0.1, 0.01, 0.001, \ldots\)</span> וקטנה מכל שגיאה מותרת. הגבול הוא בדיוק <span class="math inline">\(.1\)</span></p>
+</div>
+</div>
+<p><strong>(ב)</strong> האם <span class="math inline">\(1, 0, \frac{1}{2}, 0, \frac{1}{3}, 0, \ldots\)</span> מתכנסת?</p>
+<div class="tf-quiz" data-correct="1">
+<button type="button" class="tf-opt" data-val="1">כן, ל-\(0\)</button>
+<button type="button" class="tf-opt" data-val="2">לא</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p>כל האיברים מנקודה מסוימת והלאה קרובים ל-<span class="math inline">\(0\)</span> כמה שרוצים: האפסים בשגיאה <span class="math inline">\(,0\)</span> והאיברים <span class="math inline">\(\frac{1}{k}\)</span> בשגיאה קטנה. הסדרה לא חייבת להתקרב בכל צעד.</p>
+</div>
+</div>
+</div>
+<section id="שאיפה-לאינסוף" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="שאיפה-לאינסוף">שאיפה לאינסוף</h3>
+<p>הסדרה <span class="math inline">\(\sqrt{n}\)</span> מתבדרת, אבל באופן מסוים: היא עוברת כל גובה ונשארת מעליו.</p>
+<div id="box-def-infinite-limit" class="thmbox thmbox-definition" title="שאיפה לאינסוף">
+<p><strong>הגדרה 2.2.4 — שאיפה לאינסוף.</strong></p>
+<p>נאמר ש-<span class="math inline">\(a_n\)</span> <span class="term"><strong>שואפת לאינסוף</strong></span> ונסמן <span class="math inline">\(\lim\limits_{n\to\infty} a_n = \infty\)</span> אם לכל גובה <span class="math inline">\(M\)</span> יש מקום בסדרה שממנו והלאה כל האיברים גדולים מ-<span class="math inline">\(.M\)</span> באותו אופן, <span class="math inline">\(a_n \to -\infty\)</span> אם מנקודה מסוימת כל האיברים קטנים מכל מספר שנבחר.</p>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/ch02-to-infinity.png" class="img-fluid figure-img" style="width:90.0%" alt="משמאל נקודות שעולות ועוברות קו אופקי ונשארות מעליו; מימין נקודות שעולות לסירוגין עם נקודות על אפס"></p>
+<figcaption>משמאל, <span class="math inline">\(\sqrt{n}\)</span> שואפת לאינסוף: לכל גובה <span class="math inline">\(,M\)</span> מנקודה מסוימת כל האיברים מעליו (בכחול). מימין, <span class="math inline">\(0, 1, 0, 2, 0, 3, \ldots\)</span> עוברת כל גובה, אבל חוזרת שוב ושוב ל-<span class="math inline">\(,0\)</span> ולכן <strong>אינה</strong> שואפת לאינסוף.</figcaption>
+</figure>
+</div>
+<div class="thmbox thmbox-warning" title="אינסוף אינו גבול">
+<p><strong>שימו לב — אינסוף אינו גבול.</strong></p>
+<p>סדרה ששואפת לאינסוף היא סדרה <strong>מתבדרת</strong>: אין מספר שהיא מתקרבת אליו. הסימון <span class="math inline">\(\lim\limits_{n\to\infty} a_n = \infty\)</span> רק מתאר <strong>איך</strong> היא מתבדרת.</p>
+</div>
+<div class="thmbox thmbox-summary">
+<p><strong>סיכום.</strong></p>
+<ul>
+<li><span class="math inline">\(a_n \to L\)</span> אם לכל שגיאה מותרת <span class="math inline">\(\varepsilon &gt; 0\)</span> מנקודה מסוימת והלאה כל האיברים מקיימים <span class="math inline">\(.|a_n - L| &lt; \varepsilon\)</span></li>
+<li>רק הזנב קובע את הגבול, ולסדרה יש לכל היותר גבול אחד.</li>
+<li><span class="math inline">\(a_n \to \infty\)</span> אם היא עוברת כל גובה ונשארת מעליו; זו סדרה מתבדרת.</li>
+</ul>
+</div>
+</section>
+<section id="תרגילים-1" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="תרגילים-1">תרגילים</h3>
+<div id="box-q-limit-table" class="thmbox thmbox-question" title="מנחשים גבול מטבלה">
+<p><strong>שאלה 2.2.5 — מנחשים גבול מטבלה.</strong></p>
+<div class="fill">
+<p><strong>(א)</strong> עבור <span class="math inline">\(a_n = \frac{2n + 1}{n}\)</span> מתקבל <span class="math inline">\(.a_1 = 3, \ a_{10} = 2.1, \ a_{100} = 2.01\)</span> הגבול הוא <span class="blank" data-ans="2"><span class="math inline">\(2\)</span></span></p>
+<p><strong>(ב)</strong> עבור <span class="math inline">\(a_n = 5 - \frac{1}{n^2}\)</span> מתקבל <span class="math inline">\(.a_1 = 4, \ a_{10} = 4.99, \ a_{100} = 4.9999\)</span> הגבול הוא <span class="blank" data-ans="5"><span class="math inline">\(5\)</span></span></p>
+<div class="explain">
+<p><strong>(א)</strong> <span class="math inline">\(,\frac{2n + 1}{n} = 2 + \frac{1}{n}\)</span> והשגיאה <span class="math inline">\(\frac{1}{n}\)</span> קטנה כמה שרוצים. <strong>(ב)</strong> השגיאה היא <span class="math inline">\(.\frac{1}{n^2}\)</span></p>
+</div>
+</div>
+</div>
+<div id="box-q-converges" class="thmbox thmbox-question" title="מתכנסת?">
+<p><strong>שאלה 2.2.6 — מתכנסת?</strong></p>
+<p><strong>(א)</strong> <span class="math inline">\(\frac{(-1)^n}{n}\)</span></p>
+<div class="tf-quiz" data-correct="1">
+<button type="button" class="tf-opt" data-val="1">מתכנסת</button>
+<button type="button" class="tf-opt" data-val="2">מתבדרת</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p>מתכנסת ל-<span class="math inline">\(:0\)</span> השגיאה היא <span class="math inline">\(,\frac{1}{n}\)</span> בדיוק כמו בסדרה ההרמונית.</p>
+</div>
+</div>
+<p><strong>(ב)</strong> <span class="math inline">\((-1)^n\)</span></p>
+<div class="tf-quiz" data-correct="2">
+<button type="button" class="tf-opt" data-val="1">מתכנסת</button>
+<button type="button" class="tf-opt" data-val="2">מתבדרת</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p>האיברים <span class="math inline">\(1\)</span> ו-<span class="math inline">\(-1\)</span> חוזרים בלי סוף. אם <span class="math inline">\(,\varepsilon = 0.5\)</span> אין מספר ששניהם קרובים אליו פחות מ-<span class="math inline">\(.0.5\)</span></p>
+</div>
+</div>
+<p><strong>(ג)</strong> <span class="math inline">\(7\)</span> (הסדרה הקבועה)</p>
+<div class="tf-quiz" data-correct="1">
+<button type="button" class="tf-opt" data-val="1">מתכנסת</button>
+<button type="button" class="tf-opt" data-val="2">מתבדרת</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p>מתכנסת ל-<span class="math inline">\(,7\)</span> כי השגיאה היא תמיד <span class="math inline">\(.0\)</span></p>
+</div>
+</div>
+<p><strong>(ד)</strong> <span class="math inline">\(n^2\)</span></p>
+<div class="tf-quiz" data-correct="2">
+<button type="button" class="tf-opt" data-val="1">מתכנסת</button>
+<button type="button" class="tf-opt" data-val="2">מתבדרת</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p>מתבדרת: היא שואפת לאינסוף.</p>
+</div>
+</div>
+</div>
+<div id="box-q-error-place" class="thmbox thmbox-question" title="שגיאה מותרת">
+<p><strong>שאלה 2.2.7 — שגיאה מותרת.</strong></p>
+<p>עבור <span class="math inline">\(a_n = \frac{n + 2}{n}\)</span> ו-<span class="math inline">\(,L = 1\)</span> השגיאה היא <span class="math inline">\(.\left|\frac{n + 2}{n} - 1\right| = \frac{2}{n}\)</span></p>
+<div class="fill">
+<p>עבור <span class="math inline">\(\varepsilon = 0.01\)</span> כל האיברים בשגיאה קטנה ממנה החל מ-<span class="fill-ltr"><span class="math inline">\(n =\)</span> <span class="blank" data-ans="201"><span class="math inline">\(201\)</span></span></span></p>
+<div class="explain">
+<p><span class="math inline">\(\frac{2}{n} &lt; 0.01\)</span> בדיוק כאשר <span class="math inline">\(,n &gt; 200\)</span> כלומר החל מ-<span class="math inline">\(.n = 201\)</span> אפשר לבדוק בסימולציה.</p>
+</div>
+</div>
+</div>
+<div id="box-q-to-infinity" class="thmbox thmbox-question" title="לאן היא שואפת?">
+<p><strong>שאלה 2.2.8 — לאן היא שואפת?</strong></p>
+<p><strong>(א)</strong> <span class="math inline">\(-3n\)</span></p>
+<div class="tf-quiz" data-correct="2">
+<button type="button" class="tf-opt" data-val="1">\(\infty\)</button>
+<button type="button" class="tf-opt" data-val="2">\(-\infty\)</button>
+<button type="button" class="tf-opt" data-val="3">אין לה גבול</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p>מנקודה מסוימת היא קטנה מכל מספר שנבחר.</p>
+</div>
+</div>
+<p><strong>(ב)</strong> <span class="math inline">\((-2)^n\)</span></p>
+<div class="tf-quiz" data-correct="3">
+<button type="button" class="tf-opt" data-val="1">\(\infty\)</button>
+<button type="button" class="tf-opt" data-val="2">\(-\infty\)</button>
+<button type="button" class="tf-opt" data-val="3">אין לה גבול</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p><span class="math inline">\(,{-}2, 4, -8, 16, \ldots\)</span> הערך המוחלט גדל, אבל הסימן מתחלף, ולכן היא לא נשארת מעל שום גובה ולא מתחת לשום גובה.</p>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="סדרות-סטנדרטיות" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="סדרות-סטנדרטיות"><span class="header-section-number">2.3</span> סדרות סטנדרטיות</h2>
+<div class="lead">
+<p><strong>מה עושים כאן?</strong> את הגבולות של כמה סדרות פשוטות כדאי לזכור בעל פה. מהן נחשב את כל השאר.</p>
+</div>
+<div id="box-thm-standard" class="thmbox thmbox-theorem" title="גבולות של סדרות סטנדרטיות">
+<p><strong>משפט 2.3.1 — גבולות של סדרות סטנדרטיות.</strong></p>
+<ol type="1">
+<li>סדרה קבועה: <span class="math inline">\(.c \to c\)</span></li>
+<li><span class="math inline">\(\frac{1}{n^p} \to 0\)</span> לכל <span class="math inline">\(,p &gt; 0\)</span> למשל <span class="math inline">\(,\frac{1}{n}\)</span> <span class="math inline">\(\frac{1}{n^2}\)</span> ו-<span class="math inline">\(.\frac{1}{\sqrt{n}}\)</span></li>
+<li><span class="math inline">\(n^p \to \infty\)</span> לכל <span class="math inline">\(.p &gt; 0\)</span></li>
+<li><span class="math inline">\(:q^n\)</span> אם <span class="math inline">\(|q| &lt; 1\)</span> אז <span class="math inline">\(;q^n \to 0\)</span> אם <span class="math inline">\(q = 1\)</span> אז <span class="math inline">\(;q^n \to 1\)</span> אם <span class="math inline">\(q &gt; 1\)</span> אז <span class="math inline">\(;q^n \to \infty\)</span> ואם <span class="math inline">\(q \le -1\)</span> אין לה גבול.</li>
+<li><span class="math inline">\(\sqrt[n]{a} \to 1\)</span> לכל <span class="math inline">\(,a &gt; 0\)</span> וגם <span class="math inline">\(.\sqrt[n]{n} \to 1\)</span></li>
+</ol>
+</div>
+<details class="thmcollapse thmfoldable lecture-answer"><summary>למה?</summary>
+<div class="lecture-answer" title="למה?">
+<ul>
+<li>כפל חוזר במספר שקטן מ-<span class="math inline">\(1\)</span> בערך מוחלט מקטין: <span class="math inline">\(,0.8^2 = 0.64\)</span> <span class="math inline">\(,0.8^{10} \approx 0.11\)</span> <span class="math inline">\(.0.8^{30} \approx 0.001\)</span> כפל חוזר במספר גדול מ-<span class="math inline">\(1\)</span> מגדיל בלי גבול.</li>
+<li><span class="math inline">\(\sqrt[n]{a} = a^{1/n}\)</span> והמעריך <span class="math inline">\(\frac{1}{n}\)</span> שואף ל-<span class="math inline">\(,0\)</span> ו-<span class="math inline">\(.a^0 = 1\)</span> למשל <span class="math inline">\(.\sqrt[10]{2} \approx 1.07\)</span></li>
+</ul>
+</div>
+</details>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/ch02-geometric.png" class="img-fluid figure-img" style="width:95.0%" alt="ארבעה גרפים של נקודות: יורדות לאפס, מחליפות סימן ומתקרבות לאפס, עולות מהר, קופצות בין אחת למינוס אחת"></p>
+<figcaption>הסדרה <span class="math inline">\(q^n\)</span> עבור ארבעה ערכים של <span class="math inline">\(q\)</span>. עבור <span class="math inline">\(q = 0.8\)</span> ו-<span class="math inline">\(q = -0.8\)</span> האיברים שואפים ל-<span class="math inline">\(0\)</span> (השנייה מחליפה סימן). עבור <span class="math inline">\(q = 1.2\)</span> הם גדלים בלי גבול, ועבור <span class="math inline">\(q = -1\)</span> הם קופצים בין <span class="math inline">\(1\)</span> ל-<span class="math inline">\(.{-}1\)</span></figcaption>
+</figure>
+</div>
+<div class="thmbox thmbox-warning" title="למה התנאים על q">
+<p><strong>שימו לב — למה התנאים על q.</strong></p>
+<ul>
+<li><span class="math inline">\(q = -1\)</span> נותנת <span class="math inline">\(,{-}1, 1, -1, 1, \ldots\)</span> שאין לה גבול, אף ש-<span class="math inline">\(.|q| = 1\)</span></li>
+<li><span class="math inline">\(q = -2\)</span> נותנת <span class="math inline">\(,{-}2, 4, -8, \ldots\)</span> שגדלה בערך מוחלט אבל מחליפה סימן, ולכן אינה שואפת ל-<span class="math inline">\(\infty\)</span> וגם לא ל-<span class="math inline">\(.{-}\infty\)</span></li>
+<li>ב-(2) הדרישה <span class="math inline">\(p &gt; 0\)</span> הכרחית: עבור <span class="math inline">\(p = 0\)</span> מתקבלת הסדרה הקבועה <span class="math inline">\(,\frac{1}{n^0} = 1\)</span> שאינה שואפת ל-<span class="math inline">\(.0\)</span></li>
+</ul>
+</div>
+<div id="box-exm-standard" class="thmbox thmbox-example" title="גבולות סטנדרטיים">
+<p><strong>דוגמה 2.3.2 — גבולות סטנדרטיים.</strong></p>
+<p><span>(את <span class="math inline">\(\infty\)</span> כותבים <code>inf</code>.)</span></p>
+<div class="fill">
+<p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\((0.9)^n \to\)</span> <span class="blank" data-ans="0"><span class="math inline">\(0\)</span></span></span></p>
+<p><strong>(ב)</strong> <span class="fill-ltr"><span class="math inline">\(\left(-\frac{1}{3}\right)^n \to\)</span> <span class="blank" data-ans="0"><span class="math inline">\(0\)</span></span></span></p>
+<p><strong>(ג)</strong> <span class="fill-ltr"><span class="math inline">\((1.5)^n \to\)</span> <span class="blank" data-ans="inf"><span class="math inline">\(\infty\)</span></span></span></p>
+<p><strong>(ד)</strong> <span class="fill-ltr"><span class="math inline">\(\frac{1}{n^5} \to\)</span> <span class="blank" data-ans="0"><span class="math inline">\(0\)</span></span></span></p>
+<p><strong>(ה)</strong> <span class="fill-ltr"><span class="math inline">\(\sqrt[n]{7} \to\)</span> <span class="blank" data-ans="1"><span class="math inline">\(1\)</span></span></span></p>
+<div class="explain">
+<p><strong>(א)</strong> ו-<strong>(ב)</strong> לפי (4), כי <span class="math inline">\(.|q| &lt; 1\)</span> <strong>(ג)</strong> לפי (4), כי <span class="math inline">\(.q &gt; 1\)</span> <strong>(ד)</strong> לפי (2) עם <span class="math inline">\(.p = 5\)</span> <strong>(ה)</strong> לפי (5).</p>
+</div>
+</div>
+</div>
+<div class="thmbox thmbox-self-check">
+<p><strong>בדיקה עצמית.</strong></p>
+<p><strong>(א)</strong> <span class="math inline">\((1.01)^n \to \ ?\)</span></p>
+<div class="tf-quiz" data-correct="2">
+<button type="button" class="tf-opt" data-val="1">\(1\)</button>
+<button type="button" class="tf-opt" data-val="2">\(\infty\)</button>
+<button type="button" class="tf-opt" data-val="3">\(0\)</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p><span class="math inline">\(,q = 1.01 &gt; 1\)</span> ולכן <span class="math inline">\(.(1.01)^n \to \infty\)</span> זה לוקח זמן (<span class="math inline">\(1.01^{100} \approx 2.7\)</span>), אבל היא עוברת כל גובה.</p>
+</div>
+</div>
+<p><strong>(ב)</strong> <span class="math inline">\((-0.99)^n \to \ ?\)</span></p>
+<div class="tf-quiz" data-correct="1">
+<button type="button" class="tf-opt" data-val="1">\(0\)</button>
+<button type="button" class="tf-opt" data-val="2">אין לה גבול</button>
+<button type="button" class="tf-opt" data-val="3">\(-1\)</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p><span class="math inline">\(,|q| = 0.99 &lt; 1\)</span> ולכן <span class="math inline">\(.(-0.99)^n \to 0\)</span> הסימן מתחלף, אבל הערך המוחלט קטן.</p>
+</div>
+</div>
+</div>
+<div class="thmbox thmbox-summary">
+<p><strong>סיכום.</strong></p>
+<ul>
+<li><span class="math inline">\(,c \to c\)</span> <span class="math inline">\(\frac{1}{n^p} \to 0\)</span> ו-<span class="math inline">\(n^p \to \infty\)</span> (עבור <span class="math inline">\(p &gt; 0\)</span>).</li>
+<li><span class="math inline">\(q^n \to 0\)</span> אם <span class="math inline">\(,|q| &lt; 1\)</span> ו-<span class="math inline">\(q^n \to \infty\)</span> אם <span class="math inline">\(;q &gt; 1\)</span> אם <span class="math inline">\(q \le -1\)</span> אין לה גבול.</li>
+<li><span class="math inline">\(\sqrt[n]{a} \to 1\)</span> (עבור <span class="math inline">\(a &gt; 0\)</span>) ו-<span class="math inline">\(.\sqrt[n]{n} \to 1\)</span></li>
+</ul>
+</div>
+<section id="תרגילים-2" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="תרגילים-2">תרגילים</h3>
+<div id="box-q-standard" class="thmbox thmbox-question" title="לאן שואפת?">
+<p><strong>שאלה 2.3.3 — לאן שואפת?</strong></p>
+<div class="fill">
+<p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\(\left(\frac{2}{3}\right)^n \to\)</span> <span class="blank" data-ans="0"><span class="math inline">\(0\)</span></span></span></p>
+<p><strong>(ב)</strong> <span class="fill-ltr"><span class="math inline">\(\frac{1}{\sqrt{n}} \to\)</span> <span class="blank" data-ans="0"><span class="math inline">\(0\)</span></span></span></p>
+<p><strong>(ג)</strong> <span class="fill-ltr"><span class="math inline">\(n^3 \to\)</span> <span class="blank" data-ans="inf"><span class="math inline">\(\infty\)</span></span></span></p>
+<p><strong>(ד)</strong> <span class="fill-ltr"><span class="math inline">\(4^n \to\)</span> <span class="blank" data-ans="inf"><span class="math inline">\(\infty\)</span></span></span></p>
+<p><strong>(ה)</strong> <span class="fill-ltr"><span class="math inline">\(\sqrt[n]{100} \to\)</span> <span class="blank" data-ans="1"><span class="math inline">\(1\)</span></span></span></p>
+<p><strong>(ו)</strong> <span class="fill-ltr"><span class="math inline">\((-0.5)^n \to\)</span> <span class="blank" data-ans="0"><span class="math inline">\(0\)</span></span></span></p>
+</div>
+</div>
+<div id="box-q-geometric-q" class="thmbox thmbox-question" title="מתי $q^n$ מתכנסת?">
+<p><strong>שאלה 2.3.4 — מתי <span class="math inline">\(q^n\)</span> מתכנסת?</strong></p>
+<div class="fill">
+<p><span class="math inline">\(q^n\)</span> מתכנסת בדיוק כאשר <span class="math inline">\(q\)</span> בקבוצה <span class="blank" data-ans="(-1,1]"><span class="math inline">\((-1, 1]\)</span></span></p>
+<div class="explain">
+<p>עבור <span class="math inline">\(|q| &lt; 1\)</span> הגבול <span class="math inline">\(,0\)</span> ועבור <span class="math inline">\(q = 1\)</span> הגבול <span class="math inline">\(.1\)</span> עבור <span class="math inline">\(q &gt; 1\)</span> היא שואפת לאינסוף, ועבור <span class="math inline">\(q \le -1\)</span> אין לה גבול. לכן <span class="math inline">\(.q \in (-1, 1]\)</span></p>
+</div>
+</div>
+</div>
+<div id="box-q-standard-trap" class="thmbox thmbox-question" title="איזו מתבדרת?">
+<p><strong>שאלה 2.3.5 — איזו מתבדרת?</strong></p>
+<div class="tf-quiz" data-correct="3">
+<button type="button" class="tf-opt" data-val="1">\(\left(\frac{1}{2}\right)^n\)</button>
+<button type="button" class="tf-opt" data-val="2">\(\sqrt[n]{n}\)</button>
+<button type="button" class="tf-opt" data-val="3">\((-1.2)^n\)</button>
+<button type="button" class="tf-opt" data-val="4">\(\frac{1}{n^{0.1}}\)</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p><span class="math inline">\((-1.2)^n\)</span> מתבדרת, כי <span class="math inline">\(.q = -1.2 \le -1\)</span> השאר מתכנסות: <span class="math inline">\(\left(\frac{1}{2}\right)^n \to 0\)</span> ו-<span class="math inline">\(,\sqrt[n]{n} \to 1\)</span> וגם <span class="math inline">\(\frac{1}{n^{0.1}} \to 0\)</span> כי <span class="math inline">\(.p = 0.1 &gt; 0\)</span></p>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="משפטי-גבולות-בסיסיים" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="משפטי-גבולות-בסיסיים"><span class="header-section-number">2.4</span> משפטי גבולות בסיסיים</h2>
+<div class="lead">
+<p><strong>מה עושים כאן?</strong> מחשבים גבולות של סכומים, מכפלות ומנות מתוך הסדרות הסטנדרטיות, ובודקים מתי זה לא עובד.</p>
+</div>
+<div id="box-thm-limit-arithmetic" class="thmbox thmbox-theorem" title="חשבון גבולות">
+<p><strong>משפט 2.4.1 — חשבון גבולות.</strong></p>
+<p>אם <span class="math inline">\(a_n \to A\)</span> ו-<span class="math inline">\(b_n \to B\)</span> (מספרים), אז:</p>
+<ol type="1">
+<li><span class="math inline">\(a_n \pm b_n \to A \pm B\)</span> ו-<span class="math inline">\(;c \cdot a_n \to cA\)</span></li>
+<li><span class="math inline">\(;a_n b_n \to AB\)</span></li>
+<li><span class="math inline">\(\frac{a_n}{b_n} \to \frac{A}{B}\)</span> אם <span class="math inline">\(;B \neq 0\)</span></li>
+<li><span class="math inline">\((a_n)^k \to A^k\)</span> ו-<span class="math inline">\(\sqrt{a_n} \to \sqrt{A}\)</span> (אם <span class="math inline">\(A \ge 0\)</span>).</li>
+</ol>
+</div>
+<p>גם עם <span class="math inline">\(\infty\)</span> מחשבים כמו שמצפים:</p>
+<div class="thmbox thmbox-key-point thmicon-rule" data-icon="rule" title="חשבון עם אינסוף">
+<p><strong>כלל — חשבון עם אינסוף.</strong></p>
+<p>עבור מספר <span class="math inline">\(:c\)</span> <span class="math inline">\(,c + \infty = \infty\)</span> <span class="math inline">\(,\infty + \infty = \infty\)</span> <span class="math inline">\(,\infty \cdot \infty = \infty\)</span> <span class="math inline">\(,c \cdot \infty = \infty\)</span> אם <span class="math inline">\(c &gt; 0\)</span> (ו-<span class="math inline">\(-\infty\)</span> אם <span class="math inline">\(c &lt; 0\)</span>), ו-<span class="math inline">\(.\frac{c}{\infty} = 0\)</span></p>
+</div>
+<div class="thmbox thmbox-warning" title="צורות לא מוגדרות">
+<p><strong>שימו לב — צורות לא מוגדרות.</strong></p>
+<p><span class="math inline">\(,\infty - \infty\)</span> <span class="math inline">\(,\frac{\infty}{\infty}\)</span> <span class="math inline">\(0 \cdot \infty\)</span> ו-<span class="math inline">\(\frac{0}{0}\)</span> <strong>אינן</strong> מספרים: אותה צורה יכולה לתת תשובות שונות. למשל, שלוש הסדרות <span class="math inline">\(,n - n\)</span> <span class="math inline">\((n + 1) - n\)</span> ו-<span class="math inline">\(2n - n\)</span> הן כולן מהצורה <span class="math inline">\(,\infty - \infty\)</span> אבל שואפות ל-<span class="math inline">\(,0\)</span> ל-<span class="math inline">\(1\)</span> ול-<span class="math inline">\(.\infty\)</span> כשמקבלים צורה כזו, משנים קודם את הביטוי.</p>
+</div>
+<div class="thmbox thmbox-key-point thmicon-calc" data-icon="calc" title="גבול של מנה של פולינומים">
+<p><strong>שיטת חישוב — גבול של מנה של פולינומים.</strong></p>
+<ol type="1">
+<li>מוצאים את החזקה הגבוהה ביותר של <span class="math inline">\(n\)</span> במכנה.</li>
+<li>מחלקים בה את המונה ואת המכנה.</li>
+<li>מחליפים כל סדרה סטנדרטית בגבול שלה (<span class="math inline">\(\frac{1}{n} \to 0\)</span> וכו’) ומחשבים לפי חשבון הגבולות.</li>
+</ol>
+</div>
+<div id="box-exm-lim-rational" class="thmbox thmbox-example" title="חשבון גבולות, צעד אחר צעד">
+<p><strong>דוגמה 2.4.2 — חשבון גבולות, צעד אחר צעד.</strong></p>
+<p>חשבו את הגבולות. כל עוד יש <span class="math inline">\(n\)</span> בשורה, היא נכתבת כגבול. <span>(שבר כותבים עם קו נטוי; <span class="math inline">\(\frac{1}{n^2}\)</span> כותבים <code>1/n^2</code>, ואת <span class="math inline">\(\infty\)</span> כותבים <code>inf</code>.)</span></p>
+<p><strong>(א)</strong> <span class="math inline">\(\lim\limits_{n\to\infty} \frac{3n^2 + 1}{n^2 - 4n}\)</span></p>
+<div class="steps" data-limit="n" start="(3n^2+1)/(n^2-4n)" data-rules="divide|simplify|limit|compute" data-model="(3+[1/n^2])/(1-[4/n]) :: divide || (3+[0])/(1-[0]) :: limit || 3 :: compute">
+<div class="hint">
+<p>הצבה ישירה נותנת <span class="math inline">\(.\frac{\infty}{\infty}\)</span> החזקה הגבוהה במכנה היא <span class="math inline">\(.n^2\)</span></p>
+</div>
+<div class="proof solution">
+<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} \lim_{n\to\infty} \frac{3n^2 + 1}{n^2 - 4n} &amp;= \lim_{n\to\infty} \frac{3 + \frac{1}{n^2}}{1 - \frac{4}{n}} \\ &amp;= \frac{3 + 0}{1 - 0} \\ &amp;= 3 \end{aligned}\]</span> חילקנו את המונה ואת המכנה ב-<span class="math inline">\(,n^2\)</span> ואז החלפנו את <span class="math inline">\(\frac{1}{n^2}\)</span> ואת <span class="math inline">\(\frac{4}{n}\)</span> ב-<span class="math inline">\(.0\)</span></p>
+</div>
+</div>
+<p><strong>(ב)</strong> <span class="math inline">\(\lim\limits_{n\to\infty} \frac{2n + 5}{n^2 + 1}\)</span></p>
+<div class="steps" data-limit="n" start="(2n+5)/(n^2+1)" data-rules="divide|simplify|limit|compute" data-model="([2/n]+[5/n^2])/(1+[1/n^2]) :: divide || ([0]+[0])/(1+[0]) :: limit || 0 :: compute">
+<div class="proof solution">
+<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} \lim_{n\to\infty} \frac{2n + 5}{n^2 + 1} &amp;= \lim_{n\to\infty} \frac{\frac{2}{n} + \frac{5}{n^2}}{1 + \frac{1}{n^2}} \\ &amp;= \frac{0 + 0}{1 + 0} \\ &amp;= 0 \end{aligned}\]</span> החזקה במונה קטנה מזו שבמכנה, ולכן הגבול <span class="math inline">\(.0\)</span></p>
+</div>
+</div>
+<p><strong>(ג)</strong> <span class="math inline">\(\lim\limits_{n\to\infty} \frac{n^2 + 1}{2n + 3}\)</span></p>
+<div class="steps" data-limit="n" start="(n^2+1)/(2n+3)" data-rules="divide|simplify|limit|compute" data-model="(n+[1/n])/(2+[3/n]) :: divide || inf :: limit">
+<div class="hint">
+<p>כאן החזקה הגבוהה במכנה היא <span class="math inline">\(.n\)</span> אחרי החילוק המונה שואף לאינסוף והמכנה ל-<span class="math inline">\(.2\)</span></p>
+</div>
+<div class="proof solution">
+<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} \lim_{n\to\infty} \frac{n^2 + 1}{2n + 3} &amp;= \lim_{n\to\infty} \frac{n + \frac{1}{n}}{2 + \frac{3}{n}} \\ &amp;= \infty \end{aligned}\]</span> המונה שואף ל-<span class="math inline">\(\infty\)</span> והמכנה ל-<span class="math inline">\(,2\)</span> ולכן לפי החשבון עם אינסוף, <span class="math inline">\(.\frac{\infty}{2} = \infty\)</span></p>
+</div>
+</div>
+<p><strong>(ד)</strong> <span class="math inline">\(\lim\limits_{n\to\infty} \frac{2^n + 3^n}{3^n}\)</span></p>
+<div class="steps" data-limit="n" start="(2^n+3^n)/3^n" data-rules="divide|simplify|limit|compute" data-model="([2/3])^n+1 :: simplify || [0]+1 :: limit || 1 :: compute">
+<div class="hint">
+<p>מחלקים כל מחובר במונה ב-<span class="math inline">\(,3^n\)</span> ונעזרים ב-<span class="math inline">\(.q^n\)</span></p>
+</div>
+<div class="proof solution">
+<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} \lim_{n\to\infty} \frac{2^n + 3^n}{3^n} &amp;= \lim_{n\to\infty} \left(\left(\tfrac{2}{3}\right)^n + 1\right) \\ &amp;= 0 + 1 \\ &amp;= 1 \end{aligned}\]</span> כי <span class="math inline">\(\left(\frac{2}{3}\right)^n \to 0\)</span> (סדרה הנדסית עם <span class="math inline">\(|q| &lt; 1\)</span>).</p>
+</div>
+</div>
+</div>
+<div class="thmbox thmbox-key-point thmicon-idea" data-icon="idea" title="מה קובע את התשובה">
+<p><strong>חשוב לזכור — מה קובע את התשובה.</strong></p>
+<p>במנה של פולינומים קובעות החזקות הגבוהות: אם הן שוות, הגבול הוא מנת המקדמים שלהן (ב-(א), <span class="math inline">\(\frac{3}{1}\)</span>); אם החזקה במונה קטנה יותר, הגבול <span class="math inline">\(0\)</span> (ב-(ב)); אם היא גדולה יותר, הגבול <span class="math inline">\(\infty\)</span> או <span class="math inline">\(-\infty\)</span> (ב-(ג)).</p>
+</div>
+<div class="thmbox thmbox-self-check">
+<p><strong>בדיקה עצמית.</strong></p>
+<p><strong>(א)</strong> <span class="math inline">\(\lim\limits_{n\to\infty} \frac{5n^3 - n}{2n^3 + 7} = \ ?\)</span></p>
+<div class="tf-quiz" data-correct="1">
+<button type="button" class="tf-opt" data-val="1">\(\frac{5}{2}\)</button>
+<button type="button" class="tf-opt" data-val="2">\(1\)</button>
+<button type="button" class="tf-opt" data-val="3">\(\infty\)</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p>החזקות הגבוהות שוות (<span class="math inline">\(n^3\)</span>), ולכן הגבול הוא מנת המקדמים, <span class="math inline">\(.\frac{5}{2}\)</span></p>
+</div>
+</div>
+<p><strong>(ב)</strong> <span class="math inline">\(\lim\limits_{n\to\infty} (n - n^2) = \ ?\)</span></p>
+<div class="tf-quiz" data-correct="2">
+<button type="button" class="tf-opt" data-val="1">\(0\)</button>
+<button type="button" class="tf-opt" data-val="2">\(-\infty\)</button>
+<button type="button" class="tf-opt" data-val="3">\(\infty\)</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p><span class="math inline">\(\infty - \infty\)</span> אינו <span class="math inline">\(!0\)</span> מוציאים גורם משותף: <span class="math inline">\(,n - n^2 = n^2\left(\frac{1}{n} - 1\right)\)</span> והגורם <span class="math inline">\(\frac{1}{n} - 1\)</span> שואף ל-<span class="math inline">\(,{-}1\)</span> ולכן הגבול <span class="math inline">\(.{-}\infty\)</span></p>
+</div>
+</div>
+</div>
+<section id="כלל-הסנדוויץ" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="כלל-הסנדוויץ">כלל הסנדוויץ’</h3>
+<p>חשבון הגבולות לא עוזר עבור <span class="math inline">\(,\frac{\sin n}{n}\)</span> כי ל-<span class="math inline">\(\sin n\)</span> אין גבול. במקרה כזה לוחצים את הסדרה בין שתי סדרות שהגבול שלהן ידוע.</p>
+<div id="box-thm-squeeze" class="thmbox thmbox-theorem" title="כלל הסנדוויץ'">
+<p><strong>משפט 2.4.3 — כלל הסנדוויץ’.</strong></p>
+<p>אם <span class="math inline">\(b_n \le a_n \le c_n\)</span> (מנקודה מסוימת והלאה), ו-<span class="math inline">\(b_n\)</span> ו-<span class="math inline">\(c_n\)</span> שואפות <strong>לאותו</strong> גבול <span class="math inline">\(,L\)</span> אז גם <span class="math inline">\(.a_n \to L\)</span></p>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/ch02-squeeze.png" class="img-fluid figure-img" style="width:75.0%" alt="נקודות אדומות בין שתי שורות של נקודות אפורות, אחת מעל ואחת מתחת, שמתכנסות לאפס"></p>
+<figcaption>הסדרה <span class="math inline">\(\frac{\sin n}{n}\)</span> (באדום) כלואה בין <span class="math inline">\(-\frac{1}{n}\)</span> ל-<span class="math inline">\(,\frac{1}{n}\)</span> ושתיהן שואפות ל-<span class="math inline">\(,0\)</span> ולכן גם היא.</figcaption>
+</figure>
+</div>
+<div id="box-exm-squeeze" class="thmbox thmbox-example" title="סינוס חלקי n">
+<p><strong>דוגמה 2.4.4 — סינוס חלקי n.</strong></p>
+<p>חשבו את <span class="math inline">\(.\lim\limits_{n\to\infty} \frac{\sin n}{n}\)</span></p>
+<div class="fill">
+<p>מכיוון ש-<span class="math inline">\(,{-}1 \le \sin n \le 1\)</span> אחרי חילוק ב-<span class="math inline">\(n\)</span> מתקבל <span class="math inline">\(-\frac{1}{n} \le \frac{\sin n}{n} \le \frac{1}{n}\)</span> ולכן הגבול הוא <span class="blank" data-ans="0"><span class="math inline">\(0\)</span></span></p>
+<div class="explain">
+<p>שתי הסדרות <span class="math inline">\(-\frac{1}{n}\)</span> ו-<span class="math inline">\(\frac{1}{n}\)</span> שואפות ל-<span class="math inline">\(,0\)</span> ולכן לפי כלל הסנדוויץ’ גם <span class="math inline">\(.\frac{\sin n}{n} \to 0\)</span></p>
+</div>
+</div>
+</div>
+<p>אותו נימוק עובד בכל מקום שבו סדרה <strong>חסומה</strong> כופלת סדרה ששואפת לאפס. סדרה <span class="term"><strong>חסומה</strong></span> אם יש מספר <span class="math inline">\(M\)</span> כך ש-<span class="math inline">\(|a_n| \le M\)</span> לכל <span class="math inline">\(,n\)</span> למשל <span class="math inline">\(,\sin n\)</span> <span class="math inline">\(\cos n\)</span> ו-<span class="math inline">\(.(-1)^n\)</span></p>
+<div class="thmbox thmbox-key-point thmicon-rule" data-icon="rule" title="חסומה כפול שואפת לאפס">
+<p><strong>כלל — חסומה כפול שואפת לאפס.</strong></p>
+<p>אם <span class="math inline">\(a_n\)</span> חסומה ו-<span class="math inline">\(,b_n \to 0\)</span> אז <span class="math inline">\(.a_n b_n \to 0\)</span> למשל, <span class="math inline">\(\frac{(-1)^n}{n} \to 0\)</span> ו-<span class="math inline">\(.\frac{\cos n}{n^2} \to 0\)</span></p>
+</div>
+<div class="thmbox thmbox-warning" title="למה צריך את אותו גבול">
+<p><strong>שימו לב — למה צריך את אותו גבול.</strong></p>
+<p>אם <span class="math inline">\(b_n\)</span> ו-<span class="math inline">\(c_n\)</span> שואפות לגבולות <strong>שונים</strong>, הכלל לא אומר כלום. למשל, <span class="math inline">\(-1 \le (-1)^n \le 1\)</span> והחסמים שואפים ל-<span class="math inline">\(-1\)</span> ול-<span class="math inline">\(,1\)</span> אבל ל-<span class="math inline">\((-1)^n\)</span> אין גבול.</p>
+</div>
+<div class="thmbox thmbox-summary">
+<p><strong>סיכום.</strong></p>
+<ul>
+<li>סכום, מכפלה ומנה של סדרות מתכנסות מתכנסים לסכום, למכפלה ולמנה של הגבולות (במנה: אם הגבול במכנה אינו <span class="math inline">\(0\)</span>).</li>
+<li><span class="math inline">\(,\infty - \infty\)</span> <span class="math inline">\(\frac{\infty}{\infty}\)</span> <span class="math inline">\(0 \cdot \infty\)</span> ו-<span class="math inline">\(\frac{0}{0}\)</span> אינם מוגדרים: קודם משנים את הביטוי. במנה של פולינומים מחלקים בחזקה הגבוהה במכנה.</li>
+<li>כלל הסנדוויץ’: סדרה שכלואה בין שתי סדרות עם אותו גבול שואפת אליו. בפרט, חסומה כפול שואפת לאפס שואפת לאפס.</li>
+</ul>
+</div>
+</section>
+<section id="תרגילים-3" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="תרגילים-3">תרגילים</h3>
+<div id="box-q-lim-rational" class="thmbox thmbox-question" title="מנות של פולינומים">
+<p><strong>שאלה 2.4.5 — מנות של פולינומים.</strong></p>
+<p>חשבו צעד אחר צעד.</p>
+<p><strong>(א)</strong> <span class="math inline">\(\lim\limits_{n\to\infty} \frac{4n - 1}{2n + 7}\)</span></p>
+<div class="steps" data-limit="n" start="(4n-1)/(2n+7)" data-rules="divide|simplify|limit|compute" data-model="(4-[1/n])/(2+[7/n]) :: divide || (4-[0])/(2+[0]) :: limit || 2 :: compute">
+
+</div>
+<p><strong>(ב)</strong> <span class="math inline">\(\lim\limits_{n\to\infty} \frac{n^3 - 2n}{5n^3 + 1}\)</span></p>
+<div class="steps" data-limit="n" start="(n^3-2n)/(5n^3+1)" data-rules="divide|simplify|limit|compute" data-model="(1-[2/n^2])/(5+[1/n^3]) :: divide || (1-[0])/(5+[0]) :: limit || 1/5 :: compute">
+
+</div>
+<p><strong>(ג)</strong> <span class="math inline">\(\lim\limits_{n\to\infty} \frac{6n + 1}{n^2 - 3}\)</span></p>
+<div class="steps" data-limit="n" start="(6n+1)/(n^2-3)" data-rules="divide|simplify|limit|compute" data-model="([6/n]+[1/n^2])/(1-[3/n^2]) :: divide || ([0]+[0])/(1-[0]) :: limit || 0 :: compute">
+
+</div>
+<p><strong>(ד)</strong> <span class="math inline">\(\lim\limits_{n\to\infty} \frac{n^2 - 5}{3n + 1}\)</span></p>
+<div class="steps" data-limit="n" start="(n^2-5)/(3n+1)" data-rules="divide|simplify|limit|compute" data-model="(n-[5/n])/(3+[1/n]) :: divide || inf :: limit">
+
+</div>
+</div>
+<div id="box-q-lim-powers" class="thmbox thmbox-question" title="עם חזקות">
+<p><strong>שאלה 2.4.6 — עם חזקות.</strong></p>
+<p><span class="math inline">\(\lim\limits_{n\to\infty} \frac{5 \cdot 2^n + 4^n}{4^n}\)</span></p>
+<div class="steps" data-limit="n" start="(5*2^n+4^n)/4^n" data-rules="divide|simplify|limit|compute" data-model="5([1/2])^n+1 :: simplify || 5*[0]+1 :: limit || 1 :: compute">
+<div class="hint">
+<p><span class="math inline">\(.\frac{2^n}{4^n} = \left(\frac{2}{4}\right)^n = \left(\frac{1}{2}\right)^n\)</span></p>
+</div>
+</div>
+</div>
+<div id="box-q-lim-conjugate" class="thmbox thmbox-question" title="הפרש של שורשים">
+<p><strong>שאלה 2.4.7 — הפרש של שורשים.</strong></p>
+<p><span class="math inline">\(\lim\limits_{n\to\infty} \left(\sqrt{n^2 + 2n} - n\right)\)</span> <span>(שורש כותבים <code>sqrt</code>, למשל <code>sqrt(n^2+2n)</code>.)</span></p>
+<div class="steps" data-limit="n" start="sqrt(n^2+2n)-n" data-rules="conjugate|divide|simplify|limit|compute" data-model="2n/(sqrt(n^2+2n)+[n]) :: conjugate || 2/(sqrt(1+[2/n])+1) :: divide || 2/(sqrt(1+[0])+1) :: limit || 1 :: compute">
+<div class="hint">
+<p>זו הצורה <span class="math inline">\(.\infty - \infty\)</span> כפלו וחלקו ב-<span class="math inline">\(,\sqrt{n^2 + 2n} + n\)</span> ובמונה השתמשו ב-<span class="math inline">\(.(a - b)(a + b) = a^2 - b^2\)</span></p>
+</div>
+<div class="hint">
+<p>אחרי הכפל מתקבל <span class="math inline">\(.\frac{2n}{\sqrt{n^2 + 2n} + n}\)</span> עכשיו חלקו את המונה ואת המכנה ב-<span class="math inline">\(,n\)</span> ושימו לב ש-<span class="math inline">\(.\frac{\sqrt{n^2 + 2n}}{n} = \sqrt{1 + \frac{2}{n}}\)</span></p>
+</div>
+<div class="proof solution">
+<p><span class="proof-title"><em>פתרון</em>. </span><span class="math display">\[\begin{aligned} \lim_{n\to\infty} \left(\sqrt{n^2 + 2n} - n\right) &amp;= \lim_{n\to\infty} \frac{2n}{\sqrt{n^2 + 2n} + n} \\ &amp;= \lim_{n\to\infty} \frac{2}{\sqrt{1 + \frac{2}{n}} + 1} \\ &amp;= \frac{2}{\sqrt{1 + 0} + 1} \\ &amp;= 1 \end{aligned}\]</span></p>
+</div>
+</div>
+</div>
+<div id="box-q-lim-bounded" class="thmbox thmbox-question" title="חסומה כפול שואפת לאפס">
+<p><strong>שאלה 2.4.8 — חסומה כפול שואפת לאפס.</strong></p>
+<p><strong>(א)</strong> <span class="math inline">\(\lim\limits_{n\to\infty} \frac{\cos n}{n^2}\)</span></p>
+<div class="steps" data-limit="n" start="cos(n)/n^2" data-rules="simplify|limit|bounded|compute" data-model="0 :: bounded">
+
+</div>
+<p><strong>(ב)</strong> <span class="math inline">\(\lim\limits_{n\to\infty} \frac{n + \cos n}{n}\)</span></p>
+<div class="steps" data-limit="n" start="(n+cos(n))/n" data-rules="divide|simplify|limit|bounded|compute" data-model="1+[cos(n)/n] :: simplify || 1+[0] :: bounded || 1 :: compute">
+<div class="hint">
+<p>פרקו את השבר לשני שברים.</p>
+</div>
+</div>
+</div>
+<div id="box-q-undetermined" class="thmbox thmbox-question" title="מוגדר או לא?">
+<p><strong>שאלה 2.4.9 — מוגדר או לא?</strong></p>
+<p>איזה מהביטויים הבאים הוא צורה לא מוגדרת?</p>
+<div class="tf-quiz" data-correct="3">
+<button type="button" class="tf-opt" data-val="1">\(\frac{5}{\infty}\)</button>
+<button type="button" class="tf-opt" data-val="2">\(\infty + \infty\)</button>
+<button type="button" class="tf-opt" data-val="3">\(\frac{\infty}{\infty}\)</button>
+<button type="button" class="tf-opt" data-val="4">\(3 \cdot \infty\)</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p>רק <span class="math inline">\(\frac{\infty}{\infty}\)</span> אינה מוגדרת: למשל <span class="math inline">\(\frac{n}{n} \to 1\)</span> אבל <span class="math inline">\(.\frac{n^2}{n} \to \infty\)</span> השאר מוגדרות: <span class="math inline">\(,\frac{5}{\infty} = 0\)</span> <span class="math inline">\(\infty + \infty = \infty\)</span> ו-<span class="math inline">\(.3 \cdot \infty = \infty\)</span></p>
+</div>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "הועתק!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "הועתק!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/yuval-khachatryan\.github\.io\/Analytical-Thinking-Lecture-Notes");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./01-Introduction.html" class="pagination-link" aria-label="הרצאה 1: מבוא — מספרים ממשיים ופונקציות">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">הרצאה 1: מבוא — מספרים ממשיים ופונקציות</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

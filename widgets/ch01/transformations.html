@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>מעבדת ההזזות</title>
+<style>
+  html, body { margin: 0; padding: 0; background: transparent; }
+  body { font: 15px/1.45 Arial, "Helvetica Neue", sans-serif; color: #1f2937; }
+  .w { border: 1px solid #9ca3af; background: #fff; padding: 0.7rem 0.8rem 0.9rem; }
+  canvas { display: block; width: 100%; height: auto; }
+  .row { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem 0.9rem; margin-top: 0.55rem; }
+  .bases label { white-space: nowrap; cursor: pointer; }
+  .sl { display: grid; grid-template-columns: 2.2em 1fr 3.2em; align-items: center; gap: 0.5rem; flex: 1 1 260px; }
+  .sl input[type=range] { width: 100%; }
+  .num { direction: ltr; unicode-bidi: isolate; font-weight: 700; display: inline-block; }
+  .val { text-align: center; }
+  .formula { direction: ltr; unicode-bidi: isolate; font: 700 18px "Cambria Math", "Times New Roman", serif; color: #3730a3; }
+  .key { color: #475569; font-size: 14px; }
+  button { font: inherit; padding: 0.2rem 0.9rem; border: 1px solid #a5b4fc; border-radius: 999px; background: #fff; color: #3730a3; cursor: pointer; }
+  button:hover { background: #eef2ff; }
+  .dash { display: inline-block; width: 1.6em; border-top: 2px dashed #94a3b8; vertical-align: middle; }
+  .solid { display: inline-block; width: 1.6em; border-top: 3px solid #4f46e5; vertical-align: middle; }
+  .dot { display: inline-block; width: 0.7em; height: 0.7em; border-radius: 50%; background: #ea580c; vertical-align: middle; }
+</style>
+</head>
+<body>
+<div class="w">
+  <div class="row bases" role="radiogroup" aria-label="הגרף הבסיסי">
+    <span>הגרף הבסיסי <span class="num">f(x)</span>:</span>
+    <label><input type="radio" name="base" value="sq" checked> <span class="num">x²</span></label>
+    <label><input type="radio" name="base" value="abs"> <span class="num">|x|</span></label>
+    <label><input type="radio" name="base" value="sqrt"> <span class="num">√x</span></label>
+    <label><input type="radio" name="base" value="sin"> <span class="num">sin x</span></label>
+    <label><input type="radio" name="base" value="exp"> <span class="num">2<sup>x</sup></span></label>
+  </div>
+  <div class="row"><span class="formula" id="formula"></span></div>
+  <canvas id="cv" width="720" height="420"></canvas>
+  <div class="row key">
+    <span><span class="dash"></span> <span class="num">y = f(x)</span></span>
+    <span><span class="solid"></span> הגרף החדש</span>
+    <span><span class="dot"></span> נקודת מפתח (קודקוד או נקודת התחלה) והמקום שאליו היא עוברת</span>
+  </div>
+  <div class="row">
+    <div class="sl"><span class="num">a</span><input type="range" id="a" min="-3" max="3" step="0.5" value="1" aria-label="a"><span class="num val" id="av"></span></div>
+    <div class="sl"><span class="num">b</span><input type="range" id="b" min="-3" max="3" step="0.5" value="1" aria-label="b"><span class="num val" id="bv"></span></div>
+  </div>
+  <div class="row">
+    <div class="sl"><span class="num">c</span><input type="range" id="c" min="-4" max="4" step="0.5" value="0" aria-label="c"><span class="num val" id="cv2"></span></div>
+    <div class="sl"><span class="num">d</span><input type="range" id="d" min="-4" max="4" step="0.5" value="0" aria-label="d"><span class="num val" id="dv"></span></div>
+  </div>
+  <div class="row">
+    <button type="button" id="reset">איפוס</button>
+    <span class="key"><span class="num">c</span>, <span class="num">b</span> בתוך הסוגריים: שינוי אופקי. <span class="num">a</span>, <span class="num">d</span> מחוץ להם: שינוי אנכי.</span>
+  </div>
+</div>
+<script src="../shared/autosize.js"></script>
+<script>
+(function () {
+  "use strict";
+  var BASES = {
+    sq:   { f: function (x) { return x * x; },          key: [0, 0], label: "x²" },
+    abs:  { f: function (x) { return Math.abs(x); },     key: [0, 0], label: "|x|" },
+    sqrt: { f: function (x) { return x >= 0 ? Math.sqrt(x) : NaN; }, key: [0, 0], label: "√x" },
+    sin:  { f: function (x) { return Math.sin(x); },     key: [0, 0], label: "sin" },
+    exp:  { f: function (x) { return Math.pow(2, x); },  key: [0, 1], label: "2^" }
+  };
+  var cv = document.getElementById("cv"), ctx = cv.getContext("2d");
+  var ins = { a: document.getElementById("a"), b: document.getElementById("b"),
+              c: document.getElementById("c"), d: document.getElementById("d") };
+  var outs = { a: document.getElementById("av"), b: document.getElementById("bv"),
+               c: document.getElementById("cv2"), d: document.getElementById("dv") };
+  var formula = document.getElementById("formula");
+  var X0 = -6.5, X1 = 6.5, Y0 = -5.5, Y1 = 7.5;
+  var W = cv.width, H = cv.height, PAD = 22;
+  function sx(x) { return PAD + (x - X0) / (X1 - X0) * (W - 2 * PAD); }
+  function sy(y) { return H - PAD - (y - Y0) / (Y1 - Y0) * (H - 2 * PAD); }
+  function fmt(v) { var s = (Math.round(v * 100) / 100).toString(); return s.replace("-", "−"); }
+  function base() { return document.querySelector("input[name=base]:checked").value; }
+  // With sin as the base graph, the horizontal shift c moves in steps of π/4 and the
+  // x-axis is labelled in multiples of π/2: the slider then holds k, and c = kπ/4.
+  function trig() { return base() === "sin"; }
+  function gcd(a, b) { return b ? gcd(b, a % b) : a; }
+  function piFrac(k, den) {               // kπ/den, reduced, e.g. (2,4) -> "π/2"
+    if (k === 0) return "0";
+    var sg = k < 0 ? "−" : "", a = Math.abs(k), g = gcd(a, den), n = a / g, d = den / g;
+    return sg + (n === 1 ? "" : n) + "π" + (d === 1 ? "" : "/" + d);
+  }
+  function cVal() { return trig() ? +ins.c.value * Math.PI / 4 : +ins.c.value; }
+  function cText(neg) {                    // |c| or c as text, for the formula
+    var k = +ins.c.value;
+    if (neg) k = -k;
+    return trig() ? piFrac(k, 4) : fmt(k);
+  }
+  function setCMode() {
+    if (trig()) { ins.c.min = -8; ins.c.max = 8; ins.c.step = 1; }
+    else { ins.c.min = -4; ins.c.max = 4; ins.c.step = 0.5; }
+    ins.c.value = 0;
+  }
+
+  function axes() {
+    ctx.strokeStyle = "#eef2f7"; ctx.lineWidth = 1;
+    if (trig()) {
+      for (var gk = -4; gk <= 4; gk++) { var gp = gk * Math.PI / 2; ctx.beginPath(); ctx.moveTo(sx(gp), sy(Y0)); ctx.lineTo(sx(gp), sy(Y1)); ctx.stroke(); }
+    } else {
+      for (var gx = Math.ceil(X0); gx <= X1; gx++) { ctx.beginPath(); ctx.moveTo(sx(gx), sy(Y0)); ctx.lineTo(sx(gx), sy(Y1)); ctx.stroke(); }
+    }
+    for (var gy = Math.ceil(Y0); gy <= Y1; gy++) { ctx.beginPath(); ctx.moveTo(sx(X0), sy(gy)); ctx.lineTo(sx(X1), sy(gy)); ctx.stroke(); }
+    ctx.strokeStyle = "#0f172a"; ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.moveTo(sx(X0), sy(0)); ctx.lineTo(sx(X1), sy(0)); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(sx(0), sy(Y0)); ctx.lineTo(sx(0), sy(Y1)); ctx.stroke();
+    ctx.fillStyle = "#334155"; ctx.font = "12px Arial"; ctx.direction = "ltr";
+    ctx.textAlign = "center"; ctx.textBaseline = "top";
+    if (trig()) {
+      for (var j = -4; j <= 4; j++) {
+        if (!j) continue;
+        var px = sx(j * Math.PI / 2);
+        ctx.strokeStyle = "#0f172a"; ctx.beginPath(); ctx.moveTo(px, sy(0) - 4); ctx.lineTo(px, sy(0) + 4); ctx.stroke();
+        ctx.fillText(piFrac(j, 2), px, sy(0) + 6);
+      }
+    } else {
+      for (var tx = -6; tx <= 6; tx += 2) if (tx) ctx.fillText(String(tx).replace("-", "−"), sx(tx), sy(0) + 4);
+    }
+    ctx.textAlign = "right"; ctx.textBaseline = "middle";
+    for (var ty = -4; ty <= 7; ty += 2) if (ty) ctx.fillText(String(ty).replace("-", "−"), sx(0) - 5, sy(ty));
+  }
+
+  function curve(g, color, width, dash) {
+    ctx.strokeStyle = color; ctx.lineWidth = width; ctx.setLineDash(dash || []);
+    ctx.beginPath();
+    var pen = false, N = 1200;
+    for (var i = 0; i <= N; i++) {
+      var x = X0 + (X1 - X0) * i / N, y = g(x);
+      if (!isFinite(y) || y < Y0 - 4 || y > Y1 + 4) { pen = false; continue; }
+      if (pen) ctx.lineTo(sx(x), sy(y)); else { ctx.moveTo(sx(x), sy(y)); pen = true; }
+    }
+    ctx.stroke(); ctx.setLineDash([]);
+  }
+
+  function dot(x, y, filled) {
+    if (x < X0 || x > X1 || y < Y0 || y > Y1) return;
+    ctx.beginPath(); ctx.arc(sx(x), sy(y), 5.5, 0, 2 * Math.PI);
+    if (filled) { ctx.fillStyle = "#ea580c"; ctx.fill(); }
+    else { ctx.fillStyle = "#fff"; ctx.fill(); ctx.strokeStyle = "#ea580c"; ctx.lineWidth = 2; ctx.stroke(); }
+  }
+
+  function inner(b, c) {
+    // the expression inside f(...), written the way it would be on paper
+    var s = c === 0 ? "x" : "x " + (c > 0 ? "− " + cText(false) : "+ " + cText(true));
+    if (b === 1) return s;
+    if (b === -1) return c === 0 ? "−x" : "−(" + s + ")";
+    return c === 0 ? fmt(b) + "x" : fmt(b) + "(" + s + ")";
+  }
+
+  function draw() {
+    var p = {}; Object.keys(ins).forEach(function (k) { p[k] = +ins[k].value; outs[k].textContent = fmt(p[k]); });
+    p.c = cVal(); outs.c.textContent = cText(false);
+    var B = BASES[base()], f = B.f;
+    var g = function (x) { return p.a * f(p.b * (x - p.c)) + p.d; };
+    var arg = inner(p.b, p.c), body;
+    if (base() === "sq") body = (arg === "x" ? "x" : "(" + arg + ")") + "²";
+    else if (base() === "abs") body = "|" + arg + "|";
+    else if (base() === "sqrt") body = "√(" + arg + ")";
+    else if (base() === "sin") body = "sin(" + arg + ")";
+    else body = "2^(" + arg + ")";
+    var pre = p.a === 1 ? "" : p.a === -1 ? "−" : fmt(p.a) + "·";
+    var post = p.d === 0 ? "" : (p.d > 0 ? " + " + fmt(p.d) : " − " + fmt(-p.d));
+    formula.textContent = "y = " + pre + body + post;
+
+    ctx.clearRect(0, 0, W, H);
+    axes();
+    curve(f, "#94a3b8", 2, [6, 5]);
+    curve(g, "#4f46e5", 3);
+    // key point of the base graph, and where it moves: (c + x0/b, a*y0 + d)
+    var k = B.key;
+    dot(k[0], k[1], false);
+    if (p.b !== 0) dot(p.c + k[0] / p.b, p.a * k[1] + p.d, true);
+  }
+
+  Object.keys(ins).forEach(function (k) { ins[k].addEventListener("input", draw); });
+  document.querySelectorAll("input[name=base]").forEach(function (r) { r.addEventListener("change", function () { setCMode(); draw(); }); });
+  document.getElementById("reset").addEventListener("click", function () {
+    ins.a.value = 1; ins.b.value = 1; ins.c.value = 0; ins.d.value = 0; draw();
+  });
+  draw();
+})();
+</script>
+</body>
+</html>
