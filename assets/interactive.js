@@ -73,6 +73,7 @@ function normalize(s) {
     .replace(/∪/g, " U ")
     .replace(/∅/g, "{}")
     .replace(/∖/g, "\\")
+    .replace(/∣/g, "|")
     .replace(/²/g, "^2").replace(/³/g, "^3")
     .replace(/⌊/g, "floor(").replace(/⌋/g, ")")
     .replace(/∈/g, " in ")
@@ -804,7 +805,19 @@ Parser.prototype.setTerm = function () {
   if (vs.length > 1) throw new ParseError("באי-השוויון מופיעים כמה משתנים.");
   return solveChain(d, vs[0] || "x", {});
 };
+function setBuilder(src) {
+  return /^\{\s*([a-z])\s*(?:in\s+R\s*)?[|:]\s*([\s\S]+)\}$/.exec(normalize(src).trim());
+}
 function parseSet(src) {
+  var builder = setBuilder(src);
+  if (builder) {
+    var rel = parseRelation(builder[2]);
+    if (!isRelation(rel) || !rel.disj.every(function (d) { return d.ops.length; }))
+      throw new ParseError("אחרי השומר צריך תנאי, למשל \\(x>2\\).");
+    if (Object.keys(varsOf(rel)).some(function (v) { return v !== builder[1]; }))
+      throw new ParseError("בתנאי צריך להשתמש באותו משתנה שמופיע לפני השומר.");
+    return solveSet(rel, builder[1], {});
+  }
   var p = new Parser(tokenize(src));
   if (p.atEnd()) throw new ParseError("השדה ריק.");
   if (p.is("var") && p.peek(1) && p.peek(1).k === "in") { p.next(); p.next(); }
@@ -904,7 +917,8 @@ var FORM_MSG = {
   product: "הערך נכון, אבל כתבו אותו כמכפלה של גורמים.",
   simple: "הערך נכון, אבל אפשר לפשט עוד.",
   abs: "הקבוצה נכונה, אבל כתבו אותה בעזרת ערך מוחלט.",
-  interval: "הקבוצה נכונה, אבל כתבו אותה בסימון של קטעים, למשל \\((1,3]\\)."
+  interval: "הקבוצה נכונה, אבל כתבו אותה בסימון של קטעים, למשל \\((1,3]\\).",
+  builder: "הקבוצה נכונה, אבל כתבו אותה בשיטת השומר, למשל \\(\\{x\\mid x>2\\}\\)."
 };
 function checkForm(form, ans, input) {
   var s = normalize(input).replace(/\s+/g, "");
@@ -926,6 +940,7 @@ function checkForm(form, ans, input) {
     return gcd(numerator, denominator) > 1 ? "הערך נכון, אבל אפשר לצמצם את השבר." : null;
   }
   if (form === "abs") return /\||abs/.test(s) ? null : FORM_MSG.abs;
+  if (form === "builder") return setBuilder(input) ? null : FORM_MSG.builder;
   if (form === "interval") return /[<>=]|or/.test(s) ? FORM_MSG.interval : null;
   var n;
   try { n = parseExpr(input); } catch (e) { return null; }
@@ -941,6 +956,25 @@ function splitList(src) {
 function checkValue(kind, ans, input, vars, opts) {
   input = String(input || "").trim();
   if (!input) return { ok: false, empty: true, msg: "עוד לא כתבתם תשובה." };
+  if (kind === "letter-order") {
+    // These are point labels, not variables to evaluate (in particular, e).
+    var order = normalize(input).replace(/\s+/g, "");
+    var expected = ans.replace(/\s+/g, "").split("<");
+    if (!/^[a-z](?:<[a-z])*$/.test(order))
+      return { ok:false, msg:"כתבו את האותיות מהקטן לגדול, עם הסימן \\(<\\) ביניהן." };
+    var letters = order.split("<");
+    if (letters.some(function (c) { return expected.indexOf(c) < 0; }))
+      return { ok:false, msg:"השתמשו רק באותיות שמופיעות בציור." };
+    if (new Set(letters).size !== letters.length)
+      return { ok:false, msg:"כל אות צריכה להופיע פעם אחת." };
+    for (var oi = 0; oi < letters.length; oi++) {
+      if (letters[oi] !== expected[oi])
+        return { ok:false, msg:"בדקו את הסדר לפי מיקום הנקודות: המספר הקטן יותר נמצא משמאל." };
+    }
+    if (letters.length < expected.length)
+      return { ok:false, partial:true, msg:"עד כאן נכון. המשיכו עד שכל האותיות יופיעו." };
+    return { ok:true };
+  }
   if (kind === "list") {
     var want = splitList(ans).map(function (t) { return ev(parseExpr(t), {}); }), gotL = [];
     var parts = splitList(input);
@@ -1748,7 +1782,11 @@ function isMathInput(input) { return root.CourseMathInput && root.CourseMathInpu
 function inputLatex(src, kind) {
   if (!src.trim()) return "";
   if (kind === "list") return splitList(src).map(function (s) { return tex(parseExpr(s)); }).join(", ");
-  if (kind === "set") return setTex(parseSet(src));
+  if (kind === "set") {
+    var builder = setBuilder(src);
+    if (builder) return "\\left\\{" + builder[1] + "\\mid " + parseRelation(builder[2]).disj.map(texChain).join("\\quad\\text{או}\\quad") + "\\right\\}";
+    return setTex(parseSet(src));
+  }
   var rel = parseRelation(src);
   return isRelation(rel) ? rel.disj.map(texChain).join("\\quad\\text{או}\\quad") : tex(parseExpr(src));
 }
@@ -1807,7 +1845,7 @@ function insertAtCaret(input, text) {
   if (a === null || a === undefined) { a = b = input.value.length; }
   var pos = a + text.length;
   // "√()" / "{}" / "||" put the caret inside the brackets
-  if (/\(\)$|\{\}$|\|\|$/.test(text)) pos = a + text.length - 1;
+  if (/\(\)$|\{\}$|\{x\|\}$|\|\|$/.test(text)) pos = a + text.length - 1;
   input.value = input.value.slice(0, a) + text + input.value.slice(b);
   input.focus();
   input.setSelectionRange(pos, pos);
@@ -1830,9 +1868,10 @@ function markOr(input) {
   if (pos !== null) input.setSelectionRange(pos + added, pos + added);
 }
 var KEYSETS = {
+  "letter-order": [["<", "<"]],
   lim: [["n", "n"], ["שבר", "/"], ["חזקה", "^"], ["√", "√()"], ["( )", "()"], ["∞", "∞"], ["e", "e"], ["!", "!"], ["π", "π"], ["sin", "sin()"], ["cos", "cos()"]],
   num: [["שבר", "/"], ["חזקה", "^"], ["√", "√()"], ["∛", "cbrt()"], ["π", "π"], ["log", "log_()"]],
-  set: [["∞", "∞"], ["−∞", "-∞"], ["∪", " ∪ "], ["[", "["], ["]", "]"], ["(", "("], [")", ")"], ["{ }", "{}"], ["∅", "∅"], ["ℝ", "ℝ"], ["שבר", "/"], ["√", "√()"], ["π", "π"]],
+  set: [["∞", "∞"], ["−∞", "-∞"], ["∪", " ∪ "], ["[", "["], ["]", "]"], ["(", "("], [")", ")"], ["{ }", "{}"], ["{x ∣ …}", "{x|}"], ["<", "<"], ["≤", "≤"], [">", ">"], ["≥", "≥"], ["או", " או "], ["∅", "∅"], ["ℝ", "ℝ"], ["שבר", "/"], ["√", "√()"], ["π", "π"]],
   expr: [["x", "x"], ["שבר", "/"], ["חזקה", "^"], ["√", "√()"], ["∛", "cbrt()"], ["שורש", "root()"], ["( )", "()"], ["| |", "||"], ["π", "π"], ["log", "log_()"]],
   rel: [["<", "<"], [">", ">"], ["≤", "≤"], ["≥", "≥"], ["=", "="], ["או", " או "], ["שבר", "/"], ["חזקה", "^"], ["√", "√()"], ["∛", "cbrt()"], ["| |", "||"], ["log", "log_()"], ["π", "π"]]
 };
@@ -1962,7 +2001,7 @@ function initGroup(G) {
       opts: { form: attr(sp, "form"), positive: (attr(sp, "positive") || "").split(",").map(function (s) { return s.trim(); }).filter(Boolean) } };
     input.addEventListener("focus", function () { last = it; panel.classList.add("ix-active"); });
     input.addEventListener("blur", function () { setTimeout(function () {
-      if (!panel.contains(document.activeElement) && !items.some(function (x) { return x.input === document.activeElement; }))
+      if (!panel.contains(document.activeElement) && !items.some(function (x) { return x.input === document.activeElement || x.input.contains(document.activeElement); }))
         panel.classList.remove("ix-active");
     }, 150); });
     input.addEventListener("keydown", function (e) {
@@ -1974,6 +2013,32 @@ function initGroup(G) {
       preview(it);
     });
     items.push(it);
+    if (attr(sp, "plot") !== null && root.SetPlot) {
+      var plotHost = el("div");
+      var paragraph = sp.closest("p") || sp;
+      paragraph.parentNode.insertBefore(plotHost, paragraph.nextSibling);
+      it.plot = root.SetPlot.create(plotHost, {
+        marks: attr(sp, "plot").split(",").map(function (v) { return ev(parseExpr(v), {}); }),
+        answer: parseSet(ans),
+        notation: function (node, set) { node.innerHTML=mx("\\("+setTex(set)+"\\)");typeset(node); },
+        a: attr(sp,"plot-a") ? parseSet(attr(sp,"plot-a")) : null,
+        b: attr(sp,"plot-b") ? parseSet(attr(sp,"plot-b")) : null,
+        input: function () { return mathInput({ type:"text", class:"blank-input", dir:"ltr", size:"7" }, "num"); },
+        number: function (field) {
+          var n = parseExpr(readInput(field));
+          if (hasVar(n)) throw new ParseError("כתבו מספר, בלי משתנה.");
+          var value = ev(n, {});
+          if (!isFinite(value)) throw new ParseError("צריך מספר ממשי מוגדר.");
+          return value;
+        },
+        onChange: function () {
+          sp.classList.remove("ok", "bad", "warn");mark.textContent="";
+          if (msg) say(msg, "");
+          if (explain) explain.forEach(function (x) { x.classList.add("ix-hidden"); });
+          tellPart(false);
+        }
+      });
+    }
   });
   if (!items.length) return;
   var hints = childDivs(box, "hint"), explain = childDivs(box, "explain");
@@ -2011,6 +2076,11 @@ function initGroup(G) {
     previewLater(it, v);
   }
   var previewLater = debounce(function (it, v) {
+    if (it.kind === "letter-order") {
+      if (!/^[a-z\s<>]+$/.test(v)) { pv.innerHTML = ""; return; }
+      showParsed(pv, "\\(" + v + "\\)", !/[<>]\s*$/.test(v));
+      return;
+    }
     if (it.kind === "list") {
       var terms = [], all = true;
       splitList(v).forEach(function (t) { var g = t ? parsedSoFar(t, parseExpr) : null; if (g) { terms.push(tex(g.node)); if (!g.whole) all = false; } else all = false; });
@@ -2020,7 +2090,7 @@ function initGroup(G) {
     }
     var set = it.kind === "set", got = parsedSoFar(v, set ? parseSet : parseExpr);
     if (!got) { pv.innerHTML = ""; return; }
-    showParsed(pv, "\\(" + (set ? setTex(got.node) : tex(got.node)) + "\\)", got.whole);
+    showParsed(pv, "\\(" + (set ? (setBuilder(v) ? inputLatex(v,"set") : setTex(got.node)) : tex(got.node)) + "\\)", got.whole);
   }, 350);
 
   function checkOne(it, talk) {
@@ -2033,6 +2103,10 @@ function initGroup(G) {
         try { m = checkValue(it.kind, it.miss[i][0], readInput(it.input), it.vars, it.opts); } catch (e) { m = { ok: false }; }
         if (m.ok) { r.msg = it.miss[i][1]; break; }
       }
+    }
+    if (it.plot) {
+      var plotted = it.plot.check();
+      if (r.ok && !plotted.ok) r = { ok:false, partial:true, msg:"הכתיבה נכונה. " + plotted.msg };
     }
     it.sp.classList.toggle("ok", r.ok);
     it.sp.classList.toggle("bad", !r.ok && !r.empty && !r.partial);
@@ -2071,6 +2145,7 @@ function initGroup(G) {
   function showAll() {
     items.forEach(function (it) {
       it.input.hidden = true; it.mark.textContent = ""; it.shown.hidden = false; it.sp.classList.add("revealed");
+      if (it.plot) it.plot.reveal();
     });
     explain.forEach(function (x) { x.classList.remove("ix-hidden"); typeset(x); });
     say(msg, "");
@@ -2082,6 +2157,7 @@ function initGroup(G) {
     items.forEach(function (it) {
       it.input.hidden = false; it.input.value = ""; it.shown.hidden = true; it.mark.textContent = "";
       it.sp.classList.remove("revealed", "ok", "bad", "warn");
+      if (it.plot) it.plot.reset();
     });
     explain.forEach(function (x) { x.classList.add("ix-hidden"); });
     say(msg, "");
@@ -2535,13 +2611,14 @@ function initOrder(box) {
    is copied; _styles.html sizes every widget frame). Ids are removed so none repeat. */
 function staticCopy(box) {
   var c = box.cloneNode(true);
-  c.querySelectorAll(".pw, .ix-panel, .dv-bar, .dv-in, .dv-keys, .dv-msg, .ord-ui, .solve-bar, .tf-opt, .tf-feedback, .fill > .hint, .derive > .hint")
+  c.querySelectorAll(".pw, .ix-panel, .set-plot, .set-case-nav, .dv-bar, .dv-in, .dv-keys, .dv-msg, .ord-ui, .solve-bar, .tf-opt, .tf-feedback, .fill > .hint, .derive > .hint")
     .forEach(function (n) { n.remove(); });
   c.querySelectorAll(".blank-input, .blank-mark").forEach(function (n) { n.remove(); });
   c.querySelectorAll(".blank-answer").forEach(function (n) { n.hidden = false; });
   c.querySelectorAll(".ix-hidden, .solve-hidden").forEach(function (n) { n.classList.remove("ix-hidden", "solve-hidden"); });
   c.querySelectorAll(".tf-quiz").forEach(function (q) { q.classList.remove("tf-js"); });
   c.querySelectorAll("details").forEach(function (d) { d.open = true; });
+  c.querySelectorAll(".case").forEach(function (d) { d.hidden = false; });
   c.removeAttribute("id");
   c.style.display = "";
   c.querySelectorAll("[id]").forEach(function (n) { n.removeAttribute("id"); });
@@ -2589,6 +2666,20 @@ function initRefs() {
   });
 }
 
+function initSetCases() {
+  document.querySelectorAll(".set-cases").forEach(function (box) {
+    var cases = childDivs(box, "case"), current = 0;
+    if (!cases.length) return;
+    var select = el("select", { "aria-label":"בחירת מקרה" });
+    cases.forEach(function (c,i) { select.appendChild(el("option", { value:String(i), text:(i+1)+". "+attr(c,"title") })); });
+    var previous = el("button", { type:"button", class:"ix-btn ix-quiet", text:"הקודם", onclick:function () { current--;show(); } });
+    var next = el("button", { type:"button", class:"ix-btn ix-quiet", text:"הבא", onclick:function () { current++;show(); } });
+    function show() { cases.forEach(function(c,i){c.hidden=i!==current;});select.value=String(current);previous.disabled=current===0;next.disabled=current===cases.length-1; }
+    select.addEventListener("change", function () { current=+select.value;show(); });
+    box.insertBefore(el("div", { class:"set-case-nav" }, [previous,select,next]),box.firstChild);
+    show();
+  });
+}
 function init() {
   if (root.CourseMathInput) root.CourseMathInput.configure({ toLatex:inputLatex });
   // capture phase: the mark is in place before any widget reads the value
@@ -2598,8 +2689,11 @@ function init() {
   }, true);
   initRefs();
   initBlanks();
+  initSetCases();
   document.querySelectorAll(".derive").forEach(initDerive);
   document.querySelectorAll(".order").forEach(initOrder);
+  // Optional editor downloads must never delay hiding answers or wiring controls.
+  if (root.CourseMathInput) root.CourseMathInput.load();
 }
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();
 

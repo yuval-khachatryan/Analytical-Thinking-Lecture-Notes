@@ -1,6 +1,12 @@
 const assert=require('node:assert/strict'),fs=require('node:fs');
 const M=require('../assets/interactive.js'),I=require('../assets/math-input.js');
 const read=I.latexToPlain;
+const order='e<f<a<c<d<g';
+assert.equal(M.checkAnswer('letter-order',order,read('e < f < a < c < d < g'),[],{}).ok,true);
+assert.equal(M.checkAnswer('letter-order',order,'e<f<a',[],{}).partial,true);
+for(const s of ['','a<c<d<e<f<g','g>d>c>a>f>e','e<f<a<c<d<d', 'e<f<a<c<d<h', 'e<f<a<c<d<g<g', 'e<=f<a<c<d<g','e<f<a<c<d<g+0']) {
+  assert.equal(M.checkAnswer('letter-order',order,s,[],{}).ok,false,s);
+}
 function same(latex,answer,kind='expr',vars=['x']) {
   const r=M.checkAnswer(kind,answer,read(latex),vars,{});
   assert.equal(r.ok,true,latex+' => '+read(latex)+' expected '+answer+'; '+r.msg);
@@ -15,6 +21,14 @@ same(String.raw`\sin^{2}\left(x\right)`,'sin(x)^2');
 same(String.raw`\left(-\infty,\frac{3}{2}\right]\cup\left\{4\right\}`,'(-inf,3/2]U{4}','set',[]);
 same(String.raw`\mathbb{R}\setminus\left\{2\right\}`,'R-{2}','set',[]);
 same(String.raw`\emptyset`,'{}','set',[]);
+same(String.raw`\left\{x\mid -2\le x<3\right\}`,'[-2,3)','set',[]);
+same(String.raw`\{x\in\mathbb{R}\mid x\le-1\text{או}2<x<4\}`,'(-inf,-1]U(2,4)','set',[]);
+same(String.raw`\{t\mid |t|<2\}`,'(-2,2)','set',[]);
+assert.equal(M.checkAnswer('set','(1,3)','{x | 1<x<3}',[],{form:'builder'}).ok,true);
+assert.equal(M.checkAnswer('set','(1,3)','(1,3)',[],{form:'builder'}).partial,true);
+assert.equal(M.checkAnswer('set','(1,3)','{x | 1<x<3}',[],{form:'interval'}).partial,true);
+assert.equal(M.checkAnswer('set','(1,3)','{x | 1<y<3}',[],{}).ok,false);
+assert.equal(M.checkAnswer('set','(1,3)','{x | x}',[],{}).ok,false);
 same(String.raw`\left\{0\right\}`,'{0}','set',[]);
 same(String.raw`\frac12,\sqrt4,\pi`,'1/2,2,pi','list',[]);
 same(String.raw`\lfloor-\frac32\rfloor`,'-2','num',[]);

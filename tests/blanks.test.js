@@ -14,7 +14,8 @@ function texToInput(t) {
   s = s.replace(/\\left|\\right|\\big|\\Big/g, '').replace(/\\mathbb\{R\}/g, 'R').replace(/\\setminus/g, '-')
        .replace(/\\emptyset/g, '{}').replace(/\\\{/g, '{').replace(/\\\}/g, '}').replace(/\\cup/g, 'U')
        .replace(/\\infty/g, 'inf').replace(/\\pi/g, 'pi').replace(/\\log_\{?(\d+)\}?\s*([a-z0-9]+)/g, 'log_$1($2)')
-       .replace(/\\sin\s*/g, 'sin ').replace(/\\le/g, '<=').replace(/\\cdot/g, '*').replace(/\\,/g, '').replace(/\{\}/g, m => m);
+       .replace(/\\sin\s*/g, 'sin ').replace(/\\le/g, '<=').replace(/\\cdot/g, '*').replace(/\\,/g, '')
+       .replace(/\\mid/g, '|').replace(/\\text\{\s*או\s*\}/g, ' or ').replace(/\{\}/g, m => m);
   return s;
 }
 let n = 0, bad = 0;
@@ -34,3 +35,4 @@ while ((m = re.exec(src))) {
   if (a.miss) a.miss.split('||').forEach(p => { const v = p.split('::')[0].trim(); try { M.checkAnswer(kind, v, v, vars, {}); } catch (e) { bad++; console.log('MISS PARSE', v); } });
 }
 console.log(n, 'blanks,', bad, 'problems');
+if (bad) process.exitCode = 1;

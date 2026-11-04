@@ -149,6 +149,22 @@ def fig_order_line():
     save(fig, "order-line")
 
 
+def fig_order_letters():
+    """Read order from positions without knowing numerical values."""
+    points = [(0, "e"), (1.2, "f"), (3.0, "a"), (4.0, "c"), (5.6, "d"), (7.0, "g")]
+    assert all(a[0] < b[0] for a, b in zip(points, points[1:]))
+    assert "<".join(letter for _, letter in points) == "e<f<a<c<d<g"
+    fig, ax = plt.subplots(figsize=(7, 1.15))
+    number_line(ax, -0.7, 7.7)
+    for x, letter in points:
+        ax.plot(x, 0, "o", color=C1, ms=7, zorder=5)
+        ax.text(x, 0.16, f"${letter}$", ha="center", va="bottom", fontsize=22, color=INK)
+    ax.set_xlim(-0.85, 7.85)
+    ax.set_ylim(-0.25, 0.65)
+    ax.axis("off")
+    save(fig, "order-letters")
+
+
 def fig_intervals():
     rows = [
         (r"$(a,b)$", "open", False, False, False),
@@ -1227,7 +1243,7 @@ FIGURES = [
     fig_triangle_1m, fig_circle_r1, fig_coin_sets, fig_subset_venn, fig_union_boxes,
     fig_intersection_venn, fig_rays, fig_triangle_inequality, fig_ineq_solutions,
     fig_half_open, fig_transformations_lab, fig_unit_circle_walk,
-    fig_order_line, fig_inverse_swap,
+    fig_order_line, fig_order_letters, fig_inverse_swap,
 ]
 
 if __name__ == "__main__":

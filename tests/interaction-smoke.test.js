@@ -16,7 +16,8 @@ class Element {
  closest(s){return this.matches(s)?this:this.parentNode?.closest(s)||null;}
  querySelectorAll(s){return this.children.flatMap(c=>[...(c.matches(s)?[c]:[]),...c.querySelectorAll(s)]);}querySelector(s){return this.querySelectorAll(s)[0]||null;}
  addEventListener(t,f){(this.listeners[t]??=[]).push(f);}dispatchEvent(e){e.target??=this;e.preventDefault??=()=>{};for(const f of this.listeners[e.type]||[])f.call(this,e);if(this['on'+e.type])this['on'+e.type](e);return true;}
- click(){this.dispatchEvent({type:'click'});}focus(){this.dispatchEvent({type:'focus'});}blur(){this.dispatchEvent({type:'change'});}
+ click(){this.dispatchEvent({type:'click'});}focus(){this.dispatchEvent({type:'focus'});}blur(){this.dispatchEvent({type:'blur'});}
+ contains(n){return n===this||this.children.some(c=>c.contains(n));}
  setSelectionRange(a,b){this.selectionStart=a;this.selectionEnd=b;}setPointerCapture(){}
  getBoundingClientRect(){return {left:0,top:0,width:760,height:400};}
  getContext(){return new Proxy({}, {get:(o,k)=>o[k]||(()=>{}),set:(o,k,v)=>(o[k]=v,true)});}
@@ -24,12 +25,65 @@ class Element {
 }
 function env(){
  const document=new Element('document');document.readyState='loading';document.createElement=t=>new Element(t);document.createElementNS=(_,t)=>new Element(t);document.createTextNode=s=>{const n=new Element('text');n.textContent=s;return n;};document.getElementById=id=>document.querySelector('#'+id);
- const context={document,console,URLSearchParams,structuredClone,location:{search:''},setTimeout:()=>{},Event:class{constructor(type){this.type=type;}}};context.window=context;context.MathJax={typeset:()=>{},typesetClear:()=>{}};
+ document.head=document.appendChild(new Element('head'));
+ const context={document,console,URLSearchParams,structuredClone,location:{search:''},setTimeout:()=>{},clearTimeout:()=>{},Event:class{constructor(type){this.type=type;}}};context.window=context;context.MathJax={typeset:()=>{},typesetClear:()=>{}};
  return {document,context:vm.createContext(context),run:s=>vm.runInContext(s,context)};
 }
 function node(parent,tag,attrs={},text=''){const n=new Element(tag);Object.entries(attrs).forEach(([k,v])=>n.setAttribute(k,v));n.textContent=text;parent.appendChild(n);return n;}
 function button(root,label){const b=root.querySelectorAll('button').find(n=>n.textContent===label);assert.ok(b,'missing button '+label);return b;}
 function input(n,value){n.value=value;n.dispatchEvent({type:'input'});}
+// A stalled/failed optional download must not expose answers or disable checking.
+assert.doesNotMatch(fs.readFileSync('_styles.html','utf8'), /<script\b[^>]*src=["'][^"']*mathlive/i);
+for (const failure of ['pending','network','config','construct','value','mount','late']) {
+ const E=env(), fill=node(E.document,'div',{class:'fill'}), p=node(fill,'p');
+ const blank=node(p,'span',{class:'blank','data-ans':'3/4',form:'frac'});
+ node(blank,'span',{class:'math'},String.raw`\(\frac34\)`);
+ const solve=node(E.document,'div',{class:'solve'}),step=node(solve,'div',{class:'step'},'worked solution');
+ const quiz=node(E.document,'div',{class:'tf-quiz','data-correct':'yes'});
+ node(quiz,'button',{class:'tf-opt','data-val':'yes'},'yes');node(quiz,'div',{class:'tf-feedback'});
+ E.context.addEventListener=()=>{};
+ // Run the actual quiz/reveal handlers, in addition to the exercise script.
+ for(const m of fs.readFileSync('_styles.html','utf8').matchAll(/<script>([\s\S]*?)<\/script>/g)) {
+  if(m[1].includes('querySelectorAll(".tf-quiz")')||m[1].includes('querySelectorAll(".solve")'))E.run(m[1]);
+ }
+ E.run(fs.readFileSync('assets/math-input.js','utf8'));
+ E.run(fs.readFileSync('assets/interactive.js','utf8'));
+ E.document.dispatchEvent({type:'DOMContentLoaded'});
+ const field=blank.querySelector('.blank-input'),answer=blank.querySelector('.blank-answer');
+ const script=E.document.head.querySelector('script');
+ assert.equal(script.async,true);assert.equal(answer.hidden,true);assert.equal(field.control.tagName,'INPUT');
+ assert.equal(step.classList.contains('solve-hidden'),true);
+ button(solve,'כל הפתרון').click();assert.equal(step.classList.contains('solve-hidden'),false);
+ button(solve,'הסתרה').click();assert.equal(step.classList.contains('solve-hidden'),true);
+ assert.equal(quiz.classList.contains('tf-js'),true);button(quiz,'yes').click();assert.match(quiz.textContent,/נכון/);
+ if(failure==='network')script.dispatchEvent({type:'error'});
+ input(field,'3/4');button(fill,'בדיקה').click();assert.equal(blank.classList.contains('ok'),true);
+ if(!['pending','network'].includes(failure)) {
+  E.context.MathfieldElement=function(){};E.context.customElements={get:()=>true};
+  if(failure==='config')Object.defineProperty(E.context.MathfieldElement,'fontsDirectory',{set(){throw Error('configuration failure');}});
+  const create=E.document.createElement;
+  E.document.createElement=t=>{
+   if(t==='math-field'&&failure==='construct')throw Error('construction failure');
+   const n=create(t);
+   if(t==='math-field'&&failure==='value')Object.defineProperty(n,'value',{set(){throw Error('value failure');}});
+   return n;
+  };
+  if(failure==='mount'){const append=field.appendChild;field.appendChild=function(n){if(n.tagName==='MATH-FIELD')throw Error('mount failure');return append.call(this,n);};}
+  if(failure==='late') {
+   input(field,'3/');field.focus();assert.equal(field.control.tagName,'INPUT');assert.equal(field.value,'3/');
+   input(field,'3/4');field.setAttribute('aria-label','updated label');
+  }
+  field.focus();
+  assert.equal(field.control.tagName,failure==='late'?'MATH-FIELD':'INPUT');
+  if(failure==='late')assert.equal(field.control.getAttribute('aria-label'),'updated label');
+  button(fill,'בדיקה').click();assert.equal(blank.classList.contains('ok'),true);
+ }
+ button(fill,'הצגת התשובה').click();assert.equal(answer.hidden,false);assert.equal(field.hidden,true);
+ button(fill,'ניסיון חדש').click();assert.equal(answer.hidden,true);assert.equal(field.hidden,false);assert.equal(field.value,'');
+ field.control.value='1/2';field.control.dispatchEvent({type:'input',stopPropagation(){}});
+ button(fill,'בדיקה').click();assert.equal(blank.classList.contains('ok'),false);
+ E.context.CourseMathInput.load();assert.ok(E.document.head.querySelectorAll('script').length<=1);
+}
 for (const rich of [false,true]) {
  const E=env(),q=node(E.document,'div',{class:'thmbox-question'}),d=node(q,'div',{class:'derive',start:'5x-4<=2x+8'});
  node(d,'div',{class:'step','data-line':'3x<=[12]'},'אספו איברים');node(d,'div',{class:'step','data-line':'x<=[4]'},'חלקו בשלוש');
@@ -44,14 +98,14 @@ for (const rich of [false,true]) {
  input(a,'3x<=12');input(d.querySelectorAll('.pw-input')[1],'');button(d,'רמז').click();assert.match(d.querySelector('.pw-hints').textContent,/חלקו/);
  input(d.querySelectorAll('.pw-input')[1],'x<=4');button(d,'בדיקת הפתרון').click();assert.match(d.textContent,/הפתרון נכון/);
  if(rich){
-  assert.equal(a.tagName,'MATH-FIELD');
+  assert.equal(a.control.tagName,'INPUT');a.focus();assert.equal(a.control.tagName,'MATH-FIELD');
   input(a,String.raw`x\le\frac{12}{3}`);input(d.querySelectorAll('.pw-input')[1],'');
   button(d,'בדיקת הפתרון').click();assert.match(d.textContent,/הפתרון נכון/);
   input(a,String.raw`x\le\frac{12}{}`);button(d,'בדיקת הפתרון').click();assert.match(d.textContent,/מקום ריק/);assert.doesNotMatch(d.textContent,/הפתרון נכון/);
   input(a,String.raw`x\le4`);button(d,'בדיקת הפתרון').click();assert.match(d.textContent,/הפתרון נכון/);
-  let inserted;a.insert=(value,options)=>{inserted={value,options};};a.focus();button(d,'x<sup>□</sup>').click();
+  let inserted;a.control.insert=(value,options)=>{inserted={value,options};};a.focus();button(d,'x<sup>□</sup>').click();
   assert.equal(inserted.value,'#@^{#?}');assert.equal(inserted.options.selectionMode,'placeholder');
-  a.dispatchEvent({type:'paste',clipboardData:{getData:()=> 'x<=3/4'},stopImmediatePropagation(){}});
+  a.control.dispatchEvent({type:'paste',clipboardData:{getData:()=> 'x<=3/4'},stopImmediatePropagation(){}});
   assert.match(inserted.value,/\\frac\{3\}\{4\}/);assert.equal(inserted.options.selectionMode,'after');
  }
 }
@@ -60,13 +114,74 @@ for (const rich of [false,true]) {
  const blank=node(p,'span',{class:'blank','data-ans':'3/4',form:'frac'});node(blank,'span',{class:'math'},String.raw`\(\frac34\)`);
  E.context.MathfieldElement=function(){};E.context.customElements={get:()=>true};
  E.run(fs.readFileSync('assets/math-input.js','utf8'));E.run(fs.readFileSync('assets/interactive.js','utf8'));E.document.dispatchEvent({type:'DOMContentLoaded'});
- const field=blank.querySelector('.blank-input');assert.equal(field.tagName,'MATH-FIELD');
+ const field=blank.querySelector('.blank-input');field.focus();assert.equal(field.control.tagName,'MATH-FIELD');
  input(field,String.raw`\frac68`);button(fill,'בדיקה').click();assert.match(fill.textContent,/לצמצם/);
  input(field,String.raw`\frac34`);button(fill,'בדיקה').click();assert.equal(blank.classList.contains('ok'),true);
  button(fill,'ניסיון חדש').click();assert.equal(field.value,'');assert.equal(field.hidden,false);
  input(field,String.raw`\frac3{}`);button(fill,'בדיקה').click();assert.match(fill.textContent,/מקום ריק/);
  button(fill,'הצגת התשובה').click();assert.equal(field.hidden,true);
  button(fill,'ניסיון חדש').click();assert.equal(field.hidden,false);assert.equal(field.value,'');
+}
+for(const rich of [false,true]) {
+ const E=env(),fill=node(E.document,'div',{class:'fill'}),p=node(fill,'p');
+ const blank=node(p,'span',{class:'blank','data-ans':'e<f<a<c<d<g','data-kind':'letter-order'});
+ node(blank,'span',{class:'math'},String.raw`\(e<f<a<c<d<g\)`);
+ E.run(fs.readFileSync('assets/math-input.js','utf8'));
+ E.run(fs.readFileSync('assets/interactive.js','utf8'));E.document.dispatchEvent({type:'DOMContentLoaded'});
+ const field=blank.querySelector('.blank-input');
+ if(rich){E.context.MathfieldElement=function(){};E.context.customElements={get:()=>true};field.focus();assert.equal(field.control.tagName,'MATH-FIELD');}
+ input(field,'a<c<d<e<f<g');button(fill,'בדיקה').click();assert.equal(blank.classList.contains('bad'),true);
+ input(field,'e<f<a');button(fill,'בדיקה').click();assert.equal(blank.classList.contains('warn'),true);
+ input(field,'e < f < a < c < d < g');button(fill,'בדיקה').click();assert.equal(blank.classList.contains('ok'),true);
+ button(fill,'הצגת התשובה').click();assert.equal(blank.querySelector('.blank-answer').hidden,false);
+ button(fill,'ניסיון חדש').click();assert.equal(field.value,'');assert.equal(blank.querySelector('.blank-answer').hidden,true);
+}
+{
+ const E=env(),fill=node(E.document,'div',{class:'fill'}),p=node(fill,'p');
+ const blank=node(p,'span',{class:'blank','data-ans':'[-1,1)','data-plot':'-2,-1,0,1,2','plot-a':'[-1,2]','plot-b':'(-2,1)'});
+ node(blank,'span',{class:'math'},String.raw`\([-1,1)\)`);const explanation=node(fill,'div',{class:'explain'},'explanation');
+ for(const file of ['widgets/shared/intervals.js','assets/set-plot.js','assets/math-input.js','assets/interactive.js'])E.run(fs.readFileSync(file,'utf8'));
+ E.document.dispatchEvent({type:'DOMContentLoaded'});
+ const field=blank.querySelector('.blank-input'),plot=fill.querySelector('.set-plot');
+ assert.ok(plot);assert.equal(explanation.classList.contains('ix-hidden'),true);
+ input(field,'[-1,1)');button(fill,'בדיקה').click();assert.equal(blank.classList.contains('warn'),true);
+ assert.equal(plot.querySelector('.sp-gap'),null);assert.equal(plot.querySelector('[data-point="0"]'),null);
+ const end=(name,value)=>{const s=plot.querySelector('[data-end="'+name+'"]');s.value=value;s.dispatchEvent({type:'change'});};
+ end('a','closed');plot.querySelector('[data-mark="-1"]').click();plot.querySelector('[data-mark="1"]').click();
+ assert.equal(plot.querySelector('[data-coordinate="a"]').value,'-1');assert.equal(plot.querySelector('[data-coordinate="b"]').value,'1');
+ button(plot,'הנחה על הישר').click();
+ button(fill,'בדיקה').click();assert.equal(blank.classList.contains('ok'),true);assert.equal(explanation.classList.contains('ix-hidden'),false);
+ plot.querySelector('[data-point="1"]').dispatchEvent({type:'keydown',key:'Enter'});
+ assert.equal(blank.classList.contains('ok'),false);assert.equal(explanation.classList.contains('ix-hidden'),true);
+ button(plot,'בדיקת הסרטוט').click();assert.match(plot.querySelector('.sp-status').textContent,/אינו שייך/);
+ button(plot,'ביטול').click();button(plot,'בדיקת הסרטוט').click();assert.match(plot.querySelector('.sp-status').textContent,/נכון/);
+ button(plot,'הצגת הסרטוט').click();assert.equal(plot.querySelector('[data-point="-1"]'),null);
+ button(plot,'חזרה לסרטוט שלי').click();assert.equal(plot.querySelector('[data-point="-1"]').getAttribute('aria-pressed'),'true');
+ button(plot,'נקודה').click();const added=plot.querySelector('[data-coordinate="point"]');input(added,'1/2');button(plot,'הנחה על הישר').click();assert.ok(plot.querySelector('[data-point="0.5"]'));
+ button(plot,'בדיקת הסרטוט').click();assert.match(plot.querySelector('.sp-status').textContent,/נכון/);
+ const notation=plot.querySelector('.sp-notation').parentNode;notation.open=true;notation.dispatchEvent({type:'toggle'});
+ assert.match(plot.querySelector('.sp-notation').innerHTML,/\[-1, 1\)/);
+ input(added,'1/0');button(plot,'הנחה על הישר').click();assert.match(plot.querySelector('.sp-status').textContent,/ממשי/);
+ button(fill,'הצגת התשובה').click();assert.equal(field.hidden,true);assert.equal(plot.querySelector('[data-point="-1"]'),null);
+ button(fill,'ניסיון חדש').click();assert.equal(field.value,'');assert.equal(plot.querySelector('[data-point="-1"]'),null);
+ assert.equal(plot.querySelector('[data-point="0.5"]'),null);
+ button(plot,'קו').click();end('a','arrow');end('b','arrow');
+ assert.equal(plot.querySelector('[data-coordinate="a"]').hidden,true);assert.equal(plot.querySelector('[data-coordinate="b"]').hidden,true);
+ button(plot,'הנחה על הישר').click();assert.match(plot.querySelector('.sp-notation').innerHTML,/mathbb/);
+ button(plot,'נקודה').click();const pointType=plot.querySelector('[aria-label="סוג הנקודה"]');pointType.value='open';input(added,'0');button(plot,'הנחה על הישר').click();
+ assert.equal(plot.querySelector('[data-point="0"]').getAttribute('aria-pressed'),'false');
+ button(plot,'קו').click();button(plot,'הנחה על הישר').click(); // Overlap cannot fill the hole.
+ assert.equal(plot.querySelector('[data-point="0"]').getAttribute('aria-pressed'),'false');
+ button(plot,'נקודה').click();pointType.value='closed';button(plot,'הנחה על הישר').click();
+ assert.equal(plot.querySelector('[data-point="0"]').getAttribute('aria-pressed'),'true');
+}
+{
+ const E=env(),gallery=node(E.document,'div',{class:'set-cases'});
+ const a=node(gallery,'div',{class:'case','data-title':'first'}),b=node(gallery,'div',{class:'case','data-title':'second'});
+ E.run(fs.readFileSync('assets/interactive.js','utf8'));E.document.dispatchEvent({type:'DOMContentLoaded'});
+ assert.equal(a.hidden,false);assert.equal(b.hidden,true);
+ button(gallery,'הבא').click();assert.equal(a.hidden,true);assert.equal(b.hidden,false);
+ button(gallery,'הקודם').click();assert.equal(a.hidden,false);
 }
 function widget(file){
  const E=env(),s=fs.readFileSync(file,'utf8');

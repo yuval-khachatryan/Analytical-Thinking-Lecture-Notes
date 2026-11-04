@@ -398,14 +398,48 @@ span.blank:not(.blank-ready) { text-decoration: underline; text-underline-offset
   box-sizing: content-box;
 }
 .blank-input:focus { border-color: #4f46e5; }
-/* MathLive fields are the input itself, not a preview below an ASCII field. */
-math-field.blank-input { display: inline-block; max-width: 100%; min-height: 2.4rem; font-size: 1.12em; vertical-align: middle; box-sizing: border-box; padding: .15rem .35rem; border-radius: 8px; --caret-color: #4f46e5; --selection-background-color: #e0e7ff; --placeholder-color: #64748b; --contains-highlight-background-color: #eef2ff; }
-math-field.blank-input[hidden] { display: none !important; }
-math-field.blank-input:focus-within { border-color: #4f46e5; outline: 3px solid #fbbf24; outline-offset: 2px; }
-math-field.blank-input[aria-invalid="true"] { border-color: #b91c1c; }
+/* The stable wrapper keeps exercise state while its editor upgrades on focus. */
+.mi-control { display: inline-flex; max-width: 100%; vertical-align: middle; align-items: center; }
+.mi-control[hidden] { display: none !important; }
+.mi-control > input, .mi-control > math-field { width: 100%; min-width: 0; border: 0; padding: 0; margin: 0; background: transparent; color: inherit; font: inherit; text-align: inherit; }
+.mi-control > input:focus { outline: none; }
+.mi-control > math-field { min-height: 2.4rem; font-size: 1.12em; --caret-color: #4f46e5; --selection-background-color: #e0e7ff; --placeholder-color: #64748b; --contains-highlight-background-color: #eef2ff; }
+.mi-control:focus-within { border-color: #4f46e5; outline: 3px solid #fbbf24; outline-offset: 2px; }
+.mi-control[aria-invalid="true"] { border-color: #b91c1c; }
 math-field::part(menu-toggle) { display: none; }
 math-field::part(virtual-keyboard-toggle) { color: #64748b; }
-.pw math-field.pw-input { width: 100%; min-width: 0; }
+.pw .mi-control.pw-input { width: 100%; min-width: 0; }
+.set-plot { margin: .5rem 0 .7rem; padding: .4rem .65rem; border-inline-start: 2px solid #cbd5e1; }
+.sp-help, .sp-scale { margin: .15rem 0; color: #64748b; font-size: .82rem; }
+.sp-scroll { overflow-x: auto; direction: ltr; }
+.sp-scroll svg { display: block; max-width: none; }
+.sp-scroll svg text { font: 14px system-ui, sans-serif; direction: ltr; unicode-bidi: isolate; }
+.sp-tick, .sp-point { cursor: pointer; }
+.sp-tick:hover rect, .sp-tick:focus rect { fill: #ccfbf1; fill-opacity: .6; }
+.sp-point:focus { outline: 2px solid #f59e0b; }
+.sp-tools { margin: .35rem 0; }
+.sp-tools[hidden], .sp-template[hidden], .sp-point-template[hidden] { display: none !important; }
+.sp-tools [aria-pressed="true"] { background: #e0e7ff; border-color: #4f46e5; color: #3730a3; }
+.sp-template { display: grid; grid-template-columns: auto minmax(40px, 1fr) auto; align-items: center; direction: ltr; max-width: 360px; margin: .2rem auto; }
+.sp-template-line { height: 3px; background: #0f766e; }
+.sp-end { display: grid; grid-template-rows: 20px 36px 36px; justify-items: center; gap: 2px; }
+.sp-end-label { font-size: .8rem; color: #475569; direction: rtl; }
+.sp-end select { font-size: 22px; padding: 0 .4rem; direction: ltr; }
+.sp-tools select { color: #0f766e; background: white; border: 1px solid #94a3b8; border-radius: 6px; }
+.sp-end .blank-input, .sp-point-template .blank-input { width: 5em !important; max-width: 100%; }
+.sp-point-template { display: flex; align-items: center; justify-content: center; gap: .6rem; margin: .7rem 0; }
+.sp-point-template select { font: inherit; padding: .3rem; }
+.sp-bar { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem; margin: .15rem 0; }
+.sp-bar .ix-btn { padding: .2rem .5rem; font-size: .82rem; min-height: 32px; }
+.sp-extra { margin: .2rem 0; font-size: .82rem; }
+.sp-options { display: flex; gap: 1rem; flex-wrap: wrap; align-items: start; }
+.sp-extra summary { cursor: pointer; color: #475569; }
+.sp-status:not(:empty) { padding: .3rem .5rem; margin-top: .3rem; border-inline-start: 3px solid #d97706; font-size: .9rem; }
+.sp-status.sp-good { border-color: #15803d; color: #166534; }
+.set-cases .case[hidden] { display: none !important; }
+.set-case-nav { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; margin: .5rem 0; }
+.set-case-nav select { font: inherit; max-width: 100%; padding: .3rem; border: 1px solid #94a3b8; border-radius: 6px; background: white; color: #334155; }
+@media print { .set-cases .case[hidden] { display: block !important; } .set-plot, .set-case-nav { display: none !important; } }
 .ix-frac { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; font-size: .78em; line-height: 1.1; }
 .ix-frac > :first-child { border-bottom: 1px solid currentColor; padding: 0 .3em; }
 .ix-frac > :last-child { padding: 0 .3em; }
@@ -575,8 +609,9 @@ a.xref-open { background: #ede9fe; border-radius: 3px; }
 @media (prefers-reduced-motion: reduce) { .toc-disclosure-arrow { transition: none; } }
 </style>
 <script src="assets/navigation.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/mathlive@0.111.4/mathlive.min.js" defer></script>
 <script src="assets/math-input.js" defer></script>
+<script src="widgets/shared/intervals.js" defer></script>
+<script src="assets/set-plot.js" defer></script>
 <script src="assets/interactive.js" defer></script>
 <script>
 /* ---------------------------------------------------------------------------

@@ -39,7 +39,7 @@
       var m = /^[a-z]+/i.exec(s.slice(at))[0]; at += m.length;
       var symbols = { infty:"inf", pi:"pi", cdot:"*", times:"*", div:"/", le:"<=", leq:"<=", ge:">=", geq:">=", ne:"!=", neq:"!=",
         cup:" U ", setminus:"\\", backslash:"\\", emptyset:"{}", varnothing:"{}", in:" in ", lbrace:"{", rbrace:"}",
-        lbrack:"[", rbrack:"]", lparen:"(", rparen:")", vert:"|", lvert:"|", rvert:"|", lfloor:"floor(", rfloor:")", lor:" or ", vee:" or " };
+        lbrack:"[", rbrack:"]", lparen:"(", rparen:")", vert:"|", mid:"|", colon:":", lvert:"|", rvert:"|", lfloor:"floor(", rfloor:")", lor:" or ", vee:" or " };
       if (Object.prototype.hasOwnProperty.call(symbols, m)) return symbols[m];
       if (/^(quad|qquad|enspace|thinspace|medspace|thickspace|displaystyle|textstyle|scriptstyle|scriptscriptstyle)$/.test(m)) return " ";
       if (/^(frac|dfrac|tfrac|cfrac)$/.test(m)) { var a = argument(), b = argument(); return "((" + a + ")/(" + b + "))"; }
@@ -88,6 +88,7 @@
     return s;
   }
   var templates = {
+    "{x|}":"\\left\\{x\\mid #0\\right\\}",
     "/":"\\frac{#@}{#?}", "^":"#@^{#?}", "√()":"\\sqrt{#0}", "sqrt()":"\\sqrt{#0}", "cbrt()":"\\sqrt[3]{#0}", "root()":"\\sqrt[#?]{#0}",
     "()":"\\left(#0\\right)", "||":"\\left|#0\\right|", "{}":"\\left\\{#0\\right\\}",
     "log_()":"\\log_{#?}\\left(#?\\right)", "sin()":"\\sin\\left(#0\\right)", "cos()":"\\cos\\left(#0\\right)", "tan()":"\\tan\\left(#0\\right)",
@@ -97,18 +98,31 @@
   var toLatex = function (s) { return s; }, configured = false;
   function configure(opts) { if (opts.toLatex) toLatex = opts.toLatex; }
   function ready() { return !!(root.MathfieldElement && root.customElements && root.customElements.get("math-field")); }
-  function create(props, kind) {
-    var rich = ready();
-    if (rich && !configured) {
+  var loading = false;
+  function load() {
+    if (loading || ready()) return;
+    loading = true;
+    // Called only after the local exercise UI has initialized. Unlike an external
+    // defer script, this cannot hold up DOMContentLoaded or later local scripts.
+    var script = document.createElement("script");
+    script.async = true;
+    script.src = "https://cdn.jsdelivr.net/npm/mathlive@0.111.4/mathlive.min.js";
+    script.addEventListener("error", function () {
+      // Native controls remain usable; do not retry on every student interaction.
+      script.remove();
+    });
+    document.head.appendChild(script);
+  }
+  function createRich(props, kind) {
+    if (!configured) {
       root.MathfieldElement.fontsDirectory = "https://cdn.jsdelivr.net/npm/mathlive@0.111.4/fonts";
       root.MathfieldElement.soundsDirectory = null;
       root.MathfieldElement.computeEngine = null;
       root.MathfieldElement.fractionNavigationOrder = "numerator-denominator";
       configured = true;
     }
-    var input = document.createElement(rich ? "math-field" : "input");
-    Object.keys(props).forEach(function (k) { if (k !== "type" && k !== "size" || !rich) input.setAttribute(k, props[k]); });
-    if (!rich) return input;
+    var input = document.createElement("math-field");
+    Object.keys(props).forEach(function (k) { if (k !== "type" && k !== "size" && k !== "class") input.setAttribute(k, props[k]); });
     input.setAttribute("math-virtual-keyboard-policy", "manual");
     input.setAttribute("smart-fence", kind === "set" ? "false" : "true");
     input.setAttribute("smart-mode", "false");
@@ -118,7 +132,6 @@
     input.inlineShortcuts = Object.assign({}, input.inlineShortcuts, {
       inf:"\\infty", infinity:"\\infty", sqrt:"\\sqrt{#0}", cbrt:"\\sqrt[3]{#0}", pi:"\\pi"
     });
-    if (props.size) input.style.minWidth = Math.min(12, Math.max(3, +props.size * .45)) + "em";
     input.addEventListener("paste", function (e) {
       var text = e.clipboardData && e.clipboardData.getData("text/plain");
       if (!text || /\\/.test(text)) return; // MathLive accepts pasted LaTeX itself.
@@ -130,15 +143,87 @@
     }, true);
     return input;
   }
-  function isMath(input) { return input && input.tagName === "MATH-FIELD"; }
-  function read(input) { return isMath(input) ? latexToPlain(input.value) : input.value; }
+  function create(props, kind) {
+    var host = document.createElement("span"), active = document.createElement("input"), failed = false;
+    host.setAttribute("class", (props.class || "") + " mi-control");
+    host.setAttribute("dir", "ltr");
+    Object.keys(props).forEach(function (k) { if (k !== "class") active.setAttribute(k, props[k]); });
+    if (props.size) host.style.width = Math.min(12, Math.max(3, +props.size * .6)) + "em";
+    // Callers keep this wrapper throughout check/reveal/reset and row editing.
+    Object.defineProperties(host, {
+      value: { get:function () { return active.value; }, set:function (v) { active.value = v; } },
+      control: { get:function () { return active; } },
+      selectionStart: { get:function () { return active.selectionStart; } },
+      selectionEnd: { get:function () { return active.selectionEnd; } }
+    });
+    host.setSelectionRange = function (a, b) { if (active.setSelectionRange) active.setSelectionRange(a, b); };
+    host.focus = function () { upgrade(); active.focus(); };
+    // Row labels and validation are updated by the exercise after creation.
+    var setAttribute = host.setAttribute;
+    host.setAttribute = function (name, value) {
+      setAttribute.call(host, name, value);
+      if (/^aria-/.test(name)) active.setAttribute(name, value);
+    };
+    var removeAttribute = host.removeAttribute;
+    host.removeAttribute = function (name) {
+      removeAttribute.call(host, name);
+      if (/^aria-/.test(name)) active.removeAttribute(name);
+    };
+    function events(control) {
+      control.addEventListener("focus", function () {
+        if (control !== active) return;
+        upgrade();
+        if (active !== control) { active.focus(); return; }
+        host.dispatchEvent(new Event("focus"));
+      });
+      control.addEventListener("blur", function () {
+        if (control === active) host.dispatchEvent(new Event("blur"));
+      });
+      control.addEventListener("input", function (e) {
+        e.stopPropagation();
+        host.dispatchEvent(new Event("input", { bubbles:true }));
+      });
+      // Keydown bubbles naturally, including the exercise's Enter shortcuts.
+    }
+    function upgrade() {
+      if (isMath(active) || failed || !ready()) return;
+      var latex;
+      try { latex = toLatex(active.value, kind); }
+      catch (_) { return; } // Keep incomplete drafts intact until the next focus.
+      var rich;
+      try {
+        rich = createRich(props, kind);
+        ["aria-label", "aria-invalid", "aria-describedby"].forEach(function (name) {
+          var value = active.getAttribute(name);
+          if (value !== null) rich.setAttribute(name, value);
+        });
+        rich.value = latex;
+        events(rich);
+        host.appendChild(rich);
+        // Native input stays in place until construction and mounting succeed.
+        var previous = active;
+        active = rich;
+        previous.remove();
+      } catch (_) {
+        if (rich) rich.remove();
+        failed = true;
+      }
+    }
+    events(active);
+    host.appendChild(active);
+    return host;
+  }
+  function control(input) { return input && (input.control || input); }
+  function isMath(input) { return control(input) && control(input).tagName === "MATH-FIELD"; }
+  function read(input) { return isMath(input) ? latexToPlain(control(input).value) : input.value; }
   function insert(input, text) {
-    if (!isMath(input)) return false;
+    // Focus can upgrade the native control after the optional library arrives.
     input.focus();
-    input.insert(Object.prototype.hasOwnProperty.call(templates, text) ? templates[text] : text, {format:"latex", selectionMode:"placeholder"});
+    if (!isMath(input)) return false;
+    control(input).insert(Object.prototype.hasOwnProperty.call(templates, text) ? templates[text] : text, {format:"latex", selectionMode:"placeholder"});
     return true;
   }
-  var api = { latexToPlain:latexToPlain, configure:configure, create:create, read:read, insert:insert, isMath:isMath, templates:templates };
+  var api = { latexToPlain:latexToPlain, configure:configure, load:load, create:create, read:read, insert:insert, isMath:isMath, templates:templates };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.CourseMathInput = api;
 })(typeof window !== "undefined" ? window : this);
