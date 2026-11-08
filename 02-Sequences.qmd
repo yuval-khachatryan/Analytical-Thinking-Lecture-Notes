@@ -1029,10 +1029,10 @@ $$\begin{aligned} a_1 &= (1 + 1)^1 \\ &= 2 \end{aligned}$$ $$\begin{aligned} a_2
 חשבו את $.\lim\limits_{n\to\infty} \left(3\left(1 + \frac{1}{n}\right)^n - \frac{2}{n}\right)$
 
 :::: {.derive limit="n" start="3(1+1/n)^n-2/n"}
-::: {.step line="3[e]-[0]"}
+::: {.step line="3[e]-[0]" allow-expression="true"}
 מחליפים כל סדרה סטנדרטית בגבול שלה, וגם את $\left(1 + \frac{1}{n}\right)^n$ ב-$.e$
 :::
-::: {.step line="[3e]"}
+::: {.step line="[3e]" allow-expression="true"}
 מחשבים.
 :::
 ::::
@@ -1153,11 +1153,11 @@ $$\begin{aligned} a_{n+1} - a_n &= \frac{n + 1}{n + 2} - \frac{n}{n + 1} \\ &= \
 
 
 :::: fill
-**(א)** $\lim\limits_{n\to\infty} 2\left(1 + \frac{1}{n}\right)^n =$ [$2e$]{.blank ans="2e"}
+**(א)** $\lim\limits_{n\to\infty} 2\left(1 + \frac{1}{n}\right)^n =$ [$2e$]{.blank ans="2e" allow-expression="true"}
 
-**(ב)** $\lim\limits_{n\to\infty} \left(1 + \frac{1}{n}\right)^{2n} =$ [$e^2$]{.blank ans="e^2"}
+**(ב)** $\lim\limits_{n\to\infty} \left(1 + \frac{1}{n}\right)^{2n} =$ [$e^2$]{.blank ans="e^2" allow-expression="true"}
 
-**(ג)** $\lim\limits_{n\to\infty} \left(\left(1 + \frac{1}{n}\right)^n + \frac{5}{n^2}\right) =$ [$e$]{.blank ans="e"}
+**(ג)** $\lim\limits_{n\to\infty} \left(\left(1 + \frac{1}{n}\right)^n + \frac{5}{n^2}\right) =$ [$e$]{.blank ans="e" allow-expression="true"}
 
 ::: hint
 ב-(ב): $.\left(1 + \frac{1}{n}\right)^{2n} = \left(\left(1 + \frac{1}{n}\right)^n\right)^2$

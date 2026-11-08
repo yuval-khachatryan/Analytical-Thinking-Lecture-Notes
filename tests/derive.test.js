@@ -9,7 +9,7 @@ const fs = require('fs');
 const M = require('../assets/interactive.js');
 const files = fs.readdirSync('.').filter(f => /^\d\d-.*\.qmd$/.test(f));
 let count = 0, bad = 0;
-const attrsOf = s => { const a = {}; s.replace(/(\w+)="([^"]*)"/g, (_, k, v) => { a[k] = v; }); return a; };
+const attrsOf = s => { const a = {}; s.replace(/([\w-]+)="([^"]*)"/g, (_, k, v) => { a[k] = v; }); return a; };
 const plain = s => (s || '').replace(/\\\(|\\\)|<[^>]+>/g, '');
 for (const f of files) {
   const lines = fs.readFileSync(f, 'utf8').split('\n');
@@ -23,7 +23,7 @@ for (const f of files) {
     let j = i + 1;
     for (; j < lines.length && lines[j].trim() !== fence; j++) {
       const s = /^:::\s*\{\.step ([^\n]*)\}\s*$/.exec(lines[j]);
-      if (s) steps.push({ line: attrsOf(s[1]).line, at: j + 1 });
+      if (s) steps.push({ line: attrsOf(s[1]).line, allowExpression:attrsOf(s[1])['allow-expression']==='true', at: j + 1 });
     }
     if (j >= lines.length) { fail('no closing fence ' + fence); continue; }
     if (!steps.length) { fail('no steps'); continue; }
@@ -48,7 +48,7 @@ for (const f of files) {
       for (const b of P.boxes) {
         if (b.sign) { if (mode !== 'rel') fail(`line ${st.at}: a sign box outside a relation`); continue; }
         const kind = /^\s*-?\s*inf\s*$/.test(b.ans) ? 'num' : M.guessKind(b.ans);
-        try { const r = M.checkAnswer(kind, b.ans, b.ans, vars, {}); if (!r.ok) fail(`line ${st.at}: box [${b.ans}] fails its own check`); }
+        try { const r = M.checkAnswer(kind, b.ans, b.ans, vars, {allowExpression:st.allowExpression}); if (!r.ok) fail(`line ${st.at}: box [${b.ans}] fails its own check`); }
         catch (e) { fail(`line ${st.at}: box [${b.ans}] does not parse: ${e.message}`); }
       }
       const r = M.judgeStep(prev, L, null, cfg);

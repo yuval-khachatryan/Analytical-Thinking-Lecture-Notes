@@ -166,55 +166,179 @@ def fig_order_letters():
 
 
 def fig_intervals():
+    """All interval/ray end types, paired with explicit membership conditions."""
     rows = [
-        (r"$(a,b)$", "open", False, False, False),
-        (r"$[a,b]$", "closed", True, True, False),
-        (r"$[a,b)$", "half", True, False, False),
-        (r"$[a,\infty)$", "ray", True, None, True),
+        (r"$(a,b)=\{x\mid a<x<b\}$", 1, 4, False, False),
+        (r"$[a,b]=\{x\mid a\leq x\leq b\}$", 1, 4, True, True),
+        (r"$[a,b)=\{x\mid a\leq x<b\}$", 1, 4, True, False),
+        (r"$(a,b]=\{x\mid a<x\leq b\}$", 1, 4, False, True),
+        (r"$(a,\infty)=\{x\mid x>a\}$", 1, np.inf, False, False),
+        (r"$[a,\infty)=\{x\mid x\geq a\}$", 1, np.inf, True, False),
+        (r"$(-\infty,b)=\{x\mid x<b\}$", -np.inf, 4, False, False),
+        (r"$(-\infty,b]=\{x\mid x\leq b\}$", -np.inf, 4, False, True),
+        (r"$\mathbb{R}=(-\infty,\infty)=\{x\mid x\in\mathbb{R}\}$", -np.inf, np.inf, False, False),
     ]
-    fig, ax = plt.subplots(figsize=(7, 3.2))
-    a, b = 1.0, 4.0
-    for i, (lab, _, ca, cb, ray) in enumerate(rows):
-        y = -i
-        number_line(ax, -0.5, 6.0, y)
-        end = 5.9 if ray else b
-        ax.plot([a, end], [y, y], color=C1, lw=4, solid_capstyle="butt", zorder=3)
-        dot(ax, a, y, ca, C1)
-        if not ray:
-            dot(ax, b, y, cb, C1)
-        else:
-            ax.annotate("", xy=(6.0, y), xytext=(5.6, y),
-                        arrowprops=dict(arrowstyle="-|>", color=C1, lw=2.5))
-        ax.text(a, y - 0.22, "$a$", ha="center", va="top")
-        if not ray:
-            ax.text(b, y - 0.22, "$b$", ha="center", va="top")
-        ax.text(-0.8, y, lab, ha="right", va="center", fontsize=14)
-    ax.set_xlim(-2.6, 6.2)
-    ax.set_ylim(-3.6, 0.4)
-    ax.axis("off")
-    save(fig, "intervals")
+    _interval_type_figure(rows, "intervals")
+    _interval_type_figure(rows[:4], "interval-types")
+    _interval_type_figure(rows[4:8], "ray-types")
+
+
+def _interval_type_figure(rows, filename):
+    fig, axes = plt.subplots(len(rows), 2, figsize=(9, len(rows) * .84), gridspec_kw={"width_ratios": [1.2, 1]})
+    for (label_ax, ax), (lab, a, b, ac, bc) in zip(axes, rows):
+        label_ax.text(1, .5, lab, ha="right", va="center", fontsize=16, color=INK)
+        label_ax.axis("off")
+        color = C1
+        ax.plot([-.5, 5.5], [0, 0], color=GREY, lw=1, zorder=1)
+        left, right = max(a, -0.4), min(b, 5.4)
+        ax.plot([left, right], [0, 0], color=color, lw=4, solid_capstyle="butt", zorder=3)
+        for endpoint, closed, name, direction in [(a, ac, "a", -1), (b, bc, "b", 1)]:
+            if np.isfinite(endpoint):
+                dot(ax, endpoint, 0, closed, color)
+                ax.text(endpoint, -.15, f"${name}$", ha="center", va="top", fontsize=16)
+            else:
+                edge = -.5 if direction < 0 else 5.5
+                ax.annotate("", xy=(edge, 0), xytext=(edge-direction*.45, 0),
+                            arrowprops=dict(arrowstyle="-|>", color=color, lw=2.5,
+                                            shrinkA=0, shrinkB=0, mutation_scale=13), zorder=4)
+        ax.set_xlim(-.65, 5.65)
+        ax.set_ylim(-.5, .4)
+        ax.axis("off")
+        assert a < b
+        assert np.isfinite(a) or not ac
+        assert np.isfinite(b) or not bc
+    fig.subplots_adjust(left=.025, right=.99, top=.99, bottom=.02, hspace=.35, wspace=.04)
+    save(fig, filename)
+
+
+def fig_set_drawing_basics():
+    """Label only marked points; the grey backdrop has no ticks or set arrows."""
+    cases = [
+        ("set-empty", r"$\emptyset=\{\}$", [], False, False),
+        ("set-point", r"$\{2\}$", [2], True, False),
+        ("set-three-points", "", [-2, 1, 4], True, False),
+        ("set-real-line", r"$\mathbb{R}$", [], False, True),
+        ("set-missing-point", r"$\mathbb{R}\setminus\{2\}=\{x\in\mathbb{R}\mid x\ne2\}$", [2], False, True),
+        ("set-three-holes", "", [-1, 2, 4], False, True),
+        ("set-holes-only", "", [-1, 2, 4], False, False),
+    ]
+    for name, formula, points, closed, whole_line in cases:
+        fig, ax = plt.subplots(figsize=(7.5, 1.45))
+        ax.plot([-3, 5], [0, 0], color=GREY, lw=1, zorder=1)
+        if whole_line:
+            ax.annotate("", xy=(5,0), xytext=(-3,0),
+                        arrowprops=dict(arrowstyle="<->", color=C1, lw=3.5, shrinkA=0, shrinkB=0), zorder=3)
+        for x in points:
+            dot(ax, x, 0, closed, C1)
+            ax.text(x, -.17, f"${x}$", ha="center", va="top", color=INK, fontsize=13)
+        ax.text(1,.38,formula,ha="center",va="center",fontsize=17,color=INK)
+        ax.set_xlim(-3.2,5.2)
+        ax.set_ylim(-.52,.65)
+        ax.axis("off")
+        save(fig,name)
+
+
+def fig_redundant_set_marks():
+    """Compare equal sets with and without redundant circle marks."""
+    for name, whole_line in [("set-empty-comparison", False), ("set-real-comparison", True)]:
+        fig, axes = plt.subplots(2, 1, figsize=(7.5, 2.2))
+        for row, ax in enumerate(axes):
+            ax.plot([-3, 5], [0, 0], color=GREY, lw=1, zorder=1)
+            if whole_line:
+                ax.annotate("", xy=(5, 0), xytext=(-3, 0),
+                            arrowprops=dict(arrowstyle="<->", color=C1, lw=3.5,
+                                            shrinkA=0, shrinkB=0), zorder=3)
+            if row == 0:
+                for x in [-1, 2, 4]:
+                    dot(ax, x, 0, whole_line, C1)
+                    ax.text(x, -.17, f"${x}$", ha="center", va="top", color=INK, fontsize=13)
+            ax.set_xlim(-3.2, 5.2)
+            ax.set_ylim(-.55, .3)
+            ax.axis("off")
+        fig.subplots_adjust(hspace=.3)
+        save(fig, name)
+
+
+def fig_fill_holes_union():
+    """The two input sets share one scale; the result is revealed in the notes."""
+    points = [-1, 2, 4]
+    fig, axes = plt.subplots(2, 1, figsize=(7.5, 2.5))
+    for row, ax in enumerate(axes):
+        ax.plot([-3, 5], [0, 0], color=GREY, lw=1, zorder=1)
+        if row == 0:
+            ax.annotate("", xy=(5, 0), xytext=(-3, 0),
+                        arrowprops=dict(arrowstyle="<->", color=C1, lw=3.5,
+                                        shrinkA=0, shrinkB=0), zorder=3)
+        for x in points:
+            dot(ax, x, 0, row == 1, C1)
+            ax.text(x, -.17, f"${x}$", ha="center", va="top", color=INK, fontsize=13)
+        ax.text(-3.45, 0, "$A$" if row == 0 else "$B$", ha="center", va="center", color=INK, fontsize=17)
+        ax.set_xlim(-3.8, 5.2)
+        ax.set_ylim(-.55, .3)
+        ax.axis("off")
+    fig.subplots_adjust(hspace=.4)
+    save(fig, "set-fill-holes-union")
+
+
+def fig_interval_middle_point():
+    """A filled interior point is redundant; an empty interior point removes it."""
+    labels = [r"$[0,4]=\{x\mid 0\leq x\leq4\}$",
+              r"$[0,4]=\{x\mid 0\leq x\leq4\}$",
+              r"$[0,2)\cup(2,4]=\{x\mid 0\leq x\leq4,\ x\ne2\}$"]
+    fig, axes = plt.subplots(3, 2, figsize=(9, 2.8), gridspec_kw={"width_ratios": [1.5, 1]})
+    for i, ((label_ax, ax), label) in enumerate(zip(axes, labels)):
+        label_ax.text(1, .5, label, ha="right", va="center", fontsize=15, color=INK)
+        label_ax.axis("off")
+        ax.plot([-.6, 4.6], [0, 0], color=GREY, lw=1, zorder=1)
+        ax.plot([0, 4], [0, 0], color=C1, lw=4, zorder=4)
+        dot(ax, 0, 0, True, C1)
+        dot(ax, 4, 0, True, C1)
+        if i:
+            dot(ax, 2, 0, i == 1, C1)
+        for x in [0, 2, 4]:
+            ax.text(x, -.2, f"${x}$", ha="center", va="top", fontsize=16)
+        ax.set_xlim(-.7, 4.7)
+        ax.set_ylim(-.55, .4)
+        ax.axis("off")
+    assert all((0 <= x <= 4) == ((0 <= x <= 4) or x == 2) for x in [-1, 0, .5, 2, 3.5, 4, 5])
+    assert all(((0 <= x < 2) or (2 < x <= 4)) == (0 <= x <= 4 and x != 2) for x in [-1, 0, .5, 2, 3.5, 4, 5])
+    fig.subplots_adjust(left=.025, right=.99, top=.99, bottom=.02, hspace=.35, wspace=.04)
+    save(fig, "interval-middle-point")
 
 
 # ---------------------------------------------------------------- §3 absolute value
 def fig_distance():
-    fig, ax = plt.subplots(figsize=(7, 1.6))
-    a, r = 3.0, 1.6
-    number_line(ax, -0.3, 6.3)
-    ax.plot([a - r, a + r], [0, 0], color=C1, lw=4, solid_capstyle="butt", zorder=3)
-    dot(ax, a - r, 0, False, C1)
-    dot(ax, a + r, 0, False, C1)
-    ax.plot([a], [0], "o", color=C2, ms=7, zorder=6)
-    ax.text(a, -0.2, "$a$", ha="center", va="top", fontsize=13)
-    ax.text(a - r, -0.2, "$a-r$", ha="center", va="top", fontsize=13)
-    ax.text(a + r, -0.2, "$a+r$", ha="center", va="top", fontsize=13)
-    for x0, x1 in ((a, a - r), (a, a + r)):
-        ax.annotate("", xy=(x1, 0.32), xytext=(x0, 0.32),
-                    arrowprops=dict(arrowstyle="<->", color=C2, lw=1.3))
-        ax.text((x0 + x1) / 2, 0.38, "$r$", ha="center", va="bottom", color=C2, fontsize=13)
-    ax.set_xlim(-0.5, 6.5)
-    ax.set_ylim(-0.6, 0.75)
-    ax.axis("off")
-    save(fig, "distance-interval")
+    a, r = 3.0, 1.5
+    left, right, lo, hi = a - r, a + r, -0.3, 6.3
+    assert r > 0 and left < a < right
+    samples = np.array([left - 1, left, a, right, right + 1])
+    assert np.array_equal(np.abs(samples - a) < r, (samples > left) & (samples < right))
+    assert np.array_equal(np.abs(samples - a) > r, (samples < left) | (samples > right))
+    assert np.array_equal(np.abs(samples - a) == r, (samples == left) | (samples == right))
+    for relation, name in [("<", "distance-less"), (">", "distance-greater"), ("=", "distance-equal")]:
+        fig, ax = plt.subplots(figsize=(5.2, 1.55))
+        ax.annotate("", xy=(hi, 0), xytext=(lo, 0),
+                    arrowprops=dict(arrowstyle="-|>", color=GREY, lw=1))
+        if relation == ">":
+            for start, end in ((left, lo), (right, hi)):
+                ax.annotate("", xy=(end, 0), xytext=(start, 0),
+                            arrowprops=dict(arrowstyle="-|>", color=C1, lw=3, mutation_scale=14), zorder=3)
+        elif relation == "<":
+            ax.plot([left, right], [0, 0], color=C1, lw=4, solid_capstyle="butt", zorder=3)
+        for x in (left, right):
+            dot(ax, x, 0, relation == "=", C1)
+        for x, label in ((left, "$a-r$"), (a, "$a$"), (right, "$a+r$")):
+            ax.text(x, -0.16, label, ha="center", va="top", fontsize=13)
+        for end in (left, right):
+            ax.annotate("", xy=(end, 0.25), xytext=(a, 0.25),
+                        arrowprops=dict(arrowstyle="<->", color=INK, lw=1))
+            ax.text((a + end) / 2, 0.3, "$r$", ha="center", va="bottom", fontsize=12)
+        ax.text(a, 0.63, f"$|x-a|{relation}r$", fontsize=17, color=C1, ha="center", va="center")
+        ax.set_xlim(-0.5, 6.5)
+        ax.set_ylim(-0.5, 0.85)
+        ax.axis("off")
+        fig.subplots_adjust(left=.02, right=.98, top=.98, bottom=.04)
+        save(fig, name)
 
 
 # ---------------------------------------------------------------- §4 Cartesian product
@@ -279,6 +403,52 @@ def fig_not_functions():
         ax.yaxis.set_major_locator(MaxNLocator(integer=True, nbins=6))
     fig.tight_layout()
     save(fig, "not-functions")
+
+
+def fig_reflections():
+    """The same point and its mirror image; equal scales in all three pictures."""
+    point = np.array([3., 1.])
+    cases = [
+        ("x", np.array([3., -1.]), np.array([1., 0.])),
+        ("y", np.array([-3., 1.]), np.array([0., 1.])),
+        ("diagonal", np.array([1., 3.]), np.array([1., 1.]) / np.sqrt(2)),
+    ]
+    for name, reflected, tangent in cases:
+        fig, ax = plt.subplots(figsize=(3.4, 3.4))
+        ax.set_aspect("equal")
+        ax.set_xlim(-4.2, 4.2); ax.set_ylim(-4.2, 4.2)
+        ax.axis("off")
+        for end in ((4., 0.), (0., 4.)):
+            start = tuple(-np.array(end))
+            ax.annotate("", xy=end, xytext=start,
+                        arrowprops=dict(arrowstyle="->", color=GREY, lw=1.2), zorder=1)
+        ax.text(3.95, -.4, "$x$", color=C3 if name == "x" else INK, ha="right", fontsize=15)
+        ax.text(.22, 3.85, "$y$", color=C3 if name == "y" else INK, fontsize=15)
+        extent = 5.4 if name == "diagonal" else 3.9
+        ax.plot([-extent*tangent[0], extent*tangent[0]],
+                [-extent*tangent[1], extent*tangent[1]], color=C3, lw=2.5, zorder=2)
+        if name == "diagonal":
+            ax.text(-3.65, -2.8, "$y=x$", color=C3, rotation=45, fontsize=14)
+        foot = (point + reflected) / 2
+        normal = (point - foot) / np.linalg.norm(point - foot)
+        ax.plot([point[0], reflected[0]], [point[1], reflected[1]],
+                color="#64748b", lw=1.3, ls=(0, (3, 3)), zorder=3)
+        # Matching marks on the two equal halves, plus a right angle at the mirror.
+        for endpoint in (point, reflected):
+            middle = (foot + endpoint) / 2
+            ax.plot([middle[0]-.12*tangent[0], middle[0]+.12*tangent[0]],
+                    [middle[1]-.12*tangent[1], middle[1]+.12*tangent[1]], color="#64748b", lw=1.4)
+        corner = np.array([foot-.23*tangent, foot-.23*tangent+.23*normal, foot+.23*normal])
+        ax.plot(corner[:, 0], corner[:, 1], color="#64748b", lw=1)
+        ax.plot(*point, "o", ms=7, color=C1, zorder=5)
+        ax.plot(*reflected, "o", ms=7, color=C2, zorder=5)
+        ax.annotate("$A(3,1)$", point, xytext=(-5, -20) if name == "diagonal" else (-5, 11), textcoords="offset points",
+                    ha="right", color=C1, fontsize=13)
+        label = {"x": "$A'(3,-1)$", "y": "$A'(-3,1)$", "diagonal": "$A'(1,3)$"}[name]
+        offset, align = ((-5, -20), "right") if name == "x" else ((-5, 11), "left") if name == "y" else ((8, 10), "left")
+        ax.annotate(label, reflected, xytext=offset, textcoords="offset points", ha=align, color=C2, fontsize=13)
+        fig.tight_layout(pad=.25)
+        save(fig, "reflection-" + name)
 
 
 def fig_even_odd():
@@ -1035,14 +1205,16 @@ def fig_intersection_venn():
 def fig_rays():
     fig, ax = plt.subplots(figsize=(7.5, 2.4))
     for y in (0, -1.3):
-        number_line(ax, -1.0, 7.0, y)
-    ax.plot([3, 6.9], [0, 0], color=C4, lw=5, solid_capstyle="butt", zorder=3)
+        ax.plot([-1, 7], [y, y], color=GREY, lw=1, zorder=1)
+    ax.plot([3, 6.9], [0, 0], color=C1, lw=5, solid_capstyle="butt", zorder=3)
     ax.annotate("", xy=(7.05, 0), xytext=(6.6, 0),
-                arrowprops=dict(arrowstyle="-|>", color=C4, lw=3))
-    dot(ax, 3, 0, False, C4)
+                arrowprops=dict(arrowstyle="-|>", color=C1, lw=3))
+    dot(ax, 3, 0, False, C1)
     ax.text(3, -0.22, "$3$", ha="center", va="top", fontsize=13)
-    ax.text(-1.4, 0, r"$(3,\infty)$", ha="right", va="center", fontsize=15, color=C4)
+    ax.text(-1.4, 0, r"$(3,\infty)$", ha="right", va="center", fontsize=15, color=C1)
     ax.plot([-1.0, 3], [-1.3, -1.3], color=C1, lw=5, solid_capstyle="butt", zorder=3)
+    ax.annotate("", xy=(-1.0, -1.3), xytext=(-.5, -1.3),
+                arrowprops=dict(arrowstyle="-|>", color=C1, lw=3, shrinkB=0), zorder=4)
     dot(ax, 3, -1.3, True, C1)
     ax.text(3, -1.52, "$15$", ha="center", va="top", fontsize=13)
     ax.text(-1.4, -1.3, r"$(-\infty,15]$", ha="right", va="center", fontsize=15, color=C1)
@@ -1053,22 +1225,26 @@ def fig_rays():
 
 # ---------------------------------------------------------------- §3: triangle inequality
 def fig_triangle_inequality():
-    fig, ax = plt.subplots(figsize=(7.5, 3.6))
-    b, z, apb, a = 0.0, 2.4, 4.6, 7.0
-    ax.plot([-0.4, 7.4], [0, 0], color=INK, lw=1.4)
-    for x, lab in ((b, "b"), (z, "0"), (apb, "a+b"), (a, "a")):
+    fig, ax = plt.subplots(figsize=(7.5, 2.8))
+    a, b = 6.0, -2.5
+    apb = a + b
+    ax.plot([-.4, a + .4], [0, 0], color=INK, lw=1.4)
+    for x, top in ((0, 1.05), (a, 1.05), (apb, .5)):
+        ax.plot([x, x], [0, top], color=GREY, lw=1, linestyle=":", zorder=1)
+    for start, end, y, label in ((0, a, 1.05, "a"), (a, apb, .5, "b")):
+        ax.annotate("", xy=(end, y), xytext=(start, y),
+                    arrowprops=dict(arrowstyle="-|>", color=C2, lw=2.8,
+                                    shrinkA=0, shrinkB=0, mutation_scale=15), zorder=3)
+        ax.text((start + end) / 2, y + .12, f"${label}$",
+                ha="center", va="bottom", fontsize=16, color=C2)
+    for x, lab in ((0, "0"), (apb, "a+b"), (a, "a")):
         ax.plot([x, x], [-0.1, 0.1], color=INK, lw=1.4)
         ax.text(x, -0.18, f"${lab}$", ha="center", va="top", fontsize=14)
-    top = curly_brace(ax, b, z, 0.25, 0.35, color=C2)
-    ax.text((b + z) / 2, top + 0.08, "$|b|$", ha="center", va="bottom", fontsize=14, color=C2)
-    top = curly_brace(ax, z, a, 0.25, 0.4, color=C2)
-    ax.text((z + a) / 2, top + 0.08, "$|a|$", ha="center", va="bottom", fontsize=14, color=C2)
-    low = curly_brace(ax, z, apb, -0.65, 0.35, down=True, color=C3)
-    ax.text((z + apb) / 2, low - 0.08, "$|a+b|$", ha="center", va="top", fontsize=14, color=C3)
-    low = curly_brace(ax, b, a, -1.55, 0.5, down=True, color=INK, lw=2.2)
-    ax.text((b + a) / 2, low - 0.1, "$|a|+|b|$", ha="center", va="top", fontsize=15)
-    assert apb - z < a - b          # |a+b| really is the shorter length
-    ax.set_xlim(-0.6, 7.6); ax.set_ylim(-2.75, 1.3)
+    low = curly_brace(ax, 0, apb, -.6, .25, down=True, color=C3)
+    ax.text(apb / 2, low - .08, "$|a+b|$", ha="center", va="top", fontsize=14, color=C3)
+    assert np.isclose(apb - a, b)  # The second step starts at a and adds b.
+    assert b < 0 < apb < a and abs(apb) < abs(a) + abs(b)
+    ax.set_xlim(-.6, a + .6); ax.set_ylim(-1.3, 1.55)
     ax.axis("off")
     save(fig, "triangle-inequality")
 
@@ -1099,15 +1275,14 @@ def fig_ineq_solutions():
 # ---------------------------------------------------------------- §2: drawing a half-open interval
 def fig_half_open():
     fig, ax = plt.subplots(figsize=(7.0, 1.9))
-    number_line(ax, -3.0, 5.0)
+    ax.plot([-3, 5], [0, 0], color=GREY, lw=1, zorder=1)
     ax.plot([-1, 3], [0, 0], color=C1, lw=5, solid_capstyle="butt", zorder=3)
     dot(ax, -1, 0, True, C1)
     dot(ax, 3, 0, False, C1)
-    ax.plot([0, 0], [-0.07, 0.07], color=INK, lw=1)
-    for x, lab in ((-1, "-1"), (0, "0"), (3, "3")):
+    for x, lab in ((-1, "-1"), (3, "3")):
         ax.text(x, -0.2, f"${lab}$", ha="center", va="top", fontsize=13)
-    ax.text(-1, 0.28, r"$-1\in[-1,3)$", ha="center", va="bottom", fontsize=13, color=C3)
-    ax.text(3, 0.28, r"$3\notin[-1,3)$", ha="center", va="bottom", fontsize=13, color=C4)
+    ax.text(-1, 0.28, r"$-1\in[-1,3)$", ha="center", va="bottom", fontsize=13, color=INK)
+    ax.text(3, 0.28, r"$3\notin[-1,3)$", ha="center", va="bottom", fontsize=13, color=INK)
     ax.set_xlim(-3.2, 5.2); ax.set_ylim(-0.65, 0.75)
     ax.axis("off")
     save(fig, "half-open-interval")
@@ -1234,8 +1409,8 @@ def fig_unit_circle_walk():
     save(fig, "unit-circle-walk")
 
 FIGURES = [
-    fig_real_line, fig_intervals, fig_distance, fig_square, fig_not_functions,
-    fig_even_odd, fig_sqrt_family, fig_polynomials, fig_unit_circle, fig_radians, fig_trig_props, fig_sin_cos,
+    fig_real_line, fig_intervals, fig_set_drawing_basics, fig_redundant_set_marks, fig_fill_holes_union, fig_interval_middle_point, fig_distance, fig_square, fig_not_functions,
+    fig_reflections, fig_even_odd, fig_sqrt_family, fig_polynomials, fig_unit_circle, fig_radians, fig_trig_props, fig_sin_cos,
     fig_tan, fig_exponentials, fig_horizontal_line, fig_onto, fig_exp_ln, fig_powers_roots,
     fig_rational, fig_sgn_floor, fig_inverse_trig,
     fig_sqrt2, fig_function_examples, fig_plane_point, fig_parabola_points,

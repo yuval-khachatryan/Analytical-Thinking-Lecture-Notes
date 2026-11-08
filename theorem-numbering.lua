@@ -81,6 +81,8 @@ local BOX = {
   thmsim = { word = "סימולציה", css = "simulation" },
   thmlem = { word = "למה",   css = "lemma"       },
   thmcor = { word = "מסקנה", css = "corollary"   },
+  thmrule = { word = "כלל", css = "key-point" },
+  thmmethod = { word = "שיטת פתרון", css = "key-point" },
 }
 
 -- Labelled but UNNUMBERED (see the header).

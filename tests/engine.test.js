@@ -5,23 +5,34 @@ function t(name, got, want) {
   if (!ok) { fails++; console.log('FAIL', name, '\n   got ', JSON.stringify(got), '\n   want', JSON.stringify(want)); }
 }
 const C = (k, a, i) => M.checkAnswer(k, a, i).ok;
+const V = (k, a, i) => M.checkAnswer(k, a, i, [], {allowExpression:true}).ok;
 // numbers
 t('1/2 vs 0.5', C('num', '1/2', '0.5'), true);
-t('sqrt3/2', C('num', 'sqrt(3)/2', '√3/2'), true);
-t('sqrt3/2 b', C('num', 'sqrt(3)/2', 'sqrt3/2'), true);
+t('sqrt3/2', V('num', 'sqrt(3)/2', '√3/2'), true);
+t('sqrt3/2 b', V('num', 'sqrt(3)/2', 'sqrt3/2'), true);
 t('approx', M.checkAnswer('num', 'sqrt(3)/2', '0.866').near, true);
 t('sign', M.checkAnswer('num', '-2', '2').msg.includes('סימן'), true);
-t('pi/6', C('num', 'pi/6', 'π/6'), true);
-t('log2 7', C('num', '(1+log_2(7))/2', '(1+log2(7))/2'), true);
-t('log2 8', C('num', '3', 'log_2 8'), true);
-t('log 100', C('num', '2', 'log 100'), true);
-t('cbrt -8', C('num', '-2', 'cbrt(-8)'), true);
-t('(-8)^(1/3)', C('num', '-2', '(-8)^(1/3)'), true);
-t('floor', C('num', '-2', 'floor(-1.2)'), true);
-t('2^-3', C('num', '1/8', '2^-3'), true);
-t('8^(2/3)', C('num', '4', '8^(2/3)'), true);
-t('abs', C('num', '5', '|-5|'), true);
-t('implicit 2pi', C('num', '2*pi', '2π'), true);
+t('pi/6', V('num', 'pi/6', 'π/6'), true);
+t('log2 7', V('num', '(1+log_2(7))/2', '(1+log2(7))/2'), true);
+t('log2 8', V('num', '3', 'log_2 8'), true);
+t('log 100', V('num', '2', 'log 100'), true);
+t('cbrt -8', V('num', '-2', 'cbrt(-8)'), true);
+t('(-8)^(1/3)', V('num', '-2', '(-8)^(1/3)'), true);
+t('floor', V('num', '-2', 'floor(-1.2)'), true);
+t('2^-3', V('num', '1/8', '2^-3'), true);
+t('8^(2/3)', V('num', '4', '8^(2/3)'), true);
+t('abs', V('num', '5', '|-5|'), true);
+t('implicit 2pi', V('num', '2*pi', '2π'), true);
+// Numeric answers require finished results unless the field explicitly opts in.
+for(const [answer,draft] of [['10','|-7|+|3|'],['5','|3-8|'],['8','|-2|*|-4|'],['2','||-3|-5|'],['10','7+3'],['8','2^3'],['3','sqrt(9)'],['3','log_2(8)'],['1/2','2/4'],['2','4/2'],['0','0/3'],['1/2','1/(1+1)']]){
+  const r=M.checkAnswer('num',answer,draft);
+  t('unfinished '+draft,r.ok,false);t('useful feedback '+draft,r.partial,true);
+  t('explicit expression permission '+draft,V('num',answer,draft),true);
+}
+for(const s of ['10','-2','0','0.5','-1/2','(-1)/(2)','1/(-2)','(-1)/(-2)','inf','-inf'])t('finished '+s,C('num',s,s),true);
+t('wrong value remains wrong',M.checkAnswer('num','10','7+4').partial,undefined);
+t('opt-in is not a truthy string',M.checkAnswer('num','10','7+3',[],{allowExpression:'false'}).ok,false);
+t('equivalent expression answers unchanged',C('expr','10','7+3'),true);
 // expressions
 t('expr inv', C('expr', '(x+2)/5', 'x/5+2/5'), true);
 t('expr wrong', C('expr', '(x+2)/5', '(x-2)/5'), false);
@@ -32,23 +43,28 @@ t('expr 2^(3-x)', C('expr', '2^(3-x)', '8*2^(-x)'), true);
 t('expr abs', C('expr', '|x+3|-1', 'abs(x+3)-1'), true);
 // sets
 t('interval', C('set', '(-2,inf)', '(-2,∞)'), true);
-t('interval ineq', C('set', '(-2,inf)', 'x>-2'), true);
+t('interval ineq needs set notation', C('set', '(-2,inf)', 'x>-2'), false);
+t('interval builder', C('set', '(-2,inf)', '{x | x>-2}'), true);
 t('interval brackets', M.checkAnswer('set', '[3,5)', '(3,5]').msg.includes('נקודות הקצה'), true);
 t('union', C('set', '(-inf,0)U(1/2,inf)', '(−∞,0)∪(0.5,∞)'), true);
-t('union ineq', C('set', '(-inf,0)U(1/2,inf)', 'x<0 or x>1/2'), true);
-t('union ineq heb', C('set', '(-inf,0)U(1/2,inf)', 'x<0 או x>1/2'), true);
+t('union ineq needs set notation', C('set', '(-inf,0)U(1/2,inf)', 'x<0 or x>1/2'), false);
+t('union ineq heb needs set notation', C('set', '(-inf,0)U(1/2,inf)', 'x<0 או x>1/2'), false);
+t('union builder', C('set', '(-inf,0)U(1/2,inf)', '{x | x<0 או x>1/2}'), true);
 t('R minus', C('set', 'R\\{-2,2}', '(-inf,-2)U(-2,2)U(2,inf)'), true);
-t('R minus ineq', C('set', 'R\\{2}', 'x != 2'), true);
-t('finite', C('set', '{4,-1}', '-1, 4'), true);
+t('R minus ineq needs set notation', C('set', 'R\\{2}', 'x != 2'), false);
+t('R minus builder', C('set', 'R\\{2}', '{x | x != 2}'), true);
+t('finite set notation', C('set', '{4,-1}', '{-1, 4}'), true);
+t('bare values need set notation', C('set', '{4,-1}', '-1, 4'), false);
 t('finite braces', C('set', '{4,-1}', '{4,-1}'), true);
-t('finite eq', C('set', '{4,-1}', 'x=4 or x=-1'), true);
+t('finite eq needs set notation', C('set', '{4,-1}', 'x=4 or x=-1'), false);
 t('empty', C('set', '{}', '∅'), true);
 t('empty2', C('set', '{}', '{}'), true);
-t('closed', C('set', '[-6,2]', '-6<=x<=2'), true);
+t('closed needs set notation', C('set', '[-6,2]', '-6<=x<=2'), false);
 t('complement', M.checkAnswer('set', '(-inf,-2]U[1,inf)', '(-2,1)').msg.includes('אינם'), true);
 t('R', C('set', 'R', '(-inf,inf)'), true);
 t('missing elt', M.checkAnswer('set', '{1,2,3}', '{1,2}').msg, 'חסר איבר אחד.');
-t('point', C('set', '{3}', '3'), true);
+t('point set', C('set', '{3}', '{3}'), true);
+t('bare point needs braces', C('set', '{3}', '3'), false);
 // solve sets of relations
 const S = s => M.setTex(M.solveSet(M.parseRelation(s), 'x', {}));
 t('lin', S('3-2x<7'), '(-2, \\infty)');
