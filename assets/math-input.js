@@ -38,8 +38,8 @@
       }
       var m = /^[a-z]+/i.exec(s.slice(at))[0]; at += m.length;
       var symbols = { infty:"inf", pi:"pi", cdot:"*", times:"*", div:"/", le:"<=", leq:"<=", ge:">=", geq:">=", ne:"!=", neq:"!=",
-        cup:" U ", setminus:"\\", backslash:"\\", emptyset:"{}", varnothing:"{}", in:" in ", lbrace:"{", rbrace:"}",
-        lbrack:"[", rbrack:"]", lparen:"(", rparen:")", vert:"|", mid:"|", colon:":", lvert:"|", rvert:"|", lfloor:"floor(", rfloor:")", lor:" or ", vee:" or " };
+        cup:" U ", cap:" cap ", setminus:"\\", backslash:"\\", emptyset:"{}", varnothing:"{}", in:" in ", lbrace:"{", rbrace:"}",
+        lbrack:"[", rbrack:"]", lparen:"(", rparen:")", vert:"|", mid:"|", colon:":", lvert:"|", rvert:"|", lfloor:"floor(", rfloor:")", lor:" or ", vee:" or ", land:" and ", wedge:" and ", neg:" not ", lnot:" not " };
       if (Object.prototype.hasOwnProperty.call(symbols, m)) return symbols[m];
       if (/^(quad|qquad|enspace|thinspace|medspace|thickspace|displaystyle|textstyle|scriptstyle|scriptscriptstyle)$/.test(m)) return " ";
       if (/^(frac|dfrac|tfrac|cfrac)$/.test(m)) { var a = argument(), b = argument(); return "((" + a + ")/(" + b + "))"; }
@@ -52,6 +52,9 @@
       if (/^(text|mathrm|mathit|operatorname|mathbb)$/.test(m)) {
         var word = group("{", "}").trim();
         if (word === "או" || word === "or") return " or ";
+        if (word === "וגם" || word === "גם" || word === "and") return " and ";
+        if (word === "ולא" || word === "and not") return " and not ";
+        if (word === "לא" || word === "not") return " not ";
         if (word === "R" || word === "ℝ") return "R";
         if (/^(sin|cos|tan|arcsin|arccos|arctan|ln|log|abs|floor|sgn|sign|inf|infinity|e)$/.test(word)) return word;
         if (!word) return "";
@@ -90,35 +93,45 @@
   var templates = {
     "{x|}":"\\left\\{x\\mid #0\\right\\}",
     "/":"\\frac{#@}{#?}", "^":"#@^{#?}", "√()":"\\sqrt{#0}", "sqrt()":"\\sqrt{#0}", "cbrt()":"\\sqrt[3]{#0}", "root()":"\\sqrt[#?]{#0}",
-    "()":"\\left(#0\\right)", "||":"\\left|#0\\right|", "{}":"\\left\\{#0\\right\\}",
+    "()":"\\left(#0\\right)", "[]":"\\left[#0\\right]", "[)":"\\left[#0\\right)", "(]":"\\left(#0\\right]",
+    "||":"\\left|#0\\right|", "{}":"\\left\\{#0\\right\\}",
     "log_()":"\\log_{#?}\\left(#?\\right)", "sin()":"\\sin\\left(#0\\right)", "cos()":"\\cos\\left(#0\\right)", "tan()":"\\tan\\left(#0\\right)",
     "ln()":"\\ln\\left(#0\\right)", "floor()":"\\lfloor#0\\rfloor", "∞":"\\infty", "-∞":"-\\infty", "π":"\\pi",
-    "∅":"\\emptyset", "ℝ":"\\mathbb{R}", " ∪ ":"\\cup", "≤":"\\le", "≥":"\\ge", " או ":"\\quad\\text{או}\\quad"
+    "∅":"\\emptyset", "ℝ":"\\mathbb{R}", " ∪ ":"\\cup", " ∩ ":"\\cap", " ∖ ":"\\setminus", "≤":"\\le", "≥":"\\ge", "≠":"\\ne",
+    " או ":"\\text{\u00a0או\u00a0}", " וגם ":"\\text{\u00a0וגם\u00a0}", " ולא ":"\\text{\u00a0ולא\u00a0}", " לא ":"\\text{\u00a0לא\u00a0}"
   };
-  var toLatex = function (s) { return s; }, configured = false;
+  var toLatex = function (s) { return s; }, configured = false, activeReady = null;
+  var libraryBases = ["https://cdn.jsdelivr.net/npm/mathlive@0.111.4/", "https://unpkg.com/mathlive@0.111.4/"], libraryBase = libraryBases[0];
   function configure(opts) { if (opts.toLatex) toLatex = opts.toLatex; }
-  function ready() { return !!(root.MathfieldElement && root.customElements && root.customElements.get("math-field")); }
+  function mathfieldClass() { return root.MathfieldElement || (root.MathLive && root.MathLive.MathfieldElement) || (root.customElements && root.customElements.get("math-field")); }
+  function ready() { return !!(mathfieldClass() && root.customElements && root.customElements.get("math-field")); }
   var loading = false;
   function load() {
     if (loading || ready()) return;
     loading = true;
     // Called only after the local exercise UI has initialized. Unlike an external
     // defer script, this cannot hold up DOMContentLoaded or later local scripts.
-    var script = document.createElement("script");
-    script.async = true;
-    script.src = "https://cdn.jsdelivr.net/npm/mathlive@0.111.4/mathlive.min.js";
-    script.addEventListener("error", function () {
-      // Native controls remain usable; do not retry on every student interaction.
-      script.remove();
-    });
-    document.head.appendChild(script);
+    function attempt(index) {
+      libraryBase=libraryBases[index];
+      var script = document.createElement("script");script.async=true;
+      script.src=libraryBase+"mathlive.min.js";
+      script.addEventListener("load",function(){if(activeReady)activeReady();});
+      script.addEventListener("error",function(){
+        script.remove();
+        // One bounded fallback; failed downloads never block exercise initialization.
+        if(index+1<libraryBases.length)attempt(index+1);
+      });
+      document.head.appendChild(script);
+    }
+    attempt(0);
   }
   function createRich(props, kind) {
     if (!configured) {
-      root.MathfieldElement.fontsDirectory = "https://cdn.jsdelivr.net/npm/mathlive@0.111.4/fonts";
-      root.MathfieldElement.soundsDirectory = null;
-      root.MathfieldElement.computeEngine = null;
-      root.MathfieldElement.fractionNavigationOrder = "numerator-denominator";
+      var Mathfield=mathfieldClass();
+      Mathfield.fontsDirectory = libraryBase+"fonts";
+      Mathfield.soundsDirectory = null;
+      Mathfield.computeEngine = null;
+      Mathfield.fractionNavigationOrder = "numerator-denominator";
       configured = true;
     }
     var input = document.createElement("math-field");
@@ -130,11 +143,13 @@
     input.setAttribute("dir", "ltr");
     input.menuItems = [];
     input.inlineShortcuts = Object.assign({}, input.inlineShortcuts, {
-      inf:"\\infty", infinity:"\\infty", sqrt:"\\sqrt{#0}", cbrt:"\\sqrt[3]{#0}", pi:"\\pi"
+      inf:"\\infty", infinity:"\\infty", sqrt:"\\sqrt{#0}", cbrt:"\\sqrt[3]{#0}", pi:"\\pi",
+      "או":templates[" או "], "וגם":templates[" וגם "], "ולא":templates[" ולא "], "לא":templates[" לא "]
     });
     input.addEventListener("paste", function (e) {
       var text = e.clipboardData && e.clipboardData.getData("text/plain");
-      if (!text || /\\/.test(text)) return; // MathLive accepts pasted LaTeX itself.
+      // A plain set difference uses a backslash too; it is not a LaTeX command.
+      if (!text || (/\\/.test(text) && !(kind === "set" && !/\\[a-z]+/i.test(text)))) return;
       try {
         var latex = toLatex(text, kind);
         e.preventDefault(); e.stopImmediatePropagation();
@@ -157,6 +172,9 @@
       selectionEnd: { get:function () { return active.selectionEnd; } }
     });
     host.setSelectionRange = function (a, b) { if (active.setSelectionRange) active.setSelectionRange(a, b); };
+    // Populated auxiliary fields can show math without stealing focus. The same
+    // readiness, incomplete-draft and selection checks still apply.
+    host.upgrade = upgrade;
     host.focus = function () { upgrade(); active.focus(); };
     // Row labels and validation are updated by the exercise after creation.
     var setAttribute = host.setAttribute;
@@ -172,6 +190,13 @@
     function events(control) {
       control.addEventListener("focus", function () {
         if (control !== active) return;
+        activeReady=function(){
+          if(active!==control||document.activeElement!==control||isMath(control))return;
+          // Do not disrupt a selection or move a caret from the middle of a draft.
+          if(control.value&&(control.selectionStart!==control.value.length||control.selectionEnd!==control.value.length))return;
+          upgrade();
+          if(active!==control){active.focus();if(active.executeCommand)active.executeCommand("moveToMathfieldEnd");}
+        };
         upgrade();
         if (active !== control) { active.focus(); return; }
         host.dispatchEvent(new Event("focus"));
@@ -183,10 +208,27 @@
         e.stopPropagation();
         host.dispatchEvent(new Event("input", { bubbles:true }));
       });
+      control.addEventListener("keydown",function(e){
+        if(control!==active||isMath(control)||e.isComposing||e.ctrlKey||e.metaKey||e.altKey)return;
+        if(e.key==="/"||e.key==="^"){
+          e.preventDefault();e.stopPropagation();insert(host,e.key);
+        }else if(e.key==="Tab"){
+          var at=control.selectionStart,slots=[],m,re=/\(\s*\)/g;
+          while((m=re.exec(control.value)))slots.push(m.index+1);
+          var next=e.shiftKey?slots.filter(function(p){return p<at;}).pop():slots.filter(function(p){return p>at;})[0];
+          if(next!==undefined){e.preventDefault();control.setSelectionRange(next,next);}
+        }else if(e.key===")"&&control.selectionStart===control.selectionEnd&&control.value[control.selectionStart]===")"){
+          e.preventDefault();control.setSelectionRange(control.selectionStart+1,control.selectionStart+1);
+        }
+      });
       // Keydown bubbles naturally, including the exercise's Enter shortcuts.
     }
     function upgrade() {
       if (isMath(active) || failed || !ready()) return;
+      // A toolbar click after a delayed download must still act on the selected
+      // native text. We cannot reliably map that selection into the math editor.
+      if (active.value && typeof active.selectionStart === "number" &&
+          (active.selectionStart !== active.value.length || active.selectionEnd !== active.value.length)) return;
       var latex;
       try { latex = toLatex(active.value, kind); }
       catch (_) { return; } // Keep incomplete drafts intact until the next focus.
@@ -216,14 +258,41 @@
   function control(input) { return input && (input.control || input); }
   function isMath(input) { return control(input) && control(input).tagName === "MATH-FIELD"; }
   function read(input) { return isMath(input) ? latexToPlain(control(input).value) : input.value; }
+  function plainTemplate(value,start,end,text) {
+    if(start===null||start===undefined)start=end=value.length;
+    var selection=value.slice(start,end),before=value.slice(0,start),after=value.slice(end),inserted=text,offset;
+    if(text==="/"||text==="^") {
+      var hasLeft=/[\da-zπ∞)\]}!]\s*$/i.test(before);
+      if(selection){inserted="("+selection+")"+text+"()";offset=inserted.length-1;}
+      else if(hasLeft){inserted=text+"()";offset=2;}
+      else {inserted="()"+text+"()";offset=1;}
+    }else if(text==="log_()"){
+      inserted="log_()("+selection+")";offset=5;
+    }else if(text==="root()"){
+      inserted="root(,"+selection+")";offset=5;
+    }else if(text.endsWith("()")){
+      inserted=text.slice(0,-1)+selection+")";offset=selection?inserted.length:inserted.length-1;
+    }else if(["[]","[)","(]","{}","||"].indexOf(text)>=0){
+      inserted=text[0]+selection+text[1];offset=selection?inserted.length:1;
+    }else if(text==="{x|}"){inserted="{x|"+selection+"}";offset=inserted.length-1;}
+    if(offset===undefined)offset=inserted.length;
+    return {value:before+inserted+after,caret:start+offset};
+  }
   function insert(input, text) {
     // Focus can upgrade the native control after the optional library arrives.
     input.focus();
-    if (!isMath(input)) return false;
-    control(input).insert(Object.prototype.hasOwnProperty.call(templates, text) ? templates[text] : text, {format:"latex", selectionMode:"placeholder"});
+    if (!isMath(input)) {
+      var result=plainTemplate(input.value,input.selectionStart,input.selectionEnd,text);
+      input.value=result.value;input.setSelectionRange(result.caret,result.caret);
+      input.dispatchEvent(new Event("input",{bubbles:true}));return true;
+    }
+    var logical=/^(או|וגם|ולא|לא)$/.test(text.trim());
+    control(input).insert(Object.prototype.hasOwnProperty.call(templates, text) ? templates[text] : text, {format:"latex", mode:"math", selectionMode:logical?"after":"placeholder"});
+    // The next expression belongs outside the Hebrew text atom.
+    if(logical)control(input).mode="math";
     return true;
   }
-  var api = { latexToPlain:latexToPlain, configure:configure, load:load, create:create, read:read, insert:insert, isMath:isMath, templates:templates };
+  var api = { latexToPlain:latexToPlain, configure:configure, load:load, create:create, read:read, insert:insert, isMath:isMath, templates:templates, plainTemplate:plainTemplate };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.CourseMathInput = api;
 })(typeof window !== "undefined" ? window : this);

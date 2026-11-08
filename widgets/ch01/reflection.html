@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>מַרְאָה, מַרְאָה, שֶׁעַל הַקִּיר: מִי הַיָּפָה בְּכָל הָעִיר?</title>
+<style>
+html,body { margin:0; background:transparent; }
+body { font:14px/1.4 Arial,sans-serif; color:#1f2937; }
+.widget { padding:.4rem .5rem; border:1px solid #cbd5e1; border-radius:8px; background:white; }
+.bar { display:flex; flex-wrap:wrap; align-items:center; gap:.35rem; }
+button { font:inherit; padding:.2rem .65rem; min-height:32px; border:1px solid #cbd5e1; border-radius:7px; background:white; color:#334155; cursor:pointer; }
+button[aria-pressed="true"] { border-color:#0d9488; background:#f0fdfa; color:#115e59; }
+button:focus-visible, input:focus-visible { outline:2px solid #d97706; outline-offset:2px; }
+#construction-control { margin-inline-start:.5rem; }
+[hidden] { display:none !important; }
+p { margin:.3rem 0; }
+.hint { color:#64748b; font-size:.85rem; }
+#plot { display:block; width:100%; height:300px; overflow:hidden; direction:ltr; }
+#plot [data-drag] { touch-action:none; cursor:grab; outline:none; }
+#plot [data-drag]:focus-visible { filter:drop-shadow(0 0 3px #d97706); }
+.readout { display:flex; flex-wrap:wrap; justify-content:center; gap:.4rem 1.5rem; font:18px/1.3 "Cambria Math","Times New Roman",serif; direction:ltr; }
+#original-value { color:#4f46e5; } #reflected-value { color:#ea580c; }
+#message { min-height:1.4em; font-size:.85rem; color:#475569; text-align:center; }
+.math { direction:ltr; unicode-bidi:isolate; font-family:"Cambria Math","Times New Roman",serif; }
+</style>
+</head>
+<body>
+<div class="widget">
+  <div class="bar" role="group" aria-label="בחירת מראה">
+    <button id="mirror-x" type="button">ציר <span class="math">x</span></button>
+    <button id="mirror-y" type="button">ציר <span class="math">y</span></button>
+    <button id="mirror-diagonal" type="button"><span class="math">y = x</span></button>
+    <button id="reset" type="button">איפוס</button>
+    <label id="construction-control" hidden><input id="construction" type="checkbox">הצגת הבנייה</label>
+  </div>
+  <p class="hint">הזיזו את המראה וסובבו אותה בעזרת הידית ↻, או גררו את המלכה, כדי שתוכל לבדוק מי הכי יפה בעיר ממרחקים ומזוויות שונים. הנקודה הכחולה מסמנת את מיקום המלכה.</p>
+  <svg id="plot" role="group" aria-label="מלכה מול מראה: אפשר להזיז את המלכה ואת המראה ולסובב את המראה"></svg>
+  <div class="readout" aria-live="polite" aria-atomic="true"><span id="original-value"></span><span id="reflected-value"></span></div>
+  <p id="message" aria-live="polite"></p>
+</div>
+<script src="../shared/autosize.js"></script>
+<script>
+(function () {
+  "use strict";
+  var $=function(id){return document.getElementById(id);},plot=$("plot");
+  var blue="#4f46e5",orange="#ea580c",teal="#0d9488",grey="#94a3b8";
+  var point={x:3,y:1},center={x:0,y:0},angle=0,view,drag=null;
+  function svg(tag,attrs,parent,text){
+    var n=document.createElementNS("http://www.w3.org/2000/svg",tag);
+    Object.keys(attrs||{}).forEach(function(k){n.setAttribute(k,attrs[k]);});
+    if(text!==undefined)n.textContent=text;(parent||plot).appendChild(n);return n;
+  }
+  function attrs(n,a){Object.keys(a).forEach(function(k){n.setAttribute(k,a[k]);});}
+  function line(parent,color,width,dash){return svg("line",{stroke:color,"stroke-width":width||1,"stroke-dasharray":dash||"none"},parent);}
+  function label(parent,color){return svg("text",{fill:color,"font-family":"Cambria Math, Times New Roman, serif","font-size":15,"text-anchor":"middle"},parent);}
+  function endpoints(n,a,b){attrs(n,{x1:a.x,y1:a.y,x2:b.x,y2:b.y});}
+  function fmt(n){return String(Math.round(n*100)/100||0).replace(/-/g,"−");}
+  function pair(p){return "("+fmt(p.x)+", "+fmt(p.y)+")";}
+  function screen(p){return {x:view.width/2+p.x*view.scale,y:view.height/2-p.y*view.scale};}
+  function world(e,v){var r=plot.getBoundingClientRect();return {x:((e.clientX-r.left)*v.width/r.width-v.width/2)/v.scale,y:(v.height/2-(e.clientY-r.top)*v.height/r.height)/v.scale};}
+  function geometry(){
+    var t={x:Math.cos(angle),y:Math.sin(angle)},n={x:-t.y,y:t.x};
+    var distance=(point.x-center.x)*n.x+(point.y-center.y)*n.y;
+    return {t:t,n:n,distance:distance,foot:{x:point.x-distance*n.x,y:point.y-distance*n.y},
+      reflected:{x:point.x-2*distance*n.x,y:point.y-2*distance*n.y},
+      handle:{x:center.x-2.6*t.x,y:center.y-2.6*t.y}};
+  }
+  function sameMirror(theta){return Math.abs(Math.sin(angle-theta))<1e-8&&Math.abs(-Math.sin(angle)*center.x+Math.cos(angle)*center.y)<1e-8;}
+
+  // An asymmetric fairy-tale caricature: crooked crown, nose and sceptre make
+  // the actual reflected orientation visible without external image assets.
+  var defs=svg("defs"),art=svg("g",{id:"queen-art"},defs);
+  svg("path",{d:"M -9 1 Q -15 11 -19 24 L 18 24 Q 12 10 7 2 Z",fill:"#7e22ce",stroke:"#581c87","stroke-width":1.2},art);
+  svg("path",{d:"M -14 0 L -4 12 L 10 0 L 7 14 L -8 14 Z",fill:"#f8fafc",stroke:"#cbd5e1","stroke-width":1},art);
+  svg("ellipse",{cx:-3,cy:-8,rx:14,ry:15,fill:"#6b7280"},art);
+  svg("path",{d:"M -10 -18 Q 4 -23 9 -13 L 8 -9 L 20 -2 L 9 0 Q 10 11 -4 9 Q -15 5 -12 -5 Z",fill:"#c4ce83",stroke:"#626a35","stroke-width":1.3},art);
+  svg("ellipse",{cx:-12,cy:-5,rx:3,ry:4,fill:"#c4ce83",stroke:"#626a35","stroke-width":1},art);
+  svg("path",{d:"M -13 -20 L -17 -30 L -7 -24 L -2 -32 L 3 -22 L 12 -28 L 10 -17 Z",fill:"#facc15",stroke:"#a16207","stroke-width":1.3},art);
+  svg("circle",{cx:-2,cy:-22,r:2,fill:"#e11d48"},art);
+  svg("ellipse",{cx:-6,cy:-10,rx:3.2,ry:2.4,fill:"white"},art);
+  svg("ellipse",{cx:4,cy:-11,rx:2.5,ry:3.2,fill:"white"},art);
+  svg("circle",{cx:-5,cy:-10,r:1.4,fill:"#1f2937"},art);
+  svg("circle",{cx:5,cy:-11,r:1.3,fill:"#1f2937"},art);
+  svg("path",{d:"M -10 -15 L -3 -13 M 1 -15 L 7 -17",fill:"none",stroke:"#374151","stroke-width":2,"stroke-linecap":"round"},art);
+  svg("circle",{cx:13,cy:-1,r:1.6,fill:"#626a35"},art);
+  svg("path",{d:"M -6 3 Q 0 0 6 3 L 5 7 Q 0 4 -6 6 Z",fill:"#7f1d1d"},art);
+  svg("path",{d:"M 0 2 L 3 2 L 3 6 L 0 5 Z",fill:"#fff7d6"},art);
+  svg("circle",{cx:-12,cy:0,r:2,fill:"#facc15"},art);
+  svg("path",{d:"M -20 5 L -20 23",stroke:"#a16207","stroke-width":2.3},art);
+  svg("circle",{cx:-20,cy:4,r:3.4,fill:"#facc15",stroke:"#a16207","stroke-width":1},art);
+  svg("circle",{cx:0,cy:13,r:2.2,fill:"#e11d48"},art);
+
+  var axes=svg("g"),axisX=line(axes,grey,1),axisY=line(axes,grey,1),xLabel=label(axes,"#475569"),yLabel=label(axes,"#475569");xLabel.textContent="x";yLabel.textContent="y";
+  var construction=svg("g",{id:"construction-drawing"}),guide=svg("g"),connection=line(guide,"#64748b",1.2,"4 4"),half1=line(guide,"#64748b",1.5),half2=line(guide,"#64748b",1.5),rightAngle=svg("path",{stroke:"#64748b","stroke-width":1,fill:"none"},guide);
+  var mirror=line(plot,teal,3),mirrorHit=svg("line",{id:"mirror-drag",stroke:"transparent","stroke-width":24,tabindex:0,role:"button","data-drag":"line","aria-label":"המראה: גרירה להזזה; חצים להזזה במקלדת"});
+  var pivot=svg("circle",{r:4,fill:"white",stroke:teal,"stroke-width":1.5,"pointer-events":"none"});
+  function queen(id,color,interactive){
+    var g=svg("g",{id:id});
+    svg("circle",{r:23,fill:"white","fill-opacity":.7,stroke:color,"stroke-width":1.5},g);
+    svg("use",{href:"#queen-art",transform:"scale(.7)"},g);
+    svg("circle",{r:3,fill:color,stroke:"white","stroke-width":1},g);
+    if(interactive)attrs(g,{tabindex:0,role:"button","data-drag":"point","aria-label":"המלכה: גרירה או מקשי החצים להזזה"});
+    else attrs(g,{"pointer-events":"none"});return g;
+  }
+  var reflection=queen("reflected-queen",orange,false),original=queen("original-queen",blue,true);
+  var originalLabel=label(plot,blue),reflectedLabel=label(plot,orange);originalLabel.textContent="A";reflectedLabel.textContent="A′";
+  var rotate=svg("g",{id:"rotation-handle",tabindex:0,role:"button","data-drag":"rotate","aria-label":"ידית סיבוב המראה: גרירה או מקשי החצים לסיבוב"});
+  svg("circle",{r:14,fill:"white",stroke:teal,"stroke-width":2},rotate);
+  svg("path",{d:"M 6 -4 A 7 7 0 1 0 6 4",fill:"none",stroke:teal,"stroke-width":1.7,"pointer-events":"none"},rotate);
+  svg("path",{d:"M 2 -4 L 7 -3 L 7 -8",fill:"none",stroke:teal,"stroke-width":1.7,"pointer-events":"none"},rotate);
+
+  function draw(){
+    var g=geometry(),q=g.reflected;
+    var bound=Math.max(4,Math.abs(point.x),Math.abs(point.y),Math.abs(q.x),Math.abs(q.y),Math.abs(center.x),Math.abs(center.y),Math.abs(g.handle.x),Math.abs(g.handle.y));
+    var width=plot.getBoundingClientRect().width||600,height=300;
+    view={width:width,height:height,scale:(Math.min(width,height)-80)/(2*bound)};
+    attrs(plot,{viewBox:"0 0 "+width+" "+height});
+    endpoints(axisX,{x:8,y:height/2},{x:width-8,y:height/2});endpoints(axisY,{x:width/2,y:height-8},{x:width/2,y:8});
+    attrs(xLabel,{x:width-16,y:height/2-7});attrs(yLabel,{x:width/2+12,y:17});
+    var p=screen(point),r=screen(q),c=screen(center),h=screen(g.handle),foot=screen(g.foot);
+    var span=Math.hypot(width,height)*2,dx=g.t.x*span,dy=-g.t.y*span;
+    var a={x:c.x-dx,y:c.y-dy},b={x:c.x+dx,y:c.y+dy};endpoints(mirror,a,b);endpoints(mirrorHit,a,b);
+    attrs(pivot,{cx:c.x,cy:c.y});attrs(rotate,{transform:"translate("+h.x+" "+h.y+")"});
+    endpoints(connection,p,r);
+    [half1,half2].forEach(function(mark,i){var endpoint=i?r:p,m={x:(foot.x+endpoint.x)/2,y:(foot.y+endpoint.y)/2};endpoints(mark,{x:m.x-5*g.t.x,y:m.y+5*g.t.y},{x:m.x+5*g.t.x,y:m.y-5*g.t.y});});
+    guide.setAttribute("visibility",Math.abs(g.distance)*view.scale<8?"hidden":"visible");
+    var sign=g.distance>=0?1:-1,nx=g.n.x*sign*7,ny=-g.n.y*sign*7,tx=g.t.x*7,ty=-g.t.y*7;
+    attrs(rightAngle,{d:"M "+(foot.x+tx)+" "+(foot.y+ty)+" l "+nx+" "+ny+" l "+(-tx)+" "+(-ty)});
+    attrs(original,{transform:"translate("+p.x+" "+p.y+")"});
+    // Reflection matrix in screen coordinates. Apply it to the whole icon,
+    // not just its centre: horizontal mirrors turn the queen upside down.
+    var co=Math.cos(2*angle),si=Math.sin(2*angle);
+    attrs(reflection,{transform:"matrix("+[co,-si,-si,-co,r.x,r.y].join(" ")+")"});
+    var diagonal=sameMirror(Math.PI/4),showConstruction=diagonal&&$("construction").checked;$("construction-control").hidden=!diagonal;
+    originalLabel.textContent=showConstruction?"A = (a, b)":"A";reflectedLabel.textContent=showConstruction?"A′ = (b, a)":"A′";
+    function placeLabel(text,location,side){
+      var margin=showConstruction?48:15,y=location.y-side*g.n.y*38+5;
+      if(Math.abs(y-height/2)<16)y=height/2+(side*g.n.y>0?-19:19);
+      attrs(text,{x:Math.max(margin,Math.min(width-margin,location.x+side*g.n.x*38)),y:Math.max(17,Math.min(height-6,y))});
+    }
+    placeLabel(originalLabel,p,sign);placeLabel(reflectedLabel,r,-sign);
+    $("mirror-x").setAttribute("aria-pressed",String(sameMirror(0)));$("mirror-y").setAttribute("aria-pressed",String(sameMirror(Math.PI/2)));$("mirror-diagonal").setAttribute("aria-pressed",String(diagonal));
+    construction.replaceChildren();
+    if(showConstruction&&Math.abs(point.x-point.y)>1e-8){
+      var u=screen({x:point.x,y:point.x}),v=screen({x:point.y,y:point.y});
+      svg("polygon",{points:[p,u,r,v].map(function(z){return z.x+","+z.y;}).join(" "),fill:"#e2e8f0","fill-opacity":.25,stroke:"#64748b","stroke-width":1.2},construction);
+      [u,v].forEach(function(z,i){svg("circle",{cx:z.x,cy:z.y,r:3,fill:teal},construction);var text=label(construction,"#0f766e");text.textContent=i?"(b, b)":"(a, a)";attrs(text,{x:z.x+(i?-26:26),y:z.y+(i?18:-10)});});
+    }
+    $("original-value").textContent="A = "+pair(point);
+    var approximate=Math.abs(q.x-Math.round(q.x*100)/100)>1e-7||Math.abs(q.y-Math.round(q.y*100)/100)>1e-7;
+    $("reflected-value").textContent="A′ "+(approximate?"≈":"=")+" "+pair(q);
+    $("message").innerHTML=Math.abs(g.distance)<1e-8?"הנקודה <span class=\"math\">A</span> נמצאת על המראה ולכן נשארת במקומה.":showConstruction?"המראה היא אלכסון הריבוע. בקיפול לאורכו, הפינה <span class=\"math\">(a, b)</span> מגיעה אל הפינה <span class=\"math\">(b, a)</span>.":"המלכה המסומנת בכחול ותמונת הראי המסומנת בכתום נמצאות במרחק שווה מהמראה.";
+    if(window.QVAutosize)window.QVAutosize.report();
+  }
+  function startDrag(kind,e){
+    if(e.button!==undefined&&e.button!==0)return;e.preventDefault();
+    drag={kind:kind,id:e.pointerId,view:view,start:world(e,view),point:{x:point.x,y:point.y},center:{x:center.x,y:center.y}};
+    if(plot.setPointerCapture)plot.setPointerCapture(e.pointerId);
+  }
+  original.addEventListener("pointerdown",function(e){startDrag("point",e);});
+  mirrorHit.addEventListener("pointerdown",function(e){startDrag("line",e);});
+  rotate.addEventListener("pointerdown",function(e){startDrag("rotate",e);});
+  plot.addEventListener("pointermove",function(e){
+    if(!drag||e.pointerId!==drag.id)return;e.preventDefault();var p=world(e,drag.view);
+    if(drag.kind==="rotate"){
+      var dx=p.x-center.x,dy=p.y-center.y;if(Math.hypot(dx,dy)>.05)angle=Math.atan2(dy,dx)+Math.PI;
+    }else{
+      var base=drag.kind==="point"?drag.point:drag.center,next={x:Math.round((base.x+p.x-drag.start.x)*10)/10,y:Math.round((base.y+p.y-drag.start.y)*10)/10};
+      if(drag.kind==="point")point=next;else center=next;
+    }draw();
+  });
+  function endDrag(e){if(drag&&e.pointerId===drag.id)drag=null;}
+  plot.addEventListener("pointerup",endDrag);plot.addEventListener("pointercancel",endDrag);plot.addEventListener("lostpointercapture",function(){drag=null;});
+  function keys(kind,e){
+    var moves={ArrowLeft:[-.25,0],ArrowRight:[.25,0],ArrowUp:[0,.25],ArrowDown:[0,-.25]},d=moves[e.key];if(!d)return;e.preventDefault();
+    if(kind==="rotate")angle+=(e.key==="ArrowLeft"||e.key==="ArrowDown"?-1:1)*Math.PI/36;
+    else {var target=kind==="point"?point:center;target.x+=d[0];target.y+=d[1];}draw();
+  }
+  original.addEventListener("keydown",function(e){keys("point",e);});mirrorHit.addEventListener("keydown",function(e){keys("line",e);});rotate.addEventListener("keydown",function(e){keys("rotate",e);});
+  [["mirror-x",0],["mirror-y",Math.PI/2],["mirror-diagonal",Math.PI/4]].forEach(function(p){$(p[0]).addEventListener("click",function(){drag=null;center={x:0,y:0};angle=p[1];$("construction").checked=p[0]==="mirror-diagonal";draw();});});
+  $("reset").addEventListener("click",function(){drag=null;point={x:3,y:1};center={x:0,y:0};angle=0;$("construction").checked=false;draw();});
+  $("construction").addEventListener("change",draw);window.addEventListener("resize",draw);
+  if(typeof ResizeObserver==="function")new ResizeObserver(draw).observe(plot);
+  draw();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>אי-שוויון המשולש: שני צעדים על הישר</title>
+<style>
+  html, body { margin: 0; padding: 0; background: transparent; }
+  body { font: 14px/1.4 Arial, sans-serif; color: #1f2937; }
+  .widget { padding: .35rem .5rem; border: 1px solid #cbd5e1; border-radius: 8px; background: #fff; }
+  .controls { display: flex; flex-wrap: wrap; gap: .3rem 1rem; }
+  label { display: flex; align-items: center; gap: .4rem; flex: 1 1 180px; direction: ltr; }
+  input { min-width: 0; flex: 1; accent-color: #4f46e5; }
+  input:focus-visible { outline: 2px solid #d97706; outline-offset: 3px; }
+  output { min-width: 2.5em; font-variant-numeric: tabular-nums; }
+  .math { font: 18px/1.3 "Cambria Math", "Times New Roman", serif; direction: ltr; unicode-bidi: isolate; }
+  svg { display: block; width: 100%; height: 196px; direction: ltr; }
+  .comparison { display: grid; grid-template-columns: auto 1.5em auto; justify-content: center; text-align: center; gap: .1rem .4rem; direction: ltr; }
+  #message { margin: .25rem 0 0; text-align: center; color: #475569; }
+</style>
+</head>
+<body>
+<div class="widget">
+  <div class="controls">
+    <label><span class="math"><i>a</i></span><input id="a" type="range" min="-6" max="6" step="0.5" value="3" aria-label="הצעד הראשון, a"><output id="av" for="a" class="math">3</output></label>
+    <label><span class="math"><i>b</i></span><input id="b" type="range" min="-6" max="6" step="0.5" value="-2" aria-label="הצעד השני, b"><output id="bv" for="b" class="math">−2</output></label>
+  </div>
+  <svg id="plot" role="img" aria-label="שני צעדים: מאפס אל a, ומ-a אל a+b"></svg>
+  <div class="comparison math" aria-live="polite" aria-atomic="true">
+    <span>AC</span><span>≤</span><span>AB + BC</span>
+    <span>|<i>a</i> + <i>b</i>|</span><span>≤</span><span>|<i>a</i>| + |<i>b</i>|</span>
+    <span id="distance"></span><span id="relation"></span><span id="length"></span>
+  </div>
+  <p id="message"></p>
+</div>
+<script src="../shared/autosize.js"></script>
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+  var plot = $("plot"), blue = "#4f46e5", teal = "#0f766e", grey = "#94a3b8";
+  function fmt(n) { return String(n === 0 ? 0 : n).replace("-", "−"); }
+  function svg(tag, attrs, text) {
+    var n = document.createElementNS("http://www.w3.org/2000/svg", tag);
+    Object.keys(attrs).forEach(function (key) { n.setAttribute(key, attrs[key]); });
+    if (text !== undefined) n.textContent = text;
+    plot.appendChild(n); return n;
+  }
+  function line(x1, y1, x2, y2, color, width, dash) {
+    return svg("line", {x1:x1, y1:y1, x2:x2, y2:y2, stroke:color, "stroke-width":width || 1.5, "stroke-dasharray":dash || "none"});
+  }
+  function label(x, y, text, color) {
+    var margin = text.length * 4 + 6, width = plot.getBoundingClientRect().width || 600;
+    x = Math.max(margin, Math.min(width - margin, x));
+    svg("text", {x:x, y:y, fill:color || "#334155", "text-anchor":"middle", "font-size":15, "font-family":"Cambria Math, Times New Roman, serif"}, text);
+  }
+  function arrow(x1, x2, y, name) {
+    line(x1, y, x2, y, blue, 3).setAttribute("data-step", name);
+    var d = Math.sign(x2 - x1), h = Math.min(7, Math.abs(x2 - x1) * .45);
+    if (d) svg("path", {d:"M " + x2 + " " + y + " l " + (-d*h) + " " + (-h*.6) + " v " + (h*1.2) + " Z", fill:blue});
+    else svg("circle", {cx:x1, cy:y, r:3, fill:blue});
+  }
+  function draw() {
+    var a = +$("a").value, b = +$("b").value, sum = a + b;
+    var distance = Math.abs(sum), length = Math.abs(a) + Math.abs(b);
+    $("av").textContent = fmt(a); $("bv").textContent = fmt(b);
+    $("distance").textContent = fmt(distance); $("length").textContent = fmt(length);
+    $("relation").textContent = distance === length ? "=" : "<";
+    $("message").textContent = a === 0 && b === 0 ? "שני הצעדים אפס: נשארים במקום." :
+      a === 0 || b === 0 ? "אחד הצעדים אפס: המרחק שווה לאורך הדרך." :
+      a*b > 0 ? "אותו כיוון: המרחק שווה לאורך הדרך." :
+      sum === 0 ? "חזרנו להתחלה: המרחק אפס, אף שעברנו דרך." : "כיוונים מנוגדים: המרחק קטן מאורך הדרך.";
+    var width = plot.getBoundingClientRect().width || 600;
+    plot.setAttribute("viewBox", "0 0 " + width + " 196");
+    plot.setAttribute("aria-label", "A באפס, B ב-" + fmt(a) + ", C ב-" + fmt(sum) + ". האורך AB הוא " + fmt(Math.abs(a)) + ", האורך BC הוא " + fmt(Math.abs(b)) + ", והאורך AC הוא " + fmt(distance) + ".");
+    plot.replaceChildren();
+    var lo = Math.min(0, a, sum), hi = Math.max(0, a, sum), pad = Math.max(1, (6 - (hi-lo))/2);
+    lo -= pad; hi += pad;
+    function x(v) { return 26 + (v-lo)/(hi-lo) * (width-52); }
+    var zero = x(0), middle = x(a), end = x(sum);
+    line(12, 94, width-12, 94, grey);
+    line(zero, 28, zero, 98, grey, 1, "3 3");
+    line(middle, 28, middle, 94, grey, 1, "3 3");
+    line(end, 62, end, 94, grey, 1, "3 3");
+    arrow(zero, middle, 28, "a"); label((zero+middle)/2, 17, "AB = |a| = " + fmt(Math.abs(a)), blue);
+    arrow(middle, end, 62, "b"); label((middle+end)/2, 51, "BC = |b| = " + fmt(Math.abs(b)), blue);
+    var points = [];
+    [[0,"A"],[a,"B"],[sum,"C"]].forEach(function(p){
+      var existing = points.find(function(q){return q.value === p[0];});
+      if(existing) existing.names.push(p[1]);
+      else points.push({value:p[0],names:[p[1]]});
+    });
+    var rows = [];
+    points.sort(function(p,q){return p.value-q.value;}).forEach(function(p){
+      var px=x(p.value), text=p.names.join(" = ")+" = "+fmt(p.value), half=text.length*4+6, row=0;
+      while(rows[row] !== undefined && px-half < rows[row]+8) row++;
+      rows[row]=px+half;
+      svg("circle", {cx:px, cy:94, r:3.5, fill:blue});
+      if(row) line(px,98,px,100+row*16,grey,1);
+      label(px,112+row*16,text);
+    });
+    line(zero, 162, end, 162, teal, 2.5).setAttribute("data-distance", "true");
+    line(zero, 158, zero, 166, teal); line(end, 158, end, 166, teal);
+    label((zero+end)/2, 187, "AC = |a + b| = " + fmt(distance), teal);
+    if (window.QVAutosize) window.QVAutosize.report();
+  }
+  $("a").addEventListener("input", draw); $("b").addEventListener("input", draw);
+  window.addEventListener("resize", draw);
+  if (typeof ResizeObserver === "function") new ResizeObserver(draw).observe(plot);
+  draw();
+})();
+</script>
+</body>
+</html>

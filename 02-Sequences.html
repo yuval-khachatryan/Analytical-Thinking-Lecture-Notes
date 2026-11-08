@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="he" xml:lang="he" dir="rtl"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.10.20">
+<meta name="generator" content="quarto-1.11.9">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -39,14 +39,15 @@ ul.task-list li input[type="checkbox"] {
 <link href="./01-Introduction.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-17888a1159294d3eb470f19f6f52f5a5.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-d3f7f8e73c8d287b30bcf59c2b563615.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-01a495efc5497ac6e3f5457e7ed18e65.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -477,6 +478,8 @@ span.blank:not(.blank-ready) { text-decoration: underline; text-underline-offset
 /* The stable wrapper keeps exercise state while its editor upgrades on focus. */
 .mi-control { display: inline-flex; max-width: 100%; vertical-align: middle; align-items: center; }
 .mi-control[hidden] { display: none !important; }
+.blank-entry { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; max-width: 100%; position: relative; }
+.ix-field-preview, .sp-coordinate-preview { display: block; direction: ltr; unicode-bidi: isolate; text-align: center; max-width: 100%; overflow-x: auto; }
 .mi-control > input, .mi-control > math-field { width: 100%; min-width: 0; border: 0; padding: 0; margin: 0; background: transparent; color: inherit; font: inherit; text-align: inherit; }
 .mi-control > input:focus { outline: none; }
 .mi-control > math-field { min-height: 2.4rem; font-size: 1.12em; --caret-color: #4f46e5; --selection-background-color: #e0e7ff; --placeholder-color: #64748b; --contains-highlight-background-color: #eef2ff; }
@@ -485,25 +488,40 @@ span.blank:not(.blank-ready) { text-decoration: underline; text-underline-offset
 math-field::part(menu-toggle) { display: none; }
 math-field::part(virtual-keyboard-toggle) { color: #64748b; }
 .pw .mi-control.pw-input { width: 100%; min-width: 0; }
-.set-plot { margin: .5rem 0 .7rem; padding: .4rem .65rem; border-inline-start: 2px solid #cbd5e1; }
-.sp-help, .sp-scale { margin: .15rem 0; color: #64748b; font-size: .82rem; }
+.set-plot { margin: .3rem 0 .45rem; padding: .2rem .45rem; border-inline-start: 2px solid #cbd5e1; }
+.sp-practice > summary { cursor: pointer; color: #4338ca; }
+.set-plot.sp-answer { border: 0; padding: 0; }
+.sp-scroll, .sp-range { width: 100%; max-width: 460px; margin-inline: auto; }
+.sp-range { margin-block: .15rem; font-size: .78rem; color: #64748b; }
+.sp-range > summary { cursor: pointer; }
+.sp-range-fields { display: flex; flex-wrap: wrap; gap: .3rem; align-items: end; padding-block: .25rem; }
+.sp-range-fields label { display: grid; gap: .1rem; }
+.sp-range-fields input { width: 7rem; max-width: 100%; direction: ltr; padding: .15rem; }
+.sp-range-message { color: #92400e; }
+.sp-help { margin: .15rem 0; color: #64748b; font-size: .82rem; }
 .sp-scroll { overflow-x: auto; direction: ltr; }
 .sp-scroll svg { display: block; max-width: none; }
 .sp-scroll svg text { font: 14px system-ui, sans-serif; direction: ltr; unicode-bidi: isolate; }
-.sp-tick, .sp-point { cursor: pointer; }
-.sp-tick:hover rect, .sp-tick:focus rect { fill: #ccfbf1; fill-opacity: .6; }
-.sp-point:focus { outline: 2px solid #f59e0b; }
-.sp-tools { margin: .35rem 0; }
-.sp-tools[hidden], .sp-template[hidden], .sp-point-template[hidden] { display: none !important; }
+.sp-delete-target { cursor: crosshair; }
+.sp-delete-target:hover, .sp-delete-target:focus { stroke: #dc2626; stroke-opacity: .4; outline: none; }
+.sp-delete-target:focus { stroke-opacity: .75; }
+.sp-tools { display: flex; flex-wrap: wrap; align-items: center; gap: .25rem .65rem; margin: .2rem 0; }
+.sp-tools > .sp-bar { flex-basis: 100%; margin: 0; }
+.sp-tools > .ix-btn { align-self: flex-end; min-height: 36px; padding: .2rem .5rem; font-size: .82rem; }
+.sp-tools[hidden], .sp-template[hidden], .sp-point-template[hidden], .sp-coordinate[hidden], .sp-delete-panel[hidden], .sp-tools > .ix-btn[hidden] { display: none !important; }
+.sp-delete-panel { display: flex; flex-wrap: wrap; gap: .35rem; margin: .15rem 0; }
+.sp-entry-status:empty { display: none; }
+.sp-entry-status:not(:empty) { flex-basis: 100%; margin: .15rem 0; color: #92400e; font-size: .85rem; }
 .sp-tools [aria-pressed="true"] { background: #e0e7ff; border-color: #4f46e5; color: #3730a3; }
-.sp-template { display: grid; grid-template-columns: auto minmax(40px, 1fr) auto; align-items: center; direction: ltr; max-width: 360px; margin: .2rem auto; }
-.sp-template-line { height: 3px; background: #0f766e; }
-.sp-end { display: grid; grid-template-rows: 20px 36px 36px; justify-items: center; gap: 2px; }
-.sp-end-label { font-size: .8rem; color: #475569; direction: rtl; }
-.sp-end select { font-size: 22px; padding: 0 .4rem; direction: ltr; }
+.sp-template { display: grid; grid-template-columns: minmax(0, 1fr) 24px minmax(0, 1fr); align-items: center; direction: ltr; width: 20rem; max-width: 100%; margin: 0; }
+.sp-template-line { height: 3px; background: #0f766e; transform: translateY(.55rem); }
+.sp-end { display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto minmax(36px, auto); min-width: 0; align-self: start; align-items: start; justify-items: center; gap: 2px; }
+.sp-coordinate { display: flex; flex-direction: column; align-items: center; min-width: 0; max-width: 100%; min-height: 36px; position: relative; }
+.sp-end-label { grid-column: 1 / -1; font-size: .8rem; line-height: 1.25; color: #475569; direction: rtl; }
+.sp-end select { min-height: 36px; font-size: 22px; padding: 0 .25rem; direction: ltr; }
 .sp-tools select { color: #0f766e; background: white; border: 1px solid #94a3b8; border-radius: 6px; }
-.sp-end .blank-input, .sp-point-template .blank-input { width: 5em !important; max-width: 100%; }
-.sp-point-template { display: flex; align-items: center; justify-content: center; gap: .6rem; margin: .7rem 0; }
+.sp-end .blank-input, .sp-point-template .blank-input { box-sizing: border-box; width: 5em !important; max-width: 100%; margin: 0; }
+.sp-point-template { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; margin: 0; }
 .sp-point-template select { font: inherit; padding: .3rem; }
 .sp-bar { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem; margin: .15rem 0; }
 .sp-bar .ix-btn { padding: .2rem .5rem; font-size: .82rem; min-height: 32px; }
@@ -515,7 +533,9 @@ math-field::part(virtual-keyboard-toggle) { color: #64748b; }
 .set-cases .case[hidden] { display: none !important; }
 .set-case-nav { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; margin: .5rem 0; }
 .set-case-nav select { font: inherit; max-width: 100%; padding: .3rem; border: 1px solid #94a3b8; border-radius: 6px; background: white; color: #334155; }
-@media print { .set-cases .case[hidden] { display: block !important; } .set-plot, .set-case-nav { display: none !important; } }
+.set-stage-nav { display: flex; flex-wrap: wrap; gap: .4rem; margin: .5rem 0 .8rem; }
+.set-stage-nav .ix-btn[aria-pressed="true"] { background: #e0e7ff; border-color: #4f46e5; color: #3730a3; }
+@media print { .set-cases .case[hidden] { display: block !important; } .set-plot, .set-case-nav, .set-stage-nav { display: none !important; } }
 .ix-frac { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; font-size: .78em; line-height: 1.1; }
 .ix-frac > :first-child { border-bottom: 1px solid currentColor; padding: 0 .3em; }
 .ix-frac > :last-child { padding: 0 .3em; }
@@ -534,8 +554,6 @@ span.blank.warn .blank-mark { color: #b45309; }
 .blank-answer { background: #fef9c3; border-radius: 4px; padding: 0 .25em; }
 .ix-hidden { display: none !important; }
 .ix-panel { margin: .35rem 0 .8rem; }
-.ix-panel .ix-keys { display: none; }
-.ix-panel.ix-active .ix-keys { display: flex; }
 .ix-keys { flex-wrap: wrap; gap: .3rem; margin: .3rem 0; direction: ltr; justify-content: flex-end; }
 /* Keypad: the .bk-key look of the Ramat Gan notes. */
 .ix-key {
@@ -560,22 +578,148 @@ span.blank.warn .blank-mark { color: #b45309; }
 .thmbox-terminology { border-color: #0369a1; background: #f0f9ff; }
 .thmbox-terminology > p:first-child > strong { color: #075985; }
 .thmbox-terminology > p:first-child > strong::before { content: "📖"; display: inline-block; margin-inline-end: .4em; }
+.reflection-panels { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .8rem; margin-top: .5rem; }
+.reflection-panel { min-width: 0; }
+.reflection-panel p { margin: .4rem 0; }
+.reflection-panel img { display: block; max-width: 100%; height: auto; }
+@media (max-width: 680px) { .reflection-panels { grid-template-columns: 1fr; } .reflection-panel img { max-width: 20rem; margin-inline: auto; } }
 .pw-paper { margin: .5rem 0; background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; }
 .pw-row { padding: .5rem; border-bottom: 1px solid #e2e8f0; }
 .pw-row:last-child { border-bottom: 0; }
 .pw-entry { display: flex; gap: .4rem; direction: ltr; }
+.pw-entry > .ix-btn { align-self: flex-start; white-space: nowrap; }
 .pw-entry .pw-input { flex: 1; min-width: 0; width: 100%; text-align: left; }
 .pw-preview { overflow-x: auto; margin-top: .2rem; color: #475569; }
 .pw-preview:empty { display: none; }
 .pw-start, .pw-example { direction: ltr; text-align: center; overflow-x: auto; padding: .4rem; }
 .pw-solution { margin-top: .6rem; }
 .pw-solution summary { cursor: pointer; color: #4338ca; }
+.pw-workspace { margin: .5rem 0; }
+.pw-workspace > summary { cursor: pointer; color: #4338ca; font-weight: 600; }
+.pw-workspace > summary:focus-visible { outline: 2px solid #d97706; outline-offset: 2px; }
 .pw-solution > .step { margin: .3rem 0 .8rem; }
+.pw-help { margin: .4rem 0; padding: .35rem .6rem; border: 1px solid #cbd5e1; border-radius: 8px; background: #f8fafc; font-size: .9rem; direction: rtl; }
+.pw-help > summary { cursor: pointer; color: #4338ca; }
+.pw-help > summary:focus-visible { outline: 2px solid #d97706; outline-offset: 2px; }
+.pw-help > ol { margin: .4rem 0 .1rem; padding-inline-start: 1.4rem; }
+.pw-help li + li { margin-top: .35rem; }
 .pw-hints:not(:empty) { background: #fffbeb; border-inline-start: 3px solid #d97706; padding: .5rem; }
+.as-step { display: grid; grid-template-columns: 3.5em minmax(0, 1fr); gap: .4rem; direction: rtl; }
+.as-step-label { grid-column: 1; grid-row: 1; padding-top: .3rem; color: #64748b; font-size: .85rem; }
+.as-editor, .as-compact { grid-column: 2; min-width: 0; }
+.as-editor[hidden], .as-compact[hidden], .as-field[hidden] { display: none !important; }
+.as-field { display: inline-flex; position: relative; min-width: 0; max-width: 100%; direction: ltr; }
+.pw-entry > .as-field { flex: 1; }
+.as-field > .blank-input { box-sizing: border-box; width: 100%; margin: 0; }
+.as-expr-field { flex-direction: column; }
+.as-field-preview { direction: ltr; unicode-bidi: isolate; text-align: left; max-width: 100%; overflow-x: auto; }
+.as-field-preview:empty { display: none; }
+.as-compact { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; align-items: center; gap: .4rem .8rem; direction: ltr; }
+.as-formula { min-width: 0; overflow-x: auto; direction: ltr; text-align: left; }
+.as-reason { color: #64748b; font-size: .82rem; direction: rtl; unicode-bidi: isolate; text-align: right; min-width: 0; margin: .2rem 0; }
+.as-reason-line { display: block; }
+.as-reason-line + .as-reason-line { margin-top: .2rem; }
+.as-model-references { font-size: .85rem; margin: .2rem 0 .5rem; }
+.as-rule-links a { text-underline-offset: .15em; }
+.algebra-work .as-formula > .ix-case, .pw-solution .pw-example > .ix-case { display: block; white-space: normal; }
+.algebra-work .as-formula > .ix-or, .pw-solution .pw-example > .ix-or { display: block; margin: .1rem 0; }
+.algebra-work .as-formula .math, .pw-solution .pw-example .math { white-space: nowrap; }
+.as-step-feedback { display: flex; align-items: center; gap: .3rem; color: #15803d; font-weight: 600; margin-bottom: .1rem; }
+.as-check { font-size: 1.15em; }
+.as-step.as-accepted { background: #f0fdf4; }
+.as-tools { display: flex; flex-wrap: wrap; gap: .25rem .8rem; margin: .35rem 0; font-size: .9rem; }
+.as-tools > details { min-width: 0; max-width: 100%; }
+.as-tools > details[open] { flex-basis: 100%; }
+.as-tools summary { cursor: pointer; color: #4338ca; }
+.as-tools .as-formula { margin: .35rem 0; }
+.as-operation-controls, .as-replacement { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; margin: .35rem 0; }
+.as-operation-controls > .as-field, .as-replacement > .as-field { flex: 0 1 10rem; }
+.as-condition-replacement > .as-field { flex: 1 1 16rem; }
+.as-fragment-picker, .as-fragment-label, .as-condition-rule, .as-condition-exclusion > label { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem; }
+.as-fragment-picker { margin: .4rem 0; }
+.as-fragment-label { flex: 1 1 18rem; }
+.as-fragment-label > .as-field { flex: 1 1 12rem; min-width: 0; }
+.as-fragment-picker > .ix-msg, .as-fragment-matches, .as-condition-exclusion { flex-basis: 100%; }
+.as-fragment-matches { display: flex; flex-wrap: wrap; gap: .3rem; }
+.as-fragment-match { display: flex; flex-direction: column; max-width: 100%; }
+.as-fragment-match > .as-formula { max-width: 100%; overflow-x: auto; }
+.as-condition-rule select { max-width: 100%; font: inherit; padding: .2rem; }
+.as-operation-controls select { max-width: 100%; min-height: 36px; padding: .2rem; border: 1px solid #94a3b8; border-radius: 6px; background: white; color: inherit; font: inherit; }
+.as-parts { display: flex; flex-wrap: wrap; gap: .3rem; margin: .35rem 0; }
+.as-part { display: inline-flex; align-items: center; gap: .3rem; max-width: 100%; padding: .15rem .4rem; border: 1px solid #cbd5e1; border-radius: 6px; cursor: pointer; }
+.as-part > span { overflow-x: auto; }
+.as-occurrences { color: #64748b; font-size: .8em; direction: rtl; white-space: nowrap; }
+.as-part:has(input:checked) { background: #eef2ff; border-color: #6366f1; }
+.as-part.as-part-match { background: #fef3c7; border-color: #d97706; }
+.as-part input { flex-shrink: 0; }
+.as-replacement > .ix-msg { flex-basis: 100%; }
+.as-result:empty, .as-action-preview:empty { display: none; }
+.as-result, .as-action-preview { margin: .35rem 0; }
+.as-suggestions { flex-basis: 100%; }
+.as-candidates { display: flex; flex-wrap: wrap; gap: .3rem; margin: .3rem 0; }
+.as-candidates .ix-btn { display: inline-flex; flex-wrap: wrap; align-items: center; gap: .5rem; max-width: 100%; }
+.as-candidates .ix-btn > span { min-width: 0; overflow-x: auto; }
+.as-candidates .ix-btn[aria-pressed="true"] { background: #eef2ff; border-color: #6366f1; }
+.as-suggestions summary, .as-alternatives summary { cursor: pointer; color: #4338ca; font-size: .85rem; }
+.as-abs-rule > p { margin: .35rem 0; }
+.as-rule-equivalence { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.as-rule-cases { display: flex; flex-direction: column; align-items: center; gap: .1rem; }
+.as-rule-link { display: inline-block; margin-inline-end: .8rem; }
+.as-or-expression { display: flex; flex-wrap: wrap; align-items: center; gap: .3rem; }
+.as-or-term { display: inline-flex; align-items: center; gap: .15rem; max-width: 100%; overflow-x: auto; }
+.as-or-choice[aria-pressed="true"], .as-abs-choice[aria-pressed="true"] { background: #e0e7ff; border-color: #4f46e5; box-shadow: 0 0 0 1px #4f46e5; }
+.as-abs-choice { max-width: 100%; overflow-x: auto; }
+.as-abs-rule .as-or-case { display: flex; flex-wrap: wrap; align-items: baseline; gap: .35rem; }
+.as-or-case { margin-top: .3rem; }
+.algebra-work .ix-btn { min-height: 34px; padding: .2rem .5rem; font-size: .85rem; }
+.as-actions { margin-top: .4rem; }
+.as-justification { margin: .35rem 0; }
+.as-justification-entry { margin: .4rem 0; direction: rtl; }
+.as-editor-head { display: flex; align-items: center; justify-content: space-between; gap: .4rem; font-size: .85rem; }
+.as-action-fields { display: flex; flex-wrap: wrap; align-items: flex-start; gap: .3rem; }
+.as-action-select { display: flex; flex-direction: column; gap: .15rem; min-width: 0; max-width: 100%; font-size: .85rem; }
+.as-action-select > span:first-child { line-height: 1.2rem; }
+.as-action-operand { flex: 0 1 9rem; }
+.as-delete-action { margin-top: 1.35rem; white-space: nowrap; }
+.as-action-details { margin-top: .35rem; min-width: 0; }
+.as-action-note:empty { display: none; }
+.as-action-select[hidden], .as-action-details[hidden], .as-action-options[hidden], .as-action-options > [hidden], .as-result-entry[hidden], .as-actions > [hidden] { display: none !important; }
+.as-justification-entry select { max-width: 100%; min-height: 2.4rem; padding: .2rem; border: 1px solid #94a3b8; border-radius: 6px; background: white; color: inherit; font: inherit; }
+.as-justification-value { text-align: left; min-height: 2.4rem; }
+.as-action-fields .as-delete-action { min-height: 2.4rem; }
+.as-justification-manual[hidden], .as-branches[hidden] { display: none !important; }
+.as-branches { grid-column: 2; min-width: 0; margin: .3rem 0; }
+.as-branches > summary { cursor: pointer; color: #4338ca; }
+.as-branch { margin: .5rem 0; padding: .3rem .6rem; border-inline-start: 3px solid #a5b4fc; background: #fafaff; }
+.as-branch-title { font-weight: 600; }
+.as-case-chooser, .as-case-exclusion { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem; }
+.as-case-exclusion { flex-basis: 100%; }
+.as-case-exclusion[hidden], .as-branch-body[hidden] { display: none !important; }
+.as-case-status { margin-inline-start: .6rem; font-size: .82rem; font-weight: normal; color: #475569; }
+.as-branch-closed { border-color: #16a34a; }
+.as-branch-closed .as-editor, .as-branch-closed .as-step:not(.as-accepted), .as-branch-closed .as-compact > button, .as-branch-closed .algebra-work > .ix-bar { display: none !important; }
+.as-case-chooser [aria-pressed="true"] { background: #e0e7ff; border-color: #4f46e5; }
+.as-step { margin-inline-start: calc(var(--case-depth, 0) * .8rem); }
+.as-source-reference, .as-close-case { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; margin: .3rem 0; }
+.as-source-reference[hidden] { display: none !important; }
+.as-source-preview { margin: 0; max-width: 100%; overflow-x: auto; font-size: .95em; }
+.as-source-reference select, .as-close-case select { max-width: 100%; padding: .25rem; border: 1px solid #94a3b8; border-radius: 6px; background: white; color: inherit; font: inherit; }
+.as-case-choice[aria-pressed="true"] { background: #e0e7ff; border-color: #4f46e5; box-shadow: 0 0 0 1px #4f46e5; }
+.pw-start > .as-step-label { margin-inline-end: .6rem; }
+.composition-fields { display: flex; flex-wrap: wrap; gap: .6rem; margin: .3rem 0; }
+.composition-field { display: inline-flex; align-items: center; gap: .2rem; max-width: 100%; }
+.composition-ui { margin: .4rem 0; }
+.as-assumption { margin: .2rem 0; color: #475569; overflow-x: auto; }
+.as-branch .pw { margin: .3rem 0; }
+@media (max-width: 640px) { .as-compact { grid-template-columns: minmax(0, 1fr) auto; } .as-compact > .as-reason { grid-column: 1 / -1; grid-row: 2; } .as-compact > .ix-btn { grid-column: 2; grid-row: 1; } }
+@media (max-width: 480px) { .as-branches { grid-column: 1; } .as-branch { padding-inline: .3rem; } }
+@media (max-width: 480px) { .as-step { grid-template-columns: minmax(0, 1fr); } .as-step-label, .as-editor, .as-compact { grid-column: 1; } }
 .ix-preview:empty { display: none; }
 .ix-preview { font-size: 1.05em; color: #1e293b; margin: .25rem 0; }
 .ix-preview.ix-preview-partial { opacity: .5; }
-.ix-or { margin: 0 .35em; font-weight: 600; }
+.ix-local-keys { display: flex; position: absolute; top: 100%; z-index: 30; box-sizing: border-box; max-width: calc(100vw - 24px); padding: .5rem; margin: .25rem 0 0; background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 3px 12px #0f172a20; white-space: normal; }
+.ix-or { display: inline-block; margin: 0 .45em; direction: rtl; unicode-bidi: isolate; white-space: nowrap; font-weight: 600; }
+.ix-case { display: inline-block; direction: ltr; unicode-bidi: isolate; white-space: nowrap; }
 .fill > .hint, .derive > .hint {
   margin: .4rem 0; padding: .4rem .7rem; border-radius: 8px;
   border: 1px dashed #d97706; background: #fffbeb;
@@ -651,7 +795,7 @@ a.xref-open { background: #ede9fe; border-radius: 3px; }
 .ord-card > p:first-child { margin-top: 0; }
 .ord-empty { color: #94a3b8; font-style: italic; list-style: none; }
 @media print {
-  .blank-input, .blank-mark, .ix-panel, .dv-bar, .dv-in, .ord-ui { display: none !important; }
+  .blank-input, .blank-mark, .ix-panel, .ix-preview, .ix-local-keys, .dv-bar, .dv-in, .ord-ui { display: none !important; }
   .blank-answer { display: inline !important; background: transparent; text-decoration: underline; }
   .ix-hidden { display: block !important; }
 }
@@ -962,7 +1106,9 @@ window.addEventListener("message", function (e) {
   var frames = document.querySelectorAll("iframe.widget-frame");
   for (var i = 0; i < frames.length; i++) {
     if (frames[i].contentWindow === e.source) {
-      frames[i].style.height = Math.max(320, Math.min(2000, d.height)) + "px";
+      var minimum = frames[i].getAttribute("data-min-height");
+      minimum = minimum === null ? 320 : Math.max(0, Number(minimum) || 0);
+      frames[i].style.height = Math.max(minimum, Math.min(2000, d.height)) + "px";
       return;
     }
   }
@@ -999,20 +1145,20 @@ window.Quarto = {
 };
 </script>
 
-<script id="book-toc-data" type="application/json">[{"file":"01-Introduction.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#מערכות-המספרים-מהטבעיים-אל-הממשיים\" id=\"toc-מערכות-המספרים-מהטבעיים-אל-הממשיים\" class=\"nav-link active\" data-scroll-target=\"#מערכות-המספרים-מהטבעיים-אל-הממשיים\">\u003cspan class=\"header-section-number\">1.1\u003c/span> מערכות המספרים: מהטבעיים אל הממשיים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#ספירה-המספרים-הטבעיים-השלמים-והרציונליים\" id=\"toc-ספירה-המספרים-הטבעיים-השלמים-והרציונליים\" class=\"nav-link\" data-scroll-target=\"#ספירה-המספרים-הטבעיים-השלמים-והרציונליים\">ספירה: המספרים הטבעיים, השלמים והרציונליים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מדידה-המספרים-האי-רציונליים\" id=\"toc-מדידה-המספרים-האי-רציונליים\" class=\"nav-link\" data-scroll-target=\"#מדידה-המספרים-האי-רציונליים\">מדידה: המספרים האי-רציונליים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הישר-הממשי\" id=\"toc-הישר-הממשי\" class=\"nav-link\" data-scroll-target=\"#הישר-הממשי\">הישר הממשי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים\" id=\"toc-תרגילים\" class=\"nav-link\" data-scroll-target=\"#תרגילים\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#קבוצות-וקטעים\" id=\"toc-קבוצות-וקטעים\" class=\"nav-link\" data-scroll-target=\"#קבוצות-וקטעים\">\u003cspan class=\"header-section-number\">1.2\u003c/span> קבוצות וקטעים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#רישום-של-קבוצות\" id=\"toc-רישום-של-קבוצות\" class=\"nav-link\" data-scroll-target=\"#רישום-של-קבוצות\">רישום של קבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#שוויון-קבוצות\" id=\"toc-שוויון-קבוצות\" class=\"nav-link\" data-scroll-target=\"#שוויון-קבוצות\">שוויון קבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הכלה\" id=\"toc-הכלה\" class=\"nav-link\" data-scroll-target=\"#הכלה\">הכלה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#פעולות-על-קבוצות\" id=\"toc-פעולות-על-קבוצות\" class=\"nav-link\" data-scroll-target=\"#פעולות-על-קבוצות\">פעולות על קבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#קטעים\" id=\"toc-קטעים\" class=\"nav-link\" data-scroll-target=\"#קטעים\">קטעים\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#סרטוט-קטעים\" id=\"toc-סרטוט-קטעים\" class=\"nav-link\" data-scroll-target=\"#סרטוט-קטעים\">סרטוט קטעים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-1\" id=\"toc-תרגילים-1\" class=\"nav-link\" data-scroll-target=\"#תרגילים-1\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#ערך-מוחלט\" id=\"toc-ערך-מוחלט\" class=\"nav-link\" data-scroll-target=\"#ערך-מוחלט\">\u003cspan class=\"header-section-number\">1.3\u003c/span> ערך מוחלט\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#כללי-אי-שוויונים\" id=\"toc-כללי-אי-שוויונים\" class=\"nav-link\" data-scroll-target=\"#כללי-אי-שוויונים\">כללי אי-שוויונים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#ערך-מוחלט-מרחק-וקטעים\" id=\"toc-ערך-מוחלט-מרחק-וקטעים\" class=\"nav-link\" data-scroll-target=\"#ערך-מוחלט-מרחק-וקטעים\">ערך מוחלט, מרחק וקטעים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-2\" id=\"toc-תרגילים-2\" class=\"nav-link\" data-scroll-target=\"#תרגילים-2\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-וגרפים\" id=\"toc-פונקציות-וגרפים\" class=\"nav-link\" data-scroll-target=\"#פונקציות-וגרפים\">\u003cspan class=\"header-section-number\">1.4\u003c/span> פונקציות וגרפים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#המישור-מכפלה-קרטזית\" id=\"toc-המישור-מכפלה-קרטזית\" class=\"nav-link\" data-scroll-target=\"#המישור-מכפלה-קרטזית\">המישור: מכפלה קרטזית\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרף-של-פונקציה\" id=\"toc-הגרף-של-פונקציה\" class=\"nav-link\" data-scroll-target=\"#הגרף-של-פונקציה\">הגרף של פונקציה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציית-הסימן-והערך-השלם\" id=\"toc-פונקציית-הסימן-והערך-השלם\" class=\"nav-link\" data-scroll-target=\"#פונקציית-הסימן-והערך-השלם\">פונקציית הסימן והערך השלם\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מה-אינו-פונקציה\" id=\"toc-מה-אינו-פונקציה\" class=\"nav-link\" data-scroll-target=\"#מה-אינו-פונקציה\">מה אינו פונקציה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תחום-ההגדרה-הטבעי\" id=\"toc-תחום-ההגדרה-הטבעי\" class=\"nav-link\" data-scroll-target=\"#תחום-ההגדרה-הטבעי\">תחום ההגדרה הטבעי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-3\" id=\"toc-תרגילים-3\" class=\"nav-link\" data-scroll-target=\"#תרגילים-3\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-זוגיות-ואי-זוגיות\" id=\"toc-פונקציות-זוגיות-ואי-זוגיות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-זוגיות-ואי-זוגיות\">\u003cspan class=\"header-section-number\">1.5\u003c/span> פונקציות זוגיות ואי-זוגיות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-4\" id=\"toc-תרגילים-4\" class=\"nav-link\" data-scroll-target=\"#תרגילים-4\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הזזה-ומתיחה-של-גרפים\" id=\"toc-הזזה-ומתיחה-של-גרפים\" class=\"nav-link\" data-scroll-target=\"#הזזה-ומתיחה-של-גרפים\">\u003cspan class=\"header-section-number\">1.6\u003c/span> הזזה ומתיחה של גרפים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-5\" id=\"toc-תרגילים-5\" class=\"nav-link\" data-scroll-target=\"#תרגילים-5\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הרכבת-פונקציות\" id=\"toc-הרכבת-פונקציות\" class=\"nav-link\" data-scroll-target=\"#הרכבת-פונקציות\">\u003cspan class=\"header-section-number\">1.7\u003c/span> הרכבת פונקציות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-6\" id=\"toc-תרגילים-6\" class=\"nav-link\" data-scroll-target=\"#תרגילים-6\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פולינומים-ושורשיהם\" id=\"toc-פולינומים-ושורשיהם\" class=\"nav-link\" data-scroll-target=\"#פולינומים-ושורשיהם\">\u003cspan class=\"header-section-number\">1.8\u003c/span> פולינומים ושורשיהם\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-7\" id=\"toc-תרגילים-7\" class=\"nav-link\" data-scroll-target=\"#תרגילים-7\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הפונקציות-הטריגונומטריות\" id=\"toc-הפונקציות-הטריגונומטריות\" class=\"nav-link\" data-scroll-target=\"#הפונקציות-הטריגונומטריות\">\u003cspan class=\"header-section-number\">1.9\u003c/span> הפונקציות הטריגונומטריות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#רדיאנים\" id=\"toc-רדיאנים\" class=\"nav-link\" data-scroll-target=\"#רדיאנים\">רדיאנים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#ההגדרה-הגאומטרית\" id=\"toc-ההגדרה-הגאומטרית\" class=\"nav-link\" data-scroll-target=\"#ההגדרה-הגאומטרית\">ההגדרה הגאומטרית\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מה-רואים-בציור\" id=\"toc-מה-רואים-בציור\" class=\"nav-link\" data-scroll-target=\"#מה-רואים-בציור\">מה רואים בציור\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#ערכים-מיוחדים\" id=\"toc-ערכים-מיוחדים\" class=\"nav-link\" data-scroll-target=\"#ערכים-מיוחדים\">ערכים מיוחדים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרפים\" id=\"toc-הגרפים\" class=\"nav-link\" data-scroll-target=\"#הגרפים\">הגרפים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#טנגנס\" id=\"toc-טנגנס\" class=\"nav-link\" data-scroll-target=\"#טנגנס\">טנגנס\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הזזה-ומתיחה-של-פונקציות-טריגונומטריות\" id=\"toc-הזזה-ומתיחה-של-פונקציות-טריגונומטריות\" class=\"nav-link\" data-scroll-target=\"#הזזה-ומתיחה-של-פונקציות-טריגונומטריות\">הזזה ומתיחה של פונקציות טריגונומטריות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-8\" id=\"toc-תרגילים-8\" class=\"nav-link\" data-scroll-target=\"#תרגילים-8\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הפונקציה-המעריכית\" id=\"toc-הפונקציה-המעריכית\" class=\"nav-link\" data-scroll-target=\"#הפונקציה-המעריכית\">\u003cspan class=\"header-section-number\">1.10\u003c/span> הפונקציה המעריכית\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#חזקות-עם-מעריך-שאינו-טבעי\" id=\"toc-חזקות-עם-מעריך-שאינו-טבעי\" class=\"nav-link\" data-scroll-target=\"#חזקות-עם-מעריך-שאינו-טבעי\">חזקות עם מעריך שאינו טבעי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרפים-1\" id=\"toc-הגרפים-1\" class=\"nav-link\" data-scroll-target=\"#הגרפים-1\">הגרפים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-9\" id=\"toc-תרגילים-9\" class=\"nav-link\" data-scroll-target=\"#תרגילים-9\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-הפוכות\" id=\"toc-פונקציות-הפוכות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-הפוכות\">\u003cspan class=\"header-section-number\">1.11\u003c/span> פונקציות הפוכות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-10\" id=\"toc-תרגילים-10\" class=\"nav-link\" data-scroll-target=\"#תרגילים-10\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-נוספות\" id=\"toc-פונקציות-נוספות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-נוספות\">\u003cspan class=\"header-section-number\">1.12\u003c/span> פונקציות נוספות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#לוגריתמים\" id=\"toc-לוגריתמים\" class=\"nav-link\" data-scroll-target=\"#לוגריתמים\">לוגריתמים\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#חוקי-הלוגריתמים\" id=\"toc-חוקי-הלוגריתמים\" class=\"nav-link\" data-scroll-target=\"#חוקי-הלוגריתמים\">חוקי הלוגריתמים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרף\" id=\"toc-הגרף\" class=\"nav-link\" data-scroll-target=\"#הגרף\">הגרף\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#חזקות-ושורשים\" id=\"toc-חזקות-ושורשים\" class=\"nav-link\" data-scroll-target=\"#חזקות-ושורשים\">חזקות ושורשים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-רציונליות\" id=\"toc-פונקציות-רציונליות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-רציונליות\">פונקציות רציונליות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הפונקציות-הטריגונומטריות-ההפוכות\" id=\"toc-הפונקציות-הטריגונומטריות-ההפוכות\" class=\"nav-link\" data-scroll-target=\"#הפונקציות-הטריגונומטריות-ההפוכות\">הפונקציות הטריגונומטריות ההפוכות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-11\" id=\"toc-תרגילים-11\" class=\"nav-link\" data-scroll-target=\"#תרגילים-11\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"},{"file":"02-Sequences.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#סדרות\" id=\"toc-סדרות\" class=\"nav-link active\" data-scroll-target=\"#סדרות\">\u003cspan class=\"header-section-number\">2.1\u003c/span> סדרות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים\" id=\"toc-תרגילים\" class=\"nav-link\" data-scroll-target=\"#תרגילים\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#גבול-של-סדרה\" id=\"toc-גבול-של-סדרה\" class=\"nav-link\" data-scroll-target=\"#גבול-של-סדרה\">\u003cspan class=\"header-section-number\">2.2\u003c/span> גבול של סדרה\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#שאיפה-לאינסוף\" id=\"toc-שאיפה-לאינסוף\" class=\"nav-link\" data-scroll-target=\"#שאיפה-לאינסוף\">שאיפה לאינסוף\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מה-עושים-עם-גבול\" id=\"toc-מה-עושים-עם-גבול\" class=\"nav-link\" data-scroll-target=\"#מה-עושים-עם-גבול\">מה עושים עם גבול\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-1\" id=\"toc-תרגילים-1\" class=\"nav-link\" data-scroll-target=\"#תרגילים-1\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#סדרות-סטנדרטיות\" id=\"toc-סדרות-סטנדרטיות\" class=\"nav-link\" data-scroll-target=\"#סדרות-סטנדרטיות\">\u003cspan class=\"header-section-number\">2.3\u003c/span> סדרות סטנדרטיות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-2\" id=\"toc-תרגילים-2\" class=\"nav-link\" data-scroll-target=\"#תרגילים-2\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#חשבון-גבולות-סנדוויץ-והשוואה\" id=\"toc-חשבון-גבולות-סנדוויץ-והשוואה\" class=\"nav-link\" data-scroll-target=\"#חשבון-גבולות-סנדוויץ-והשוואה\">\u003cspan class=\"header-section-number\">2.4\u003c/span> חשבון גבולות, סנדוויץ’ והשוואה\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#כלל-הסנדוויץ\" id=\"toc-כלל-הסנדוויץ\" class=\"nav-link\" data-scroll-target=\"#כלל-הסנדוויץ\">כלל הסנדוויץ’\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#השוואה\" id=\"toc-השוואה\" class=\"nav-link\" data-scroll-target=\"#השוואה\">השוואה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-3\" id=\"toc-תרגילים-3\" class=\"nav-link\" data-scroll-target=\"#תרגילים-3\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#קיום-ואי-קיום-של-גבול\" id=\"toc-קיום-ואי-קיום-של-גבול\" class=\"nav-link\" data-scroll-target=\"#קיום-ואי-קיום-של-גבול\">\u003cspan class=\"header-section-number\">2.5\u003c/span> קיום ואי-קיום של גבול\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#סדרות-מונוטוניות\" id=\"toc-סדרות-מונוטוניות\" class=\"nav-link\" data-scroll-target=\"#סדרות-מונוטוניות\">סדרות מונוטוניות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#המספר-e\" id=\"toc-המספר-e\" class=\"nav-link\" data-scroll-target=\"#המספר-e\">המספר e\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מתי-אין-גבול\" id=\"toc-מתי-אין-גבול\" class=\"nav-link\" data-scroll-target=\"#מתי-אין-גבול\">מתי אין גבול\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-4\" id=\"toc-תרגילים-4\" class=\"nav-link\" data-scroll-target=\"#תרגילים-4\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"},{"file":"index.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#פתח-דבר\" id=\"toc-פתח-דבר\" class=\"nav-link active\" data-scroll-target=\"#פתח-דבר\">פתח דבר\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#מקורות\" id=\"toc-מקורות\" class=\"nav-link\" data-scroll-target=\"#מקורות\">מקורות\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"}]</script>
+<script id="book-toc-data" type="application/json">[{"file":"01-Introduction.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#מערכות-המספרים-מהטבעיים-אל-הממשיים\" id=\"toc-מערכות-המספרים-מהטבעיים-אל-הממשיים\" class=\"nav-link active\" data-scroll-target=\"#מערכות-המספרים-מהטבעיים-אל-הממשיים\">\u003cspan class=\"header-section-number\">1.1\u003c/span> מערכות המספרים: מהטבעיים אל הממשיים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#ספירה-המספרים-הטבעיים-השלמים-והרציונליים\" id=\"toc-ספירה-המספרים-הטבעיים-השלמים-והרציונליים\" class=\"nav-link\" data-scroll-target=\"#ספירה-המספרים-הטבעיים-השלמים-והרציונליים\">ספירה: המספרים הטבעיים, השלמים והרציונליים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מדידה-המספרים-האי-רציונליים\" id=\"toc-מדידה-המספרים-האי-רציונליים\" class=\"nav-link\" data-scroll-target=\"#מדידה-המספרים-האי-רציונליים\">מדידה: המספרים האי-רציונליים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הישר-הממשי\" id=\"toc-הישר-הממשי\" class=\"nav-link\" data-scroll-target=\"#הישר-הממשי\">הישר הממשי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים\" id=\"toc-תרגילים\" class=\"nav-link\" data-scroll-target=\"#תרגילים\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#קבוצות-וקטעים\" id=\"toc-קבוצות-וקטעים\" class=\"nav-link\" data-scroll-target=\"#קבוצות-וקטעים\">\u003cspan class=\"header-section-number\">1.2\u003c/span> קבוצות וקטעים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#רישום-של-קבוצות\" id=\"toc-רישום-של-קבוצות\" class=\"nav-link\" data-scroll-target=\"#רישום-של-קבוצות\">רישום של קבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#שוויון-קבוצות\" id=\"toc-שוויון-קבוצות\" class=\"nav-link\" data-scroll-target=\"#שוויון-קבוצות\">שוויון קבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הכלה\" id=\"toc-הכלה\" class=\"nav-link\" data-scroll-target=\"#הכלה\">הכלה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#פעולות-על-קבוצות\" id=\"toc-פעולות-על-קבוצות\" class=\"nav-link\" data-scroll-target=\"#פעולות-על-קבוצות\">פעולות על קבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#קטעים-וקרניים\" id=\"toc-קטעים-וקרניים\" class=\"nav-link\" data-scroll-target=\"#קטעים-וקרניים\">קטעים וקרניים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#סרטוט-קבוצות-על-הישר\" id=\"toc-סרטוט-קבוצות-על-הישר\" class=\"nav-link\" data-scroll-target=\"#סרטוט-קבוצות-על-הישר\">סרטוט קבוצות על הישר\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#הקבוצה-הריקה\" id=\"toc-הקבוצה-הריקה\" class=\"nav-link\" data-scroll-target=\"#הקבוצה-הריקה\">הקבוצה הריקה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#נקודה-בודדת\" id=\"toc-נקודה-בודדת\" class=\"nav-link\" data-scroll-target=\"#נקודה-בודדת\">נקודה בודדת\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#כל-הישר\" id=\"toc-כל-הישר\" class=\"nav-link\" data-scroll-target=\"#כל-הישר\">כל הישר\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מוציאים-נקודה\" id=\"toc-מוציאים-נקודה\" class=\"nav-link\" data-scroll-target=\"#מוציאים-נקודה\">מוציאים נקודה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#קרניים\" id=\"toc-קרניים\" class=\"nav-link\" data-scroll-target=\"#קרניים\">קרניים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#קטעים\" id=\"toc-קטעים\" class=\"nav-link\" data-scroll-target=\"#קטעים\">קטעים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#כלי-הסרטוט\" id=\"toc-כלי-הסרטוט\" class=\"nav-link\" data-scroll-target=\"#כלי-הסרטוט\">כלי הסרטוט\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-1\" id=\"toc-תרגילים-1\" class=\"nav-link\" data-scroll-target=\"#תרגילים-1\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#ערך-מוחלט\" id=\"toc-ערך-מוחלט\" class=\"nav-link\" data-scroll-target=\"#ערך-מוחלט\">\u003cspan class=\"header-section-number\">1.3\u003c/span> אי־שוויונות וערך מוחלט\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#כללי-אי-שוויונים\" id=\"toc-כללי-אי-שוויונים\" class=\"nav-link\" data-scroll-target=\"#כללי-אי-שוויונים\">כללי אי-שוויונים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#ערך-מוחלט-מרחק-וקטעים\" id=\"toc-ערך-מוחלט-מרחק-וקטעים\" class=\"nav-link\" data-scroll-target=\"#ערך-מוחלט-מרחק-וקטעים\">ערך מוחלט, מרחק וקטעים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-2\" id=\"toc-תרגילים-2\" class=\"nav-link\" data-scroll-target=\"#תרגילים-2\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-וגרפים\" id=\"toc-פונקציות-וגרפים\" class=\"nav-link\" data-scroll-target=\"#פונקציות-וגרפים\">\u003cspan class=\"header-section-number\">1.4\u003c/span> פונקציות וגרפים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#המישור-מכפלה-קרטזית\" id=\"toc-המישור-מכפלה-קרטזית\" class=\"nav-link\" data-scroll-target=\"#המישור-מכפלה-קרטזית\">המישור: מכפלה קרטזית\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרף-של-פונקציה\" id=\"toc-הגרף-של-פונקציה\" class=\"nav-link\" data-scroll-target=\"#הגרף-של-פונקציה\">הגרף של פונקציה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציית-הסימן-והערך-השלם\" id=\"toc-פונקציית-הסימן-והערך-השלם\" class=\"nav-link\" data-scroll-target=\"#פונקציית-הסימן-והערך-השלם\">פונקציית הסימן והערך השלם\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מה-אינו-פונקציה\" id=\"toc-מה-אינו-פונקציה\" class=\"nav-link\" data-scroll-target=\"#מה-אינו-פונקציה\">מה אינו פונקציה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תחום-ההגדרה-הטבעי\" id=\"toc-תחום-ההגדרה-הטבעי\" class=\"nav-link\" data-scroll-target=\"#תחום-ההגדרה-הטבעי\">תחום ההגדרה הטבעי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-3\" id=\"toc-תרגילים-3\" class=\"nav-link\" data-scroll-target=\"#תרגילים-3\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הרכבת-פונקציות\" id=\"toc-הרכבת-פונקציות\" class=\"nav-link\" data-scroll-target=\"#הרכבת-פונקציות\">\u003cspan class=\"header-section-number\">1.5\u003c/span> בניית פונקציות מפונקציות פשוטות יותר\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#הרכבת-פונקציות-1\" id=\"toc-הרכבת-פונקציות-1\" class=\"nav-link\" data-scroll-target=\"#הרכבת-פונקציות-1\">הרכבת פונקציות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-4\" id=\"toc-תרגילים-4\" class=\"nav-link\" data-scroll-target=\"#תרגילים-4\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-זוגיות-ואי-זוגיות\" id=\"toc-פונקציות-זוגיות-ואי-זוגיות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-זוגיות-ואי-זוגיות\">\u003cspan class=\"header-section-number\">1.6\u003c/span> פונקציות זוגיות ואי-זוגיות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-5\" id=\"toc-תרגילים-5\" class=\"nav-link\" data-scroll-target=\"#תרגילים-5\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הזזה-ומתיחה-של-גרפים\" id=\"toc-הזזה-ומתיחה-של-גרפים\" class=\"nav-link\" data-scroll-target=\"#הזזה-ומתיחה-של-גרפים\">\u003cspan class=\"header-section-number\">1.7\u003c/span> הזזה ומתיחה של גרפים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-6\" id=\"toc-תרגילים-6\" class=\"nav-link\" data-scroll-target=\"#תרגילים-6\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פולינומים-ושורשיהם\" id=\"toc-פולינומים-ושורשיהם\" class=\"nav-link\" data-scroll-target=\"#פולינומים-ושורשיהם\">\u003cspan class=\"header-section-number\">1.8\u003c/span> פולינומים ושורשיהם\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-7\" id=\"toc-תרגילים-7\" class=\"nav-link\" data-scroll-target=\"#תרגילים-7\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הפונקציות-הטריגונומטריות\" id=\"toc-הפונקציות-הטריגונומטריות\" class=\"nav-link\" data-scroll-target=\"#הפונקציות-הטריגונומטריות\">\u003cspan class=\"header-section-number\">1.9\u003c/span> הפונקציות הטריגונומטריות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#רדיאנים\" id=\"toc-רדיאנים\" class=\"nav-link\" data-scroll-target=\"#רדיאנים\">רדיאנים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#ההגדרה-הגאומטרית\" id=\"toc-ההגדרה-הגאומטרית\" class=\"nav-link\" data-scroll-target=\"#ההגדרה-הגאומטרית\">ההגדרה הגאומטרית\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מה-רואים-בציור\" id=\"toc-מה-רואים-בציור\" class=\"nav-link\" data-scroll-target=\"#מה-רואים-בציור\">מה רואים בציור\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#ערכים-מיוחדים\" id=\"toc-ערכים-מיוחדים\" class=\"nav-link\" data-scroll-target=\"#ערכים-מיוחדים\">ערכים מיוחדים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרפים\" id=\"toc-הגרפים\" class=\"nav-link\" data-scroll-target=\"#הגרפים\">הגרפים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#טנגנס\" id=\"toc-טנגנס\" class=\"nav-link\" data-scroll-target=\"#טנגנס\">טנגנס\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הזזה-ומתיחה-של-פונקציות-טריגונומטריות\" id=\"toc-הזזה-ומתיחה-של-פונקציות-טריגונומטריות\" class=\"nav-link\" data-scroll-target=\"#הזזה-ומתיחה-של-פונקציות-טריגונומטריות\">הזזה ומתיחה של פונקציות טריגונומטריות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-8\" id=\"toc-תרגילים-8\" class=\"nav-link\" data-scroll-target=\"#תרגילים-8\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הפונקציה-המעריכית\" id=\"toc-הפונקציה-המעריכית\" class=\"nav-link\" data-scroll-target=\"#הפונקציה-המעריכית\">\u003cspan class=\"header-section-number\">1.10\u003c/span> הפונקציה המעריכית\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#חזקות-עם-מעריך-שאינו-טבעי\" id=\"toc-חזקות-עם-מעריך-שאינו-טבעי\" class=\"nav-link\" data-scroll-target=\"#חזקות-עם-מעריך-שאינו-טבעי\">חזקות עם מעריך שאינו טבעי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרפים-1\" id=\"toc-הגרפים-1\" class=\"nav-link\" data-scroll-target=\"#הגרפים-1\">הגרפים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-9\" id=\"toc-תרגילים-9\" class=\"nav-link\" data-scroll-target=\"#תרגילים-9\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-הפוכות\" id=\"toc-פונקציות-הפוכות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-הפוכות\">\u003cspan class=\"header-section-number\">1.11\u003c/span> פונקציות הפוכות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-10\" id=\"toc-תרגילים-10\" class=\"nav-link\" data-scroll-target=\"#תרגילים-10\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-נוספות\" id=\"toc-פונקציות-נוספות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-נוספות\">\u003cspan class=\"header-section-number\">1.12\u003c/span> פונקציות נוספות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#לוגריתמים\" id=\"toc-לוגריתמים\" class=\"nav-link\" data-scroll-target=\"#לוגריתמים\">לוגריתמים\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#חוקי-הלוגריתמים\" id=\"toc-חוקי-הלוגריתמים\" class=\"nav-link\" data-scroll-target=\"#חוקי-הלוגריתמים\">חוקי הלוגריתמים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרף\" id=\"toc-הגרף\" class=\"nav-link\" data-scroll-target=\"#הגרף\">הגרף\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#חזקות-ושורשים\" id=\"toc-חזקות-ושורשים\" class=\"nav-link\" data-scroll-target=\"#חזקות-ושורשים\">חזקות ושורשים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-רציונליות\" id=\"toc-פונקציות-רציונליות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-רציונליות\">פונקציות רציונליות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הפונקציות-הטריגונומטריות-ההפוכות\" id=\"toc-הפונקציות-הטריגונומטריות-ההפוכות\" class=\"nav-link\" data-scroll-target=\"#הפונקציות-הטריגונומטריות-ההפוכות\">הפונקציות הטריגונומטריות ההפוכות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-11\" id=\"toc-תרגילים-11\" class=\"nav-link\" data-scroll-target=\"#תרגילים-11\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"},{"file":"02-Sequences.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#סדרות\" id=\"toc-סדרות\" class=\"nav-link active\" data-scroll-target=\"#סדרות\">\u003cspan class=\"header-section-number\">2.1\u003c/span> סדרות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים\" id=\"toc-תרגילים\" class=\"nav-link\" data-scroll-target=\"#תרגילים\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#גבול-של-סדרה\" id=\"toc-גבול-של-סדרה\" class=\"nav-link\" data-scroll-target=\"#גבול-של-סדרה\">\u003cspan class=\"header-section-number\">2.2\u003c/span> גבול של סדרה\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#שאיפה-לאינסוף\" id=\"toc-שאיפה-לאינסוף\" class=\"nav-link\" data-scroll-target=\"#שאיפה-לאינסוף\">שאיפה לאינסוף\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מה-עושים-עם-גבול\" id=\"toc-מה-עושים-עם-גבול\" class=\"nav-link\" data-scroll-target=\"#מה-עושים-עם-גבול\">מה עושים עם גבול\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-1\" id=\"toc-תרגילים-1\" class=\"nav-link\" data-scroll-target=\"#תרגילים-1\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#סדרות-סטנדרטיות\" id=\"toc-סדרות-סטנדרטיות\" class=\"nav-link\" data-scroll-target=\"#סדרות-סטנדרטיות\">\u003cspan class=\"header-section-number\">2.3\u003c/span> סדרות סטנדרטיות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-2\" id=\"toc-תרגילים-2\" class=\"nav-link\" data-scroll-target=\"#תרגילים-2\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#חשבון-גבולות-סנדוויץ-והשוואה\" id=\"toc-חשבון-גבולות-סנדוויץ-והשוואה\" class=\"nav-link\" data-scroll-target=\"#חשבון-גבולות-סנדוויץ-והשוואה\">\u003cspan class=\"header-section-number\">2.4\u003c/span> חשבון גבולות, סנדוויץ’ והשוואה\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#כלל-הסנדוויץ\" id=\"toc-כלל-הסנדוויץ\" class=\"nav-link\" data-scroll-target=\"#כלל-הסנדוויץ\">כלל הסנדוויץ’\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#השוואה\" id=\"toc-השוואה\" class=\"nav-link\" data-scroll-target=\"#השוואה\">השוואה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-3\" id=\"toc-תרגילים-3\" class=\"nav-link\" data-scroll-target=\"#תרגילים-3\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#קיום-ואי-קיום-של-גבול\" id=\"toc-קיום-ואי-קיום-של-גבול\" class=\"nav-link\" data-scroll-target=\"#קיום-ואי-קיום-של-גבול\">\u003cspan class=\"header-section-number\">2.5\u003c/span> קיום ואי-קיום של גבול\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#סדרות-מונוטוניות\" id=\"toc-סדרות-מונוטוניות\" class=\"nav-link\" data-scroll-target=\"#סדרות-מונוטוניות\">סדרות מונוטוניות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#המספר-e\" id=\"toc-המספר-e\" class=\"nav-link\" data-scroll-target=\"#המספר-e\">המספר e\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מתי-אין-גבול\" id=\"toc-מתי-אין-גבול\" class=\"nav-link\" data-scroll-target=\"#מתי-אין-גבול\">מתי אין גבול\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-4\" id=\"toc-תרגילים-4\" class=\"nav-link\" data-scroll-target=\"#תרגילים-4\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"},{"file":"index.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#פתח-דבר\" id=\"toc-פתח-דבר\" class=\"nav-link active\" data-scroll-target=\"#פתח-דבר\">פתח דבר\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#מקורות\" id=\"toc-מקורות\" class=\"nav-link\" data-scroll-target=\"#מקורות\">מקורות\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"}]</script>
 </head>
 
-<body class="nav-sidebar floating quarto-light">
+<body class="nav-sidebar floating quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Skip to main content</a>
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-  <nav class="quarto-secondary-nav">
+  <nav class="quarto-secondary-nav" aria-label="סרגל כלים">
     <div class="container-fluid d-flex">
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="הצג/הסתר את סרגל הניווט" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-Sequences.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">סדרות וגבולות</span></a></li></ol></nav>
-        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="הצג/הסתר את סרגל הניווט" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        <nav class="quarto-page-breadcrumbs" aria-label="נתיב"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-Sequences.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">סדרות וגבולות</span></a></li></ol></nav>
+        <a class="flex-grow-1" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="חפש" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
@@ -1023,7 +1169,7 @@ window.Quarto = {
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto" aria-label="אתר אינטרנט">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">חשיבה אנליטית — מערכי הרצאה</a> 
@@ -1064,7 +1210,7 @@ window.Quarto = {
 </li>
     </ul>
     </div>
-    <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="-1">
+    <nav id="TOC" role="doc-toc" aria-labelledby="toc-title" class="toc-active" data-toc-expanded="-1">
     <h2 id="toc-title">סעיפי הפרק</h2>
    
   <ul>
@@ -1103,7 +1249,7 @@ window.Quarto = {
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content" id="quarto-document-content" tabindex="-1">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -2254,10 +2400,10 @@ window.Quarto = {
 <p><strong>דוגמה 2.5.6 — חשבון גבולות עם <span class="math inline">\(e\)</span>.</strong></p>
 <p>חשבו את <span class="math inline">\(.\lim\limits_{n\to\infty} \left(3\left(1 + \frac{1}{n}\right)^n - \frac{2}{n}\right)\)</span></p>
 <div class="derive" data-limit="n" start="3(1+1/n)^n-2/n">
-<div class="step" data-line="3[e]-[0]">
+<div class="step" data-line="3[e]-[0]" data-allow-expression="true">
 <p>מחליפים כל סדרה סטנדרטית בגבול שלה, וגם את <span class="math inline">\(\left(1 + \frac{1}{n}\right)^n\)</span> ב-<span class="math inline">\(.e\)</span></p>
 </div>
-<div class="step" data-line="[3e]">
+<div class="step" data-line="[3e]" data-allow-expression="true">
 <p>מחשבים.</p>
 </div>
 </div>
@@ -2411,9 +2557,9 @@ window.Quarto = {
 <div id="box-q-e-limits" class="thmbox thmbox-question" title="גבולות עם $e$">
 <p><strong>שאלה 2.5.10 — גבולות עם <span class="math inline">\(e\)</span>.</strong></p>
 <div class="fill">
-<p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\(\lim\limits_{n\to\infty} 2\left(1 + \frac{1}{n}\right)^n =\)</span> <span class="blank" data-ans="2e"><span class="math inline">\(2e\)</span></span></span></p>
-<p><strong>(ב)</strong> <span class="fill-ltr"><span class="math inline">\(\lim\limits_{n\to\infty} \left(1 + \frac{1}{n}\right)^{2n} =\)</span> <span class="blank" data-ans="e^2"><span class="math inline">\(e^2\)</span></span></span></p>
-<p><strong>(ג)</strong> <span class="fill-ltr"><span class="math inline">\(\lim\limits_{n\to\infty} \left(\left(1 + \frac{1}{n}\right)^n + \frac{5}{n^2}\right) =\)</span> <span class="blank" data-ans="e"><span class="math inline">\(e\)</span></span></span></p>
+<p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\(\lim\limits_{n\to\infty} 2\left(1 + \frac{1}{n}\right)^n =\)</span> <span class="blank" data-ans="2e" data-allow-expression="true"><span class="math inline">\(2e\)</span></span></span></p>
+<p><strong>(ב)</strong> <span class="fill-ltr"><span class="math inline">\(\lim\limits_{n\to\infty} \left(1 + \frac{1}{n}\right)^{2n} =\)</span> <span class="blank" data-ans="e^2" data-allow-expression="true"><span class="math inline">\(e^2\)</span></span></span></p>
+<p><strong>(ג)</strong> <span class="fill-ltr"><span class="math inline">\(\lim\limits_{n\to\infty} \left(\left(1 + \frac{1}{n}\right)^n + \frac{5}{n^2}\right) =\)</span> <span class="blank" data-ans="e" data-allow-expression="true"><span class="math inline">\(e\)</span></span></span></p>
 <div class="hint">
 <p>ב-(ב): <span class="math inline">\(.\left(1 + \frac{1}{n}\right)^{2n} = \left(\left(1 + \frac{1}{n}\right)^n\right)^2\)</span></p>
 </div>
@@ -2654,7 +2800,8 @@ window.Quarto = {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
       // Inspect non-navigation links and adorn them if external
-     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
       for (var i=0; i<links.length; i++) {
         const link = links[i];
         if (!isInternal(link.href)) {
@@ -2663,8 +2810,69 @@ window.Quarto = {
           if (link.dataset.originalHref !== undefined) {
             link.href = link.dataset.originalHref;
           }
+          if (!link.classList.contains('no-external-icon')) {
+          }
         }
       }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
     function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
       const config = {
         allowHTML: true,
@@ -2678,6 +2886,7 @@ window.Quarto = {
         interactiveBorder: 10,
         theme: 'quarto',
         placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
       };
       if (contentFn) {
         config.content = contentFn;
@@ -2840,44 +3049,54 @@ window.Quarto = {
           const lineIds = lines.map((line) => {
             return targetCell + "-" + line;
           })
-          let top = null;
-          let height = null;
-          let parent = null;
+          // Each band is positioned against its own containing block, which is
+          // not the offsetParent of the lines, so place it from client rects.
+          const placeBand = (band, firstEl, lastEl, codeBlock) => {
+            const container = band.offsetParent;
+            if (container === null) {
+              return;
+            }
+            const containerRect = container.getBoundingClientRect();
+            // Reveal.js scales slides with a transform, so convert client
+            // pixels back to the CSS pixels of the container.
+            const scale = containerRect.height / container.offsetHeight || 1;
+            const firstRect = firstEl.getBoundingClientRect();
+            const lastRect = lastEl.getBoundingClientRect();
+            const top = (firstRect.top - containerRect.top) / scale - container.clientTop + container.scrollTop;
+            const height = (lastRect.bottom - firstRect.top) / scale;
+            band.style.top = top - 2 + "px";
+            band.style.height = height + 4 + "px";
+            if (codeBlock) {
+              // Without the copy button wrapper, the containing block is wider
+              // than the code block, so span the code block explicitly.
+              const blockRect = codeBlock.getBoundingClientRect();
+              band.style.left = (blockRect.left - containerRect.left) / scale - container.clientLeft + container.scrollLeft + "px";
+              band.style.width = blockRect.width / scale + "px";
+            }
+          };
           if (lineIds.length > 0) {
-              //compute the position of the single el (top and bottom and make a div)
-              const el = window.document.getElementById(lineIds[0]);
-              top = el.offsetTop;
-              height = el.offsetHeight;
-              parent = el.parentElement.parentElement;
-            if (lineIds.length > 1) {
-              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-              height = bottom - top;
+            const el = window.document.getElementById(lineIds[0]);
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const parent = el.parentElement.parentElement;
+            // cook up a div (if necessary) and position it
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
             }
-            if (top !== null && height !== null && parent !== null) {
-              // cook up a div (if necessary) and position it 
-              let div = window.document.getElementById("code-annotation-line-highlight");
-              if (div === null) {
-                div = window.document.createElement("div");
-                div.setAttribute("id", "code-annotation-line-highlight");
-                div.style.position = 'absolute';
-                parent.appendChild(div);
-              }
-              div.style.top = top - 2 + "px";
-              div.style.height = height + 4 + "px";
-              div.style.left = 0;
-              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-              if (gutterDiv === null) {
-                gutterDiv = window.document.createElement("div");
-                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-                gutterDiv.style.position = 'absolute';
-                const codeCell = window.document.getElementById(targetCell);
-                const gutter = codeCell.querySelector('.code-annotation-gutter');
-                gutter.appendChild(gutterDiv);
-              }
-              gutterDiv.style.top = top - 2 + "px";
-              gutterDiv.style.height = height + 4 + "px";
+            placeBand(div, el, lastEl, parent.closest("div.sourceCode") || parent);
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
             }
+            placeBand(gutterDiv, el, lastEl);
             selectedAnnoteEl = annoteEl;
           }
         };
@@ -2976,7 +3195,10 @@ window.Quarto = {
     }
   });
   </script>
-<nav class="page-navigation">
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"קוד הניתן לגלילה","output":"פלט הניתן לגלילה"};
+  </script>
+<nav class="page-navigation" aria-label="עמוד">
   <div class="nav-page nav-page-previous">
       <a href="./01-Introduction.html" class="pagination-link" aria-label="מספרים ממשיים ופונקציות">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">מספרים ממשיים ופונקציות</span></span>
