@@ -476,10 +476,12 @@ span.blank:not(.blank-ready) { text-decoration: underline; text-underline-offset
   box-sizing: content-box;
 }
 .blank-input:focus { border-color: #4f46e5; }
+.blank-input.ix-text-input { direction: rtl; }
 /* The stable wrapper keeps exercise state while its editor upgrades on focus. */
 .mi-control { display: inline-flex; max-width: 100%; vertical-align: middle; align-items: center; }
 .mi-control[hidden] { display: none !important; }
-.blank-entry { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; max-width: 100%; position: relative; }
+/* Anchor to the first item's baseline so a preview below cannot lift the input. */
+.blank-entry { display: inline-flex; flex-direction: column; align-items: center; vertical-align: baseline; max-width: 100%; position: relative; }
 .ix-field-preview, .sp-coordinate-preview { display: block; direction: ltr; unicode-bidi: isolate; text-align: center; max-width: 100%; overflow-x: auto; }
 .mi-control > input, .mi-control > math-field { width: 100%; min-width: 0; border: 0; padding: 0; margin: 0; background: transparent; color: inherit; font: inherit; text-align: inherit; }
 .mi-control > input:focus { outline: none; }
@@ -593,11 +595,41 @@ span.blank.warn .blank-mark { color: #b45309; }
 .pw-preview { overflow-x: auto; margin-top: .2rem; color: #475569; }
 .pw-preview:empty { display: none; }
 .pw-start, .pw-example { direction: ltr; text-align: center; overflow-x: auto; padding: .4rem; }
-.pw-solution { margin-top: .6rem; }
-.pw-solution summary { cursor: pointer; color: #4338ca; }
-.pw-workspace { margin: .5rem 0; }
-.pw-workspace > summary { cursor: pointer; color: #4338ca; font-weight: 600; }
-.pw-workspace > summary:focus-visible { outline: 2px solid #d97706; outline-offset: 2px; }
+.pw-views { margin: .65rem 0; min-width: 0; }
+.pw-view-controls, .pw-tabs { display: flex; align-items: center; flex-wrap: wrap; gap: .4rem; }
+.pw-view-controls { margin-bottom: .4rem; }
+.pw-views [hidden] { display: none !important; }
+.pw-tab, .pw-compare-button, .pw-view-close { font: inherit; cursor: pointer; line-height: 1.4; }
+.pw-tab { display: inline-flex; align-items: center; gap: .45rem; padding: .5rem .85rem; border: 1px solid; border-radius: .75rem; font-weight: 600; }
+.pw-tab::before { font-size: 1.25em; line-height: 1; }
+.pw-tab-work::before { content: "✎"; }
+.pw-tab-model::before { content: "▤"; }
+.pw-tab-work { color: #6d28d9; background: #f5f3ff; border-color: #c4b5fd; }
+.pw-tab-model { color: #0e7490; background: #ecfeff; border-color: #67e8f9; }
+.pw-tab-work:hover { background: #ede9fe; }
+.pw-tab-model:hover { background: #cffafe; }
+.pw-tab-work[aria-selected="true"] { color: white; background: #6d28d9; border-color: #6d28d9; }
+.pw-tab-model[aria-selected="true"] { color: white; background: #0e7490; border-color: #0e7490; }
+.pw-tab:focus-visible, .pw-compare-button:focus-visible, .pw-view-close:focus-visible { outline: 3px solid #d97706; outline-offset: 3px; }
+.pw-compare-button, .pw-view-close { padding: .35rem .55rem; border: 1px solid #cbd5e1; border-radius: .6rem; color: #475569; background: #fff; font-size: .85rem; }
+.pw-compare-button { margin-inline-start: auto; }
+.pw-compare-button::before { content: "⇄"; margin-inline-end: .35rem; }
+.pw-compare-button:hover, .pw-view-close:hover { background: #f1f5f9; }
+.pw-compare-title { font-weight: 600; color: #475569; }
+.pw-view-panels { min-width: 0; }
+.pw-view-panel { min-width: 0; margin: 0; padding: .65rem; border: 1px solid #cbd5e1; border-radius: .75rem; background: #fff; }
+.pw-view-panel:focus-visible { outline: 2px solid #d97706; outline-offset: 2px; }
+.pw-workspace { border-top: 3px solid #8b5cf6; }
+.pw-solution { border-top: 3px solid #0891b2; }
+.pw-panel-title { margin: 0 0 .5rem; font-size: 1rem; font-weight: 600; }
+.pw-workspace > .pw-panel-title { color: #6d28d9; }
+.pw-solution > .pw-panel-title { color: #0e7490; }
+.pw-comparing .pw-view-panels { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; gap: .65rem; }
+.pw-comparing .as-compact { grid-template-columns: minmax(0, 1fr) auto; }
+.pw-comparing .as-compact > .as-reason { grid-column: 1 / -1; grid-row: 2; }
+.pw-comparing .as-compact > .ix-btn { grid-column: 2; grid-row: 1; }
+@media (max-width: 760px) { .pw-comparing .pw-view-panels { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 480px) { .pw-view-panel { padding: .4rem; } .pw-tab { padding: .4rem .6rem; font-size: .9rem; } }
 .pw-solution > .step { margin: .3rem 0 .8rem; }
 .pw-help { margin: .4rem 0; padding: .35rem .6rem; border: 1px solid #cbd5e1; border-radius: 8px; background: #f8fafc; font-size: .9rem; direction: rtl; }
 .pw-help > summary { cursor: pointer; color: #4338ca; }
@@ -605,7 +637,7 @@ span.blank.warn .blank-mark { color: #b45309; }
 .pw-help > ol { margin: .4rem 0 .1rem; padding-inline-start: 1.4rem; }
 .pw-help li + li { margin-top: .35rem; }
 .pw-hints:not(:empty) { background: #fffbeb; border-inline-start: 3px solid #d97706; padding: .5rem; }
-.as-step { display: grid; grid-template-columns: 3.5em minmax(0, 1fr); gap: .4rem; direction: rtl; }
+.as-step, .as-given { display: grid; grid-template-columns: 3.5em minmax(0, 1fr); gap: .4rem; direction: rtl; }
 .as-step-label { grid-column: 1; grid-row: 1; padding-top: .3rem; color: #64748b; font-size: .85rem; }
 .as-editor, .as-compact { grid-column: 2; min-width: 0; }
 .as-editor[hidden], .as-compact[hidden], .as-field[hidden] { display: none !important; }
@@ -702,19 +734,21 @@ span.blank.warn .blank-mark { color: #b45309; }
 .as-case-chooser [aria-pressed="true"] { background: #e0e7ff; border-color: #4f46e5; }
 .as-step { margin-inline-start: calc(var(--case-depth, 0) * .8rem); }
 .as-source-reference, .as-close-case { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; margin: .3rem 0; }
+.as-source-reference > .as-action-select, .as-close-case > .as-action-select { flex-direction: row; align-items: center; gap: .4rem; margin: 0; }
+.as-source-reference > .as-action-select > span, .as-close-case > .as-action-select > span { flex-shrink: 0; }
 .as-source-reference[hidden] { display: none !important; }
 .as-source-preview { margin: 0; max-width: 100%; overflow-x: auto; font-size: .95em; }
-.as-source-reference select, .as-close-case select { max-width: 100%; padding: .25rem; border: 1px solid #94a3b8; border-radius: 6px; background: white; color: inherit; font: inherit; }
+.as-source-reference select, .as-close-case select { min-width: 0; max-width: 100%; padding: .25rem; border: 1px solid #94a3b8; border-radius: 6px; background: white; color: inherit; font: inherit; }
 .as-case-choice[aria-pressed="true"] { background: #e0e7ff; border-color: #4f46e5; box-shadow: 0 0 0 1px #4f46e5; }
-.pw-start > .as-step-label { margin-inline-end: .6rem; }
-.composition-fields { display: flex; flex-wrap: wrap; gap: .6rem; margin: .3rem 0; }
-.composition-field { display: inline-flex; align-items: center; gap: .2rem; max-width: 100%; }
+.composition-fields { display: flex; flex-wrap: wrap; align-items: flex-start; gap: .6rem; margin: .3rem 0; }
+.composition-field { display: inline-flex; align-items: flex-start; gap: .2rem; max-width: 100%; }
+.composition-entry { width: 8.4em; }
 .composition-ui { margin: .4rem 0; }
 .as-assumption { margin: .2rem 0; color: #475569; overflow-x: auto; }
 .as-branch .pw { margin: .3rem 0; }
 @media (max-width: 640px) { .as-compact { grid-template-columns: minmax(0, 1fr) auto; } .as-compact > .as-reason { grid-column: 1 / -1; grid-row: 2; } .as-compact > .ix-btn { grid-column: 2; grid-row: 1; } }
 @media (max-width: 480px) { .as-branches { grid-column: 1; } .as-branch { padding-inline: .3rem; } }
-@media (max-width: 480px) { .as-step { grid-template-columns: minmax(0, 1fr); } .as-step-label, .as-editor, .as-compact { grid-column: 1; } }
+@media (max-width: 480px) { .as-step, .as-given { grid-template-columns: minmax(0, 1fr); } .as-step-label, .as-editor, .as-compact { grid-column: 1; } }
 .ix-preview:empty { display: none; }
 .ix-preview { font-size: 1.05em; color: #1e293b; margin: .25rem 0; }
 .ix-preview.ix-preview-partial { opacity: .5; }
@@ -3420,11 +3454,13 @@ window.Quarto = {
 </div>
 </div>
 <p><strong>(ד)</strong> פתרו את <span class="math inline">\(.|x - 2| = -1\)</span></p>
+<div class="derive" start="|x-2|=-1">
+<div class="step" data-line="∅">
+<p>אין פתרון: לפי <a href="#box-def-abs">הגדרה 1.3.1</a>, ערך מוחלט לעולם אינו שלילי.</p>
+</div>
+</div>
 <div class="fill">
 <p>קבוצת הפתרונות: <span class="blank" data-ans="{}"><span class="math inline">\(\emptyset\)</span></span></p>
-<div class="explain">
-<p>אין פתרון: ערך מוחלט לעולם אינו שלילי.</p>
-</div>
 </div>
 </div>
 <div class="thmbox thmbox-self-check">
@@ -3486,8 +3522,44 @@ window.Quarto = {
 </div>
 </div>
 </div>
+<div id="box-q-abs-rewrite" class="thmbox thmbox-question" title="להוריד את הערך המוחלט">
+<p><strong>שאלה 1.3.15 — להוריד את הערך המוחלט.</strong></p>
+<p><strong>(א)</strong> אם <span class="math inline">\(,x &lt; 2\)</span> אז <span class="math inline">\(|x - 2|\)</span> שווה:</p>
+<div class="tf-quiz" data-correct="2">
+<button type="button" class="tf-opt" data-val="1">\(x - 2\)</button>
+<button type="button" class="tf-opt" data-val="2">\(2 - x\)</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p>כאשר <span class="math inline">\(,x &lt; 2\)</span> הביטוי <span class="math inline">\(x - 2\)</span> שלילי, ולכן מורידים את המינוס: <span class="math inline">\(.|x - 2| = -(x - 2) = 2 - x\)</span> למשל, עבור <span class="math inline">\(x = 0\)</span> מתקבל <span class="math inline">\(.|{-}2| = 2 = 2 - 0\)</span></p>
+</div>
+</div>
+<p><strong>(ב)</strong> אם <span class="math inline">\(,x \ge 5\)</span> אז <span class="math inline">\(|5 - x|\)</span> שווה:</p>
+<div class="tf-quiz" data-correct="2">
+<button type="button" class="tf-opt" data-val="1">\(5 - x\)</button>
+<button type="button" class="tf-opt" data-val="2">\(x - 5\)</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p>כאשר <span class="math inline">\(,x \ge 5\)</span> הביטוי <span class="math inline">\(5 - x\)</span> אינו חיובי, ולכן <span class="math inline">\(.|5 - x| = -(5 - x) = x - 5\)</span></p>
+</div>
+</div>
+</div>
+<div id="box-q-abs-write" class="thmbox thmbox-question" title="מקטע לערך מוחלט">
+<p><strong>שאלה 1.3.16 — מקטע לערך מוחלט.</strong></p>
+<p>כתבו כל קטע בצורה <span class="math inline">\(|x - a| &lt; r\)</span> או <span class="math inline">\(.|x - a| \le r\)</span> (מצאו את האמצע ואת חצי האורך.)</p>
+<div class="fill">
+<p><strong>(א)</strong> <span class="math inline">\((2, 8)\)</span>: <span class="blank" data-ans="(2,8)" form="abs" data-w="10"><span class="math inline">\(|x - 5| &lt; 3\)</span></span></p>
+<p><strong>(ב)</strong> <span class="math inline">\([-1, 7]\)</span>: <span class="blank" data-ans="[-1,7]" form="abs" data-w="10"><span class="math inline">\(|x - 3| \le 4\)</span></span></p>
+<div class="hint">
+<p>האמצע של <span class="math inline">\((2, 8)\)</span> הוא <span class="math inline">\(,\frac{2 + 8}{2} = 5\)</span> והמרחק ממנו לכל קצה הוא <span class="math inline">\(.3\)</span></p>
+</div>
+<div class="explain">
+<p><strong>(א)</strong> הנקודות שמרחקן מ-<span class="math inline">\(5\)</span> קטן מ-<span class="math inline">\(:3\)</span> <span class="math inline">\(.|x - 5| &lt; 3\)</span></p>
+<p><strong>(ב)</strong> האמצע הוא <span class="math inline">\(,\frac{-1 + 7}{2} = 3\)</span> וחצי האורך הוא <span class="math inline">\(.4\)</span> הקצוות שייכים, ולכן <span class="math inline">\(.|x - 3| \le 4\)</span></p>
+</div>
+</div>
+</div>
 <div id="box-q-ineq-steps-1" class="thmbox thmbox-question" title="אי-שוויון, צעד אחר צעד">
-<p><strong>שאלה 1.3.15 — אי-שוויון, צעד אחר צעד.</strong></p>
+<p><strong>שאלה 1.3.17 — אי-שוויון, צעד אחר צעד.</strong></p>
 <p>פתרו את <span class="math inline">\(.5x - 4 \le 2x + 8\)</span></p>
 <div class="derive" start="5x-4<=2x+8">
 <div class="step" data-line="3x-4<=[8]">
@@ -3508,7 +3580,7 @@ window.Quarto = {
 </div>
 </div>
 <div id="box-q-ineq-steps-2" class="thmbox thmbox-question" title="שוב כיוון מתהפך">
-<p><strong>שאלה 1.3.16 — שוב כיוון מתהפך.</strong></p>
+<p><strong>שאלה 1.3.18 — שוב כיוון מתהפך.</strong></p>
 <p>פתרו את <span class="math inline">\(.4 - 3x \ge 10\)</span></p>
 <div class="derive" start="4-3x>=10">
 <div class="step" data-line="-3x>=[6]">
@@ -3526,7 +3598,7 @@ window.Quarto = {
 </div>
 </div>
 <div id="box-q-ineq-steps-3" class="thmbox thmbox-question" title="אי-שוויון כפול">
-<p><strong>שאלה 1.3.17 — אי-שוויון כפול.</strong></p>
+<p><strong>שאלה 1.3.19 — אי-שוויון כפול.</strong></p>
 <p>פתרו את <span class="math inline">\(.{-}1 &lt; 2x - 5 &lt; 7\)</span> כל פעולה מפעילים על שלושת החלקים יחד.</p>
 <div class="derive" start="-1<2x-5<7">
 <div class="step" data-line="[4]<2x<[12]">
@@ -3544,7 +3616,7 @@ window.Quarto = {
 </div>
 </div>
 <div id="box-q-abs" class="thmbox thmbox-question" title="משוואות ואי-שוויונים עם ערך מוחלט">
-<p><strong>שאלה 1.3.18 — משוואות ואי-שוויונים עם ערך מוחלט.</strong></p>
+<p><strong>שאלה 1.3.20 — משוואות ואי-שוויונים עם ערך מוחלט.</strong></p>
 <p>פתרו כל סעיף בעזרת <a href="#box-key-abs-solving">שיטת פתרון 1.3.11</a>.</p>
 <p><strong>(א)</strong> <span class="math inline">\(|x + 2| \le 4\)</span></p>
 <div class="derive" start="|x+2|<=4">
@@ -3620,42 +3692,6 @@ window.Quarto = {
 </div>
 <div class="fill">
 <p>כתבו וסרטטו את קבוצת הפתרונות: <span class="blank" data-ans="{-3/2}" data-plot="-3,-2,-1,0,1"><span class="math inline">\(\left\{-\frac{3}{2}\right\}\)</span></span></p>
-</div>
-</div>
-<div id="box-q-abs-write" class="thmbox thmbox-question" title="מקטע לערך מוחלט">
-<p><strong>שאלה 1.3.19 — מקטע לערך מוחלט.</strong></p>
-<p>כתבו כל קטע בצורה <span class="math inline">\(|x - a| &lt; r\)</span> או <span class="math inline">\(.|x - a| \le r\)</span> (מצאו את האמצע ואת חצי האורך.)</p>
-<div class="fill">
-<p><strong>(א)</strong> <span class="math inline">\((2, 8)\)</span>: <span class="blank" data-ans="(2,8)" form="abs" data-w="10"><span class="math inline">\(|x - 5| &lt; 3\)</span></span></p>
-<p><strong>(ב)</strong> <span class="math inline">\([-1, 7]\)</span>: <span class="blank" data-ans="[-1,7]" form="abs" data-w="10"><span class="math inline">\(|x - 3| \le 4\)</span></span></p>
-<div class="hint">
-<p>האמצע של <span class="math inline">\((2, 8)\)</span> הוא <span class="math inline">\(,\frac{2 + 8}{2} = 5\)</span> והמרחק ממנו לכל קצה הוא <span class="math inline">\(.3\)</span></p>
-</div>
-<div class="explain">
-<p><strong>(א)</strong> הנקודות שמרחקן מ-<span class="math inline">\(5\)</span> קטן מ-<span class="math inline">\(:3\)</span> <span class="math inline">\(.|x - 5| &lt; 3\)</span></p>
-<p><strong>(ב)</strong> האמצע הוא <span class="math inline">\(,\frac{-1 + 7}{2} = 3\)</span> וחצי האורך הוא <span class="math inline">\(.4\)</span> הקצוות שייכים, ולכן <span class="math inline">\(.|x - 3| \le 4\)</span></p>
-</div>
-</div>
-</div>
-<div id="box-q-abs-rewrite" class="thmbox thmbox-question" title="להוריד את הערך המוחלט">
-<p><strong>שאלה 1.3.20 — להוריד את הערך המוחלט.</strong></p>
-<p><strong>(א)</strong> אם <span class="math inline">\(,x &lt; 2\)</span> אז <span class="math inline">\(|x - 2|\)</span> שווה:</p>
-<div class="tf-quiz" data-correct="2">
-<button type="button" class="tf-opt" data-val="1">\(x - 2\)</button>
-<button type="button" class="tf-opt" data-val="2">\(2 - x\)</button>
-<div class="tf-feedback" aria-live="polite"></div>
-<div class="tf-why">
-<p>כאשר <span class="math inline">\(,x &lt; 2\)</span> הביטוי <span class="math inline">\(x - 2\)</span> שלילי, ולכן מורידים את המינוס: <span class="math inline">\(.|x - 2| = -(x - 2) = 2 - x\)</span> למשל, עבור <span class="math inline">\(x = 0\)</span> מתקבל <span class="math inline">\(.|{-}2| = 2 = 2 - 0\)</span></p>
-</div>
-</div>
-<p><strong>(ב)</strong> אם <span class="math inline">\(,x \ge 5\)</span> אז <span class="math inline">\(|5 - x|\)</span> שווה:</p>
-<div class="tf-quiz" data-correct="2">
-<button type="button" class="tf-opt" data-val="1">\(5 - x\)</button>
-<button type="button" class="tf-opt" data-val="2">\(x - 5\)</button>
-<div class="tf-feedback" aria-live="polite"></div>
-<div class="tf-why">
-<p>כאשר <span class="math inline">\(,x \ge 5\)</span> הביטוי <span class="math inline">\(5 - x\)</span> אינו חיובי, ולכן <span class="math inline">\(.|5 - x| = -(5 - x) = x - 5\)</span></p>
-</div>
 </div>
 </div>
 <div id="box-q-reciprocal-ineq" class="thmbox thmbox-question" title="שוב מקרים">
@@ -3844,16 +3880,50 @@ window.Quarto = {
 <iframe class="widget-frame" src="widgets/ch01/parabola-points.html" loading="lazy" title="מנקודות לגרף: הפרבולה"></iframe>
 <p>עם <span class="math inline">\(5\)</span> נקודות מתקבל קו שבור עם “פינות”. עם <span class="math inline">\(9\)</span> נקודות הפינות כבר קטנות, ועם <span class="math inline">\(41\)</span> נקודות הקו השבור כמעט אינו נבדל מהפרבולה. הגרף של <span class="math inline">\(x^2\)</span> הוא העקומה החלקה שהקווים השבורים האלה מתקרבים אליה.</p>
 </div>
-<p>הנה הגרפים של הפונקציות מ-<a href="#box-exm-functions">דוגמה 1.4.2</a>, ובהם מסומנות הנקודות שחישבנו:</p>
+<div class="thmbox thmbox-terminology" title="עיגול מלא ועיגול ריק בגרף">
+<p><strong>מונחים — עיגול מלא ועיגול ריק בגרף.</strong></p>
+<p>כמו בסרטוט קבוצות על הישר, <strong>עיגול מלא</strong> מסמן נקודה ששייכת לקבוצה, ו<strong>עיגול ריק</strong> מסמן נקודה שאינה שייכת לה. כאן הקבוצה היא הגרף, והנקודות הן זוגות <span class="math inline">\((x,y)\)</span>. למשל, עיגול מלא בנקודה <span class="math inline">\((2,7)\)</span> אומר ש-<span class="math inline">\(f(2)=7\)</span>.</p>
+<p>אין צורך לסמן עיגול מלא בכל נקודה: כל הנקודות שעל הקו הצבוע הן חלק מהגרף, מלבד נקודות שסומנו בעיגול ריק. עיגול מלא על הקו רק מדגיש נקודה.</p>
+</div>
+<div id="box-exm-function-graphs" class="thmbox thmbox-example" title="גרפים של פונקציות">
+<p><strong>דוגמה 1.4.8 — גרפים של פונקציות.</strong></p>
+<p>הנה הגרפים של ארבע הפונקציות מ-<a href="#box-exm-functions">דוגמה 1.4.2</a>.</p>
+<p><strong>(א)</strong> ישר: <span class="math inline">\(f(x)=3x+1\)</span>.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="figures/function-examples.png" class="img-fluid figure-img" style="width:85.0%" alt="ארבעה גרפים: ישר, פרבולה, צורת V, ופונקציה עם קפיצה באפס"></p>
-<figcaption>הגרפים של ארבע הפונקציות מהדוגמה: ישר, פרבולה, ערך מוחלט, ופונקציה עם קפיצה ב-<span class="math inline">\(x = 0\)</span>. עיגול מלא מסמן נקודה שעל הגרף, ועיגול ריק מסמן נקודה שאינה עליו.</figcaption>
+<p><img src="figures/function-example-linear.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="הישר y=3x+1, עם עיגולים מלאים בנקודות מינוס אחת מינוס שתיים, אפס אחת, ושתיים שבע" width="440"></p>
 </figure>
 </div>
-<div class="thmbox thmbox-terminology" title="עלייה וירידה">
+<p><strong>(ב)</strong> פרבולה: <span class="math inline">\(f(x)=x^2\)</span>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/function-example-square.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="הפרבולה y=x², עם עיגולים מלאים בכמה נקודות עליה, ובהן הראשית והנקודות שלוש תשע ומינוס שלוש תשע" width="440"></p>
+</figure>
+</div>
+<p><strong>(ג)</strong> ערך מוחלט: <span class="math inline">\(f(x)=|x|\)</span>. הגרף מורכב משתי קרניים שנפגשות בראשית.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/function-example-absolute.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="הגרף של הערך המוחלט בצורת V, עם עיגולים מלאים בנקודות מינוס שתיים שתיים, אפס אפס, ושתיים שתיים" width="440"></p>
+</figure>
+</div>
+<p><strong>(ד)</strong> פונקציה שמוגדרת בחלקים: <span class="math display">\[f(x)=\begin{cases}x+1 &amp; x&lt;0 \\ x^2 &amp; x\ge0.\end{cases}\]</span></p>
+<p>מציירים את הישר <span class="math inline">\(y=x+1\)</span> רק עבור <span class="math inline">\(x&lt;0\)</span>, ואת הפרבולה <span class="math inline">\(y=x^2\)</span> רק עבור <span class="math inline">\(x\ge0\)</span>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/function-example-piecewise.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="הישר y=x+1 משמאל לאפס מסתיים בעיגול ריק בנקודה אפס אחת; החצי הימני של הפרבולה y=x² מתחיל בעיגול מלא בנקודה אפס אפס" width="440"></p>
+</figure>
+</div>
+<p>ב-<span class="math inline">\(x=0\)</span> משתמשים בשורה השנייה, ולכן <span class="math inline">\(f(0)=0\)</span>: מסמנים <strong>עיגול מלא</strong> ב-<span class="math inline">\((0,0)\)</span>. הנקודה <span class="math inline">\((0,1)\)</span> אינה שייכת לגרף, כי השורה הראשונה חלה רק כש-<span class="math inline">\(x&lt;0\)</span>; מסמנים בה <strong>עיגול ריק</strong>. הפונקציה מוגדרת באפס, אבל ערכה שם הוא <span class="math inline">\(0\)</span>, ולא <span class="math inline">\(1\)</span>.</p>
+</div>
+<div id="box-term-increasing-decreasing" class="thmbox thmbox-terminology" title="עלייה וירידה">
 <p><strong>מונחים — עלייה וירידה.</strong></p>
-<p>פונקציה <strong>עולה ממש</strong> בקטע אם ככל ש-<span class="math inline">\(x\)</span> גדל, <span class="math inline">\(f(x)\)</span> גדל; היא <strong>יורדת ממש</strong> אם <span class="math inline">\(f(x)\)</span> קטן. למשל, <span class="math inline">\(x^2\)</span> יורדת ממש עד <span class="math inline">\(0\)</span> ועולה ממש מ-<span class="math inline">\(0\)</span> והלאה. בתיאורי הגרפים בפרק נקצר ונאמר ״עולה״ או ״יורדת״. כשמתירים גם שוויון בין ערכים, אומרים ״עולה במובן החלש״ או ״יורדת במובן החלש״.</p>
+<p>קוראים את הגרף <strong>משמאל לימין</strong>, כלומר בכיוון שבו <span class="math inline">\(x\)</span> גדל, ומשווים את הגבהים:</p>
+<ul>
+<li>פונקציה <strong>עולה ממש</strong> בקטע אם בכל בחירה של שתי נקודות על הגרף בקטע, הנקודה הימנית גבוהה יותר מהשמאלית. כלומר, קלט גדול יותר נותן פלט גדול יותר.</li>
+<li>פונקציה <strong>יורדת ממש</strong> בקטע אם בכל בחירה כזאת, הנקודה הימנית נמוכה יותר מהשמאלית. כלומר, קלט גדול יותר נותן פלט קטן יותר.</li>
+</ul>
+<p>למשל, <span class="math inline">\(x^2\)</span> יורדת ממש ב-<span class="math inline">\((-\infty,0]\)</span> ועולה ממש ב-<span class="math inline">\([0,\infty)\)</span>, כפי שרואים בפרבולה שבסעיף (ב) למעלה. היא אינה עולה או יורדת ממש על כל הישר: הכיוון משתנה ב-<span class="math inline">\(0\)</span>.</p>
+<p>בתיאורי הגרפים בפרק נקצר ונאמר ״עולה״ או ״יורדת״ במובן הזה. המילה <strong>ממש</strong> אומרת שאין שוויון בין הערכים בשתי נקודות שונות בקטע.</p>
 </div>
 <div class="thmbox thmbox-terminology" title="איכותי וכמותי">
 <p><strong>מונחים — איכותי וכמותי.</strong></p>
@@ -3864,12 +3934,12 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="פונקציית-הסימן-והערך-השלם">פונקציית הסימן והערך השלם</h3>
 <p>שתי פונקציות פשוטות נוספות, שמוגדרות בעזרת כלל ולא בעזרת נוסחה אחת.</p>
 <div id="box-def-sgn" class="thmbox thmbox-definition" title="פונקציית הסימן">
-<p><strong>הגדרה 1.4.8 — פונקציית הסימן.</strong></p>
+<p><strong>הגדרה 1.4.9 — פונקציית הסימן.</strong></p>
 <p><span class="term"><strong>פונקציית הסימן</strong></span> היא <span class="math display">\[.\operatorname{sgn}(x) = \begin{cases} 1 &amp; x &gt; 0 \\ 0 &amp; x = 0 \\ -1 &amp; x &lt; 0 \end{cases}\]</span></p>
 </div>
 <p>במילים: הפונקציה “שוכחת” את הגודל של המספר, ומשאירה רק את הסימן שלו.</p>
 <div id="box-exm-sgn" class="thmbox thmbox-example" title="פונקציית הסימן">
-<p><strong>דוגמה 1.4.9 — פונקציית הסימן.</strong></p>
+<p><strong>דוגמה 1.4.10 — פונקציית הסימן.</strong></p>
 <p><strong>(א)</strong> חשבו.</p>
 <div class="fill">
 <p><span class="fill-ltr"><span class="math inline">\(\operatorname{sgn}(-3.7) =\)</span> <span class="blank" data-ans="-1"><span class="math inline">\(-1\)</span></span></span> ו-<span class="fill-ltr"><span class="math inline">\(\operatorname{sgn}(\pi) =\)</span> <span class="blank" data-ans="1"><span class="math inline">\(1\)</span></span></span></p>
@@ -3892,12 +3962,12 @@ window.Quarto = {
 </details>
 </div>
 <div id="box-def-floor" class="thmbox thmbox-definition" title="הערך השלם (רצפה)">
-<p><strong>הגדרה 1.4.10 — הערך השלם (רצפה).</strong></p>
+<p><strong>הגדרה 1.4.11 — הערך השלם (רצפה).</strong></p>
 <p><span class="term"><strong>הערך השלם</strong></span> של <span class="math inline">\(,x\)</span> שמסומן <span class="math inline">\(,\lfloor x \rfloor\)</span> הוא המספר השלם הגדול ביותר שקטן או שווה ל-<span class="math inline">\(.x\)</span></p>
 </div>
 <p>על הישר: מתחילים ב-<span class="math inline">\(x\)</span> והולכים <strong>שמאלה</strong> עד שפוגשים את המספר השלם הראשון (או נשארים במקום, אם <span class="math inline">\(x\)</span> עצמו שלם).</p>
 <div id="box-exm-floor" class="thmbox thmbox-example" title="ערך שלם">
-<p><strong>דוגמה 1.4.11 — ערך שלם.</strong></p>
+<p><strong>דוגמה 1.4.12 — ערך שלם.</strong></p>
 <p>חשבו:</p>
 <div class="fill">
 <p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\(\lfloor 2.7 \rfloor =\)</span> <span class="blank" data-ans="2"><span class="math inline">\(2\)</span></span></span></p>
@@ -3943,7 +4013,7 @@ window.Quarto = {
 <p>עקומה במישור היא גרף של פונקציה אם ורק אם <strong>כל קו אנכי</strong> חותך אותה <strong>לכל היותר בנקודה אחת</strong>.</p>
 </div>
 <div id="box-exm-circle" class="thmbox thmbox-example" title="מעגל">
-<p><strong>דוגמה 1.4.12 — מעגל.</strong></p>
+<p><strong>דוגמה 1.4.13 — מעגל.</strong></p>
 <p>האם המעגל <span class="math inline">\(x^2 + y^2 = 4\)</span> (מרכזו בראשית ורדיוסו <span class="math inline">\(2\)</span>) הוא גרף של פונקציה? רמז: נסו את הקו האנכי <span class="math inline">\(.x = 1\)</span></p>
 <details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת הפתרון</summary>
 <div class="lecture-answer">
@@ -3952,7 +4022,7 @@ window.Quarto = {
 </details>
 </div>
 <div id="box-exm-ellipse" class="thmbox thmbox-example" title="אליפסה">
-<p><strong>דוגמה 1.4.13 — אליפסה.</strong></p>
+<p><strong>דוגמה 1.4.14 — אליפסה.</strong></p>
 <p><span class="term"><strong>האליפסה</strong></span> <span class="math display">\[\frac{x^2}{9} + \frac{y^2}{4} = 1\]</span> היא מעגל “מתוח”. מצאו את נקודות החיתוך שלה עם הצירים. האם היא גרף של פונקציה?</p>
 <div class="fill">
 <ul>
@@ -3970,7 +4040,7 @@ window.Quarto = {
 <p>באופן כללי, האליפסה <span class="math inline">\(\frac{x^2}{a^2} + \frac{y^2}{b^2} = 1\)</span> חותכת את הצירים בנקודות <span class="math inline">\((\pm a, 0)\)</span> ו-<span class="math inline">\(.(0, \pm b)\)</span> כאשר <span class="math inline">\(a = b\)</span> מתקבל מעגל.</p>
 </div>
 <div id="box-exm-hyperbola" class="thmbox thmbox-example" title="היפרבולה">
-<p><strong>דוגמה 1.4.14 — היפרבולה.</strong></p>
+<p><strong>דוגמה 1.4.15 — היפרבולה.</strong></p>
 <p><span class="term"><strong>ההיפרבולה</strong></span> <span class="math display">\[\frac{x^2}{4} - y^2 = 1\]</span> בנויה משני “ענפים”. מצאו את נקודות החיתוך שלה עם הצירים.</p>
 <div class="fill">
 <ul>
@@ -3988,7 +4058,7 @@ window.Quarto = {
 <p>באופן כללי, להיפרבולה <span class="math inline">\(\frac{x^2}{a^2} - \frac{y^2}{b^2} = 1\)</span> יש קודקודים <span class="math inline">\((\pm a, 0)\)</span> ואסימפטוטות <span class="math inline">\(.y = \pm \frac{b}{a} x\)</span></p>
 </div>
 <div id="box-exm-sideways-parabola" class="thmbox thmbox-example" title="פרבולה שוכבת">
-<p><strong>דוגמה 1.4.15 — פרבולה שוכבת.</strong></p>
+<p><strong>דוגמה 1.4.16 — פרבולה שוכבת.</strong></p>
 <p>העקומה <span class="math inline">\(x = y^2\)</span> היא פרבולה “שוכבת”, שנפתחת ימינה. האם היא גרף של פונקציה? רמז: נסו את <span class="math inline">\(.x = 4\)</span></p>
 <details class="thmcollapse thmfoldable lecture-answer"><summary>הצגת הפתרון</summary>
 <div class="lecture-answer">
@@ -4011,7 +4081,7 @@ window.Quarto = {
 <h3 class="unnumbered anchored" data-anchor-id="תחום-ההגדרה-הטבעי">תחום ההגדרה הטבעי</h3>
 <p>לעיתים קרובות נותנים פונקציה רק בעזרת נוסחה, בלי לציין את תחום ההגדרה. במקרה כזה מסכימים שתחום ההגדרה הוא כל המספרים שבהם לנוסחה יש משמעות.</p>
 <div id="box-def-natural-domain" class="thmbox thmbox-definition" title="תחום ההגדרה הטבעי">
-<p><strong>הגדרה 1.4.16 — תחום ההגדרה הטבעי.</strong></p>
+<p><strong>הגדרה 1.4.17 — תחום ההגדרה הטבעי.</strong></p>
 <p><span class="term"><strong>תחום ההגדרה הטבעי</strong></span> של פונקציה שנתונה בנוסחה הוא קבוצת כל ה-<span class="math inline">\(x\)</span> הממשיים שעבורם הנוסחה מוגדרת.</p>
 </div>
 <div class="thmbox thmbox-key-point thmicon-calc" data-icon="calc" title="מציאת תחום הגדרה">
@@ -4025,7 +4095,7 @@ window.Quarto = {
 <p>כל דרישה כזו נותנת משוואה או אי-שוויון. פותרים את כולם, ותחום ההגדרה הוא ה<strong>חיתוך</strong> של כל הפתרונות.</p>
 </div>
 <div id="box-exm-domain" class="thmbox thmbox-example" title="תחומי הגדרה">
-<p><strong>דוגמה 1.4.17 — תחומי הגדרה.</strong></p>
+<p><strong>דוגמה 1.4.18 — תחומי הגדרה.</strong></p>
 <p>מצאו את תחום ההגדרה הטבעי, כתבו אותו כקבוצה וסרטטו אותו על הישר הממשי.</p>
 <p><strong>(א)</strong> <span class="math inline">\(f(x) = \sqrt{x - 3}\)</span></p>
 <div class="fill">
@@ -4069,7 +4139,7 @@ window.Quarto = {
 <section id="תרגילים-3" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="תרגילים-3">תרגילים</h3>
 <div id="box-q-values" class="thmbox thmbox-question" title="מציבים בפונקציה">
-<p><strong>שאלה 1.4.18 — מציבים בפונקציה.</strong></p>
+<p><strong>שאלה 1.4.19 — מציבים בפונקציה.</strong></p>
 <p>תהי <span class="math inline">\(.f(x) = x^2 - 3x + 1\)</span> חשבו.</p>
 <div class="fill">
 <p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\(f(2) =\)</span> <span class="blank" data-ans="-1"><span class="math inline">\(-1\)</span></span></span></p>
@@ -4088,7 +4158,7 @@ window.Quarto = {
 </div>
 </div>
 <div id="box-q-substitute" class="thmbox thmbox-question" title="מציבים ביטוי">
-<p><strong>שאלה 1.4.19 — מציבים ביטוי.</strong></p>
+<p><strong>שאלה 1.4.20 — מציבים ביטוי.</strong></p>
 <p>אפשר להציב בפונקציה גם ביטוי. כתבו כל תוצאה בלי סוגריים, אם אפשר.</p>
 <div class="fill">
 <p><strong>(א)</strong> עבור <span class="math inline">\(f(x) = 2x + 3\)</span>: <span class="fill-ltr"><span class="math inline">\(f(a + 1) =\)</span> <span class="blank" data-ans="2a+5"><span class="math inline">\(2a + 5\)</span></span></span></p>
@@ -4105,7 +4175,7 @@ window.Quarto = {
 </div>
 </div>
 <div id="box-q-piecewise" class="thmbox thmbox-question" title="פונקציה בחלקים">
-<p><strong>שאלה 1.4.20 — פונקציה בחלקים.</strong></p>
+<p><strong>שאלה 1.4.21 — פונקציה בחלקים.</strong></p>
 <p>תהי <span class="math display">\[.f(x) = \begin{cases} 1 - x &amp; x \le 1 \\ x^2 &amp; x &gt; 1 \end{cases}\]</span></p>
 <div class="fill">
 <p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\(f(-2) =\)</span> <span class="blank" data-ans="3"><span class="math inline">\(3\)</span></span></span></p>
@@ -4124,54 +4194,46 @@ window.Quarto = {
 </div>
 </div>
 <div id="box-q-on-graph" class="thmbox thmbox-question" title="על הגרף או לא?">
-<p><strong>שאלה 1.4.21 — על הגרף או לא?</strong></p>
+<p><strong>שאלה 1.4.22 — על הגרף או לא?</strong></p>
+<p>כתבו כן או לא לכל נקודה.</p>
 <p>אילו מהנקודות נמצאות על הגרף של <span class="math inline">\(?f(x) = \sqrt{x + 5}\)</span></p>
 <p><strong>(א)</strong> <span class="math inline">\((4, 3)\)</span></p>
-<div class="tf-quiz" data-correct="1">
-<button type="button" class="tf-opt" data-val="1">על הגרף</button>
-<button type="button" class="tf-opt" data-val="2">לא על הגרף</button>
-<div class="tf-feedback" aria-live="polite"></div>
-<div class="tf-why">
+<div class="fill">
+<p>תשובה: <span class="blank" kind="text" data-ans="כן" data-w="12">כן</span></p>
+<div class="explain">
 <p><span class="math inline">\(,f(4) = \sqrt{9} = 3\)</span> ולכן הנקודה על הגרף.</p>
 </div>
 </div>
 <p><strong>(ב)</strong> <span class="math inline">\((-1, -2)\)</span></p>
-<div class="tf-quiz" data-correct="2">
-<button type="button" class="tf-opt" data-val="1">על הגרף</button>
-<button type="button" class="tf-opt" data-val="2">לא על הגרף</button>
-<div class="tf-feedback" aria-live="polite"></div>
-<div class="tf-why">
+<div class="fill">
+<p>תשובה: <span class="blank" kind="text" data-ans="לא" data-w="12">לא</span></p>
+<div class="explain">
 <p><span class="math inline">\(.f(-1) = \sqrt{4} = 2 \neq -2\)</span> השורש אינו שלילי, ולכן אין על הגרף נקודות מתחת לציר <span class="math inline">\(.x\)</span></p>
 </div>
 </div>
 <p><strong>(ג)</strong> <span class="math inline">\((-5, 0)\)</span></p>
-<div class="tf-quiz" data-correct="1">
-<button type="button" class="tf-opt" data-val="1">על הגרף</button>
-<button type="button" class="tf-opt" data-val="2">לא על הגרף</button>
-<div class="tf-feedback" aria-live="polite"></div>
-<div class="tf-why">
+<div class="fill">
+<p>תשובה: <span class="blank" kind="text" data-ans="כן" data-w="12">כן</span></p>
+<div class="explain">
 <p><span class="math inline">\(,f(-5) = \sqrt{0} = 0\)</span> ולכן הנקודה על הגרף. זו נקודת ההתחלה של הגרף.</p>
 </div>
 </div>
 </div>
 <div id="box-q-image" class="thmbox thmbox-question" title="בתמונה או לא?">
-<p><strong>שאלה 1.4.22 — בתמונה או לא?</strong></p>
+<p><strong>שאלה 1.4.23 — בתמונה או לא?</strong></p>
+<p>בסעיפים (א)–(ב), כתבו כן או לא.</p>
 <p>תהי <span class="math inline">\(.f(x) = x^2 + 3\)</span></p>
 <p><strong>(א)</strong> האם <span class="math inline">\(7\)</span> בתמונה של <span class="math inline">\(?f\)</span></p>
-<div class="tf-quiz" data-correct="1">
-<button type="button" class="tf-opt" data-val="1">כן</button>
-<button type="button" class="tf-opt" data-val="2">לא</button>
-<div class="tf-feedback" aria-live="polite"></div>
-<div class="tf-why">
+<div class="fill">
+<p>תשובה: <span class="blank" kind="text" data-ans="כן" data-w="12">כן</span></p>
+<div class="explain">
 <p>פותרים <span class="math inline">\(,x^2 + 3 = 7\)</span> כלומר <span class="math inline">\(,x^2 = 4\)</span> ויש פתרון, למשל <span class="math inline">\(.x = 2\)</span></p>
 </div>
 </div>
 <p><strong>(ב)</strong> האם <span class="math inline">\(2\)</span> בתמונה של <span class="math inline">\(?f\)</span></p>
-<div class="tf-quiz" data-correct="2">
-<button type="button" class="tf-opt" data-val="1">כן</button>
-<button type="button" class="tf-opt" data-val="2">לא</button>
-<div class="tf-feedback" aria-live="polite"></div>
-<div class="tf-why">
+<div class="fill">
+<p>תשובה: <span class="blank" kind="text" data-ans="לא" data-w="12">לא</span></p>
+<div class="explain">
 <p><span class="math inline">\(,x^2 + 3 = 2\)</span> פירושו <span class="math inline">\(,x^2 = -1\)</span> ואין לזה פתרון ממשי.</p>
 </div>
 </div>
@@ -4183,7 +4245,7 @@ window.Quarto = {
 </div>
 </div>
 <div id="box-q-floor" class="thmbox thmbox-question" title="עוד ערך שלם">
-<p><strong>שאלה 1.4.23 — עוד ערך שלם.</strong></p>
+<p><strong>שאלה 1.4.24 — עוד ערך שלם.</strong></p>
 <div class="fill">
 <p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\(\lfloor -0.5 \rfloor =\)</span> <span class="blank" data-ans="-1" data-miss="0 :: $0$ נמצא מימין למספר $-0.5$, כלומר גדול ממנו. הולכים מהמספר $-0.5$ שמאלה עד השלם הראשון."><span class="math inline">\(-1\)</span></span></span></p>
 <p><strong>(ב)</strong> <span class="fill-ltr"><span class="math inline">\(\lfloor \pi \rfloor =\)</span> <span class="blank" data-ans="3"><span class="math inline">\(3\)</span></span></span></p>
@@ -4199,7 +4261,7 @@ window.Quarto = {
 </div>
 </div>
 <div id="box-q-domain" class="thmbox thmbox-question" title="תחומי הגדרה">
-<p><strong>שאלה 1.4.24 — תחומי הגדרה.</strong></p>
+<p><strong>שאלה 1.4.25 — תחומי הגדרה.</strong></p>
 <p>מצאו את תחום ההגדרה הטבעי של כל פונקציה וסרטטו אותו על הישר הממשי.</p>
 <div class="fill">
 <p><strong>(א)</strong> <span class="math inline">\(\frac{1}{\sqrt{5 - x}}\)</span>: <span class="blank" data-ans="(-inf,5)" data-plot="2,7"><span class="math inline">\((-\infty, 5)\)</span></span></p>
@@ -4219,29 +4281,24 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<div id="box-q-domain-order" class="thmbox thmbox-question" title="שלבי הפתרון">
-<p><strong>שאלה 1.4.25 — שלבי הפתרון.</strong></p>
-<p>מוצאים את תחום ההגדרה של <span class="math inline">\(.f(x) = \frac{1}{\sqrt{x}} + \sqrt{3 - x}\)</span> סדרו את שלבי הפתרון.</p>
-<div class="order">
-<div class="step">
+<div id="box-q-domain-order" class="thmbox thmbox-question" title="תחום ההגדרה של סכום">
+<p><strong>שאלה 1.4.26 — תחום ההגדרה של סכום.</strong></p>
+<p>מצאו את תחום ההגדרה של <span class="math inline">\(f(x) = \frac{1}{\sqrt{x}} + \sqrt{3 - x}\)</span> וסרטטו אותו על הישר הממשי.</p>
+<div class="fill">
+<p>תחום ההגדרה: <span class="blank" data-ans="(0,3]" data-plot="-1,5"><span class="math inline">\((0,3]\)</span></span></p>
+<div class="hint">
+<p>אילו תנאים נובעים מהשורשים ומהמכנה? כל התנאים צריכים להתקיים יחד.</p>
+</div>
+<div class="explain">
 <p>מזהים את הפעולות ה”מסוכנות”: שני שורשים, ומכנה.</p>
-</div>
-<div class="step">
 <p>כותבים דרישה לכל אחת מהן: <span class="math inline">\(,x \ge 0\)</span> <span class="math inline">\(\sqrt{x} \neq 0\)</span> ו-<span class="math inline">\(.3 - x \ge 0\)</span></p>
-</div>
-<div class="step">
 <p>פותרים כל דרישה: <span class="math inline">\(x &gt; 0\)</span> (משתי הדרישות הראשונות) ו-<span class="math inline">\(.x \le 3\)</span></p>
-</div>
-<div class="step">
-<p>לוקחים את החיתוך: <span class="math inline">\(.0 &lt; x \le 3\)</span></p>
-</div>
-<div class="step">
-<p>כותבים את התשובה כקטע: <span class="math inline">\(.(0, 3]\)</span></p>
+<p>לוקחים את החיתוך: <span class="math inline">\(,0 &lt; x \le 3\)</span> כלומר <span class="math inline">\(.(0, 3]\)</span></p>
 </div>
 </div>
 </div>
 <div id="box-q-conics" class="thmbox thmbox-question" title="אליפסה והיפרבולה">
-<p><strong>שאלה 1.4.26 — אליפסה והיפרבולה.</strong></p>
+<p><strong>שאלה 1.4.27 — אליפסה והיפרבולה.</strong></p>
 <div class="fill">
 <p><strong>(א)</strong> האליפסה <span class="math inline">\(\frac{x^2}{25} + \frac{y^2}{16} = 1\)</span> חותכת את ציר <span class="math inline">\(x\)</span> ב-<span class="fill-ltr"><span class="math inline">\(x \in\)</span> <span class="blank" data-ans="{5,-5}"><span class="math inline">\(\{-5, 5\}\)</span></span></span> ואת ציר <span class="math inline">\(y\)</span> ב-<span class="fill-ltr"><span class="math inline">\(y \in\)</span> <span class="blank" data-ans="{4,-4}"><span class="math inline">\(\{-4, 4\}\)</span></span></span></p>
 <p><strong>(ב)</strong> לקודקודים של ההיפרבולה <span class="math inline">\(\frac{x^2}{9} - \frac{y^2}{4} = 1\)</span> יש <span class="fill-ltr"><span class="math inline">\(x \in\)</span> <span class="blank" data-ans="{3,-3}"><span class="math inline">\(\{-3, 3\}\)</span></span></span></p>
@@ -4257,31 +4314,26 @@ window.Quarto = {
 </div>
 </div>
 <div id="box-q-is-function" class="thmbox thmbox-question" title="גרף של פונקציה?">
-<p><strong>שאלה 1.4.27 — גרף של פונקציה?</strong></p>
+<p><strong>שאלה 1.4.28 — גרף של פונקציה?</strong></p>
+<p>לכל עקומה כתבו האם היא גרף של פונקציה של <span class="math inline">\(x\)</span>: כן או לא.</p>
 <p><strong>(א)</strong> <span class="math inline">\(x^2 + y^2 = 9\)</span></p>
-<div class="tf-quiz" data-correct="2">
-<button type="button" class="tf-opt" data-val="1">כן</button>
-<button type="button" class="tf-opt" data-val="2">לא</button>
-<div class="tf-feedback" aria-live="polite"></div>
-<div class="tf-why">
+<div class="fill">
+<p>תשובה: <span class="blank" kind="text" data-ans="לא" data-w="12">לא</span></p>
+<div class="explain">
 <p>זה מעגל שרדיוסו <span class="math inline">\(.3\)</span> הקו <span class="math inline">\(x = 0\)</span> חותך אותו בשתי נקודות, <span class="math inline">\(.(0, \pm 3)\)</span></p>
 </div>
 </div>
 <p><strong>(ב)</strong> <span class="math inline">\(y = x^2 - 4\)</span></p>
-<div class="tf-quiz" data-correct="1">
-<button type="button" class="tf-opt" data-val="1">כן</button>
-<button type="button" class="tf-opt" data-val="2">לא</button>
-<div class="tf-feedback" aria-live="polite"></div>
-<div class="tf-why">
+<div class="fill">
+<p>תשובה: <span class="blank" kind="text" data-ans="כן" data-w="12">כן</span></p>
+<div class="explain">
 <p>לכל <span class="math inline">\(x\)</span> יש ערך אחד של <span class="math inline">\(,y\)</span> ולכן כל קו אנכי חותך את הגרף פעם אחת.</p>
 </div>
 </div>
 <p><strong>(ג)</strong> <span class="math inline">\(x = |y|\)</span></p>
-<div class="tf-quiz" data-correct="2">
-<button type="button" class="tf-opt" data-val="1">כן</button>
-<button type="button" class="tf-opt" data-val="2">לא</button>
-<div class="tf-feedback" aria-live="polite"></div>
-<div class="tf-why">
+<div class="fill">
+<p>תשובה: <span class="blank" kind="text" data-ans="לא" data-w="12">לא</span></p>
+<div class="explain">
 <p>הקו <span class="math inline">\(x = 2\)</span> חותך את העקומה ב-<span class="math inline">\((2, 2)\)</span> וב-<span class="math inline">\(.(2, -2)\)</span></p>
 </div>
 </div>
@@ -4296,7 +4348,12 @@ window.Quarto = {
 <p>נוסחאות מסובכות בנויות משלבים פשוטים. למשל, כדי לחשב את <span class="math inline">\(\sqrt{x^2 + 4}\)</span> מחשבים קודם <span class="math inline">\(x^2 + 4\)</span>, ואחר כך את השורש של התוצאה. לזהות את השלבים האלה זו מיומנות חשובה.</p>
 <div id="box-def-composition" class="thmbox thmbox-definition" title="הרכבת פונקציות">
 <p><strong>הגדרה 1.5.1 — הרכבת פונקציות.</strong></p>
-<p><span class="term"><strong>ההרכבה</strong></span> של <span class="math inline">\(f\)</span> ו-<span class="math inline">\(g\)</span> היא הפונקציה <span class="math display">\[,(f \circ g)(x) = f\big(g(x)\big)\]</span> כלומר “קודם <span class="math inline">\(g\)</span>, ואחר כך <span class="math inline">\(f\)</span>”. תחום ההגדרה של <span class="math inline">\(f \circ g\)</span> הוא כל ה-<span class="math inline">\(x\)</span> שבתחום של <span class="math inline">\(g\)</span>, ושעבורם <span class="math inline">\(g(x)\)</span> בתחום של <span class="math inline">\(.f\)</span></p>
+<p><span class="term"><strong>ההרכבה</strong></span> של <span class="math inline">\(f\)</span> ו-<span class="math inline">\(g\)</span> היא הפונקציה <span class="math display">\[,(f \circ g)(x) = f\big(g(x)\big)\]</span> כלומר “קודם <span class="math inline">\(g\)</span>, ואחר כך <span class="math inline">\(f\)</span>”.</p>
+<p><strong>תחום ההגדרה של <span class="math inline">\(f \circ g\)</span></strong> הוא קבוצת כל המספרים <span class="math inline">\(x\)</span> שמקיימים את <strong>שני התנאים יחד</strong>:</p>
+<ul>
+<li><span class="math inline">\(x\)</span> שייך לתחום ההגדרה של <span class="math inline">\(.g\)</span></li>
+<li><span class="math inline">\(g(x)\)</span> שייך לתחום ההגדרה של <span class="math inline">\(.f\)</span></li>
+</ul>
 </div>
 <p>בשפה של מכונות: מעמידים שתי מכונות בשורה. מכניסים את <span class="math inline">\(x\)</span> למכונה <span class="math inline">\(,g\)</span> ואת מה שיצא ממנה מכניסים למכונה <span class="math inline">\(.f\)</span> שימו לב שקוראים את <span class="math inline">\(f \circ g\)</span> מימין לשמאל: <span class="math inline">\(g\)</span> פועלת ראשונה.</p>
 <div id="box-exm-composition" class="thmbox thmbox-example" title="הרכבה בשני הסדרים">
@@ -4474,18 +4531,27 @@ window.Quarto = {
 <p><strong>שאלה 1.5.9 — פירוק להרכבה.</strong></p>
 <p>כתבו כל פונקציה בצורה <span class="math inline">\(.f(g(x))\)</span></p>
 <p><strong>(א)</strong> <span class="math inline">\((x^2 + 1)^5\)</span></p>
+<div class="composition-practice" target="(x^2+1)^5">
+
+</div>
 <details class="thmcollapse thmfoldable lecture-answer"><summary>תשובה לסעיף (א)</summary>
 <div class="lecture-answer" title="תשובה לסעיף (א)">
 <p><span class="math inline">\(g(x) = x^2 + 1\)</span> (קודם) ו-<span class="math inline">\(f(x) = x^5\)</span> (אחר כך).</p>
 </div>
 </details>
 <p><strong>(ב)</strong> <span class="math inline">\(\sqrt{3x - 2}\)</span></p>
+<div class="composition-practice" target="sqrt(3x-2)">
+
+</div>
 <details class="thmcollapse thmfoldable lecture-answer"><summary>תשובה לסעיף (ב)</summary>
 <div class="lecture-answer" title="תשובה לסעיף (ב)">
 <p><span class="math inline">\(g(x) = 3x - 2\)</span> ו-<span class="math inline">\(.f(x) = \sqrt{x}\)</span></p>
 </div>
 </details>
 <p><strong>(ג)</strong> <span class="math inline">\(|x^3 - 1|\)</span></p>
+<div class="composition-practice" target="|x^3-1|">
+
+</div>
 <details class="thmcollapse thmfoldable lecture-answer"><summary>תשובה לסעיף (ג)</summary>
 <div class="lecture-answer" title="תשובה לסעיף (ג)">
 <p><span class="math inline">\(g(x) = x^3 - 1\)</span> ו-<span class="math inline">\(.f(x) = |x|\)</span> יש גם פירוקים אחרים, למשל <span class="math inline">\(g(x) = x^3\)</span> ו-<span class="math inline">\(:f(x) = |x - 1|\)</span> גם הוא נכון.</p>
@@ -4618,8 +4684,16 @@ window.Quarto = {
 </div>
 <div id="box-q-parity-operations" class="thmbox thmbox-self-check" title="מה קורה לזוגיות כשבונים פונקציה חדשה?">
 <p><strong>בדיקה עצמית — מה קורה לזוגיות כשבונים פונקציה חדשה?</strong></p>
-<p>נניח ש-<span class="math inline">\(f\)</span> ו-<span class="math inline">\(g\)</span> מוגדרות על כל <span class="math inline">\(.\mathbb{R}\)</span> איזו סימטריה מובטחת בכל משבצת: זוגית, אי-זוגית, או שלא ניתן לקבוע? נסו קודם עם <span class="math inline">\(x^2\)</span> ו-<span class="math inline">\(x^3\)</span>, ואז בדקו מה קורה כשמציבים <span class="math inline">\(-x\)</span> במקום <span class="math inline">\(.x\)</span></p>
+<p>נניח ש-<span class="math inline">\(f\)</span> ו-<span class="math inline">\(g\)</span> מוגדרות על כל <span class="math inline">\(.\mathbb{R}\)</span> כתבו בכל משבצת איזו סימטריה מובטחת: זוגית, אי-זוגית, או לא ניתן לקבוע.</p>
+<div class="fill">
 <table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
 <thead>
 <tr class="header">
 <th><span class="math inline">\(f\)</span></th>
@@ -4633,80 +4707,41 @@ window.Quarto = {
 <tr class="odd">
 <td>זוגית</td>
 <td>זוגית</td>
-<td>?</td>
-<td>?</td>
-<td>?</td>
+<td><span class="blank" kind="text" data-ans="זוגית" data-w="14">זוגית</span></td>
+<td><span class="blank" kind="text" data-ans="זוגית" data-w="14">זוגית</span></td>
+<td><span class="blank" kind="text" data-ans="זוגית" data-w="14">זוגית</span></td>
 </tr>
 <tr class="even">
 <td>זוגית</td>
 <td>אי-זוגית</td>
-<td>?</td>
-<td>?</td>
-<td>?</td>
+<td><span class="blank" kind="text" data-ans="לא ניתן לקבוע" data-w="14">לא ניתן לקבוע</span></td>
+<td><span class="blank" kind="text" data-ans="אי-זוגית" data-w="14">אי-זוגית</span></td>
+<td><span class="blank" kind="text" data-ans="זוגית" data-w="14">זוגית</span></td>
 </tr>
 <tr class="odd">
 <td>אי-זוגית</td>
 <td>זוגית</td>
-<td>?</td>
-<td>?</td>
-<td>?</td>
+<td><span class="blank" kind="text" data-ans="לא ניתן לקבוע" data-w="14">לא ניתן לקבוע</span></td>
+<td><span class="blank" kind="text" data-ans="אי-זוגית" data-w="14">אי-זוגית</span></td>
+<td><span class="blank" kind="text" data-ans="זוגית" data-w="14">זוגית</span></td>
 </tr>
 <tr class="even">
 <td>אי-זוגית</td>
 <td>אי-זוגית</td>
-<td>?</td>
-<td>?</td>
-<td>?</td>
+<td><span class="blank" kind="text" data-ans="אי-זוגית" data-w="14">אי-זוגית</span></td>
+<td><span class="blank" kind="text" data-ans="זוגית" data-w="14">זוגית</span></td>
+<td><span class="blank" kind="text" data-ans="אי-זוגית" data-w="14">אי-זוגית</span></td>
 </tr>
 </tbody>
 </table>
-<details class="thmcollapse thmfoldable lecture-answer"><summary>בדיקה והסבר</summary>
-<div class="lecture-answer" title="בדיקה והסבר">
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th><span class="math inline">\(f\)</span></th>
-<th><span class="math inline">\(g\)</span></th>
-<th><span class="math inline">\(f\pm g\)</span></th>
-<th><span class="math inline">\(fg\)</span></th>
-<th><span class="math inline">\(f\circ g\)</span></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>זוגית</td>
-<td>זוגית</td>
-<td>זוגית</td>
-<td>זוגית</td>
-<td>זוגית</td>
-</tr>
-<tr class="even">
-<td>זוגית</td>
-<td>אי-זוגית</td>
-<td>לא ניתן לקבוע</td>
-<td>אי-זוגית</td>
-<td>זוגית</td>
-</tr>
-<tr class="odd">
-<td>אי-זוגית</td>
-<td>זוגית</td>
-<td>לא ניתן לקבוע</td>
-<td>אי-זוגית</td>
-<td>זוגית</td>
-</tr>
-<tr class="even">
-<td>אי-זוגית</td>
-<td>אי-זוגית</td>
-<td>אי-זוגית</td>
-<td>זוגית</td>
-<td>אי-זוגית</td>
-</tr>
-</tbody>
-</table>
+<div class="hint">
+<p>נסו קודם עם <span class="math inline">\(x^2\)</span> ו-<span class="math inline">\(x^3\)</span>, ואז בדקו מה קורה כשמציבים <span class="math inline">\(-x\)</span> במקום <span class="math inline">\(.x\)</span></p>
+</div>
+<div class="explain">
 <p>במכפלה, שני מינוסים מבטלים זה את זה. בהרכבה מחשבים קודם את <span class="math inline">\(g(-x)\)</span>, ואז מפעילים את <span class="math inline">\(.f\)</span> למשל, אם שתיהן אי-זוגיות, אז <span class="math inline">\(.f(g(-x))=f(-g(x))=-f(g(x))\)</span></p>
 <p>למנה <span class="math inline">\(f/g\)</span> אותם כללי זוגיות כמו למכפלה, בתחום שבו <span class="math inline">\(.g(x)\ne0\)</span> בסכום מעורב אין כלל קבוע: <span class="math inline">\(x^2+x\)</span> אינה זוגית ואינה אי-זוגית. לעומת זאת, פונקציית האפס היא גם זוגית וגם אי-זוגית, וחיבורה אינו משנה את הפונקציה האחרת.</p>
 </div>
-</details>
+</div>
 </div>
 <div class="thmbox thmbox-summary">
 <p><strong>סיכום.</strong></p>
@@ -4737,63 +4772,46 @@ window.Quarto = {
 </div>
 <div id="box-q-even-odd" class="thmbox thmbox-question" title="סווגו">
 <p><strong>שאלה 1.6.5 — סווגו.</strong></p>
+<p>כתבו זוגית, אי-זוגית או אף אחת מהן.</p>
 <p><strong>(א)</strong> <span class="math inline">\(x^5 + x\)</span></p>
-<div class="tf-quiz" data-correct="2">
-<button type="button" class="tf-opt" data-val="1">זוגית</button>
-<button type="button" class="tf-opt" data-val="2">אי-זוגית</button>
-<button type="button" class="tf-opt" data-val="3">אף אחת מהן</button>
-<div class="tf-feedback" aria-live="polite"></div>
-<div class="tf-why">
+<div class="fill">
+<p>תשובה: <span class="blank" kind="text" data-ans="אי-זוגית" data-w="12">אי-זוגית</span></p>
+<div class="explain">
 <p><span class="math display">\[\begin{aligned} f(-x) &amp;= (-x)^5 + (-x) \\ &amp;= -x^5 - x \\ &amp;= -(x^5 + x) = -f(x) \end{aligned}\]</span></p>
 </div>
 </div>
 <p><strong>(ב)</strong> <span class="math inline">\(x^2 - 7\)</span></p>
-<div class="tf-quiz" data-correct="1">
-<button type="button" class="tf-opt" data-val="1">זוגית</button>
-<button type="button" class="tf-opt" data-val="2">אי-זוגית</button>
-<button type="button" class="tf-opt" data-val="3">אף אחת מהן</button>
-<div class="tf-feedback" aria-live="polite"></div>
-<div class="tf-why">
+<div class="fill">
+<p>תשובה: <span class="blank" kind="text" data-ans="זוגית" data-w="12">זוגית</span></p>
+<div class="explain">
 <p><span class="math display">\[\begin{aligned} f(-x) &amp;= (-x)^2 - 7 \\ &amp;= x^2 - 7 = f(x) \end{aligned}\]</span></p>
 </div>
 </div>
 <p><strong>(ג)</strong> <span class="math inline">\(x - 1\)</span></p>
-<div class="tf-quiz" data-correct="3">
-<button type="button" class="tf-opt" data-val="1">זוגית</button>
-<button type="button" class="tf-opt" data-val="2">אי-זוגית</button>
-<button type="button" class="tf-opt" data-val="3">אף אחת מהן</button>
-<div class="tf-feedback" aria-live="polite"></div>
-<div class="tf-why">
+<div class="fill">
+<p>תשובה: <span class="blank" kind="text" data-ans="אף אחת מהן" data-w="12">אף אחת מהן</span></p>
+<div class="explain">
 <p>נבחר <span class="math inline">\(:x = 1\)</span> <span class="math display">\[f(1) = 1 - 1 = 0, \qquad f(-1) = -1 - 1 = -2\]</span> מתקיים <span class="math inline">\(f(-1) \neq f(1)\)</span> ולכן אינה זוגית, וגם <span class="math inline">\(f(-1) = -2 \neq 0 = -f(1)\)</span> ולכן אינה אי-זוגית.</p>
 </div>
 </div>
 <p><strong>(ד)</strong> <span class="math inline">\(\frac{1}{x}\)</span></p>
-<div class="tf-quiz" data-correct="2">
-<button type="button" class="tf-opt" data-val="1">זוגית</button>
-<button type="button" class="tf-opt" data-val="2">אי-זוגית</button>
-<button type="button" class="tf-opt" data-val="3">אף אחת מהן</button>
-<div class="tf-feedback" aria-live="polite"></div>
-<div class="tf-why">
+<div class="fill">
+<p>תשובה: <span class="blank" kind="text" data-ans="אי-זוגית" data-w="12">אי-זוגית</span></p>
+<div class="explain">
 <p>התחום <span class="math inline">\(\mathbb{R} \setminus \{0\}\)</span> סימטרי, ו-<span class="math inline">\(.\frac{1}{-x} = -\frac{1}{x}\)</span></p>
 </div>
 </div>
 <p><strong>(ה)</strong> <span class="math inline">\(|x| + x^2\)</span></p>
-<div class="tf-quiz" data-correct="1">
-<button type="button" class="tf-opt" data-val="1">זוגית</button>
-<button type="button" class="tf-opt" data-val="2">אי-זוגית</button>
-<button type="button" class="tf-opt" data-val="3">אף אחת מהן</button>
-<div class="tf-feedback" aria-live="polite"></div>
-<div class="tf-why">
+<div class="fill">
+<p>תשובה: <span class="blank" kind="text" data-ans="זוגית" data-w="12">זוגית</span></p>
+<div class="explain">
 <p><span class="math inline">\(,|{-}x| = |x|\)</span> ו-<span class="math inline">\(,(-x)^2 = x^2\)</span> ולכן <span class="math inline">\(.f(-x) = f(x)\)</span></p>
 </div>
 </div>
 <p><strong>(ו)</strong> <span class="math inline">\(\frac{x}{x^2 + 1}\)</span></p>
-<div class="tf-quiz" data-correct="2">
-<button type="button" class="tf-opt" data-val="1">זוגית</button>
-<button type="button" class="tf-opt" data-val="2">אי-זוגית</button>
-<button type="button" class="tf-opt" data-val="3">אף אחת מהן</button>
-<div class="tf-feedback" aria-live="polite"></div>
-<div class="tf-why">
+<div class="fill">
+<p>תשובה: <span class="blank" kind="text" data-ans="אי-זוגית" data-w="12">אי-זוגית</span></p>
+<div class="explain">
 <p>המונה מחליף סימן והמכנה לא: <span class="math inline">\(.f(-x) = \frac{-x}{x^2 + 1} = -f(x)\)</span></p>
 </div>
 </div>
@@ -4976,10 +4994,14 @@ window.Quarto = {
 <p><strong>שאלה 1.7.6 — מהתיאור לנוסחה.</strong></p>
 <p>כתבו את הנוסחה של הפונקציה החדשה.</p>
 <div class="fill">
-<p><strong>(א)</strong> מזיזים את <span class="math inline">\(\sqrt{x}\)</span> ימינה ב-<span class="math inline">\(3\)</span> ולמעלה ב-<span class="fill-ltr"><span class="math inline">\(.1\)</span> <span class="math inline">\(y =\)</span> <span class="blank" data-ans="sqrt(x-3)+1" data-w="12"><span class="math inline">\(\sqrt{x - 3} + 1\)</span></span></span></p>
-<p><strong>(ב)</strong> משקפים את <span class="math inline">\(x^2\)</span> ביחס לציר <span class="math inline">\(,x\)</span> ואחר כך מזיזים למעלה ב-<span class="fill-ltr"><span class="math inline">\(.4\)</span> <span class="math inline">\(y =\)</span> <span class="blank" data-ans="4-x^2" data-w="12"><span class="math inline">\(4 - x^2\)</span></span></span></p>
-<p><strong>(ג)</strong> מותחים את <span class="math inline">\(|x|\)</span> אנכית פי <span class="math inline">\(,2\)</span> ואחר כך מזיזים שמאלה ב-<span class="fill-ltr"><span class="math inline">\(.1\)</span> <span class="math inline">\(y =\)</span> <span class="blank" data-ans="2|x+1|" data-w="12"><span class="math inline">\(2|x + 1|\)</span></span></span></p>
-<p><strong>(ד)</strong> מזיזים את <span class="math inline">\(x^2\)</span> שמאלה ב-<span class="math inline">\(5\)</span> ולמטה ב-<span class="fill-ltr"><span class="math inline">\(.2\)</span> <span class="math inline">\(y =\)</span> <span class="blank" data-ans="(x+5)^2-2" data-w="12"><span class="math inline">\((x + 5)^2 - 2\)</span></span></span></p>
+<p><strong>(א)</strong> מזיזים את <span class="math inline">\(\sqrt{x}\)</span> ימינה ב-<span class="math inline">\(3\)</span> ולמעלה ב-<span class="math inline">\(1\)</span>.</p>
+<p><span class="fill-ltr"><span class="math inline">\(y =\)</span> <span class="blank" data-ans="sqrt(x-3)+1" data-w="12"><span class="math inline">\(\sqrt{x - 3} + 1\)</span></span></span></p>
+<p><strong>(ב)</strong> משקפים את <span class="math inline">\(x^2\)</span> ביחס לציר <span class="math inline">\(x\)</span>, ואחר כך מזיזים למעלה ב-<span class="math inline">\(4\)</span>.</p>
+<p><span class="fill-ltr"><span class="math inline">\(y =\)</span> <span class="blank" data-ans="4-x^2" data-w="12"><span class="math inline">\(4 - x^2\)</span></span></span></p>
+<p><strong>(ג)</strong> מותחים את <span class="math inline">\(|x|\)</span> אנכית פי <span class="math inline">\(2\)</span>, ואחר כך מזיזים שמאלה ב-<span class="math inline">\(1\)</span>.</p>
+<p><span class="fill-ltr"><span class="math inline">\(y =\)</span> <span class="blank" data-ans="2|x+1|" data-w="12"><span class="math inline">\(2|x + 1|\)</span></span></span></p>
+<p><strong>(ד)</strong> מזיזים את <span class="math inline">\(x^2\)</span> שמאלה ב-<span class="math inline">\(5\)</span> ולמטה ב-<span class="math inline">\(2\)</span>.</p>
+<p><span class="fill-ltr"><span class="math inline">\(y =\)</span> <span class="blank" data-ans="(x+5)^2-2" data-w="12"><span class="math inline">\((x + 5)^2 - 2\)</span></span></span></p>
 <div class="hint">
 <p>הזזה ימינה ב-<span class="math inline">\(c\)</span> פירושה להחליף את <span class="math inline">\(x\)</span> ב-<span class="math inline">\(;x - c\)</span> הזזה למעלה פירושה להוסיף <span class="math inline">\(c\)</span> לכל הביטוי.</p>
 </div>
@@ -4993,22 +5015,18 @@ window.Quarto = {
 </div>
 <div id="box-q-order-transform" class="thmbox thmbox-question" title="מהפרבולה $x^2$ אל $-2(x + 1)^2 + 3$">
 <p><strong>שאלה 1.7.7 — מהפרבולה <span class="math inline">\(x^2\)</span> אל <span class="math inline">\(-2(x + 1)^2 + 3\)</span>.</strong></p>
-<p>מקבלים את הגרף של <span class="math inline">\(y = -2(x + 1)^2 + 3\)</span> מהגרף של <span class="math inline">\(y = x^2\)</span> בארבעה צעדים. סדרו אותם לפי השיטה: קודם השינוי שבתוך הסוגריים, ואחר כך אלה שמחוץ להם.</p>
-<div class="order">
-<div class="step" data-rank="0">
-<p>הזזה שמאלה ב-<span class="math inline">\(1\)</span></p>
+<p>הביאו את הגרף של <span class="math inline">\(y=x^2\)</span> אל <span class="math inline">\(y=-2(x+1)^2+3\)</span> בעזרת הזזה, מתיחה ושיקוף. מצאו גם את הקודקוד ואת התמונה.</p>
+<iframe class="widget-frame" src="widgets/ch01/move-graph.html?f=sq&amp;a=-2&amp;c=-1&amp;d=3" loading="lazy" title="מזיזים, מותחים ומשקפים את הפרבולה"></iframe>
+<div class="fill">
+<p>הקודקוד הוא <span class="fill-ltr"><span class="math inline">\((\)</span><span class="blank" data-ans="-1"><span class="math inline">\(-1\)</span></span><span class="math inline">\(,{}\)</span> <span class="blank" data-ans="3"><span class="math inline">\(3\)</span></span><span class="math inline">\()\)</span></span></p>
+<p>התמונה היא <span class="blank" data-ans="(-inf,3]"><span class="math inline">\((-\infty,3]\)</span></span></p>
+<div class="hint">
+<p>מה עושים <span class="math inline">\(x+1\)</span>, הכפל ב-<span class="math inline">\(-2\)</span> והחיבור של <span class="math inline">\(3\)</span> לגרף?</p>
 </div>
-<div class="step" data-rank="1">
-<p>מתיחה אנכית פי <span class="math inline">\(2\)</span></p>
-</div>
-<div class="step" data-rank="1">
-<p>שיקוף ביחס לציר <span class="math inline">\(x\)</span></p>
-</div>
-<div class="step" data-rank="2">
-<p>הזזה למעלה ב-<span class="math inline">\(3\)</span></p>
-</div>
-<div class="after">
+<div class="explain">
+<p>אפשר להזיז שמאלה ב-<span class="math inline">\(1\)</span>, למתוח אנכית פי <span class="math inline">\(2\)</span>, לשקף ביחס לציר <span class="math inline">\(x\)</span> ולבסוף להזיז למעלה ב-<span class="math inline">\(3\)</span>.</p>
 <p>את המתיחה ואת השיקוף אפשר לבצע בכל סדר, כי <span class="math inline">\(.{-}2y = 2 \cdot (-y)\)</span> אבל ההזזה למעלה באה אחרי שניהם: אם מזיזים קודם למעלה ב-<span class="math inline">\(3\)</span> ורק אחר כך משקפים, הקודקוד מגיע ל-<span class="math inline">\((-1, -3)\)</span> במקום ל-<span class="math inline">\(.(-1, 3)\)</span></p>
+<p>הפרבולה פונה כלפי מטה, ולכן הערך הגדול ביותר שלה הוא <span class="math inline">\(3\)</span> והתמונה היא <span class="math inline">\(.(-\infty,3]\)</span></p>
 </div>
 </div>
 </div>
@@ -5067,39 +5085,54 @@ window.Quarto = {
 </section>
 <section id="פולינומים-ושורשיהם" class="level2" data-number="1.8">
 <h2 data-number="1.8" class="anchored" data-anchor-id="פולינומים-ושורשיהם"><span class="header-section-number">1.8</span> פולינומים ושורשיהם</h2>
-<p>הפונקציות הפשוטות ביותר הן אלה שמשתמשות רק בחיבור ובכפל. הן מוגדרות בכל מקום, וקל לחשב אותן.</p>
 <div id="box-def-polynomial" class="thmbox thmbox-definition" title="פולינום">
 <p><strong>הגדרה 1.8.1 — פולינום.</strong></p>
-<p><span class="term"><strong>פולינום</strong></span> הוא פונקציה מהצורה <span class="math display">\[,P(x) = a_n x^n + a_{n-1} x^{n-1} + \dots + a_1 x + a_0\]</span> כאשר <span class="math inline">\(a_0, \dots, a_n\)</span> מספרים ממשיים (<span class="term"><strong>המקדמים</strong></span>) ו-<span class="math inline">\(.a_n \neq 0\)</span> המספר <span class="math inline">\(n\)</span> נקרא <span class="term"><strong>המעלה</strong></span> של <span class="math inline">\(.P\)</span> <span class="term"><strong>שורש</strong></span> של <span class="math inline">\(P\)</span> הוא מספר <span class="math inline">\(r\)</span> שעבורו <span class="math inline">\(.P(r) = 0\)</span></p>
+<p><span class="term"><strong>פולינום</strong></span> הוא פונקציה מהצורה <span class="math display">\[P(x) = a_0 + a_1x + \dots + a_nx^n,\]</span> כאשר <span class="math inline">\(n\)</span> מספר שלם אי־שלילי ו-<span class="math inline">\(a_0, \dots, a_n\)</span> מספרים ממשיים, הנקראים <span class="term"><strong>מקדמים</strong></span>. תחום ההגדרה הוא כל הישר הממשי.</p>
+<p><span class="term"><strong>המעלה</strong></span> היא החזקה הגבוהה ביותר שהמקדם שלה אינו אפס, לאחר כינוס איברים. המקדם של אותה חזקה נקרא <span class="term"><strong>המקדם המוביל</strong></span>, ו-<span class="math inline">\(a_0\)</span> נקרא <span class="term"><strong>האיבר החופשי</strong></span>.</p>
+<p><span class="term"><strong>שורש</strong></span> של <span class="math inline">\(P\)</span> הוא מספר <span class="math inline">\(r\)</span> שעבורו <span class="math inline">\(P(r)=0\)</span>. כלומר, מציאת השורשים היא פתרון המשוואה <span class="math inline">\(P(x)=0\)</span>. בסעיף זה נחפש שורשים ממשיים בלבד.</p>
 </div>
-<p>הדרישה <span class="math inline">\(a_n \neq 0\)</span> קובעת את המעלה: בלעדיה, <span class="math inline">\(0 \cdot x^3 + x + 1\)</span> היה “פולינום ממעלה <span class="math inline">\(3\)</span>”, אף שזו פשוט הפונקציה <span class="math inline">\(.x + 1\)</span> פולינום ממעלה <span class="math inline">\(1\)</span> הוא ישר, וממעלה <span class="math inline">\(2\)</span> הוא פרבולה. בגרף, השורשים הם הנקודות שבהן הגרף חותך את ציר <span class="math inline">\(x\)</span> או נוגע בו.</p>
+<p>למשל, <span class="math inline">\(0\cdot x^3+x+1\)</span> הוא פולינום ממעלה <span class="math inline">\(1\)</span>, כי האיבר עם <span class="math inline">\(x^3\)</span> מתאפס. פונקציה קבועה שאינה אפס, כגון <span class="math inline">\(P(x)=5\)</span>, היא פולינום ממעלה <span class="math inline">\(0\)</span>. גם <span class="math inline">\(P(x)=0\)</span> הוא פולינום; לא נגדיר לו מעלה, וכל מספר ממשי הוא שורש שלו. החזקות בפולינום הן שלמות ואי־שליליות: <span class="math inline">\(1/x\)</span> ו-<span class="math inline">\(\sqrt{x}\)</span> אינן פולינומים.</p>
+<p>הגרף של פולינום ממעלה <span class="math inline">\(1\)</span> הוא ישר, ושל פולינום ממעלה <span class="math inline">\(2\)</span> הוא פרבולה. שורש <span class="math inline">\(r\)</span> הוא <strong>מספר</strong>; הנקודה המתאימה לו בגרף היא <span class="math inline">\((r,0)\)</span>, על ציר <span class="math inline">\(x\)</span>.</p>
 <div id="box-thm-roots" class="thmbox thmbox-theorem" title="שורשים של פולינומים">
 <p><strong>משפט 1.8.2 — שורשים של פולינומים.</strong></p>
-<p>(א) <span class="math inline">\(r\)</span> הוא שורש של <span class="math inline">\(P\)</span> אם ורק אם אפשר לכתוב <span class="math inline">\(,P(x) = (x - r) \, Q(x)\)</span> כאשר <span class="math inline">\(Q\)</span> פולינום ממעלה אחת פחות.</p>
-<p>(ב) לפולינום ממעלה <span class="math inline">\(n\)</span> יש <strong>לכל היותר</strong> <span class="math inline">\(n\)</span> שורשים ממשיים.</p>
-<p>(ג) <span class="term"><strong>נוסחת השורשים</strong></span>: לפולינום <span class="math inline">\(ax^2 + bx + c\)</span> (עם <span class="math inline">\(a \neq 0\)</span>) נסמן <span class="math inline">\(\Delta = b^2 - 4ac\)</span> (<strong>הדיסקרימיננטה</strong>). אם <span class="math inline">\(,\Delta &lt; 0\)</span> אין שורשים ממשיים. אם <span class="math inline">\(,\Delta \ge 0\)</span> השורשים הם <span class="math display">\[,x = \frac{-b \pm \sqrt{\Delta}}{2a}\]</span> ויש שני שורשים אם <span class="math inline">\(\Delta &gt; 0\)</span> ושורש אחד אם <span class="math inline">\(.\Delta = 0\)</span></p>
+<p>(א) אם <span class="math inline">\(P\)</span> פולינום ממעלה <span class="math inline">\(n\ge1\)</span>, אז <span class="math inline">\(r\)</span> הוא שורש שלו אם ורק אם אפשר לכתוב <span class="math inline">\(P(x)=(x-r)Q(x)\)</span>, כאשר <span class="math inline">\(Q\)</span> פולינום ממעלה <span class="math inline">\(n-1\)</span>.</p>
+<p>(ב) לפולינום שאינו פולינום האפס, ממעלה <span class="math inline">\(n\)</span>, יש <strong>לכל היותר</strong> <span class="math inline">\(n\)</span> שורשים ממשיים <strong>שונים</strong>.</p>
+<p>(ג) <span class="term"><strong>נוסחת השורשים</strong></span>: לפולינום <span class="math inline">\(ax^2+bx+c\)</span>, כאשר <span class="math inline">\(a\ne0\)</span>, מחשבים את <span class="term"><strong>הדיסקרימיננטה</strong></span> <span class="math inline">\(\Delta=b^2-4ac\)</span>. הסימן שלה קובע כמה שורשים ממשיים יש:</p>
+<ul>
+<li>אם <span class="math inline">\(\Delta&lt;0\)</span>, אין שורשים ממשיים.</li>
+<li>אם <span class="math inline">\(\Delta=0\)</span>, יש שורש אחד: <span class="math inline">\(x=-\frac{b}{2a}\)</span>.</li>
+<li>אם <span class="math inline">\(\Delta&gt;0\)</span>, יש שני שורשים שונים: <span class="math display">\[x=\frac{-b+\sqrt{\Delta}}{2a}\quad\text{או}\quad x=\frac{-b-\sqrt{\Delta}}{2a}.\]</span></li>
+</ul>
+<p>את שתי האפשרויות נהוג לקצר ל-<span class="math inline">\(x=\frac{-b\pm\sqrt{\Delta}}{2a}\)</span>. הסימן <span class="math inline">\(\pm\)</span> אומר לחשב פעם עם חיבור ופעם עם חיסור; כאשר <span class="math inline">\(\Delta=0\)</span>, מתקבל אותו מספר בשתי האפשרויות.</p>
 </div>
 <div class="thmbox thmbox-warning" title="לכל היותר, לא בדיוק">
 <p><strong>שימו לב — לכל היותר, לא בדיוק.</strong></p>
-<p>לפולינום ממעלה <span class="math inline">\(n\)</span> יכולים להיות <strong>פחות</strong> מ-<span class="math inline">\(n\)</span> שורשים. למשל ל-<span class="math inline">\(x^2 + 4\)</span> אין שורשים ממשיים כלל: <span class="math inline">\(x^2 + 4 \ge 4 &gt; 0\)</span> לכל <span class="math inline">\(.x\)</span></p>
+<p>לפולינום ממעלה <span class="math inline">\(n\)</span> יכולים להיות <strong>פחות</strong> מ-<span class="math inline">\(n\)</span> שורשים ממשיים שונים. למשל, ל-<span class="math inline">\(x^2+4\)</span> אין שורשים ממשיים כלל: <span class="math inline">\(x^2+4\ge4&gt;0\)</span> לכל <span class="math inline">\(x\)</span>.</p>
+</div>
+<div class="thmbox thmbox-terminology" title="שורש כפול">
+<p><strong>מונחים — שורש כפול.</strong></p>
+<p>אם הגורם <span class="math inline">\((x-r)\)</span> מופיע בדיוק פעמיים בפירוק הפולינום, <span class="math inline">\(r\)</span> נקרא <strong>שורש כפול</strong>. למשל, ב-<span class="math inline">\(P(x)=(x-1)^2(x+2)\)</span> השורש <span class="math inline">\(1\)</span> כפול. בקבוצת השורשים כותבים כל מספר פעם אחת: כאן הקבוצה היא <span class="math inline">\(\{-2,1\}\)</span>.</p>
 </div>
 <div class="thmbox thmbox-key-point thmicon-calc" data-icon="calc" title="מציאת שורשים">
 <p><strong>שיטת חישוב — מציאת שורשים.</strong></p>
+<p>כדי לפתור <span class="math inline">\(P(x)=0\)</span>, מנסים לפרק את הפולינום לגורמים. <strong>מכפלה שווה לאפס אם ורק אם לפחות אחד הגורמים שווה לאפס.</strong> לכן פותרים עבור כל גורם, ואוספים את כל השורשים.</p>
 <ol type="1">
-<li>מוציאים גורם משותף, למשל <span class="math inline">\(.x^3 - 9x = x(x^2 - 9)\)</span></li>
-<li>מזהים נוסחאות כפל מקוצר: <span class="math inline">\(a^2 - b^2 = (a - b)(a + b)\)</span> ו-<span class="math inline">\(.a^2 \pm 2ab + b^2 = (a \pm b)^2\)</span></li>
-<li>לפולינום ממעלה <span class="math inline">\(2\)</span> משתמשים בנוסחת השורשים.</li>
-<li>לפולינום ממעלה <span class="math inline">\(3\)</span> מנחשים שורש שלם <span class="math inline">\(r\)</span> מבין המחלקים של <span class="math inline">\(a_0\)</span> (כולל השליליים). לפי (א), <span class="math inline">\(,P(x) = (x - r)Q(x)\)</span> כאשר <span class="math inline">\(Q\)</span> ממעלה <span class="math inline">\(,2\)</span> ואת <span class="math inline">\(Q\)</span> מוצאים בחילוק של <span class="math inline">\(P\)</span> ב-<span class="math inline">\(x - r\)</span> (או בניחוש, ובדיקה בכפל). לבסוף מוצאים את השורשים של <span class="math inline">\(.Q\)</span></li>
+<li>מוציאים גורם משותף אם יש, למשל <span class="math inline">\(x^3-9x=x(x^2-9)\)</span>. לא מחלקים ב-<span class="math inline">\(x\)</span>: כך היינו מאבדים את השורש <span class="math inline">\(0\)</span>.</li>
+<li>מחפשים נוסחאות כפל מקוצר: <span class="math inline">\(a^2-b^2=(a-b)(a+b)\)</span> ו-<span class="math inline">\(a^2\pm2ab+b^2=(a\pm b)^2\)</span>.</li>
+<li>לפולינום ממעלה <span class="math inline">\(2\)</span>, או לגורם ממעלה <span class="math inline">\(2\)</span> שהתקבל בפירוק, אפשר להשתמש בנוסחת השורשים.</li>
+<li>בפולינום ממעלה <span class="math inline">\(3\)</span>, מציאת שורש <span class="math inline">\(r\)</span> מאפשרת לכתוב <span class="math inline">\(P(x)=(x-r)Q(x)\)</span>, עם <span class="math inline">\(Q\)</span> ממעלה <span class="math inline">\(2\)</span>. את <span class="math inline">\(Q\)</span> אפשר למצוא בפתיחת סוגריים ובהשוואת מקדמים, כפי שנראה בדוגמה. נשאר למצוא את שורשי <span class="math inline">\(Q\)</span>, ולצרף אליהם את <span class="math inline">\(r\)</span>.</li>
 </ol>
+<p><strong>איך מחפשים שורש שלם?</strong> אם כל המקדמים שלמים והאיבר החופשי <span class="math inline">\(a_0\)</span> אינו אפס, כל שורש שלם חייב להיות מחלק של <span class="math inline">\(a_0\)</span>. בודקים גם מחלקים שליליים, באמצעות הצבה בפולינום. אם <span class="math inline">\(a_0=0\)</span>, כבר ידוע ש-<span class="math inline">\(0\)</span> הוא שורש ואפשר להוציא גורם <span class="math inline">\(x\)</span>.</p>
+<p>לא לכל פולינום יש שורש שלם. אם אף מועמד לא מתאים, זה אינו אומר שאין שורשים ממשיים: למשל, השורש של <span class="math inline">\(x^3-2\)</span> הוא <span class="math inline">\(\sqrt[3]{2}\)</span>, שאינו שלם.</p>
 </div>
 <div id="box-exm-poly-roots" class="thmbox thmbox-example" title="מציאת שורשים">
 <p><strong>דוגמה 1.8.3 — מציאת שורשים.</strong></p>
-<p>מצאו את השורשים. כתבו את התשובה כרשימה.</p>
+<p>מצאו את קבוצת השורשים הממשיים. כתבו את המספרים בתוך סוגריים מסולסלים; אם אין שורשים ממשיים, כתבו <span class="math inline">\(\emptyset\)</span>.</p>
 <p><strong>(א)</strong> <span class="math inline">\(x^2 - x - 6\)</span></p>
 <div class="fill">
 <p><span class="fill-ltr"><span class="math inline">\(\Delta =\)</span> <span class="blank" data-ans="25"><span class="math inline">\(25\)</span></span></span> והשורשים: <span class="blank" data-ans="{3,-2}"><span class="math inline">\(\{-2, 3\}\)</span></span></p>
 <div class="explain">
-<p>נשתמש בנוסחת השורשים עם <span class="math inline">\(,a = 1\)</span> <span class="math inline">\(b = -1\)</span> ו-<span class="math inline">\(:c = -6\)</span> <span class="math display">\[\begin{aligned} \Delta &amp;= b^2 - 4ac \\ &amp;= (-1)^2 - 4 \cdot 1 \cdot (-6) \\ &amp;= 1 + 24 = 25 \\ x &amp;= \frac{-b \pm \sqrt{\Delta}}{2a} = \frac{1 \pm 5}{2} \end{aligned}\]</span> כלומר <span class="math inline">\(x = \frac{6}{2} = 3\)</span> או <span class="math inline">\(.x = \frac{-4}{2} = -2\)</span> לפי (א) במשפט, <span class="math inline">\(.x^2 - x - 6 = (x - 3)(x + 2)\)</span></p>
+<p>נשתמש בנוסחת השורשים עם <span class="math inline">\(,a = 1\)</span> <span class="math inline">\(b = -1\)</span> ו-<span class="math inline">\(:c = -6\)</span> <span class="math display">\[\begin{aligned} \Delta &amp;= b^2 - 4ac \\ &amp;= (-1)^2 - 4 \cdot 1 \cdot (-6) \\ &amp;= 1 + 24 = 25 \\ x &amp;= \frac{-b \pm \sqrt{\Delta}}{2a} = \frac{1 \pm 5}{2} \end{aligned}\]</span> כלומר <span class="math inline">\(x = \frac{6}{2} = 3\)</span> או <span class="math inline">\(.x = \frac{-4}{2} = -2\)</span> לפי <a href="#box-thm-roots">משפט 1.8.2</a>, <span class="math inline">\(x^2-x-6=(x-3)(x+2)\)</span>.</p>
 </div>
 </div>
 <p><strong>(ב)</strong> <span class="math inline">\(x^3 - 9x\)</span></p>
@@ -5112,19 +5145,19 @@ window.Quarto = {
 <p>הפרש ריבועים: <span class="math inline">\(.a^2 - b^2 = (a - b)(a + b)\)</span></p>
 </div>
 <div class="step" data-line="x=0 או x=[3] או x=[-3]">
-<p>מכפלה שווה <span class="math inline">\(0\)</span> כשאחד הגורמים שווה <span class="math inline">\(.0\)</span></p>
+<p>מכפלה שווה <span class="math inline">\(0\)</span> אם ורק אם לפחות אחד הגורמים שווה <span class="math inline">\(0\)</span>.</p>
 </div>
 <div class="hint">
 <p>נוציא גורם משותף <span class="math inline">\(,x\)</span> ואחר כך נשתמש ב-<span class="math inline">\(.a^2 - b^2 = (a - b)(a + b)\)</span></p>
 </div>
 <div class="hint">
-<p>מכפלה מתאפסת כאשר אחד הגורמים מתאפס.</p>
+<p>מכפלה מתאפסת אם ורק אם לפחות אחד הגורמים מתאפס.</p>
 </div>
 </div>
 <div class="fill">
 <p>השורשים: <span class="blank" data-ans="{0,3,-3}"><span class="math inline">\(\{-3, 0, 3\}\)</span></span></p>
 <div class="explain">
-<p>מכפלה מתאפסת כאשר אחד הגורמים מתאפס, ולכן השורשים הם <span class="math inline">\(0\)</span>, <span class="math inline">\(3\)</span> ו-<span class="math inline">\(.{-}3\)</span></p>
+<p>לפחות אחד הגורמים צריך להתאפס, ולכן קבוצת השורשים היא <span class="math inline">\(\{-3,0,3\}\)</span>.</p>
 </div>
 </div>
 <p><strong>(ג)</strong> <span class="math inline">\(x^2 + 4\)</span></p>
@@ -5138,22 +5171,24 @@ window.Quarto = {
 <div class="fill">
 <p>השורשים: <span class="blank" data-ans="{-3}"><span class="math inline">\(\{-3\}\)</span></span></p>
 <div class="explain">
-<p>זו נוסחת הכפל המקוצר <span class="math inline">\(:(a + b)^2 = a^2 + 2ab + b^2\)</span> <span class="math display">\[\begin{aligned} x^2 + 6x + 9 &amp;= x^2 + 2 \cdot 3 \cdot x + 3^2 \\ &amp;= (x + 3)^2 \end{aligned}\]</span> יש שורש יחיד, <span class="math inline">\(,-3\)</span> ושם הגרף <strong>נוגע</strong> בציר <span class="math inline">\(x\)</span> בלי לחצות אותו. (שורש כזה נקרא <strong>שורש כפול</strong>.) גם הדיסקרימיננטה מראה זאת: <span class="math inline">\(.\Delta = 36 - 36 = 0\)</span></p>
+<p>זו נוסחת הכפל המקוצר <span class="math inline">\((a+b)^2=a^2+2ab+b^2\)</span>: <span class="math display">\[\begin{aligned} x^2+6x+9 &amp;= x^2+2\cdot3\cdot x+3^2 \\ &amp;= (x+3)^2. \end{aligned}\]</span> השורש היחיד הוא <span class="math inline">\(-3\)</span>, והוא כפול כי הגורם <span class="math inline">\((x+3)\)</span> מופיע פעמיים. בגרף הפרבולה נוגעת בציר <span class="math inline">\(x\)</span> בנקודה <span class="math inline">\((-3,0)\)</span> בלי לחצות אותו. גם נוסחת השורשים נותנת אותו מספר פעמיים, כי <span class="math inline">\(\Delta=36-36=0\)</span>.</p>
 </div>
 </div>
 <p><strong>(ה)</strong> <span class="math inline">\(x^3 - 2x^2 - x + 2\)</span></p>
 <div class="solve">
 <div class="hint">
-<p>זה פולינום ממעלה <span class="math inline">\(.3\)</span> לפי השיטה, מנחשים שורש שלם בין המחלקים של <span class="math inline">\(,a_0 = 2\)</span> כלומר <span class="math inline">\(.\pm 1, \pm 2\)</span></p>
+<p>כל המקדמים שלמים והאיבר החופשי הוא <span class="math inline">\(2\)</span>, ולכן המועמדים לשורש שלם הם <span class="math inline">\(\pm1,\pm2\)</span>. בדקו אותם בהצבה.</p>
 </div>
 <div class="step">
-<p><strong>מנחשים שורש.</strong> ננסה את <span class="math inline">\(:x = 1\)</span> <span class="math display">\[1^3 - 2 \cdot 1^2 - 1 + 2 = 1 - 2 - 1 + 2 = 0\]</span> לכן <span class="math inline">\(1\)</span> שורש.</p>
+<p><strong>בודקים מועמד.</strong> נציב <span class="math inline">\(x=1\)</span>: <span class="math display">\[P(1)=1^3-2\cdot1^2-1+2=0.\]</span> לכן <span class="math inline">\(1\)</span> הוא שורש.</p>
 </div>
 <div class="step">
-<p><strong>מוציאים גורם.</strong> לפי (א) במשפט אפשר להוציא את הגורם <span class="math inline">\(.(x - 1)\)</span> אפשר לבדוק בכפל ש-<span class="math display">\[.x^3 - 2x^2 - x + 2 = (x - 1)(x^2 - x - 2)\]</span></p>
+<p><strong>מוצאים את הגורם שנותר.</strong> לפי <a href="#box-thm-roots">משפט 1.8.2</a>, אפשר לכתוב <span class="math inline">\(P(x)=(x-1)Q(x)\)</span>. כדי לקבל את האיבר <span class="math inline">\(x^3\)</span>, נכתוב <span class="math inline">\(Q(x)=x^2+bx+c\)</span> ונפתח סוגריים: <span class="math display">\[\begin{aligned}
+(x-1)(x^2+bx+c)&amp;=x^3+(b-1)x^2+(c-b)x-c.
+\end{aligned}\]</span> נשווה לפולינום המקורי. מהמקדם של <span class="math inline">\(x^2\)</span> נקבל <span class="math inline">\(b-1=-2\)</span>, ולכן <span class="math inline">\(b=-1\)</span>. מהאיבר החופשי נקבל <span class="math inline">\(-c=2\)</span>, ולכן <span class="math inline">\(c=-2\)</span>. גם המקדם של <span class="math inline">\(x\)</span> מתאים: <span class="math inline">\(c-b=-1\)</span>. לכן <span class="math display">\[P(x)=(x-1)(x^2-x-2).\]</span></p>
 </div>
 <div class="step">
-<p><strong>מפרקים את הריבועי.</strong> את <span class="math inline">\(x^2 - x - 2\)</span> מפרקים כמו ב-(א): <span class="math inline">\(.x^2 - x - 2 = (x - 2)(x + 1)\)</span> לכן <span class="math display">\[x^3 - 2x^2 - x + 2 = (x - 1)(x - 2)(x + 1)\]</span> והשורשים הם <span class="math inline">\(1\)</span>, <span class="math inline">\(2\)</span> ו-<span class="math inline">\(.{-}1\)</span></p>
+<p><strong>מפרקים את הגורם הריבועי.</strong> מתקיים <span class="math inline">\(x^2-x-2=(x-2)(x+1)\)</span>, ולכן <span class="math display">\[P(x)=(x-1)(x-2)(x+1).\]</span> לפחות אחד הגורמים צריך להתאפס: <span class="math inline">\(x=1\)</span> או <span class="math inline">\(x=2\)</span> או <span class="math inline">\(x=-1\)</span>. קבוצת השורשים היא <span class="math inline">\(\{-1,1,2\}\)</span>.</p>
 </div>
 </div>
 <div class="fill">
@@ -5168,23 +5203,24 @@ window.Quarto = {
 </div>
 <div class="thmbox thmbox-self-check">
 <p><strong>בדיקה עצמית.</strong></p>
-<p>כמה שורשים ממשיים יש ל-<span class="math inline">\(?x^2 + 2x + 5\)</span></p>
-<div class="tf-quiz" data-correct="1">
-<button type="button" class="tf-opt" data-val="1">\(0\)</button>
-<button type="button" class="tf-opt" data-val="2">\(1\)</button>
-<button type="button" class="tf-opt" data-val="3">\(2\)</button>
-<div class="tf-feedback" aria-live="polite"></div>
-<div class="tf-why">
-<p><span class="math inline">\(,\Delta = 2^2 - 4 \cdot 1 \cdot 5 = 4 - 20 = -16\)</span> ו-<span class="math inline">\(,\Delta &lt; 0\)</span> ולכן אין שורשים ממשיים.</p>
+<p>כמה שורשים ממשיים יש ל-<span class="math inline">\(x^2+2x+5\)</span>?</p>
+<div class="fill">
+<p>מספר השורשים: <span class="blank" data-ans="0"><span class="math inline">\(0\)</span></span></p>
+<div class="hint">
+<p>חשבו את <span class="math inline">\(\Delta\)</span> ובדקו את הסימן שלה.</p>
+</div>
+<div class="explain">
+<p><span class="math inline">\(\Delta=2^2-4\cdot1\cdot5=-16&lt;0\)</span>, ולכן אין שורשים ממשיים.</p>
 </div>
 </div>
 </div>
 <div class="thmbox thmbox-summary">
 <p><strong>סיכום.</strong></p>
 <ul>
-<li>פולינום בנוי מחזקות של <span class="math inline">\(x\)</span> עם מקדמים. המעלה היא החזקה הגבוהה ביותר, ושורש הוא מקום שבו הפולינום מתאפס.</li>
-<li><span class="math inline">\(r\)</span> שורש בדיוק כאשר <span class="math inline">\((x - r)\)</span> גורם של הפולינום. לפולינום ממעלה <span class="math inline">\(n\)</span> יש לכל היותר <span class="math inline">\(n\)</span> שורשים.</li>
-<li>ריבועי: נוסחת השורשים, והדיסקרימיננטה <span class="math inline">\(\Delta\)</span> קובעת כמה שורשים יש. מעוקב: מנחשים שורש שלם בין המחלקים של <span class="math inline">\(.a_0\)</span></li>
+<li>המעלה היא החזקה הגבוהה ביותר עם מקדם שאינו אפס, לאחר כינוס איברים. שורש הוא פתרון של <span class="math inline">\(P(x)=0\)</span>.</li>
+<li>לפולינום שאינו פולינום האפס, ממעלה <span class="math inline">\(n\)</span>, יש לכל היותר <span class="math inline">\(n\)</span> שורשים ממשיים שונים. שורש כפול נכתב פעם אחת בקבוצת השורשים.</li>
+<li>פירוק לגורמים מאפשר לפתור כל גורם בנפרד. נוסחת השורשים מתאימה לפולינום ממעלה <span class="math inline">\(2\)</span>; הסימן של <span class="math inline">\(\Delta\)</span> קובע את מספר שורשיו הממשיים.</li>
+<li>בפולינום עם מקדמים שלמים ואיבר חופשי שאינו אפס, שורש שלם חייב לחלק את האיבר החופשי. לא מובטח שיש שורש שלם.</li>
 </ul>
 </div>
 <section id="תרגילים-7" class="level3 unnumbered">
@@ -5195,23 +5231,23 @@ window.Quarto = {
 <div class="fill">
 <p>המעלה של <span class="math inline">\(P\)</span> היא <span class="blank" data-ans="3"><span class="math inline">\(3\)</span></span>, המקדם <span class="fill-ltr"><span class="math inline">\(a_0 =\)</span> <span class="blank" data-ans="7"><span class="math inline">\(7\)</span></span></span>, ו-<span class="fill-ltr"><span class="math inline">\(P(-1) =\)</span> <span class="blank" data-ans="4"><span class="math inline">\(4\)</span></span></span></p>
 <div class="explain">
-<p>החזקה הגבוהה ביותר היא <span class="math inline">\(,x^3\)</span> ו-<span class="math inline">\(a_0\)</span> הוא המקדם בלי <span class="math inline">\(,x\)</span> כלומר <span class="math inline">\(.7\)</span> הצבה: <span class="math inline">\(.P(-1) = 4 \cdot (-1)^3 - (-1) + 7 = -4 + 1 + 7 = 4\)</span></p>
+<p>החזקה הגבוהה ביותר היא <span class="math inline">\(3\)</span>, ו-<span class="math inline">\(a_0\)</span> הוא האיבר החופשי, <span class="math inline">\(7\)</span>. בהצבה מתקבל <span class="math inline">\(P(-1)=4\cdot(-1)^3-(-1)+7=4\)</span>.</p>
 </div>
 </div>
 </div>
 <div id="box-q-roots" class="thmbox thmbox-question" title="מוצאים שורשים">
 <p><strong>שאלה 1.8.5 — מוצאים שורשים.</strong></p>
-<p>מצאו את קבוצת השורשים: פתרו את המשוואה <span class="math inline">\(P(x) = 0\)</span> צעד אחר צעד. קודם מוציאים גורם משותף ומחפשים כפל מקוצר; אם לא הולך, נוסחת השורשים. כתבו את התשובה כרשימה.</p>
+<p>מצאו את קבוצת השורשים הממשיים: פתרו את המשוואה <span class="math inline">\(P(x)=0\)</span> צעד אחר צעד, וכתבו את התשובה כקבוצה. נסו לפרק לגורמים; לפולינום ממעלה <span class="math inline">\(2\)</span> אפשר גם להשתמש בנוסחת השורשים.</p>
 <p><strong>(א)</strong> <span class="math inline">\(3x^2 - 12\)</span></p>
 <div class="derive" start="3x^2-12=0">
 <div class="step" data-line="3x^2=[12]">
-<p>מוסיפים <span class="math inline">\(.12\)</span></p>
+<p>מחברים <span class="math inline">\(12\)</span> לשני האגפים.</p>
 </div>
 <div class="step" data-line="x^2=[4]">
-<p>מחלקים ב-<span class="math inline">\(.3\)</span></p>
+<p>מחלקים את שני האגפים ב-<span class="math inline">\(3\)</span>.</p>
 </div>
 <div class="step" data-line="x=[2] או x=[-2]">
-<p>מוציאים שורש: יש שתי אפשרויות. (אפשר גם לפרק: <span class="math inline">\(.3x^2 - 12 = 3(x - 2)(x + 2)\)</span>)</p>
+<p>יש שני מספרים שריבועם <span class="math inline">\(4\)</span>: המספר <span class="math inline">\(2\)</span> והמספר <span class="math inline">\(-2\)</span>. (אפשר גם לפתור בפירוק לגורמים: <span class="math inline">\(3x^2-12=3(x-2)(x+2)\)</span>.)</p>
 </div>
 </div>
 <div class="fill">
@@ -5223,7 +5259,7 @@ window.Quarto = {
 <p>מוציאים גורם משותף <span class="math inline">\(.x^2\)</span></p>
 </div>
 <div class="step" data-line="x=[0] או x=[1]">
-<p>מכפלה שווה <span class="math inline">\(0\)</span> כשאחד הגורמים שווה <span class="math inline">\(.0\)</span> השורש <span class="math inline">\(0\)</span> הוא שורש כפול, כי הגורם <span class="math inline">\(x\)</span> מופיע פעמיים.</p>
+<p>מכפלה שווה <span class="math inline">\(0\)</span> אם ורק אם לפחות אחד הגורמים שווה <span class="math inline">\(0\)</span>. השורש <span class="math inline">\(0\)</span> הוא שורש כפול, כי הגורם <span class="math inline">\(x\)</span> מופיע פעמיים.</p>
 </div>
 </div>
 <div class="fill">
@@ -5235,7 +5271,7 @@ window.Quarto = {
 <p>מפרקים לגורמים.</p>
 </div>
 <div class="step" data-line="x=[2] או x=[3]">
-<p>מכפלה שווה <span class="math inline">\(0\)</span> כשאחד הגורמים שווה <span class="math inline">\(.0\)</span></p>
+<p>מכפלה שווה <span class="math inline">\(0\)</span> אם ורק אם לפחות אחד הגורמים שווה <span class="math inline">\(0\)</span>.</p>
 </div>
 <div class="hint">
 <p>חפשו שני מספרים שסכומם <span class="math inline">\(5\)</span> ומכפלתם <span class="math inline">\(.6\)</span></p>
@@ -5275,7 +5311,7 @@ window.Quarto = {
 <div class="fill">
 <p>השורשים: <span class="blank" data-ans="{}"><span class="math inline">\(\emptyset\)</span></span></p>
 <div class="explain">
-<p><span class="math inline">\(,\Delta = 1 - 4 = -3 &lt; 0\)</span> ולכן אין שורשים ממשיים, ואין מה לפתור צעד אחר צעד.</p>
+<p><span class="math inline">\(\Delta=1^2-4\cdot1\cdot1=-3&lt;0\)</span>, ולכן אין שורשים ממשיים. קבוצת השורשים היא <span class="math inline">\(\emptyset\)</span>.</p>
 </div>
 </div>
 <p><strong>(ז)</strong> <span class="math inline">\(x^3 - 4x\)</span></p>
@@ -5284,7 +5320,7 @@ window.Quarto = {
 <p>מוציאים גורם משותף <span class="math inline">\(x\)</span> ומפרקים הפרש ריבועים.</p>
 </div>
 <div class="step" data-line="x=0 או x=[2] או x=[-2]">
-<p>מכפלה שווה <span class="math inline">\(0\)</span> כשאחד הגורמים שווה <span class="math inline">\(.0\)</span></p>
+<p>מכפלה שווה <span class="math inline">\(0\)</span> אם ורק אם לפחות אחד הגורמים שווה <span class="math inline">\(0\)</span>.</p>
 </div>
 </div>
 <div class="fill">
@@ -5310,52 +5346,44 @@ window.Quarto = {
 </div>
 <div id="box-q-how-many-roots" class="thmbox thmbox-question" title="כמה שורשים?">
 <p><strong>שאלה 1.8.7 — כמה שורשים?</strong></p>
+<p>כתבו כמה שורשים ממשיים שונים יש לכל פולינום.</p>
 <p><strong>(א)</strong> <span class="math inline">\(x^2 - 6x + 9\)</span></p>
-<div class="tf-quiz" data-correct="2">
-<button type="button" class="tf-opt" data-val="1">\(0\)</button>
-<button type="button" class="tf-opt" data-val="2">\(1\)</button>
-<button type="button" class="tf-opt" data-val="3">\(2\)</button>
-<div class="tf-feedback" aria-live="polite"></div>
-<div class="tf-why">
-<p><span class="math inline">\(,\Delta = 36 - 36 = 0\)</span> ולכן יש שורש אחד, <span class="math inline">\(x = 3\)</span> (שורש כפול).</p>
+<div class="fill">
+<p>מספר השורשים: <span class="blank" data-ans="1"><span class="math inline">\(1\)</span></span></p>
+<div class="explain">
+<p><span class="math inline">\(\Delta=36-36=0\)</span>, ולכן יש שורש אחד, <span class="math inline">\(3\)</span>. הוא שורש כפול, אבל סופרים אותו פעם אחת.</p>
 </div>
 </div>
 <p><strong>(ב)</strong> <span class="math inline">\(3x^2 + 2x + 1\)</span></p>
-<div class="tf-quiz" data-correct="1">
-<button type="button" class="tf-opt" data-val="1">\(0\)</button>
-<button type="button" class="tf-opt" data-val="2">\(1\)</button>
-<button type="button" class="tf-opt" data-val="3">\(2\)</button>
-<div class="tf-feedback" aria-live="polite"></div>
-<div class="tf-why">
-<p><span class="math inline">\(.\Delta = 4 - 12 = -8 &lt; 0\)</span></p>
+<div class="fill">
+<p>מספר השורשים: <span class="blank" data-ans="0"><span class="math inline">\(0\)</span></span></p>
+<div class="explain">
+<p><span class="math inline">\(\Delta=4-12=-8&lt;0\)</span>, ולכן אין שורשים ממשיים.</p>
 </div>
 </div>
 <p><strong>(ג)</strong> <span class="math inline">\(x^2 - 2\)</span></p>
-<div class="tf-quiz" data-correct="3">
-<button type="button" class="tf-opt" data-val="1">\(0\)</button>
-<button type="button" class="tf-opt" data-val="2">\(1\)</button>
-<button type="button" class="tf-opt" data-val="3">\(2\)</button>
-<div class="tf-feedback" aria-live="polite"></div>
-<div class="tf-why">
-<p><span class="math inline">\(,\Delta = 0 + 8 = 8 &gt; 0\)</span> והשורשים הם <span class="math inline">\(.\pm\sqrt{2}\)</span></p>
+<div class="fill">
+<p>מספר השורשים: <span class="blank" data-ans="2"><span class="math inline">\(2\)</span></span></p>
+<div class="explain">
+<p><span class="math inline">\(\Delta=0+8=8&gt;0\)</span>, ולכן יש שני שורשים שונים: <span class="math inline">\(\sqrt{2}\)</span> ו-<span class="math inline">\(-\sqrt{2}\)</span>.</p>
 </div>
 </div>
 </div>
 <div id="box-q-cubic" class="thmbox thmbox-question" title="פולינום ממעלה שלוש">
 <p><strong>שאלה 1.8.8 — פולינום ממעלה שלוש.</strong></p>
-<p>מצאו את השורשים של <span class="math inline">\(.x^3 - 3x^2 - x + 3\)</span> פתרו את המשוואה <span class="math inline">\(x^3 - 3x^2 - x + 3 = 0\)</span> צעד אחר צעד.</p>
+<p>מצאו את קבוצת השורשים של <span class="math inline">\(x^3-3x^2-x+3\)</span>. פתרו את המשוואה <span class="math inline">\(x^3-3x^2-x+3=0\)</span> צעד אחר צעד.</p>
 <div class="derive" start="x^3-3x^2-x+3=0">
 <div class="step" data-line="(x-1)([x^2-2x-3])=0">
-<p>ניחשנו את השורש <span class="math inline">\(,x = 1\)</span> ולכן מוציאים את הגורם <span class="math inline">\(.(x - 1)\)</span></p>
+<p>בהצבה מתקבל <span class="math inline">\(P(1)=1-3-1+3=0\)</span>, ולכן אפשר להוציא את הגורם <span class="math inline">\((x-1)\)</span> לפי <a href="#box-thm-roots">משפט 1.8.2</a>. בדקו את הפירוק בפתיחת סוגריים.</p>
 </div>
 <div class="step" data-line="(x-1)(x-[3])(x+[1])=0">
 <p>מפרקים את הגורם הריבועי.</p>
 </div>
 <div class="step" data-line="x=1 או x=[3] או x=[-1]">
-<p>מכפלה שווה <span class="math inline">\(0\)</span> כשאחד הגורמים שווה <span class="math inline">\(.0\)</span></p>
+<p>מכפלה שווה <span class="math inline">\(0\)</span> אם ורק אם לפחות אחד הגורמים שווה <span class="math inline">\(0\)</span>.</p>
 </div>
 <div class="hint">
-<p>נחשו שורש בין המחלקים של <span class="math inline">\(:3\)</span> <span class="math inline">\(.\pm 1, \pm 3\)</span></p>
+<p>כל המקדמים שלמים והאיבר החופשי הוא <span class="math inline">\(3\)</span>. בדקו את המועמדים לשורש שלם: <span class="math inline">\(\pm1,\pm3\)</span>.</p>
 </div>
 <div class="hint">
 <p><span class="math inline">\(,1 - 3 - 1 + 3 = 0\)</span> ולכן <span class="math inline">\(1\)</span> שורש, ואפשר להוציא את הגורם <span class="math inline">\(.(x - 1)\)</span> בדקו בכפל ש-<span class="math inline">\(.x^3 - 3x^2 - x + 3 = (x - 1)(x^2 - 2x - 3)\)</span></p>
@@ -5367,23 +5395,26 @@ window.Quarto = {
 </div>
 <div id="box-q-order-cubic" class="thmbox thmbox-question" title="שלבי הפתרון של פולינום ממעלה שלוש">
 <p><strong>שאלה 1.8.9 — שלבי הפתרון של פולינום ממעלה שלוש.</strong></p>
-<p>סדרו את השלבים למציאת השורשים של <span class="math inline">\(.x^3 + 2x^2 - 5x - 6\)</span></p>
-<div class="order">
-<div class="step">
-<p>מנסים את המחלקים של <span class="math inline">\(:{-}6\)</span> <span class="math inline">\(.\pm 1, \pm 2, \pm 3, \pm 6\)</span></p>
+<p>מצאו את קבוצת השורשים של <span class="math inline">\(x^3+2x^2-5x-6\)</span>. כתבו את שלבי הפתרון.</p>
+<div class="derive" start="x^3+2x^2-5x-6=0">
+<div class="step" data-line="(x+1)([x^2+x-6])=0">
+<p>בהצבה מתקבל <span class="math inline">\(P(-1)=-1+2+5-6=0\)</span>, ולכן <span class="math inline">\((x+1)\)</span> הוא גורם לפי <a href="#box-thm-roots">משפט 1.8.2</a>. את הפירוק בודקים בפתיחת סוגריים.</p>
 </div>
-<div class="step">
-<p>מגלים שהמספר <span class="math inline">\(-1\)</span> הוא שורש: <span class="math inline">\(.{-}1 + 2 + 5 - 6 = 0\)</span></p>
+<div class="step" data-line="(x+1)(x+[3])(x-[2])=0">
+<p>מפרקים את הגורם הריבועי: <span class="math inline">\(x^2+x-6=(x+3)(x-2)\)</span>.</p>
 </div>
-<div class="step">
-<p>מוציאים את הגורם <span class="math inline">\(,(x + 1)\)</span> ומקבלים <span class="math inline">\(.(x + 1)(x^2 + x - 6)\)</span></p>
+<div class="step" data-line="x=[-1] או x=[-3] או x=[2]">
+<p>המכפלה מתאפסת כאשר לפחות אחד הגורמים מתאפס. פותרים עבור כל גורם.</p>
 </div>
-<div class="step">
-<p>מפרקים את הגורם הריבועי: <span class="math inline">\(.x^2 + x - 6 = (x + 3)(x - 2)\)</span></p>
+<div class="hint">
+<p>כל המקדמים שלמים והאיבר החופשי הוא <span class="math inline">\(-6\)</span>. המועמדים לשורש שלם הם <span class="math inline">\(\pm1,\pm2,\pm3,\pm6\)</span>.</p>
 </div>
-<div class="step">
-<p>רושמים את השורשים: <span class="math inline">\(-1\)</span>, <span class="math inline">\(-3\)</span> ו-<span class="math inline">\(.2\)</span></p>
+<div class="hint">
+<p>בדקו את <span class="math inline">\(x=-1\)</span>. אחר כך כתבו <span class="math inline">\(P(x)=(x+1)(x^2+bx+c)\)</span>, פתחו סוגריים והשוו מקדמים כדי למצוא את <span class="math inline">\(b\)</span> ואת <span class="math inline">\(c\)</span>.</p>
 </div>
+</div>
+<div class="fill">
+<p>קבוצת השורשים: <span class="blank" data-ans="{-3,-1,2}"><span class="math inline">\(\{-3,-1,2\}\)</span></span></p>
 </div>
 </div>
 <div id="box-q-build-poly" class="thmbox thmbox-question" title="בונים פולינום">
@@ -5392,7 +5423,7 @@ window.Quarto = {
 <div class="fill">
 <p><span class="fill-ltr"><span class="math inline">\(P(x) =\)</span> <span class="blank" data-ans="(x-1)(x-2)(x+3)" form="product" data-w="18"><span class="math inline">\((x - 1)(x - 2)(x + 3)\)</span></span></span></p>
 <div class="explain">
-<p>לפי (א) במשפט, כל שורש <span class="math inline">\(r\)</span> נותן גורם <span class="math inline">\(.(x - r)\)</span> שלושה גורמים נותנים מעלה <span class="math inline">\(,3\)</span> והמקדם של <span class="math inline">\(x^3\)</span> במכפלה הוא <span class="math inline">\(.1\)</span></p>
+<p>לפי <a href="#box-thm-roots">משפט 1.8.2</a>, כל שורש <span class="math inline">\(r\)</span> נותן גורם <span class="math inline">\((x-r)\)</span>. שלושת הגורמים נותנים מעלה <span class="math inline">\(3\)</span>, והמקדם של <span class="math inline">\(x^3\)</span> במכפלה הוא <span class="math inline">\(1\)</span>.</p>
 </div>
 </div>
 </div>
@@ -7434,24 +7465,48 @@ window.Quarto = {
 <td style="text-align: left;">השיקוף ביחס לישר מחזיר את אותה הצורה.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">עולה ממש / יורדת ממש</td>
-<td style="text-align: left;">כאשר <span class="math inline">\(x\)</span> גדל, ערך הפונקציה גדל / קטן, בלי שוויון.</td>
+<td style="text-align: left;">עיגול מלא / ריק בגרף</td>
+<td style="text-align: left;">מלא: הנקודה שייכת לגרף; ריק: הנקודה אינה שייכת לו. כל הנקודות שעל הקו הצבוע הן חלק מהגרף, למעט אלה שסומנו בעיגול ריק.</td>
 </tr>
 <tr class="odd">
+<td style="text-align: left;">עולה ממש / יורדת ממש</td>
+<td style="text-align: left;">בקטע הנדון, בכל בחירה של שתי נקודות על הגרף, הנקודה הימנית גבוהה / נמוכה יותר מהשמאלית. ״ממש״ אינו מאפשר גבהים שווים.</td>
+</tr>
+<tr class="even">
 <td style="text-align: left;">חד־חד־ערכית</td>
 <td style="text-align: left;">קלטים שונים נותנים פלטים שונים.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">על</td>
 <td style="text-align: left;">כל איבר בטווח מתקבל כפלט.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">פונקציה הפוכה</td>
 <td style="text-align: left;">מחזירה מהפלט לקלט; שונה מהמספר ההופכי <span class="math inline">\(\frac{1}{f(x)}\)</span>.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">הרכבה</td>
 <td style="text-align: left;">הפעלת פונקציה על התוצאה של פונקציה אחרת.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">מעלה של פולינום</td>
+<td style="text-align: left;">החזקה הגבוהה ביותר עם מקדם שאינו אפס, לאחר כינוס איברים. לפולינום האפס לא הגדרנו מעלה.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">מקדם מוביל / איבר חופשי</td>
+<td style="text-align: left;">המקדם המוביל מכפיל את החזקה הגבוהה ביותר; האיבר החופשי הוא האיבר בלי <span class="math inline">\(x\)</span>.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">שורש של פולינום</td>
+<td style="text-align: left;">מספר <span class="math inline">\(r\)</span> שעבורו <span class="math inline">\(P(r)=0\)</span>. הנקודה <span class="math inline">\((r,0)\)</span> נמצאת על הגרף ועל ציר <span class="math inline">\(x\)</span>.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">שורש כפול</td>
+<td style="text-align: left;">שורש <span class="math inline">\(r\)</span> שהגורם <span class="math inline">\((x-r)\)</span> מופיע בדיוק פעמיים בפירוק. בקבוצת השורשים כותבים את <span class="math inline">\(r\)</span> פעם אחת.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">דיסקרימיננטה</td>
+<td style="text-align: left;">המספר <span class="math inline">\(\Delta=b^2-4ac\)</span> בפולינום <span class="math inline">\(ax^2+bx+c\)</span>, עם <span class="math inline">\(a\ne0\)</span>. סימנו קובע אם יש אפס, אחד או שני שורשים ממשיים שונים.</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">אסימפטוטה</td>

@@ -16,6 +16,7 @@
              -1<=x<2 are also accepted; bare values need set-notation feedback)
         kind="num|expr|set" overrides the guess; miss="v :: message || ..." adds
         a tailored message for a known wrong answer; w= sets the input width.
+        Short written classifications use [זוגית]{.blank kind="text" ans="זוגית"}.
         Blanks are grouped by the nearest ::: fill (or box, or paragraph); a
         group gets one bar: בדיקה / רמז / הצגת התשובות. Inside ::: fill, the
         child divs ::: hint and ::: explain are the hints and the explanation
@@ -131,7 +132,7 @@ function tokenize(src) {
     }
     if (c === "<" || c === ">" || c === "=") { t.push({ k: "rel", v: c }); i++; continue; }
     if ("+-*/^".indexOf(c) >= 0) { t.push({ k: "op", v: c }); i++; continue; }
-    if ("()[]{},|_\\;".indexOf(c) >= 0) { t.push({ k: c }); i++; continue; }
+    if ("()[]{},|_\\;:".indexOf(c) >= 0) { t.push({ k: c }); i++; continue; }
     if (c === "!") { t.push({ k: "!" }); i++; continue; }   // n! ("!=" was read above)
     if (c === "§") {                                         // a box of a guided derivation
       var pm = /^§(R?)(\d+)/.exec(s.slice(i));
@@ -873,13 +874,31 @@ function conditionTex(n,parent) {
   else s=conditionTex(n.a,rank)+"\\quad\\text{"+(n.t==="and"?"וגם":"או")+"}\\quad "+conditionTex(n.b,rank);
   return rank<(parent||0)?"\\left("+s+"\\right)":s;
 }
-function parseCondition(src) {
-  var p=new Parser(tokenize(src)),n=p.conditionOr();
-  if(!p.atEnd())throw new ParseError("לא הצלחתי לקרוא את סוף התנאי.");
-  return n;
-}
-
 /* ---- parsing a set written by the reader ---- */
+Parser.prototype.startsSetBuilder = function () {
+  var variable=this.peek(1),separator=this.peek(2);
+  return this.is("{")&&variable&&variable.k==="var"&&separator&&["|",":","in"].indexOf(separator.k)>=0;
+};
+// A builder is one set term: its closing brace ends the condition, leaving
+// any following union/intersection/difference for the surrounding expression.
+Parser.prototype.readSetBuilder = function () {
+  this.expect("{");var variable=this.expect("var").v,domain=false,condition=null;
+  if(this.is("in")){this.next();this.expect("R");domain=true;}
+  if(!domain||!this.is("}")){
+    if(this.is(":"))this.next();else this.expect("|");
+    condition=this.conditionOr();
+    if(conditionVars(condition).some(function(v){return v!==variable;}))
+      throw new ParseError("בתנאי צריך להשתמש באותו משתנה שמופיע לפני השומר.");
+  }
+  this.expect("}");return {variable:variable,domain:domain,condition:condition};
+};
+Parser.prototype.isBareSetCondition = function () {
+  // Relations inside a builder do not turn the whole set expression into
+  // a bare condition. Explicit set notation takes the set-parser route.
+  var tokens=this.t.slice(this.i);
+  return tokens.some(function(t){return t.k==="rel";})&&
+    !tokens.some(function(t){return ["{","[","R","U","cap","\\"].indexOf(t.k)>=0;});
+};
 Parser.prototype.looksLikeInterval = function () {
   var depth = 0;
   for (var j = this.i; j < this.t.length; j++) {
@@ -914,6 +933,10 @@ Parser.prototype.setTerm = function () {
     return [piece(a, b, open === "[", c.k === "]")];
   }
   if (p.k === "{") {
+    if(this.startsSetBuilder()){
+      var builder=this.readSetBuilder();
+      return builder.condition?conditionSet(builder.condition,builder.variable):[piece(-Infinity,Infinity,false,false)];
+    }
     this.next();
     var pts = [];
     if (!this.is("}")) {
@@ -960,13 +983,15 @@ Parser.prototype.setExpression = function () {
   return out;
 };
 function setBuilder(src) {
-  var s = normalize(src).trim();
-  return /^\{\s*([a-z])\s*(?:in\s+R\s*)?[|:]\s*([\s\S]+)\}$/.exec(s) || /^\{\s*([a-z])\s+in\s+R\s*\}$/.exec(s);
+  try{
+    var p=new Parser(tokenize(src));
+    if(!p.startsSetBuilder())return null;
+    var builder=p.readSetBuilder();return p.atEnd()?builder:null;
+  }catch(_){return null;}
 }
 // Answer fields require set notation; algebraic work and plotting can still
 // interpret conditions. Check every term, including inside set operations.
 function hasSetNotation(src) {
-  if (setBuilder(src)) return true; // The condition was already checked by checkValue.
   try {
     var p = new Parser(tokenize(src));
     p.setNotationOnly = true;
@@ -975,18 +1000,10 @@ function hasSetNotation(src) {
   } catch (_) { return false; }
 }
 function parseSet(src) {
-  var builder = setBuilder(src);
-  if (builder) {
-    if (!builder[2]) return [piece(-Infinity, Infinity, false, false)];
-    var condition = parseCondition(builder[2]);
-    if (conditionVars(condition).some(function (v) { return v !== builder[1]; }))
-      throw new ParseError("בתנאי צריך להשתמש באותו משתנה שמופיע לפני השומר.");
-    return conditionSet(condition, builder[1]);
-  }
   var p = new Parser(tokenize(src));
   if (p.atEnd()) throw new ParseError("השדה ריק.");
   if (p.is("var") && p.peek(1) && p.peek(1).k === "in") { p.next(); p.next(); }
-  if(p.t.some(function(t){return t.k==="rel";})){
+  if(p.isBareSetCondition()){
     var condition=p.conditionOr(),variables=conditionVars(condition);
     if(!p.atEnd())throw new ParseError("לא הצלחתי לקרוא את סוף התנאי.");
     if(variables.length>1)throw new ParseError("בתנאי מופיעים כמה משתנים.");
@@ -1016,15 +1033,9 @@ function parseSet(src) {
 function setInputTex(src) {
   parseSet(src); // Validate without using the evaluated result for display.
   if (src.trim() === "∅") return "\\emptyset";
-  var builder = setBuilder(src);
-  if (builder) {
-    if (!builder[2]) return "\\left\\{" + builder[1] + "\\in\\mathbb{R}\\right\\}";
-    var domain = /\bin\s+R\s*[|:]/.test(normalize(src)) ? "\\in\\mathbb{R}" : "";
-    return "\\left\\{" + builder[1] + domain + "\\mid " + conditionTex(parseCondition(builder[2])) + "\\right\\}";
-  }
   var p = new Parser(tokenize(src)), prefix = "";
   if (p.is("var") && p.peek(1) && p.peek(1).k === "in") { prefix = p.next().v + "\\in "; p.next(); }
-  if(p.t.some(function(t){return t.k==="rel";}))return prefix+conditionTex(p.conditionOr());
+  if(p.isBareSetCondition())return prefix+conditionTex(p.conditionOr());
   function term() {
     if ((p.is("(") || p.is("[")) && p.looksLikeInterval()) {
       var open = p.next().k, a = tex(p.expr()); p.expect(",");
@@ -1032,6 +1043,11 @@ function setInputTex(src) {
       return "\\left" + open + a + ", " + b + "\\right" + close;
     }
     if (p.is("{")) {
+      if(p.startsSetBuilder()){
+        var builder=p.readSetBuilder();
+        return "\\left\\{"+builder.variable+(builder.domain?"\\in\\mathbb{R}":"")+
+          (builder.condition?"\\mid "+conditionTex(builder.condition):"")+"\\right\\}";
+      }
       p.next(); var entries = [];
       if (!p.is("}")) do { entries.push(tex(p.expr())); } while (p.is(",") && p.next());
       p.expect("}");
@@ -1200,7 +1216,7 @@ function checkForm(form, ans, input) {
   }
   if (form === "abs") return /\||abs/.test(s) ? null : FORM_MSG.abs;
   if (form === "builder") return setBuilder(input) ? null : FORM_MSG.builder;
-  if (form === "finite") return /^\{.*\}$/.test(s) && !setBuilder(input) ? null : FORM_MSG.finite;
+  if (form === "finite") return /^\{[^{}]*\}$/.test(s) && !setBuilder(input) ? null : FORM_MSG.finite;
   if (form === "interval") {
     if (s === "{}") return null;
     var p = new Parser(tokenize(input));
@@ -1226,6 +1242,10 @@ function splitList(src) {
 function checkValue(kind, ans, input, vars, opts) {
   input = String(input || "").trim();
   if (!input) return { ok: false, empty: true, msg: "עוד לא כתבתם תשובה." };
+  if(kind==="text"){
+    function plain(s){return String(s).replace(/[\u200e\u200f\u202a-\u202e\u2066-\u2069]/g,"").replace(/[־–—-]/g," ").replace(/\s+/g," ").trim().replace(/[.!?]+$/,"").trim();}
+    return plain(input)===plain(ans)?{ok:true}:{ok:false,msg:"לא נכון. נסו שוב."};
+  }
   if (kind === "letter-order") {
     // These are point labels, not variables to evaluate (in particular, e).
     var order = normalize(input).replace(/\s+/g, "");
@@ -3158,6 +3178,7 @@ function attr(el, name) {
   return v === null ? el.getAttribute(name) : v;
 }
 function mathInput(props, kind) {
+  if(kind==="text"){var input=el("input",props);input.classList.add("ix-text-input");return input;}
   return root.CourseMathInput ? root.CourseMathInput.create(props, kind) : el("input", props);
 }
 function readInput(input) {
@@ -3238,7 +3259,7 @@ function insertAtCaret(input, text) {
 // the Hebrew word over to its other side ("x=4 1- או x="). An invisible left-to-right mark
 // after each Hebrew operator keeps the typed order; normalize() reads it as a space.
 function markOr(input) {
-  if (isMathInput(input)) return;
+  if (isMathInput(input)||input.classList.contains("ix-text-input")) return;
   var v = input.value;
   if (!/או|וגם|ולא|לא/.test(v)) return;
   var spaced=spaceLogicalWords(v,input.selectionStart,input.selectionEnd);
@@ -3391,11 +3412,11 @@ function initGroup(G) {
     if (ans === null) return;
     var kind = attr(sp, "kind") || guessKind(ans);
     var w = +attr(sp, "w") || Math.min(26, Math.max(4, normalize(ans).replace(/\s+/g, "").length + 2));
-    if (sp.closest("td, th")) w = Math.min(w, 7);      // keep tables inside their box
+    if (sp.closest("td, th")) w = Math.min(w, kind==="text"?14:7); // classifications need room for words
     var shown = el("span", { class: "blank-answer" });
     while (sp.firstChild) shown.appendChild(sp.firstChild);
     shown.hidden = true;
-    var input = mathInput({ type: "text", class: "blank-input", dir: "ltr", size: String(w), autocomplete: "off",
+    var input = mathInput({ type: "text", class: "blank-input", dir: kind==="text"?"rtl":"ltr", size: String(w), autocomplete: "off",
       spellcheck: "false", "aria-label": "התשובה שלכם" }, kind);
     var mark = el("span", { class: "blank-mark", "aria-hidden": "true" });
     var entry = el("span", { class:"blank-entry" }), pv = el("span", { class:"ix-preview ix-field-preview", dir:"ltr", "aria-live":"off" });
@@ -3416,6 +3437,10 @@ function initGroup(G) {
     input.addEventListener("input", function () {
       sp.classList.remove("ok", "bad", "warn");
       mark.textContent = "";
+      if(bReset)bReset.hidden=false;
+      if(msg)say(msg,"");
+      if(explain)explain.forEach(function(x){x.classList.add("ix-hidden");});
+      tellPart(false);
       preview(it);
     });
     items.push(it);
@@ -3478,6 +3503,7 @@ function initGroup(G) {
 
   function preview(it) {
     var pv = it.preview;
+    if(it.kind==="text"){pv.innerHTML="";return;}
     if (isMathInput(it.input)) { pv.innerHTML = ""; return; }
     var v = it.input.value.trim();
     if (!v || it.kind === "num" && /^-?\d+(\.\d+)?$/.test(v)) { pv.innerHTML = ""; return; }
@@ -3618,23 +3644,69 @@ function practiceHelp(relation){
     el("li",{},[bold("חלוקה למקרים: "),"בקטגוריה ",bold("עבודה במקרים")," בחרו ",bold("פיצול לפי תנאים שכותבים"),". כתבו גם את מקרי השוויון, או כללו אותם באחד התנאים. למקרה שאינו רלוונטי ציינו נימוק. לאחר יישום החלוקה מתקבלת שורת או; אפשר לבצע עליה פעולה שתקפה בכל האפשרויות."]),
     el("li",{},[bold("עבודה במקרים: "),"בחרו את שורת האו, את הפעולה ",bold("פתיחת מקרה (או)")," ואת המקרה הרצוי. בסיום בחרו ",bold("סיום מקרה")," וציינו את שורת הפתיחה ואת שורת המסקנה. פתחו וסיימו את המקרה האחר באותה דרך. לבסוף בחרו ",bold("איחוד המקרים")," וציינו את שורות הסיום. חיתוך תנאים שנותרו מפשטים בצעד נפרד."]),
     el("li",{},[bold("פישוט חלק מהשורה: "),"בקטגוריה ",bold("פישוט והחלפה")," בחרו ",bold("פישוט תנאים שנבחרו"),". אפשר להקליד את החלק וללחוץ על בחירת החלק, או לבחור אותו בלחיצה. כתבו את התוצאה ואת הנימוק. כדי להוציא מקרה שבו יש חילוק באפס, בחרו ",bold("אין פתרונות במקרה הזה — המכנה מתאפס"),", ציינו את המכנה וכתבו ∅ בתוצאה."]),
-    el("li",{},[bold("עזרה: "),"אפשר לבקש ",bold("רמז")," או ",bold("הצגת צעד אפשרי")," בלי לשנות את מה שכתבתם. כדי להשתמש בצעד המוצע לחצו על ",bold("יישום הצעד והמשך"),"; הנימוק מצורף אליו. ",bold("פתרון לדוגמה")," נמצא בתחתית העוזר."])
+    el("li",{},[bold("עזרה: "),"אפשר לבקש ",bold("רמז")," או ",bold("הצגת צעד אפשרי")," בלי לשנות את מה שכתבתם. כדי להשתמש בצעד המוצע לחצו על ",bold("יישום הצעד והמשך"),"; הנימוק מצורף אליו. אפשר לעבור ללשונית ",bold("פתרון לדוגמה")," או ללחוץ על ",bold("השוואה")," כדי לראות את שני הפתרונות יחד."])
   ]:[
     el("li",{},[bold("כתיבת הפתרון: "),"כתבו כל שורת חישוב בנפרד. להמשך לחצו על ",bold("הוספת שורה"),"."]),
     el("li",{},[bold("בדיקה: "),"לחצו על ",bold("בדיקת הפתרון"),". אפשר לערוך שורה ולבדוק שוב."]),
-    el("li",{},[bold("עזרה: "),"אפשר לבקש ",bold("רמז")," או לפתוח את ",bold("פתרון לדוגמה")," שבתחתית העוזר, בלי לשנות את מה שכתבתם."])
+    el("li",{},[bold("עזרה: "),"אפשר לבקש ",bold("רמז"),", לעבור ללשונית ",bold("פתרון לדוגמה")," או ללחוץ על ",bold("השוואה"),", בלי לשנות את מה שכתבתם."])
   ];
   return el("details",{class:"pw-help",dir:"rtl"},[el("summary",{text:"איך משתמשים בעוזר הפתרון?"}),el("ol",{},items)]);
 }
 function practiceWorkspace(ui){
-  var workspace=el("details",{class:"pw-workspace",dir:"rtl"},[el("summary",{text:"כתיבת פתרון"}),ui]);
-  workspace.addEventListener("toggle",function(){
-    closeInputKeys();
-    if(!workspace.open)return;
-    document.querySelectorAll(".pw-workspace").forEach(function(other){if(other!==workspace)other.open=false;});
-    typeset(workspace);
+  return el("section",{class:"pw-workspace",dir:"rtl"},[ui]);
+}
+var practiceViewSerial=0,activePracticeView=null;
+function mountPracticeViews(box,workspace,solution){
+  var id="practice-view-"+(++practiceViewSerial),active="work",opened=false,comparing=false;
+  var tabs=el("div",{class:"pw-tabs",role:"tablist","aria-label":"תצוגת הפתרון"}),panels=el("div",{class:"pw-view-panels",id:id+"-panels"});
+  var compareTitle=el("span",{class:"pw-compare-title",text:"השוואת פתרונות"});
+  var compare=el("button",{type:"button",class:"pw-compare-button","aria-label":"השוואה","aria-controls":id+"-panels",text:"השוואה",onclick:function(){show(active,!comparing);}});
+  var close=el("button",{type:"button",class:"pw-view-close",text:"סגירה","aria-label":"סגירת אזור הפתרון",onclick:function(){collapse();entries.filter(function(e){return e.key===active;})[0].tab.focus();}});
+  var controls=el("div",{class:"pw-view-controls"},[tabs,compareTitle,compare,close]);
+  var host=el("div",{class:"pw-views",dir:"rtl"},[controls,panels]),entries=[];
+  [{key:"work",label:"כתיבת פתרון",panel:workspace},{key:"model",label:"פתרון לדוגמה",panel:solution}].forEach(function(e){
+    if(!e.panel)return;
+    e.title=el("h4",{class:"pw-panel-title",id:id+"-"+e.key+"-title",text:e.label});e.panel.insertBefore(e.title,e.panel.firstChild);
+    e.panel.classList.add("pw-view-panel");e.panel.setAttribute("id",id+"-"+e.key+"-panel");e.panel.setAttribute("tabindex","0");e.panel.hidden=true;
+    e.tab=el("button",{type:"button",class:"pw-tab pw-tab-"+e.key,id:id+"-"+e.key+"-tab",role:"tab","aria-label":e.label,"aria-controls":e.panel.getAttribute("id"),text:e.label,onclick:function(){show(e.key,false);}});
+    e.tab.addEventListener("keydown",function(event){
+      var index=entries.indexOf(e),next;
+      if(event.key==="ArrowLeft")next=(index+1)%entries.length;
+      else if(event.key==="ArrowRight")next=(index+entries.length-1)%entries.length;
+      else if(event.key==="Home")next=0;
+      else if(event.key==="End")next=entries.length-1;
+      else return;
+      // Arrow keys move focus; Enter/Space selects, so navigation alone does
+      // not reveal the answer. The visual order is right-to-left.
+      event.preventDefault();entries.forEach(function(item,i){item.tab.setAttribute("tabindex",i===next?"0":"-1");});entries[next].tab.focus();
+    });
+    tabs.appendChild(e.tab);panels.appendChild(e.panel);entries.push(e);
   });
-  return workspace;
+  function render(){
+    host.classList.toggle("pw-comparing",opened&&comparing);host.classList.toggle("pw-view-open",opened);
+    tabs.hidden=opened&&comparing;compareTitle.hidden=!opened||!comparing;close.hidden=!opened;panels.hidden=!opened;
+    compare.hidden=!solution;compare.textContent=opened&&comparing?"חזרה ללשוניות":"השוואה";
+    compare.setAttribute("aria-label",compare.textContent);compare.setAttribute("aria-pressed",opened&&comparing?"true":"false");
+    entries.forEach(function(e){
+      var visible=opened&&(comparing||e.key===active),wasVisible=!e.panel.hidden;
+      e.tab.setAttribute("aria-selected",opened&&!comparing&&e.key===active?"true":"false");
+      e.tab.setAttribute("tabindex",e.key===active?"0":"-1");
+      e.title.hidden=!comparing;e.panel.setAttribute("role",comparing?"region":"tabpanel");
+      e.panel.setAttribute("aria-labelledby",id+"-"+e.key+(comparing?"-title":"-tab"));
+      if(wasVisible&&!visible){e.scrollTop=e.panel.scrollTop;e.scrollLeft=e.panel.scrollLeft;}
+      e.panel.hidden=!visible;
+      if(visible&&!wasVisible){
+        e.panel.dispatchEvent(new Event("practice-show"));typeset(e.panel);
+        if(e.scrollTop!==undefined)e.panel.scrollTop=e.scrollTop;if(e.scrollLeft!==undefined)e.panel.scrollLeft=e.scrollLeft;
+      }
+    });
+  }
+  function collapse(){closeInputKeys();opened=false;comparing=false;if(activePracticeView===controller)activePracticeView=null;render();}
+  function show(key,both){
+    closeInputKeys();if(activePracticeView&&activePracticeView!==controller)activePracticeView.collapse();
+    active=key;opened=true;comparing=!!both&&!!solution;activePracticeView=controller;render();
+  }
+  var controller={collapse:collapse};render();box.appendChild(host);return controller;
 }
 function attachSolutionAnswer(box,workspace,solution){
   var siblings=Array.prototype.slice.call(box.parentNode.children),answer=siblings[siblings.indexOf(box)+1];
@@ -4275,7 +4347,8 @@ function initRelationPractice(box,options) {
     {id:"rules",label:"כללים נוספים",ops:["sqrt","cbrt","cube","zero","formula","log","exp"]}
   ];
   var actionLabels=Object.assign({},ACTION_NAMES,{replace:"החלפת ביטויים שנבחרו",conditionReplace:"פישוט תנאים שנבחרו",splitCustom:"פיצול לפי תנאים שכותבים",splitSign:"פיצול לפי סימן ביטוי",splitOr:"פתיחת מקרה (או)",endCase:"סיום מקרה",combine:"שילוב שורות (וגם)"});
-  function refreshFollowing(r,f){r.reasonFields.slice(r.reasonFields.indexOf(f)+1).forEach(function(next){next.refresh();});}
+  function refreshFollowing(r,f){r.reasonFields.slice(r.reasonFields.indexOf(f)+1).forEach(function(next){next.refresh();});refreshActionControls(r);}
+  function standaloneAction(op){return ["splitCustom","splitSign","splitOr","endCase","merge","combine"].indexOf(op)>=0;}
   function sourceBeforeAction(r,f){
     var index=r.reasonFields.indexOf(f),src=sourceFor(r);
     if(index<0)throw new ParseError("בחרו מחדש את הפעולה.");
@@ -4284,6 +4357,7 @@ function initRelationPractice(box,options) {
   }
   function readAction(r,f){
     var op=f.select.value;
+    if(standaloneAction(op)&&r.reasonFields.length!==1)throw new ParseError("הפעולה הזאת נכתבת בשורה נפרדת. מחקו את הפעולות הנוספות או בצעו אותה בצעד הבא.");
     if(["splitOr","endCase","merge","combine"].indexOf(op)>=0)throw new ParseError("פתיחת מקרה, סיום ושילוב שורות נכתבים כל אחד בשורה נפרדת.");
     if(op==="splitCustom")return {op:"partition",split:f.tools.read(op)};
     if(op==="splitSign"){
@@ -4293,10 +4367,19 @@ function initRelationPractice(box,options) {
     if(op==="abs"||op==="replace"||op==="conditionReplace")return f.tools.read(op);
     return {op:op,value:f.host.hidden?"":readInput(f.input)};
   }
+  function appendActionState(r){
+    if(r.certificate||!r.reasonFields.length||r.reasonFields.some(function(f){return !f.select.value;}))return {ok:false,note:"בחרו והשלימו את הפעולה הנוכחית לפני צירוף פעולה נוספת."};
+    if(r.reasonFields.some(function(f){return standaloneAction(f.select.value);}))return {ok:false,note:"הפעולה הזאת נכתבת בשורה נפרדת. אפשר להמשיך בצעד הבא."};
+    try{
+      var source=sourceFor(r),context=cfgFor(r);
+      r.reasonFields.forEach(function(f){source=executeAction(source,readAction(r,f),context);});
+      if(relationTruth(parseRelation(source))!==null)return {ok:false,note:"התקבלה קבוצה ריקה או כל הישר; אין פעולה נוספת לצירוף כאן."};
+      return {ok:true,note:""};
+    }catch(_){return {ok:false,note:"השלימו פעולה תקינה לפני צירוף פעולה נוספת."};}
+  }
   function refreshActionControls(r){
-    var special=!!specialKind(r);
     if(r.suggestButton)r.suggestButton.textContent="הצגת התוצאה הצפויה";
-    if(r.addActionButton)r.addActionButton.disabled=special;
+    if(r.addActionButton){var append=appendActionState(r);r.addActionButton.disabled=!append.ok;r.addActionButton.setAttribute("title",append.note);}
     if(r.inputEntry)r.inputEntry.hidden=false;
     if(r.preview)r.preview.hidden=false;
     if(r.checkButton)r.checkButton.hidden=false;
@@ -4330,7 +4413,7 @@ function initRelationPractice(box,options) {
       select.replaceChildren(el("option",{value:"",text:"בחרו פעולה…"}));
       if(group)group.ops.forEach(function(op){
         if((op==="splitSign"||op==="splitOr")&&op!==splitMode)return;
-        select.appendChild(el("option",{value:op,text:actionLabels[op]}));
+        select.appendChild(el("option",{value:op,text:actionLabels[op],disabled:standaloneAction(op)&&r.reasonFields.length>1}));
       });
       select.value=value||"";actionLabel.hidden=!group;
     }
@@ -4348,7 +4431,7 @@ function initRelationPractice(box,options) {
       f.note.textContent=select.value==="splitSign"?"החלוקה תירשם כשורת או. אפשר לפעול על כל השורה או לבחור מקרים לעבודה בנפרד.":select.value==="merge"?"משלבים את תוצאות המקרים עם ההנחות שלהם. תנאים שעדיין לא צומצמו יישארו לצעד הבא.":select.value==="mul"||select.value==="div"?"אפשר לבחור גם ביטוי עם משתנה. כיוון האי־שוויון תלוי בסימן שלו.":"";
       refreshActionControls(r);
     }
-    f.row=el("div",{class:"as-justification-entry"},[el("div",{class:"as-action-fields"},[categoryLabel,actionLabel,operandLabel,button("מחיקת הפעולה",function(){var index=r.reasonFields.indexOf(f);f.row.remove();r.reasonFields=r.reasonFields.filter(function(x){return x!==f;});if(!r.reasonFields.length)reasonField(r);r.reasonFields.slice(index).forEach(function(next){next.refresh();});refreshActionControls(r);invalidate(rows.indexOf(r));},"ix-quiet as-delete-action")]),f.note,optionsHost]);
+    f.row=el("div",{class:"as-justification-entry"},[el("div",{class:"as-action-fields"},[categoryLabel,actionLabel,operandLabel,button("מחיקת הפעולה",function(){f.row.remove();r.reasonFields=r.reasonFields.filter(function(x){return x!==f;});if(!r.reasonFields.length)reasonField(r);invalidate(rows.indexOf(r));r.reasonFields.forEach(function(next){next.refresh();});},"ix-quiet as-delete-action")]),f.note,optionsHost]);
     category.addEventListener("change",function(){choices("");invalidate(rows.indexOf(r));refresh();refreshFollowing(r,f);});
     select.addEventListener("change",function(){invalidate(rows.indexOf(r));refresh();refreshFollowing(r,f);});f.input.addEventListener("input",function(){invalidate(rows.indexOf(r));refreshFollowing(r,f);});
     f.refresh=refresh;r.reasonFields.push(f);r.reasonList.appendChild(f.row);choices(action&&action.op);refresh();return f;
@@ -4376,7 +4459,7 @@ function initRelationPractice(box,options) {
         showActionResult(r,next,actionReason(actions),preserve,actions,r.reasonResult);
       }catch(e){var msg=el("div");r.reasonResult.replaceChildren(msg);say(msg,errMsg(e),"bad");}
     });
-    r.suggestButton=suggest;r.addActionButton=button("צירוף פעולה",function(){reasonField(r);invalidate(rows.indexOf(r));});
+    r.suggestButton=suggest;r.addActionButton=button("צירוף פעולה",function(){if(!appendActionState(r).ok){refreshActionControls(r);return;}reasonField(r);invalidate(rows.indexOf(r));r.reasonFields.forEach(function(f){f.refresh();});});
     r.reasonManual=el("div",{class:"as-justification-manual"},[r.reasonList,el("div",{class:"ix-bar"},[r.addActionButton,suggest])]);
     reasonField(r);
     return el("div",{class:"as-justification"},[r.reasonManual,r.reasonNotice,r.reasonResult]);
@@ -4416,12 +4499,12 @@ function initRelationPractice(box,options) {
     r.input.addEventListener("keydown",function(e){if(e.key==="Enter"&&!e.isComposing){e.preventDefault();check(rows.indexOf(r),true);}},true);
     if(focus)r.input.focus();return r;
   }
-  function reset(){closeInputKeys();revision++;proofMath.clear();rows=[];paper.replaceChildren();say(status,"");solution.open=false;add(false);}
-  var solution=el("details",{class:"pw-solution"},[el("summary",{text:"פתרון לדוגמה"})]);
+  function reset(){closeInputKeys();revision++;proofMath.clear();rows=[];paper.replaceChildren(initialLine);say(status,"");add(false);}
+  var solution=el("section",{class:"pw-solution"});
   steps.forEach(function(s,i){solution.appendChild(el("div",{class:"pw-example",dir:"ltr",html:formula(path[i])}));solution.appendChild(s);});
   var modelReferenced=false;
-  solution.addEventListener("toggle",function(){
-    if(!solution.open||modelReferenced)return;modelReferenced=true;
+  solution.addEventListener("practice-show",function(){
+    if(modelReferenced)return;modelReferenced=true;
     steps.forEach(function(s,i){
       var before=i?path[i-1]:start,refs=[];
       try{
@@ -4435,11 +4518,17 @@ function initRelationPractice(box,options) {
     });
   });
   hints.forEach(function(h){h.remove();});
-  var ui=el("div",{class:"pw algebra-work"},[options.start?null:practiceHelp(true),el("div",{class:"pw-start"},[el("span",{class:"as-step-label",text:"שורה 1"}),el("span",{dir:"ltr",html:formula(start)})]),paper,
+  var initialLine=el("div",{class:"pw-row as-given"},[
+    el("span",{class:"as-step-label",text:"שורה 1"}),
+    el("div",{class:"as-compact"},[el("div",{class:"as-formula",dir:"ltr",html:formula(start)}),el("div",{class:"as-reason",dir:"rtl",text:"נקודת מוצא"})])
+  ]);
+  paper.appendChild(initialLine);
+  var ui=el("div",{class:"pw algebra-work"},[options.start?null:practiceHelp(true),paper,
     el("div",{class:"ix-bar"},[button("הוספת שורה",function(){var last=rows[rows.length-1],count=rows.length;if(!last.input.value.trim())last.input.focus();else if(check(rows.length-1,true)&&rows.length===count)add(true);}),button("בדיקת הפתרון",function(){check(rows.length-1,false);}),button("מההתחלה",reset)]),status]);
   var workspace=options.start?ui:practiceWorkspace(ui);
   if(!options.start)attachSolutionAnswer(box,workspace,solution);
-  box.appendChild(workspace);if(steps.length)box.appendChild(solution);box.classList.add("practice-ready");add(false);typeset(box);
+  if(options.start)box.appendChild(workspace);else mountPracticeViews(box,workspace,steps.length||solution.children.length?solution:null);
+  box.classList.add("practice-ready");add(false);typeset(box);
   return {validate:function(){if(rows.some(function(r){return r.input.value.trim();}))check(rows.length-1,false);},snapshot:function(){
     var active=rows.slice();while(active.length&&!active[active.length-1].input.value.trim())active.pop();
     var entries=active.map(function(r){return proofEntry(r);}),checked=checkLineProof(start,entries,cfg,proofMath),bad=checked.results.filter(function(v){return !v.ok;})[0];if(bad)throw new ParseError(bad.msg);
@@ -4520,13 +4609,13 @@ function initPractice(box) {
     typeset(hintArea);
   }
   var keys = keyRow(seq ? KEYSETS.lim : vars.map(function (v) { return [v, v]; }).concat(mode === "rel" ? KEYSETS.rel : KEYSETS.expr.filter(function (k) { return vars.indexOf(k[0]) < 0; })), function () { return lastInput; });
-  var solution = el("details", { class: "pw-solution" }, [el("summary", { text: "פתרון לדוגמה" })]);
+  var solution = el("section", { class: "pw-solution" });
   steps.forEach(function (s, i) { solution.appendChild(el("div", { class: "pw-example", html: mx(math(path[i])) })); solution.appendChild(s); });
   hints.forEach(function (h) { h.remove(); });
   var ui = el("div", { class: "pw" }, [practiceHelp(false),el("div", { class: "pw-start", html: mx(math(start)) }),
     paper, keys, el("div", { class: "ix-bar" }, [btn("הוספת שורה", function () { add(true); }), btn("בדיקת הפתרון", check), btn("רמז", hint)]), status, hintArea]);
   var workspace=practiceWorkspace(ui);attachSolutionAnswer(box,workspace,solution);
-  box.appendChild(workspace); box.appendChild(solution); box.classList.add("practice-ready"); add(false); typeset(box);
+  mountPracticeViews(box,workspace,solution); box.classList.add("practice-ready"); add(false); typeset(box);
 }
 function initDerive(box) {
   var relationStart=attr(box,"start");
@@ -4867,8 +4956,10 @@ function initOrder(box) {
    is copied; _styles.html sizes every widget frame). Ids are removed so none repeat. */
 function staticCopy(box) {
   var c = box.cloneNode(true);
-  c.querySelectorAll(".pw-workspace, .pw, .composition-ui, .ix-panel, .blank-entry, .set-case-nav, .set-stage-nav, .dv-bar, .dv-in, .dv-keys, .dv-msg, .ord-ui, .solve-bar, .tf-opt, .tf-feedback, .fill > .hint, .derive > .hint")
+  c.querySelectorAll(".pw-view-controls, .pw-workspace, .pw, .composition-ui, .ix-panel, .blank-entry, .set-case-nav, .set-stage-nav, .dv-bar, .dv-in, .dv-keys, .dv-msg, .ord-ui, .solve-bar, .tf-opt, .tf-feedback, .fill > .hint, .derive > .hint")
     .forEach(function (n) { n.remove(); });
+  c.querySelectorAll(".pw-views").forEach(function(n){n.classList.remove("pw-comparing");});
+  c.querySelectorAll(".pw-view-panels, .pw-view-panel, .pw-panel-title").forEach(function(n){n.hidden=false;n.removeAttribute("role");n.removeAttribute("aria-labelledby");});
   c.querySelectorAll(".set-plot").forEach(function(n){if(!n.classList.contains("sp-answer"))n.remove();});
   c.querySelectorAll(".blank-input, .blank-mark").forEach(function (n) { n.remove(); });
   c.querySelectorAll(".blank-answer").forEach(function (n) { n.hidden = false; });
@@ -4950,12 +5041,21 @@ function initSetCases() {
   });
 }
 function initComposition(box){
-  var fields={},ui=el("div",{class:"composition-ui"}),inputs=el("div",{class:"composition-fields"}),msg=el("div",{class:"ix-msg","aria-live":"polite"}),result=el("div",{class:"as-formula",dir:"ltr"});
+  var fields={},previews={},ui=el("div",{class:"composition-ui"}),inputs=el("div",{class:"composition-fields"}),msg=el("div",{class:"ix-msg","aria-live":"polite"}),result=el("div",{class:"as-formula",dir:"ltr"});
   ["g","f"].forEach(function(name){
-    var input=mathInput({type:"text",class:"blank-input composition-"+name,dir:"ltr",size:"14","aria-label":"הפונקציה "+name},"expr");fields[name]=input;
+    var input=mathInput({type:"text",class:"blank-input composition-"+name,dir:"ltr","aria-label":"הפונקציה "+name},"expr");fields[name]=input;
+    var preview=el("span",{class:"as-field-preview ix-preview",dir:"ltr"});previews[name]=preview;
+    var entry=el("span",{class:"as-field as-expr-field composition-entry"},[input,preview]);
     bindInputKeys(input,"expr",true);
-    inputs.appendChild(el("label",{class:"as-field composition-field",dir:"ltr"},[el("span",{html:mx("\\("+name+"(x)=\\)")}),input]));
-    input.addEventListener("input",function(){say(msg,"");result.replaceChildren();});
+    inputs.appendChild(el("label",{class:"composition-field",dir:"ltr"},[el("span",{html:mx("\\("+name+"(x)=\\)")}),entry]));
+    function renderPreview(){
+      preview.innerHTML="";
+      if(isMathInput(input)||!input.value.trim())return;
+      var parsed=parsedSoFar(readInput(input),parseExpr);
+      if(parsed)showParsed(preview,"\\("+tex(parsed.node)+"\\)",parsed.whole);
+    }
+    input.addEventListener("input",function(){say(msg,"");result.replaceChildren();renderPreview();});
+    input.addEventListener("focus",renderPreview);
     input.addEventListener("keydown",function(e){if(e.key==="Enter"&&!e.isComposing){e.preventDefault();check();}});
   });
   function check(){
@@ -4967,7 +5067,7 @@ function initComposition(box){
   ui.appendChild(inputs);ui.appendChild(el("div",{class:"ix-bar"},[
     el("button",{type:"button",class:"ix-btn ix-main",text:"בדיקת ההרכבה",onclick:check}),
     el("button",{type:"button",class:"ix-btn ix-quiet",text:"רמז",onclick:function(){say(msg,"מה מחשבים קודם? זו g. מה עושים לתוצאה? זו f.","info");}}),
-    el("button",{type:"button",class:"ix-btn ix-quiet",text:"ניסיון חדש",onclick:function(){fields.f.value="";fields.g.value="";result.replaceChildren();say(msg,"");closeInputKeys();fields.g.focus();}})
+    el("button",{type:"button",class:"ix-btn ix-quiet",text:"ניסיון חדש",onclick:function(){fields.f.value="";fields.g.value="";previews.f.replaceChildren();previews.g.replaceChildren();result.replaceChildren();say(msg,"");closeInputKeys();fields.g.focus();}})
   ]));ui.appendChild(result);ui.appendChild(msg);box.appendChild(ui);typeset(ui);
 }
 function init() {
