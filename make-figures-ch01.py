@@ -960,44 +960,51 @@ def fig_sqrt2():
 
 # ---------------------------------------------------------------- §4: graphs of simple functions
 def fig_function_examples():
-    fig, axs = plt.subplots(2, 2, figsize=(8.6, 7.2))
-    x = np.linspace(-3, 3, 400)
+    """One figure per part, with the piecewise endpoints labelled explicitly."""
+    panels = [plt.subplots(figsize=(4.8, 3.4)) for _ in range(4)]
+    axs = [ax for _, ax in panels]
+    # Continue beyond the plotting window: highlighted sample points are not endpoints.
+    x = np.linspace(-3.3, 3.3, 401)
 
-    ax = axs[0, 0]
+    ax = axs[0]
     axes_through_origin(ax, (-3.2, 3.2), (-6, 8))
     ax.plot(x, 3 * x + 1, color=C1, lw=2.2)
     for xp in (-1, 0, 2):
         ax.plot([xp], [3 * xp + 1], "o", color=C2, ms=6, zorder=6)
-    ax.set_title(r"$f(x)=3x+1$")
 
-    ax = axs[0, 1]
+    ax = axs[1]
     axes_through_origin(ax, (-3.2, 3.2), (-1, 9.5))
     ax.plot(x, x ** 2, color=C1, lw=2.2)
     for xp in (-3, -2, -1, 0, 1, 2, 3):
         ax.plot([xp], [xp ** 2], "o", color=C2, ms=6, zorder=6)
-    ax.set_title(r"$f(x)=x^2$")
 
-    ax = axs[1, 0]
+    ax = axs[2]
     axes_through_origin(ax, (-3.2, 3.2), (-1, 3.5))
     ax.plot(x, np.abs(x), color=C1, lw=2.2)
     for xp in (-2, 0, 2):
         ax.plot([xp], [abs(xp)], "o", color=C2, ms=6, zorder=6)
-    ax.set_title(r"$f(x)=|x|$")
 
-    ax = axs[1, 1]
+    ax = axs[3]
     axes_through_origin(ax, (-3.2, 3.2), (-2.5, 9.5))
-    xl = np.linspace(-3, 0, 200)
-    xr = np.linspace(0, 3, 200)
+    xl = np.linspace(-3.3, 0, 200)
+    xr = np.linspace(0, 3.3, 200)
     ax.plot(xl, xl + 1, color=C1, lw=2.2)
     ax.plot(xr, xr ** 2, color=C1, lw=2.2)
     dot(ax, 0, 1, False, C1)
     dot(ax, 0, 0, True, C1)
-    ax.set_title(r"$x+1\ \ (x<0), \qquad x^2\ \ (x\geq 0)$", fontsize=13)
-    for a in axs.flat:
-        a.xaxis.set_major_locator(MaxNLocator(integer=True, nbins=6))
-        a.yaxis.set_major_locator(MaxNLocator(integer=True, nbins=6))
-    fig.tight_layout()
-    save(fig, "function-examples")
+    ax.annotate(r"$(0,1)$", (0, 1), xytext=(10, 8), textcoords="offset points",
+                color=C1, ha="left", va="bottom")
+    ax.annotate(r"$(0,0)$", (0, 0), xytext=(10, -12), textcoords="offset points",
+                color=C1, ha="left", va="top")
+    for (fig, ax), name in zip(panels, ("linear", "square", "absolute", "piecewise")):
+        ax.xaxis.set_major_locator(MaxNLocator(integer=True, nbins=6))
+        ax.yaxis.set_major_locator(MaxNLocator(integer=True, nbins=6))
+        ax.annotate("$x$", (1, 0), xycoords=ax.get_yaxis_transform(), xytext=(5, -3),
+                    textcoords="offset points", ha="left", va="top", annotation_clip=False)
+        ax.annotate("$y$", (0, 1), xycoords=ax.get_xaxis_transform(), xytext=(6, 2),
+                    textcoords="offset points", ha="left", va="bottom", annotation_clip=False)
+        fig.tight_layout()
+        save(fig, f"function-example-{name}")
 
 
 # ---------------------------------------------------------------- §4: a point in the plane

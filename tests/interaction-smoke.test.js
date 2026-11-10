@@ -233,7 +233,7 @@ for (const rich of [false,true]) {
   E.run(fs.readFileSync('assets/math-input.js','utf8'));
  }
  E.run(fs.readFileSync('assets/interactive.js','utf8'));E.document.dispatchEvent({type:'DOMContentLoaded'});
- assert.equal(d.querySelectorAll('.pw-input').length,1);assert.equal(d.querySelector('.pw-solution').getAttribute('open'),null);
+ assert.equal(d.querySelectorAll('.pw-input').length,1);assert.equal(d.querySelector('.pw-solution').hidden,true);
  const a=d.querySelector('.pw-input');input(a,'-12<=-3x');justify(d.querySelector('.as-step'),[{op:'sub',value:'5x'},{op:'sub',value:'8'}]);button(d,'הוספת שורה').click();input(d.querySelectorAll('.pw-input')[1],'x<=4');justify(d.querySelectorAll('.as-step')[1],[{op:'div',value:'-3'}]);button(d,'בדיקת הפתרון').click();assert.match(d.textContent,/הפתרון נכון/);
  input(a,'-13<=-3x');assert.doesNotMatch(d.textContent,/הפתרון נכון/);button(d,'בדיקת הפתרון').click();assert.match(d.textContent,/נעצרה/);
  input(a,'3x<=12');input(d.querySelectorAll('.pw-input')[1],'');
@@ -266,7 +266,7 @@ for(const rich of [false,true])for(const example of [false,true]) {
  const rows=()=>d.querySelectorAll('.as-step'),open=n=>{n.open=true;n.dispatchEvent({type:'toggle'});};
  const setInput=(field,value)=>{field.focus();input(field,value);};
  assert.equal(d.querySelector('.dv'),null);assert.equal(rows().length,1);
- assert.equal(d.querySelector('.pw-solution').getAttribute('open'),null);
+ assert.equal(d.querySelector('.pw-solution').hidden,true);
  let first=rows()[0],written=first.querySelector('.pw-input');
  button(first,'רמז').click();assert.match(first.querySelector('.pw-hints').textContent,/מחסירים/);
  assert.equal(first.querySelector('.pw-hints').querySelector('.as-formula'),null);assert.equal(written.value,'');
@@ -303,7 +303,7 @@ for(const rich of [false,true])for(const example of [false,true]) {
  button(third,'הצגת צעד אפשרי').click();assert.match(third.querySelector('.pw-hints').textContent,/תקנו קודם/);
  button(d,'בדיקת הפתרון').click();assert.match(d.textContent,/נעצרה/);
  button(d,'מההתחלה').click();assert.equal(rows().length,1);assert.equal(rows()[0].querySelector('.pw-input').value,'');
- assert.equal(d.querySelector('.pw-solution').open,false);
+ assert.equal(d.querySelector('.pw-solution').hidden,true);
  button(rows()[0],'הצגת צעד אפשרי').click();button(rows()[0],'יישום הצעד והמשך').click();
  assert.equal(rows()[0].querySelector('.as-editor').hidden,true);button(rows()[1],'הצגת צעד אפשרי').click();
  button(rows()[1],'יישום הצעד והמשך').click();assert.match(d.textContent,/הפתרון נכון/);
@@ -709,10 +709,10 @@ for(const rich of [false,true]) {
  E.document.dispatchEvent({type:'DOMContentLoaded'});
  for(const {box,d,fill,blank} of fixtures){
   const workspace=d.querySelector('.pw-workspace'),solution=d.querySelector('.pw-solution');
-  assert.equal(fill.parentNode,workspace);assert.ok(!workspace.open);assert.equal(box.children.length,1,'no trailing answer or plotting widget');
+  assert.equal(fill.parentNode,workspace);assert.equal(workspace.hidden,true);assert.equal(box.children.length,1,'no trailing answer or plotting widget');
   const plot=fill.querySelector('.set-plot');button(plot,'נקודה').click();input(plot.querySelector('[data-coordinate="point"]'),'3');button(plot,'הנחה על הישר').click();
   input(blank.querySelector('.blank-input'),'{3}');
-  solution.open=true;solution.dispatchEvent({type:'toggle'});
+  button(d,'פתרון לדוגמה').click();
   assert.match(solution.textContent,/קבוצת הפתרונות/);assert.equal(solution.querySelectorAll('.sp-answer').length,1);
   assert.ok(solution.querySelectorAll('input, button').every(n=>n.closest('.sp-range')),'only folded viewport controls, no solution editors');
   assert.equal(solution.querySelectorAll('.ix-hidden').length,0);assert.equal(solution.querySelector('.sp-practice'),null);
@@ -769,7 +769,7 @@ for(const rich of [false,true]) {
  host.querySelector('.sp-scroll').clientWidth=300;button(host,'טווח אוטומטי').click();assert.equal(svg.getAttribute('width'),'300');
  assert.equal(changed,0);assert.deepEqual(answer,[{a:1,b:3,ac:true,bc:false}]);
 }
-// Editors stay folded until chosen, and switching questions preserves both drafts.
+// Editors stay compact until chosen, and switching questions preserves both drafts.
 {
  const E=env(),parts=[];
  for(const start of ['2x=4','3x=6']){
@@ -777,12 +777,12 @@ for(const rich of [false,true]) {
  }
  E.run(fs.readFileSync('assets/interactive.js','utf8'));E.document.dispatchEvent({type:'DOMContentLoaded'});
  const spaces=parts.map(d=>d.querySelector('.pw-workspace'));
- assert.ok(spaces.every(s=>!s.open));assert.ok(spaces.every(s=>s.querySelector('summary').textContent==='כתיבת פתרון'));
- spaces[0].open=true;spaces[0].dispatchEvent({type:'toggle'});input(parts[0].querySelector('.pw-input'),'x=2');
- spaces[1].open=true;spaces[1].dispatchEvent({type:'toggle'});
- assert.equal(spaces[0].open,false);assert.equal(parts[0].querySelector('.pw-input').value,'x=2');
- input(parts[1].querySelector('.pw-input'),'x=3');spaces[0].open=true;spaces[0].dispatchEvent({type:'toggle'});
- assert.equal(spaces[1].open,false);assert.equal(parts[1].querySelector('.pw-input').value,'x=3');
+ assert.ok(spaces.every(s=>s.hidden));assert.ok(parts.every(d=>d.querySelector('.pw-tab-work').textContent==='כתיבת פתרון'));
+ button(parts[0],'כתיבת פתרון').click();input(parts[0].querySelector('.pw-input'),'x=2');
+ button(parts[1],'כתיבת פתרון').click();
+ assert.equal(spaces[0].hidden,true);assert.equal(parts[0].querySelector('.pw-input').value,'x=2');
+ input(parts[1].querySelector('.pw-input'),'x=3');button(parts[0],'כתיבת פתרון').click();
+ assert.equal(spaces[1].hidden,true);assert.equal(parts[1].querySelector('.pw-input').value,'x=3');
 }
 // Manual numbered cases are covered in numbered-cases-dom.test.js.
 // Initialize and solve the actual authored relation widgets, not only synthetic fixtures.
@@ -799,7 +799,7 @@ for(const rich of [false,true]) {
    path.forEach((line,j)=>node(d,'div',{class:'step','data-line':line},'hint '+j));
    E.run(fs.readFileSync('assets/math-input.js','utf8'));E.run(fs.readFileSync('assets/interactive.js','utf8'));E.document.dispatchEvent({type:'DOMContentLoaded'});
    assert.equal(d.querySelectorAll('.pw-input').length,1,a.start+' initializes');
-   assert.equal(d.querySelectorAll('.pw-solution').length,1,a.start+' has a folded solution');
+   assert.equal(d.querySelectorAll('.pw-solution').length,1,a.start+' has a model solution panel');
    for(let j=0;j<path.length*3+3;j++){
     const row=d.querySelectorAll('.as-step')[j];assert.ok(row,a.start+' row '+j);
     button(row,'הצגת צעד אפשרי').click();

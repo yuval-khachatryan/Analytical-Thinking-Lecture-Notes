@@ -1,6 +1,7 @@
 ---
 lang: he
 dir: rtl
+toc: false
 ---
 
 # פתח דבר {.unnumbered}
