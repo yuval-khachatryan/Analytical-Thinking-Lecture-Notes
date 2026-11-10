@@ -1177,6 +1177,11 @@ function checkAnswer(kind, ans, input, vars, opts) {
     var f = checkForm(opts.form, ans, input);
     if (f) return { ok: false, partial: true, msg: f };
   }
+  if (r.ok && opts && opts.calculation) {
+    var expectedCalc=typeof opts.calculation==="string"?parseExpr(opts.calculation):opts.calculation;
+    if(!calculationMatches(expectedCalc,parseExpr(input),true))
+      return {ok:false,partial:true,msg:"הערך נכון, אבל החישוב אינו מתאים להצבה המבוקשת. ההצבה היא \\("+tex(expectedCalc)+"\\); כתבתם \\("+tex(parseExpr(input))+"\\)."};
+  }
   if(r.ok&&kind==="num"&&!(opts&&opts.allowExpression===true)&&!finishedNumber(parseExpr(input)))
     return {ok:false,partial:true,msg:"הערך נכון, אבל החישוב עדיין לא הושלם. כתבו את התוצאה כמספר או כשבר מצומצם."};
   return r;
@@ -1194,6 +1199,27 @@ function finishedNumber(n) {
   a=Math.abs(a);b=Math.abs(b);
   while(b){var rest=a%b;a=b;b=rest;}
   return a===1;
+}
+// Preserve the operations of the substitution; parentheses and factor order
+// may differ, and proper subexpressions may already have been calculated.
+function calculationMatches(expected,got,top) {
+  if(!expected||!got)return false;
+  if(!top && finishedNumber(got) && !hasVar(expected))
+    return close(ev(expected,{}),ev(got,{}),1e-10);
+  if(expected.t!==got.t)return false;
+  if(expected.t==="num")return close(expected.v,got.v,1e-12);
+  if(expected.t==="var")return expected.n===got.n;
+  if(expected.t==="add"||expected.t==="mul"){
+    function flat(n,t){return n.t===t?flat(n.a,t).concat(flat(n.b,t)):[n];}
+    var a=flat(expected,expected.t),b=flat(got,got.t);
+    if(a.length!==b.length)return false;
+    function pair(i,left){if(i===a.length)return true;return left.some(function(n,j){return calculationMatches(a[i],n,false)&&pair(i+1,left.slice(0,j).concat(left.slice(j+1)));});}
+    return pair(0,b);
+  }
+  return ["a","b","n","base","f"].every(function(k){
+    if(typeof expected[k]==="object"||typeof got[k]==="object")return calculationMatches(expected[k],got[k],false);
+    return expected[k]===got[k];
+  });
 }
 var FORM_MSG = {
   frac: "הערך נכון, אבל כתבו אותו כשבר, למשל \\(\\frac{3}{4}\\).",
@@ -1328,6 +1354,11 @@ function checkValue(kind, ans, input, vars, opts) {
     var gv = Object.keys(varsOf(got));
     if (gv.length) return { ok: false, msg: "כאן צריך מספר, בלי המשתנה \\(" + gv[0] + "\\)." };
     var a = ev(ref, {}), b = ev(got, {});
+    if(opts.minAnswer!==undefined && opts.minAnswer!==null){
+      if(!isFinite(b))return {ok:false,msg:"כתבו מספר סופי."};
+      if(opts.integerAnswer&&!Number.isSafeInteger(b))return {ok:false,msg:"האינדקס צריך להיות מספר טבעי."};
+      return b>=Number(opts.minAnswer)?{ok:true}:{ok:false,msg:opts.integerAnswer?"האינדקס קטן מדי. בדקו שהאי־שוויון מתקיים לכל האיברים החל מהאינדקס שבחרתם.":"החסם קטן מדי. השתמשו באי־השוויון הנתון כדי לבחור חסם מתאים."};
+    }
     if (isNaN(b)) return { ok: false, msg: "הביטוי שכתבתם אינו מוגדר (למשל חילוק באפס, או שורש של מספר שלילי)." };
     if (close(a, b, 1e-9)) return { ok: true };
     if (close(a, -b, 1e-9) && a !== 0) return { ok: false, msg: "כמעט! בדקו את הסימן." };
@@ -1572,6 +1603,7 @@ function relSets(A, B, solveVar, params, positive) {
   if (params.length) envs = sampleEnvs(params, positive, 4);
   for (var i = 0; i < envs.length; i++) {
     var SA = solveSet(A, solveVar, envs[i]), SB = solveSet(B, solveVar, envs[i]);
+    if((positive||[]).indexOf(solveVar)>=0){var domain=[piece(0,Infinity,false,false)];SA=intersectSets(SA,domain);SB=intersectSets(SB,domain);}
     if (!setEq(SA, SB)) return { ok: false, env: envs[i], A: SA, B: SB };
   }
   return { ok: true };
@@ -2066,10 +2098,8 @@ function checkWorking(startSrc, lines, cfg, targetSrc, justifications) {
     try {
       next = parse(lines[i]);
       if(Object.keys(varsOf(next)).some(function(v){return cfg.vars.indexOf(v)<0;}))throw new ParseError("בשורה הופיע משתנה שאינו חלק מהתרגיל.");
-      // A direct final limit is allowed even when the symbolic limit engine needs
-      // the author's intermediate rewrite. Prior sequence steps were checked above.
-      if (cfg.mode === "lim" && !hasVar(next, cfg.seq) && constLim(next) && sameLim(constLim(next), constLim(target))) r = { ok: true };
-      else r = cfg.mode==="rel"&&cfg.requireJustification ? checkJustifiedStep(relationSource(prev),lines[i],justifications&&justifications[i],cfg) : judgeStep(prev, next, null, cfg);
+      r = cfg.mode==="lim"&&cfg.requireJustification ? checkSequenceStep(expressionSource(prev),lines[i],justifications&&justifications[i],cfg.seq)
+        : cfg.mode==="rel"&&cfg.requireJustification ? checkJustifiedStep(relationSource(prev),lines[i],justifications&&justifications[i],cfg) : judgeStep(prev, next, null, cfg);
     } catch (e) { r = { ok: false, msg: "לא הצלחתי לקרוא את השורה. " + errMsg(e) }; }
     results.push(r);
     if (!r.ok) return { results: results, done: false };
@@ -3184,11 +3214,236 @@ function splitRelationCases(src,split,cfg){
   }).map(function(op){var guard={parts:[operand,algebraNumber(0)],ops:[op]},next={t:"rel",disj:r.disj.map(function(d){return joinComparisons([guard].concat(comparisonChunks(d)));})};return {source:relationSource(next),assumption:name+" "+op+" 0",condition:name+" "+op+" 0",work:src};});
 }
 
+// The sequence editor certifies named rules; it never uses the authored answer
+// or a few large numerical samples as evidence for a limit.
+var SEQUENCE_ACTIONS = {
+  simplify: {group:"algebra",label:"פישוט אלגברי",ref:"box-method-largest-power"},
+  divide: {group:"algebra",label:"חילוק המונה והמכנה בביטוי",ref:"box-method-largest-power"},
+  factor: {group:"algebra",label:"הוצאת גורם משותף",ref:"box-method-largest-power"},
+  conjugate: {group:"algebra",label:"כפל וחילוק בצמוד",ref:"box-method-conjugate"},
+  standard: {group:"limits",label:"גבול מוכר",ref:"box-thm-standard"},
+  arithmetic: {group:"limits",label:"חשבון גבולות",ref:"box-thm-limit-arithmetic"},
+  reciprocal: {group:"limits",label:"הופכי של סדרה השואפת לאפס: בדיקת הסימן",ref:"box-rule-reciprocal-zero"},
+  bounded: {group:"limits",label:"סדרה חסומה כפול סדרה השואפת לאפס",ref:"box-cor-bounded-zero"},
+  squeeze: {group:"limits",label:"כלל הסנדוויץ׳",ref:"box-thm-squeeze"},
+  compute: {group:"numbers",label:"חישוב התוצאה",ref:null}
+};
+function sequenceFacts(v){var f=Object.create(null);f[v]=">";return f;}
+function sequenceSimplify(n,v){
+  var out=simplifyAlgebra(n,sequenceFacts(v),true);
+  if(out.t==="fn"&&out.f==="sqrt"&&!hasVar(out.a)){
+    var value=ev(out,{});if(Number.isSafeInteger(value))return algebraNumber(value);
+  }
+  return out;
+}
+function sequenceParts(src){return relationParts(src).map(function(p){return {path:p.path,source:p.source,tex:p.tex,node:p.node};});}
+function sequenceReplace(node,path,replacement){
+  var keys=path.split(".").slice(2);
+  function walk(n,i){if(i===keys.length)return replacement;var copy=Object.assign({},n);copy[keys[i]]=walk(n[keys[i]],i+1);return copy;}
+  return walk(node,0);
+}
+function sequenceStandard(n,v){
+  function result(node,ref){return {node:node,refs:[ref||"box-thm-standard"]};}
+  var zero=algebraNumber(0),one=algebraNumber(1),infinity={t:"inf"};
+  function isIndex(x){return x.t==="var"&&x.n===v;}
+  function constant(x){return !hasVar(x)&&isFinite(ev(x,{}));}
+  if(!hasVar(n))return constant(n)?result(sequenceSimplify(n,v)):n.t==="inf"?result(n,"box-def-infinite-limit"):null;
+  if(isIndex(n))return result(infinity,"box-thm-standard-infinite");
+  if(n.t==="div"&&n.a.t==="num"&&n.a.v===1){
+    if(isIndex(n.b))return result(zero);
+    if(n.b.t==="pow"&&isIndex(n.b.a)&&constant(n.b.b)&&ev(n.b.b,{})>0)return result(zero);
+  }
+  if(n.t==="pow"){
+    if(isIndex(n.a)&&constant(n.b))return result(ev(n.b,{})>0?infinity:ev(n.b,{})<0?zero:one,ev(n.b,{})>0?"box-thm-standard-infinite":null);
+    if(isIndex(n.b)&&constant(n.a)){
+      var q=ev(n.a,{});if(Math.abs(q)<1)return result(zero);if(q===1)return result(one);
+      if(q>1)return result(infinity,"box-thm-standard-infinite");return null;
+    }
+    if(isOneOver(n.b,v)&&(isIndex(n.a)||constant(n.a)&&ev(n.a,{})>0))return result(one);
+    if(isIndex(n.b)&&n.a.t==="add"&&n.a.a.t==="num"&&n.a.a.v===1&&isOneOver(n.a.b,v))return result({t:"e"},"box-def-e");
+  }
+  if(n.t==="fn"&&n.f==="root"&&isIndex(n.n)&&(isIndex(n.a)||constant(n.a)&&ev(n.a,{})>0))return result(one);
+  if(n.t==="div"&&n.b.t==="pow"&&isIndex(n.b.b)&&constant(n.b.a)&&ev(n.b.a,{})>1){
+    if(isIndex(n.a)||n.a.t==="pow"&&isIndex(n.a.a)&&constant(n.a.b)&&ev(n.a.b,{})>0)return result(zero);
+  }
+  return null;
+}
+function sequenceBound(n,v){
+  if(!hasVar(n)){var c=ev(n,{});return isFinite(c)?Math.abs(c):null;}
+  if(n.t==="fn"&&(n.f==="sin"||n.f==="cos"))return 1;
+  if(n.t==="pow"&&n.b.t==="var"&&n.b.n===v&&!hasVar(n.a)&&Math.abs(ev(n.a,{}))<=1)return 1;
+  if(n.t==="neg"||n.t==="fn"&&n.f==="abs")return sequenceBound(n.a,v);
+  var a=n.a&&sequenceBound(n.a,v),b=n.b&&sequenceBound(n.b,v);
+  if(a!==null&&b!==null){if(n.t==="add"||n.t==="sub")return a+b;if(n.t==="mul")return a*b;}
+  return null;
+}
+function sequenceLimit(n,v){
+  var known=sequenceStandard(n,v);if(known)return known;
+  function fail(){throw new ParseError("הכלל שנבחר אינו קובע את הגבול של הביטוי הזה. נסו קודם לפשט אותו או לבחור כלל אחר.");}
+  function result(node,a,b,ref){return {node:sequenceSimplify(node,v),refs:(a?a.refs:[]).concat(b?b.refs:[],ref||"box-thm-limit-arithmetic"),bounded:!!(a&&a.bounded||b&&b.bounded)};}
+  function attempt(x){try{return sequenceLimit(x,v);}catch(e){return null;}}
+  if(n.t==="neg"){var neg=sequenceLimit(n.a,v);return result({t:"neg",a:neg.node},neg);}
+  var a=n.a&&attempt(n.a),b=n.b&&attempt(n.b),av=a&&ev(a.node,{}),bv=b&&ev(b.node,{});
+  if(n.t==="mul"||n.t==="div"){
+    var bound=sequenceBound(n.a,v),other=sequenceBound(n.b,v);
+    if(!a&&bound!==null&&b&&(n.t==="mul"&&bv===0||n.t==="div"&&Math.abs(bv)===Infinity))return {node:algebraNumber(0),refs:["box-cor-bounded-zero"],bounded:true,factor:n.a,bound:bound};
+    if(n.t==="mul"&&!b&&other!==null&&a&&av===0)return {node:algebraNumber(0),refs:["box-cor-bounded-zero"],bounded:true,factor:n.b,bound:other};
+  }
+  if(["add","sub","mul","div"].indexOf(n.t)>=0){
+    if(!a||!b)fail();
+    // Finite arithmetic applies before the bounded-times-zero shortcut.
+    if(isFinite(av)&&isFinite(bv)&&!(n.t==="div"&&bv===0))return result({t:n.t,a:a.node,b:b.node},a,b);
+    if(n.t==="div"&&bv===0){
+      if(av===0)throw new ParseError("גבול המונה וגבול המכנה הם אפס. כלל המנה אינו חל; צריך לפשט לפני המעבר לגבול.");
+      var signs=algebraSigns(n.b,sequenceFacts(v));
+      if(!a||!signs.length||signs.indexOf(0)>=0||signs.length!==1)throw new ParseError("המכנה שואף לאפס. צריך לדעת גם אם הוא חיובי או שלילי לפני שמסיקים גבול אינסופי.");
+      return result(signs[0]*Math.sign(av)>0?{t:"inf"}:{t:"neg",a:{t:"inf"}},a,b,"box-rule-reciprocal-zero");
+    }
+    var value=ev({t:n.t,a:a.node,b:b.node},{});
+    if(Number.isNaN(value))throw new ParseError("מתקבלת צורה לא מוגדרת. יש לשנות את צורת הביטוי לפני שמשתמשים בחשבון הגבולות.");
+    return result(isFinite(value)?algebraNumber(value):value>0?{t:"inf"}:{t:"neg",a:{t:"inf"}},a,b,"box-rule-infinite-arithmetic");
+  }
+  if(n.t==="pow"&&a&&!hasVar(n.b)&&isFinite(ev(n.b,{}))){
+    var p=ev(n.b,{});if(!Number.isInteger(p)||p<0||!isFinite(av))fail();
+    return result({t:"pow",a:a.node,b:n.b},a,null,"box-prp-limit-powers");
+  }
+  if(n.t==="fn"&&n.f==="sqrt"&&a&&av>=0)return result(av===Infinity?{t:"inf"}:{t:"fn",f:"sqrt",a:a.node},a,null,"box-prp-limit-powers");
+  fail();
+}
+// Symbolic enclosing sequences for the oscillating factors used in this chapter.
+function sequenceEnvelope(n,v){
+  var B=function(t,a,b){return sequenceSimplify({t:t,a:a,b:b},v);};
+  if(sequenceBound(n,v)!==null&&hasVar(n)){
+    var m=sequenceBound(n,v);return {lo:algebraNumber(-m),hi:algebraNumber(m)};
+  }
+  if(!hasVar(n)||n.t==="var"||n.t==="pow")return {lo:n,hi:n};
+  if(n.t==="neg"){var e=sequenceEnvelope(n.a,v);return {lo:{t:"neg",a:e.hi},hi:{t:"neg",a:e.lo}};}
+  if(n.t==="add"||n.t==="sub"){
+    var a=sequenceEnvelope(n.a,v),b=sequenceEnvelope(n.b,v);
+    return {lo:B(n.t,a.lo,n.t==="sub"?b.hi:b.lo),hi:B(n.t,a.hi,n.t==="sub"?b.lo:b.hi)};
+  }
+  if(n.t==="div"||n.t==="mul"){
+    var a=sequenceEnvelope(n.a,v),b=sequenceEnvelope(n.b,v),sg=algebraSigns(n.b,sequenceFacts(v));
+    if(expressionSource(b.lo)===expressionSource(b.hi)&&sg.length===1&&sg[0]!==0)return {lo:B(n.t,sg[0]>0?a.lo:a.hi,n.b),hi:B(n.t,sg[0]>0?a.hi:a.lo,n.b)};
+  }
+  throw new ParseError("לא זוהתה כאן חסימה בעזרת הגורמים המוכרים. פשטו את הביטוי לפני הפעלת הכלל.");
+}
+function sequenceAction(src,action,v){
+  v=v||"n";if(!action||!SEQUENCE_ACTIONS[action.op])throw new ParseError("בחרו סוג פעולה ואת הפעולה שמצדיקה את הצעד.");
+  var rootNode=parseExpr(src),part=resolveFragment(src,{before:action.before===undefined?src:action.before,path:action.path},"expr"),n=part.node,expected,refs=[],certificate="",op=action.op;
+  var wrap=function(x){return expressionSource(sequenceReplace(rootNode,part.path,x));};
+  function B(t,a,b){return {t:t,a:a,b:b};}
+  if(op==="simplify"){
+    expected=sequenceSimplify(n,v);
+    return {expected:wrap(expected),part:part,refs:[],kind:"algebra",custom:true};
+  }
+  if(op==="divide"||op==="factor"){
+    var operand=parseExpr(action.value||""),signs=algebraSigns(operand,sequenceFacts(v));
+    var positiveExponential=operand.t==="pow"&&!hasVar(operand.a)&&ev(operand.a,{})>0;
+    if(!positiveExponential&&(signs.indexOf(0)>=0||!signs.length))throw new ParseError("הביטוי שבו מחלקים צריך להיות שונה מאפס. בחרו חזקה של האינדקס החיובי או ביטוי שסימנו ידוע.");
+    if(Object.keys(varsOf(operand)).some(function(x){return x!==v;}))throw new ParseError("הביטוי צריך להשתמש באינדקס של התרגיל בלבד.");
+    function divideTerms(x){if(x.t==="add"||x.t==="sub")return B(x.t,divideTerms(x.a),divideTerms(x.b));return sequenceSimplify(B("div",x,operand),v);}
+    if(op==="divide"){
+      if(n.t!=="div")throw new ParseError("בחרו שבר כדי לחלק את המונה ואת המכנה באותו ביטוי.");
+      expected=B("div",divideTerms(n.a),divideTerms(n.b));
+    }else expected=B("mul",operand,divideTerms(n));
+    return {expected:wrap(expected),part:part,selected:expected,refs:[SEQUENCE_ACTIONS[op].ref],kind:"algebra",operand:operand};
+  }
+  if(op==="conjugate"){
+    if(n.t!=="sub"||![n.a,n.b].some(function(x){return x.t==="fn"&&x.f==="sqrt";}))throw new ParseError("בחרו את הפרש השורשים שעליו רוצים להפעיל את הצמוד.");
+    function square(x){return x.t==="fn"&&x.f==="sqrt"?x.a:B("pow",x,algebraNumber(2));}
+    expected=B("div",sequenceSimplify(B("sub",square(n.a),square(n.b)),v),B("add",n.a,n.b));
+    return {expected:wrap(expected),part:part,selected:expected,refs:["box-method-conjugate"],kind:"algebra"};
+  }
+  if(op==="compute"){
+    if(hasVar(n))throw new ParseError("נשאר אינדקס בביטוי. זהו עדיין ביטוי של סדרה, ולא חישוב של מספרים בלבד.");
+    if(!isFinite(ev(n,{}))&&n.t!=="inf"&&!(n.t==="neg"&&n.a.t==="inf"))throw new ParseError("זה אינו חישוב מספרי מוגדר.");
+    return {expected:wrap(sequenceSimplify(n,v)),part:part,kind:"number",refs:[],custom:true};
+  }
+  var limit;
+  if(op==="squeeze"){
+    var lower=parseExpr(action.lower||""),upper=parseExpr(action.upper||""),envelope=sequenceEnvelope(n,v);
+    function nonnegative(x){
+      // Combine scalar multiples of the same reciprocal before testing signs.
+      var terms=Object.create(null);
+      function collect(node,sign){
+        if(node.t==="add"||node.t==="sub"){collect(node.a,sign);collect(node.b,node.t==="sub"?-sign:sign);return;}
+        if(node.t==="neg"){collect(node.a,-sign);return;}
+        var q=exactFraction(node),base=null;
+        if(!q&&node.t==="div"&&exactFraction(node.a)){q=exactFraction(node.a);base={t:"div",a:algebraNumber(1),b:node.b};}
+        if(!q){q=[1,1];base=node;}
+        var key=base?expressionSource(base):"constant",old=terms[key];
+        var coefficient=[sign*q[0],q[1]];terms[key]={base:base,q:old?fractionOp(old.q,coefficient,"add"):coefficient};
+      }
+      collect(sequenceSimplify(x,v),1);
+      return Object.keys(terms).every(function(key){var term=terms[key];if(!term.q)return false;if(term.q[0]===0)return true;var s=term.base?algebraSigns(term.base,sequenceFacts(v)):[1];return s.every(function(sign){return sign*term.q[0]>=0;});});
+    }
+    if(!nonnegative(B("sub",envelope.lo,lower))||!nonnegative(B("sub",upper,envelope.hi)))throw new ParseError("החסימות אינן מקיפות את הסדרה. חסימות מתאימות הן \\("+tex(envelope.lo)+"\\le "+tex(n)+"\\le "+tex(envelope.hi)+"\\).");
+    var lo=sequenceLimit(lower,v),hi=sequenceLimit(upper,v);
+    if(!sameLim(constLim(lo.node),constLim(hi.node)))throw new ParseError("שני החסמים צריכים לשאוף לאותו מספר. כאן מתקבלים \\("+tex(lo.node)+"\\) ו \\("+tex(hi.node)+"\\).");
+    if(!isFinite(ev(lo.node,{})))throw new ParseError("בכלל הסנדוויץ׳ הזה שני החסמים צריכים להתכנס לאותו מספר ממשי.");
+    limit={node:lo.node,refs:["box-thm-squeeze"]};certificate="\\("+tex(lower)+"\\le "+tex(n)+"\\le "+tex(upper)+"\\)";
+  }else if(op==="standard"){
+    limit=sequenceStandard(n,v);if(!limit)throw new ParseError("הביטוי שנבחר אינו אחת הסדרות המוכרות. בחרו מתוכו סדרה מתאימה, או השתמשו בחשבון גבולות.");
+  }else{
+    limit=sequenceLimit(n,v);
+    if(op==="reciprocal"){
+      if(n.t!=="div"||hasVar(n.a)||ev(n.a,{})!==1||limit.refs.indexOf("box-rule-reciprocal-zero")<0)throw new ParseError("הכלל הזה מיועד להופכי של מכנה השואף לאפס ושסימנו ידוע.");
+      var sign=algebraSigns(n.b,sequenceFacts(v))[0];certificate="\\("+tex(n.b)+"\\to0,\\qquad "+tex(n.b)+(sign>0?">0":"<0")+"\\)";
+    }else if(op==="arithmetic"&&limit.refs.indexOf("box-rule-reciprocal-zero")>=0)throw new ParseError("המכנה שואף לאפס. בחרו את הכלל להופכי של סדרה השואפת לאפס, שבו נבדק גם סימן המכנה.");
+    if(op==="bounded"){
+      if(!limit.factor)throw new ParseError("בחרו מכפלה של גורם חסום בגורם השואף לאפס, או מנה של גורם חסום בגורם שערכו המוחלט שואף לאינסוף.");
+      var factor=parseExpr(action.factor||""),boundNode=parseExpr(action.bound||""),bound=ev(boundNode,{}),knownBound=sequenceBound(factor,v);
+      if(expressionSource(factor)!==expressionSource(limit.factor))throw new ParseError("הגורם החסום שצריך לציין כאן הוא \\("+tex(limit.factor)+"\\).");
+      if(hasVar(boundNode)||!isFinite(bound)||knownBound===null||bound<knownBound)throw new ParseError("כתבו חסם קבוע לערך המוחלט של הגורם. כאן אפשר לבחור \\("+limit.bound+"\\) או מספר גדול יותר.");
+      certificate="\\(|"+tex(factor)+"|\\le "+tex(boundNode)+"\\)";
+    }else if(limit.bounded)throw new ParseError("אחד הגורמים אינו מתכנס. חשבון הגבולות לבדו אינו מצדיק את הצעד; בחרו חסומה כפול סדרה השואפת לאפס וציינו חסם.");
+  }
+  // Replacing a limit inside a singular context is not a valid local operation.
+  if(part.path!=="0.0"){
+    var full=sequenceLimit(rootNode,v),after=sequenceLimit(sequenceReplace(rootNode,part.path,limit.node),v);
+    if(!sameLim(constLim(full.node),constLim(after.node)))throw new ParseError("אי אפשר להחליף את החלק הזה בגבולו בתוך הפעולה שסביבו. בדקו את התנאים לחשבון גבולות.");
+  }
+  return {expected:wrap(limit.node),part:part,selected:limit.node,refs:limit.refs,kind:"limit",certificate:certificate};
+}
+function checkSequenceStep(src,next,action,v){
+  try{
+    var result=sequenceAction(src,action,v),got=parseExpr(next),want=parseExpr(result.expected);
+    if(Object.keys(varsOf(got)).some(function(x){return x!==v;}))throw new ParseError("כתבו ביטוי עם האינדקס של התרגיל בלבד.");
+    if(expressionSource(parseExpr(src))===expressionSource(got))throw new ParseError("זו אותה שורה. כתבו את תוצאת הפעולה.");
+    var actual=resolveFragment(next,{path:result.part.path},"expr").node;
+    var rebuilt=sequenceReplace(parseExpr(src),result.part.path,actual);
+    if(expressionSource(rebuilt)!==expressionSource(got))throw new ParseError("שונו גם חלקים שלא נבחרו. השאירו אותם כפי שהם, או בחרו את כל הביטוי.");
+    var ok;
+    if(action.op==="divide"||action.op==="conjugate")ok=actual.t==="div"&&seqSame(result.selected.a,actual.a,v).ok&&seqSame(result.selected.b,actual.b,v).ok;
+    else if(action.op==="factor")ok=actual.t==="mul"&&((seqSame(actual.a,result.operand,v).ok&&seqSame(actual.b,result.selected.b,v).ok)||(seqSame(actual.b,result.operand,v).ok&&seqSame(actual.a,result.selected.b,v).ok));
+    else if(result.custom)ok=seqSame(result.part.node,actual,v).ok;
+    else ok=hasVar(result.selected,v)?seqSame(result.selected,actual,v).ok:!hasVar(actual)&&sameLim(constLim(result.selected),constLim(actual));
+    if(!ok)return {ok:false,expected:result.expected,msg:"הנימוק אינו מתאים לשורה. צפוי: \\("+tex(want)+"\\). התקבל: \\("+tex(got)+"\\)."};
+    return Object.assign(result,{ok:true});
+  }catch(e){return {ok:false,msg:errMsg(e)};}
+}
+function checkSequenceProof(start,entries,v,goal){
+  var records=[{id:"start",text:start}],results=[];
+  for(var i=0;i<entries.length;i++){
+    var entry=entries[i],source=records.filter(function(r){return r.id===entry.source;})[0];
+    var forbidden=goal&&entry.action&&SEQUENCE_ACTIONS[entry.action.op]&&SEQUENCE_ACTIONS[entry.action.op].group==="limits";
+    var r=forbidden?{ok:false,msg:"כאן מפשטים ביטוי לכל אינדקס, ולא מחשבים גבול."}:source?checkSequenceStep(source.text,entry.text,entry.action,v):{ok:false,msg:"שורת המקור חסרה או שעדיין לא נבדקה. בחרו שורה קודמת תקינה."};
+    results.push(r);if(!r.ok)return {results:results,done:false,records:records};
+    records.push({id:entry.id,text:entry.text});
+  }
+  var last=records[records.length-1].text,n=parseExpr(last),simplified=sequenceSimplify(n,v);
+  var done=entries.length>0&&!hasVar(n)&&constLim(n)&&expressionSource(n)===expressionSource(simplified);
+  if(goal){var target=sequenceSimplify(parseExpr(goal),v);done=entries.length>0&&seqSame(n,target,v).ok&&nodes(n)<=nodes(target)+1;}
+  return {results:results,done:!!done,records:records};
+}
+
 if (typeof document === "undefined") {
   if (typeof module !== "undefined") module.exports = {
     parseExpr: parseExpr, parseRelation: parseRelation, parseSet: parseSet, ev: ev, tex: tex, texChain: texChain,
     setTex: setTex, setInputTex: setInputTex, setEq: setEq, solveSet: solveSet, checkAnswer: checkAnswer, guessKind: guessKind, judgeStep: judgeStep,
     classifyStep: classifyStep, isSolved: isSolved, fmtNum: fmtNum, nodes: nodes, ParseError: ParseError,
+    sequenceAction:sequenceAction, checkSequenceStep:checkSequenceStep, checkSequenceProof:checkSequenceProof, sequenceLimit:sequenceLimit, sequenceParts:sequenceParts, SEQUENCE_ACTIONS:SEQUENCE_ACTIONS,
     parsedSoFar: parsedSoFar, prepLine: prepLine, limOf: limOf, judgeLimStep: judgeLimStep, limDone: limDone, LIMRULES: LIMRULES,
     checkWorking: checkWorking, checkLineProof:checkLineProof, checkComposition:checkComposition, relationParts:relationParts, relationPartGroups:relationPartGroups, replaceRelationParts:replaceRelationParts,
     operateRelation:operateRelation, relationSource:relationSource, expandAbsolute:expandAbsolute, absoluteParts:absoluteParts, spaceLogicalWords:spaceLogicalWords,
@@ -3456,7 +3711,7 @@ function initGroup(G) {
     var it = { sp: sp, ans: ans, kind: kind, input: input, preview: pv, mark: mark, shown: shown,
       vars: (attr(sp, "vars") || "").split(",").map(function (s) { return s.trim(); }).filter(Boolean),
       miss: parseMiss(attr(sp, "miss")),
-      opts: { form: attr(sp, "form"), checkAt: attr(sp, "check-at"), integers: (attr(sp,"integer") || "").split(",").filter(Boolean), allowExpression: attr(sp,"allow-expression")==="true", positive: (attr(sp, "positive") || "").split(",").map(function (s) { return s.trim(); }).filter(Boolean) } };
+      opts: { form: attr(sp, "form"), calculation:attr(sp,"calculation"), minAnswer:attr(sp,"min-answer"), integerAnswer:attr(sp,"integer-answer")==="true", checkAt: attr(sp, "check-at"), integers: (attr(sp,"integer") || "").split(",").filter(Boolean), allowExpression: attr(sp,"allow-expression")==="true", positive: (attr(sp, "positive") || "").split(",").map(function (s) { return s.trim(); }).filter(Boolean) } };
     input.addEventListener("focus", function () { if (isMathInput(input) && pv) pv.innerHTML = ""; });
     input.addEventListener("keydown", function (e) {
       if (e.key === "Enter" && !e.isComposing) { e.preventDefault(); checkOne(it, true); allDone(); }
@@ -3564,7 +3819,18 @@ function initGroup(G) {
 
   function checkOne(it, talk) {
     var r;
-    try { r = checkAnswer(it.kind, it.ans, readInput(it.input), it.vars, it.opts); }
+    try {
+      var opts=Object.assign({},it.opts),sourceId=attr(it.sp,"calculation-from");
+      if(sourceId){
+        var source=document.getElementById(sourceId),sourceInput=source&&source.querySelector(".blank-input");
+        if(sourceInput&&readInput(sourceInput).trim()&&checkAnswer("expr",attr(source,"ans"),readInput(sourceInput),["n"],{positive:["n"],integers:["n"]}).ok){
+          var index=parseExpr(attr(it.sp,"index"));
+          function sub(n){if(n.t==="var"&&n.n==="n")return index;var out=Object.assign({},n);["a","b","n","base"].forEach(function(k){if(n[k]&&typeof n[k]==="object")out[k]=sub(n[k]);});return out;}
+          opts.calculation=sub(parseExpr(readInput(sourceInput)));
+        }
+      }
+      r = checkAnswer(it.kind, it.ans, readInput(it.input), it.vars, opts);
+    }
     catch (e) { r = { ok: false, msg: errMsg(e) }; }
     if (!r.ok && !r.empty && it.miss.length) {
       for (var i = 0; i < it.miss.length; i++) {
@@ -4638,7 +4904,7 @@ function initRelationPractice(box,options) {
   hints.forEach(function(h){h.remove();});
   var initialLine=el("div",{class:"pw-row as-given"},[
     el("span",{class:"as-step-label",text:"שורה 1"}),
-    el("div",{class:"as-compact"},[el("div",{class:"as-formula",dir:"ltr",html:formula(start)}),el("div",{class:"as-reason",dir:"rtl",text:"נקודת מוצא"})])
+    el("div",{class:"as-compact"},[el("div",{class:"as-formula",dir:"ltr",html:formula(start)}),el("div",{class:"as-reason",dir:"rtl",html:mx("נקודת מוצא"+(cfg.positive.length?"<br>נתון: \\("+cfg.positive.map(function(v){return v+">0";}).join(",\\quad ")+"\\)":""))})])
   ]);
   paper.appendChild(initialLine);
   var ui=el("div",{class:"pw algebra-work"},[options.start?null:practiceHelp(true),paper,
@@ -4735,7 +5001,149 @@ function initPractice(box) {
   var workspace=practiceWorkspace(ui);attachSolutionAnswer(box,workspace,solution);
   mountPracticeViews(box,workspace,solution); box.classList.add("practice-ready"); add(false); typeset(box);
 }
+function initSequencePractice(box){
+  var start=attr(box,"start"),isLimit=!!attr(box,"limit"),v=attr(box,"limit")||"n",steps=childDivs(box,"step"),hints=childDivs(box,"hint"),rows=[],serial=0;
+  var path=steps.map(function(s){return prepLine(attr(s,"line")).full;});
+  var paper=el("div",{class:"pw-paper"}),status=el("div",{class:"ix-msg","aria-live":"polite"});
+  function math(src){var n=parseExpr(src);return mx("\\("+(isLimit&&hasVar(n,v)?"\\lim_{"+v+"\\to\\infty}\\left("+tex(n)+"\\right)":tex(n))+"\\)");}
+  function expression(src){return mx("\\("+tex(parseExpr(src))+"\\)");}
+  function btn(text,fn,cls){return el("button",{type:"button",class:"ix-btn "+(cls||"ix-quiet"),text:text,onclick:fn});}
+  function input(label,cls){
+    var field=mathInput({type:"text",class:"blank-input "+(cls||""),dir:"ltr","aria-label":label,autocomplete:"off",spellcheck:"false"},"expr");
+    var preview=el("span",{class:"as-field-preview",dir:"ltr"}),host=el("span",{class:"as-field as-expr-field"},[field,preview]);
+    function render(){preview.innerHTML="";if(!isMathInput(field)&&field.value.trim())try{preview.innerHTML=expression(readInput(field));typeset(preview);}catch(e){}}
+    field.addEventListener("input",render);field.addEventListener("focus",render);bindInputKeys(field,[[v,v]].concat(KEYSETS.lim.filter(function(k){return k[0]!==v;})),true);
+    return {input:field,host:host,render:render,set:function(value){field.value=isMathInput(field)?inputLatex(value,"expr"):value;render();}};
+  }
+  function label(text,node){return el("label",{class:"seq-editor-field"},[el("span",{text:text}),node]);}
+  function references(ids){var refs=Array.from(new Set(ids||[]));return el("span",{class:"as-rule-links"},refs.map(function(id,i){var target=document.getElementById(id),title=target&&target.querySelector("strong");return el("a",{href:"#"+id,text:(i?" · ":"")+(title?title.textContent:"הכלל בספר")});}));}
+  function reason(action,result,sourceNumber){
+    var host=el("div",{class:"as-reason"},[el("span",{text:SEQUENCE_ACTIONS[action.op].label+" · לפי שורה "+sourceNumber})]);
+    if(action.value)host.appendChild(el("div",{html:expression(action.value)}));
+    if(result.part&&result.part.path!=="0.0")host.appendChild(el("div",{html:"על הביטוי "+expression(result.part.source)}));
+    if(result.certificate)host.appendChild(el("div",{html:mx(result.certificate)}));
+    host.appendChild(references(result.refs));return host;
+  }
+  var given=el("div",{class:"as-given"},[el("span",{class:"as-step-label",text:"שורה 1"}),el("div",{class:"as-compact"},[el("div",{class:"as-formula",html:math(start)}),el("div",{class:"as-reason",text:"נקודת מוצא"})])]);paper.appendChild(given);
+  function source(r){if(r.source.value==="start")return start;var found=rows.filter(function(x){return x.id===r.source.value&&x.valid;})[0];if(!found)throw new ParseError("שורת המקור אינה זמינה. בחרו שורה קודמת שנבדקה.");return readInput(found.result.input);}
+  function action(r){
+    var a={op:r.op.value,before:readInput(r.fragment.input)};
+    if(r.selectedPath!==null)a.path=r.selectedPath;
+    ["value","factor","bound","lower","upper"].forEach(function(k){if(!r.fields[k].label.hidden)a[k]=readInput(r.fields[k].field.input);});
+    return a;
+  }
+  function entry(r){return {id:r.id,source:r.source.value,text:readInput(r.result.input),action:action(r)};}
+  function sourceOptions(r){
+    var old=r.source.getAttribute("data-initial-source")||r.source.value,options=[{id:"start",number:1}];r.source.removeAttribute("data-initial-source");
+    rows.slice(0,rows.indexOf(r)).forEach(function(x,i){if(x.valid)options.push({id:x.id,number:i+2});});
+    r.source.replaceChildren();options.forEach(function(o){r.source.appendChild(el("option",{value:o.id,text:"שורה "+o.number}));});
+    if(options.some(function(o){return o.id===old;}))r.source.value=old;
+    else {r.source.appendChild(el("option",{value:old,text:"שורת מקור שאינה זמינה"}));r.source.value=old;}
+  }
+  function invalidate(r){
+    var index=rows.indexOf(r);say(status,"");
+    rows.slice(index).forEach(function(x){x.valid=false;x.editor.hidden=false;x.summary.hidden=true;x.row.classList.remove("as-accepted");say(x.msg,"");x.suggestion.replaceChildren();});
+    rows.forEach(sourceOptions);
+  }
+  function choosePart(r,part){r.fragment.set(part.source);r.selectedPath=part.path;r.matches.replaceChildren();invalidate(r);}
+  function showParts(r){
+    r.parts.replaceChildren();try{sequenceParts(source(r)).filter(function(p){return hasVar(p.node,v)||p.path==="0.0";}).forEach(function(p){var b=btn("",function(){choosePart(r,p);r.picker.open=false;});b.innerHTML=expression(p.source);r.parts.appendChild(b);});typeset(r.parts);}catch(e){say(r.parts,errMsg(e),"info");}
+  }
+  function changedSource(r){invalidate(r);r.selectedPath="0.0";try{r.fragment.set(source(r));}catch(e){}showParts(r);}
+  function configure(r){
+    invalidate(r);var op=r.op.value;
+    Object.keys(r.fields).forEach(function(k){r.fields[k].label.hidden=!(k==="value"&&(op==="divide"||op==="factor")||(k==="factor"||k==="bound")&&op==="bounded"||(k==="lower"||k==="upper")&&op==="squeeze");});
+    r.rule.replaceChildren();if(op&&SEQUENCE_ACTIONS[op].ref)r.rule.appendChild(references([SEQUENCE_ACTIONS[op].ref]));
+  }
+  function commit(r,advance){
+    var upto=rows.indexOf(r),entries;
+    try{entries=rows.slice(0,upto+1).map(entry);}catch(e){say(r.msg,errMsg(e),"bad");return false;}
+    var verdict=checkSequenceProof(start,entries,v,isLimit?null:path[path.length-1]);
+    verdict.results.forEach(function(result,i){var x=rows[i];x.valid=result.ok;
+      if(!result.ok){x.editor.hidden=false;x.summary.hidden=true;say(x.msg,result.msg,"bad");return;}
+      x.editor.hidden=true;x.summary.hidden=false;x.row.classList.add("as-accepted");
+      var sourceIndex=entries[i].source==="start"?1:rows.findIndex(function(t){return t.id===entries[i].source;})+2;
+      x.summary.replaceChildren(el("div",{class:"as-formula",html:math(entries[i].text)}),reason(entries[i].action,result,sourceIndex),btn("עריכה",function(){invalidate(x);x.result.input.focus();}));
+      say(x.msg,"✓ הצעד נכון!", "good");typeset(x.summary);
+    });
+    if(verdict.results.some(function(x){return !x.ok;})){say(status,"תקנו את השורה המסומנת ואז בדקו שוב.","info");return false;}
+    rows.forEach(sourceOptions);say(status,verdict.done?"✓ הפתרון נכון.":"✓ הצעד נכון. אפשר להמשיך לשלב הבא.","good");
+    if(advance&&!verdict.done&&upto===rows.length-1)add(true);
+    return true;
+  }
+  function preview(r){
+    r.suggestion.replaceChildren();try{
+      var a=action(r),res=sequenceAction(source(r),a,v),candidate=res.expected;
+      // An exact algebraic simplification is offered, with the selected operation retained.
+      var check=checkSequenceStep(source(r),candidate,a,v);
+      if(!check.ok)throw new ParseError(check.msg);
+      r.suggestion.appendChild(el("div",{class:"as-formula",html:math(candidate)}));
+      r.suggestion.appendChild(reason(a,res,r.source.value==="start"?1:rows.findIndex(function(x){return x.id===r.source.value;})+2));
+      r.suggestion.appendChild(btn("יישום הצעד והמשך",function(){r.result.set(candidate);invalidate(r);commit(r,true);},"ix-main"));typeset(r.suggestion);
+    }catch(e){say(r.suggestion,errMsg(e),"info");}
+  }
+  function propose(r){
+    r.suggestion.replaceChildren();try{
+      var src=source(r),current=expressionSource(parseExpr(src)),at=[start].concat(path).map(function(p){return expressionSource(parseExpr(p));}).indexOf(current);
+      var next=at>=0?path[at]:null,candidates=[];
+      (isLimit?["conjugate","standard","arithmetic","reciprocal","compute","simplify"]:["conjugate","compute","simplify"]).forEach(function(op){candidates.push({op:op});});
+      [v,v+"^2",v+"^3","2^"+v,"3^"+v,"5^"+v].forEach(function(value){candidates.unshift({op:"divide",value:value});candidates.push({op:"factor",value:value});});
+      if(isLimit)try{var bounded=sequenceLimit(parseExpr(src),v);if(bounded.factor)candidates.unshift({op:"bounded",factor:expressionSource(bounded.factor),bound:String(bounded.bound)});}catch(e){}
+      var suggestion=null;
+      for(var i=0;i<candidates.length;i++){
+        var a=candidates[i],res;try{res=sequenceAction(src,a,v);}catch(e){continue;}
+        var target=next||res.expected;if(checkSequenceStep(src,target,a,v).ok){suggestion={action:a,text:target,result:res};break;}
+      }
+      if(!suggestion){say(r.suggestion,"אפשר לבחור חלק מהביטוי ולפשט אותו. הפתרון לדוגמה מציג דרך אפשרית נוספת.","info");return;}
+      r.suggestion.appendChild(el("div",{class:"as-formula",html:math(suggestion.text)}));
+      r.suggestion.appendChild(reason(suggestion.action,suggestion.result,r.source.value==="start"?1:rows.findIndex(function(x){return x.id===r.source.value;})+2));
+      r.suggestion.appendChild(btn("יישום הצעד והמשך",function(){
+        var a=suggestion.action;r.category.value=SEQUENCE_ACTIONS[a.op].group;fillActions(r);r.op.value=a.op;configure(r);
+        r.fragment.set(src);r.selectedPath="0.0";Object.keys(r.fields).forEach(function(k){r.fields[k].field.set(a[k]||"");});r.result.set(suggestion.text);commit(r,true);
+      },"ix-main"));typeset(r.suggestion);
+    }catch(e){say(r.suggestion,errMsg(e),"info");}
+  }
+  function hint(r){
+    r.suggestion.replaceChildren();try{var src=source(r),at=[start].concat(path).map(function(p){return expressionSource(parseExpr(p));}).indexOf(expressionSource(parseExpr(src)));
+      var h=at>=0&&at<steps.length?steps[at]:hints[0];
+      if(h)r.suggestion.appendChild(h.cloneNode(true));else r.suggestion.appendChild(el("p",{text:"בדקו אם אפשר להשתמש בגבול מוכר. אם מתקבלת צורה לא מוגדרת, צריך קודם לשנות את צורת הביטוי."}));typeset(r.suggestion);
+    }catch(e){say(r.suggestion,errMsg(e),"info");}
+  }
+  function fillActions(r){r.op.replaceChildren(el("option",{value:"",text:"בחרו פעולה"}));Object.keys(SEQUENCE_ACTIONS).filter(function(op){return SEQUENCE_ACTIONS[op].group===r.category.value;}).forEach(function(op){r.op.appendChild(el("option",{value:op,text:SEQUENCE_ACTIONS[op].label}));});r.op.value="";}
+  function add(focus){
+    var last=rows[rows.length-1];if(last&&!last.valid){say(last.msg,"בדקו את הצעד הנוכחי לפני פתיחת שורה חדשה.","info");return;}
+    var r={id:"sequence-"+(++serial),valid:false,selectedPath:"0.0",fields:{}};
+    r.source=el("select",{class:"seq-source","aria-label":"שורת מקור","data-initial-source":last?last.id:"start"});
+    r.category=el("select",{class:"seq-category","aria-label":"סוג הפעולה"},[el("option",{value:"",text:"בחרו סוג פעולה"}),el("option",{value:"algebra",text:"שינוי אלגברי"}),el("option",{value:"limits",text:"כללי גבולות"}),el("option",{value:"numbers",text:"חישוב מספרי"})]);
+    if(!isLimit)r.category.querySelector('option[value="limits"]').remove();
+    r.op=el("select",{class:"seq-action","aria-label":"הפעולה"});fillActions(r);
+    r.fragment=input("הביטוי שעליו פועלים","seq-fragment");r.fragment.set(last?readInput(last.result.input):start);
+    r.result=input("תוצאת הצעד","pw-input");r.msg=el("div",{class:"ix-msg","aria-live":"polite"});r.rule=el("div",{class:"as-model-references"});
+    r.suggestion=el("div",{class:"pw-hints","aria-live":"polite"});r.parts=el("div",{class:"seq-parts"});r.matches=el("div",{class:"seq-parts"});
+    r.picker=el("details",{class:"seq-picker"},[el("summary",{text:"בחירת חלק מהביטוי"}),label("אפשר להקליד את הביטוי",r.fragment.host),r.matches,r.parts]);
+    var operands=el("div",{class:"seq-operands"});
+    var labels={value:"הביטוי שבו מחלקים או שמוציאים כגורם",factor:"הגורם החסום",bound:"חסם לערך המוחלט שלו",lower:"סדרה חוסמת מלמטה",upper:"סדרה חוסמת מלמעלה"};
+    Object.keys(labels).forEach(function(k){var f=input(labels[k],"seq-"+k),l=label(labels[k],f.host);r.fields[k]={field:f,label:l};l.hidden=true;f.input.addEventListener("input",function(){invalidate(r);});operands.appendChild(l);});
+    r.editor=el("div",{class:"as-editor"},[el("div",{class:"seq-controls"},[label("שורת מקור",r.source),label("סוג פעולה",r.category),label("פעולה",r.op)]),r.picker,operands,r.rule,label("תוצאת הצעד",r.result.host),el("div",{class:"ix-bar"},[
+      btn("בדיקת הצעד והמשך",function(){commit(r,true);},"ix-main"),btn("הצגת התוצאה הצפויה",function(){preview(r);}),btn("רמז",function(){hint(r);}),btn("הצגת צעד אפשרי",function(){propose(r);}),btn("מחיקת הצעד",function(){var i=rows.indexOf(r);rows.splice(i,1);r.row.remove();if(rows[i])invalidate(rows[i]);rows.forEach(function(x,j){x.number.textContent="שורה "+(j+2);sourceOptions(x);});say(status,"");if(!rows.length)add(false);})
+    ]),r.suggestion]);
+    r.summary=el("div",{class:"as-compact"});r.summary.hidden=true;r.number=el("span",{class:"as-step-label",text:"שורה "+(rows.length+2)});
+    r.row=el("div",{class:"as-step seq-step"},[r.number,r.editor,r.summary,r.msg]);rows.push(r);paper.appendChild(r.row);sourceOptions(r);showParts(r);
+    r.source.addEventListener("change",function(){changedSource(r);});r.category.addEventListener("change",function(){fillActions(r);configure(r);});r.op.addEventListener("change",function(){configure(r);});
+    r.result.input.addEventListener("input",function(){invalidate(r);});r.result.input.addEventListener("keydown",function(e){if(e.key==="Enter"&&!e.isComposing){e.preventDefault();commit(r,true);}},true);
+    r.fragment.input.addEventListener("input",function(){r.selectedPath=null;invalidate(r);r.matches.replaceChildren();try{var matches=fragmentMatches(source(r),readInput(r.fragment.input),"expr");if(matches.length>1)matches.forEach(function(p,i){r.matches.appendChild(btn("מופע "+(i+1),function(){choosePart(r,p);}));});}catch(e){}});
+    if(focus)r.result.input.focus();typeset(r.row);
+  }
+  var help=el("details",{class:"pw-help"},[el("summary",{text:"איך משתמשים בעוזר הפתרון?"}),el("p",{text:"בחרו שורת מקור ופעולה, כתבו את התוצאה ובדקו את הצעד. אפשר לפשט את כל הביטוי או לבחור חלק ממנו. בחילוק מציינים במה מחלקים; בכלל הסנדוויץ׳ כותבים שתי סדרות חוסמות; בכלל של סדרה חסומה כפול סדרה השואפת לאפס מציינים את הגורם החסום ואת החסם."}),el("p",{text:"רמז אינו משנה את העבודה. הצגת צעד אפשרי מציעה תוצאה ונימוק; הם ייכנסו לפתרון רק אחרי יישום. אפשר לערוך שורות, לחזור לשורה קודמת ולהשוות לפתרון לדוגמה."})]);
+  var solution=el("section",{class:"pw-solution"});
+  solution.appendChild(el("div",{class:"pw-example",html:math(start)}));steps.forEach(function(s,i){solution.appendChild(el("div",{class:"pw-example",html:math(path[i])}));solution.appendChild(s);});hints.forEach(function(h){h.remove();});
+  var ui=el("div",{class:"pw sequence-work"},[help,paper,el("div",{class:"ix-bar"},[btn("הוספת שורה",function(){add(true);}),btn("בדיקת הפתרון",function(){var active=rows.filter(function(r){return r.result.input.value.trim();});if(active.length)commit(active[active.length-1],false);else say(status,"כתבו צעד והוסיפו לו נימוק.","info");}),btn("מההתחלה",function(){closeInputKeys();rows=[];paper.replaceChildren(given);say(status,"");add(false);})]),status]);
+  var workspace=practiceWorkspace(ui);attachSolutionAnswer(box,workspace,solution);mountPracticeViews(box,workspace,solution);box.classList.add("practice-ready");add(false);typeset(box);
+}
+
 function initDerive(box) {
+  if(attr(box,"limit")){initSequencePractice(box);return;}
+  if(attr(box,"vars")==="n"&&attr(box,"positive")==="n"&&!isRelation(parseRelation(attr(box,"start")))){initSequencePractice(box);return;}
   var relationStart=attr(box,"start");
   if(relationStart&&!attr(box,"limit"))try {if(isRelation(parseRelation(relationStart))){initRelationPractice(box);return;}}catch(e){box.appendChild(el("p",{class:"ix-msg ix-bad",text:errMsg(e)}));return;}
   if (box.closest(".thmbox-question")) { initPractice(box); return; }

@@ -24,6 +24,9 @@
   .read { padding: .35rem .6rem; border-radius: 8px; background: #f8fafc; border: 1px solid #e2e8f0; }
   .read.good { background: #f0fdf4; border-color: #bbf7d0; }
   .read.bad { background: #fff1f2; border-color: #fecdd3; }
+  button, input[type=number] { font: inherit; padding: .2rem .45rem; border: 1px solid #94a3b8; border-radius: 6px; background: white; }
+  input[type=number] { width: 6rem; direction: ltr; }
+  .caption { margin: .4rem 0 0; font-size: .83rem; color: #475569; }
 </style>
 </head>
 <body>
@@ -39,23 +42,30 @@
     <input type="range" id="eps" min="0" max="6" step="1" value="1" aria-label="epsilon">
     <span class="m" id="epsval"></span>
   </div>
-  <div class="row read" id="read"></div>
+  <div class="row">
+    <label for="tail-index">אינדקס שממנו כל האיברים ברצועה: <span class="m">N</span></label>
+    <input id="tail-index" type="number" min="1" step="1" aria-label="האינדקס N">
+    <button id="check-tail" type="button">בדיקה</button>
+    <button id="suggest-tail" type="button">הצעת אינדקס</button>
+  </div>
+  <div class="row read" id="read" aria-live="polite">בחרו אינדקס ובדקו. אין צורך באינדקס הקטן ביותר.</div>
+  <p class="caption" id="zoom-caption"></p>
 </div>
 <script src="../shared/autosize.js"></script>
 <script>
 (function () {
   "use strict";
   var cv = document.getElementById("cv"), ctx = cv.getContext("2d");
-  var W = cv.width, H = cv.height, PADL = 46, PADR = 16, PADT = 16, PADB = 34;
+  var W = cv.width, H = cv.height, PADL = 64, PADR = 16, PADT = 16, PADB = 34;
   var EPS = [0.5, 0.2, 0.1, 0.05, 0.02, 0.01, 0.005];
   // L: the limit (null: the sequence diverges; then the band is drawn around `around`)
   function fr(a, b) { return "<span class='fr'><span>" + a + "</span><span>" + b + "</span></span>"; }
   var N_ = "<i>n</i>", POW = "(−1)<sup><i>n</i></sup>";
   var SEQS = [
-    { f: function (n) { return 1 / n; }, L: 0, html: fr("1", N_), lo: -0.15, hi: 1.05 },
-    { f: function (n) { return (n + 2) / n; }, L: 1, html: fr(N_ + " + 2", N_), lo: 0.85, hi: 3.05 },
-    { f: function (n) { return (n % 2 ? -1 : 1) / n; }, L: 0, html: fr(POW, N_), lo: -1.05, hi: 0.6 },
-    { f: function (n) { return 1 + Math.sin(n) / n; }, L: 1, html: "1 + " + fr("sin " + N_, N_), lo: 0.55, hi: 1.9 },
+    { f: function (n) { return 1 / n; }, L: 0, bound: 1, error: function(n){return 1/n;}, html: fr("1", N_), lo: -0.15, hi: 1.05 },
+    { f: function (n) { return (n + 2) / n; }, L: 1, bound: 2, error: function(n){return 2/n;}, html: fr(N_ + " + 2", N_), lo: 0.85, hi: 3.05 },
+    { f: function (n) { return (n % 2 ? -1 : 1) / n; }, L: 0, bound: 1, error: function(n){return 1/n;}, html: fr(POW, N_), lo: -1.05, hi: 0.6 },
+    { f: function (n) { return 1 + Math.sin(n) / n; }, L: 1, bound: 1, error: function(n){return Math.abs(Math.sin(n))/n;}, html: "1 + " + fr("sin " + N_, N_), lo: 0.55, hi: 1.9 },
     { f: function (n) { return n % 2 ? -1 : 1; }, L: null, around: 1, html: POW, lo: -1.3, hi: 1.3 }
   ];
   var opts = document.getElementById("opts");
@@ -67,25 +77,37 @@
   var sel = { get value() { return document.querySelector("input[name=seq]:checked").value; } };
   var slider = document.getElementById("eps");
   var read = document.getElementById("read"), epsval = document.getElementById("epsval"), limEl = document.getElementById("lim");
-  var SCAN = 20000;
-
-  // the first place from which on ALL terms are within eps (checked up to SCAN); null if none
-  function firstN(S, e) {
-    if (S.L === null) return null;
-    var last = 0;
-    for (var n = 1; n <= SCAN; n++) if (Math.abs(S.f(n) - S.L) >= e) last = n;
-    return last >= SCAN ? null : last + 1;
+  var tailInput=document.getElementById("tail-index");
+  // The analytic bound error(n) <= bound/n guarantees the entire remaining tail.
+  function sufficientN(S,e) { return S.L===null?null:Math.floor(S.bound/e)+1; }
+  function firstOutside(S,e,N) {
+    if(S.L===null)return N%2?N:N+1;
+    var safe=sufficientN(S,e);
+    for(var n=N;n<safe;n++)if(S.error(n)>=e)return n;
+    return null;
+  }
+  function checkTail() {
+    var S=SEQS[+sel.value],e=EPS[+slider.value],N=Number(tailInput.value);
+    if(!tailInput.value||!Number.isSafeInteger(N)||N<1){read.className="row read";read.textContent="כתבו אינדקס טבעי: 1, 2, 3 וכן הלאה.";return;}
+    var outside=firstOutside(S,e,N);
+    read.className="row read "+(outside===null?"good":"bad");
+    read.innerHTML=outside===null
+      ?"<span>✓ מתאים! לכל <span class='m'>n ≥ "+N+"</span> השגיאה קטנה מ <span class='m'>"+e+"</span>. גם אינדקס גדול יותר יתאים.</span>"
+      :"<span>לא מתאים: גם באינדקס <span class='m'>n = "+outside+"</span> השגיאה אינה קטנה מ <span class='m'>"+e+"</span>."+(S.L===null?" כאן תמיד יופיעו שוב איברים השווים למינוס אחת, ולכן אין אינדקס מתאים.":" בחרו אינדקס גדול יותר.")+"</span>";
+    draw();
   }
   function text(s, x, y, color, align, base, font) {
     ctx.fillStyle = color || "#334155"; ctx.direction = "ltr"; ctx.font = font || "13px Arial";
     ctx.textAlign = align || "center"; ctx.textBaseline = base || "middle"; ctx.fillText(s, x, y);
   }
   function draw() {
-    var S = SEQS[+sel.value], e = EPS[+slider.value], N = firstN(S, e);
+    var S = SEQS[+sel.value], e = EPS[+slider.value], safe = sufficientN(S, e), N = Number(tailInput.value);
+    if(!Number.isSafeInteger(N)||N<1)N=null;
     var center = S.L === null ? S.around : S.L;
-    var nMax = Math.min(400, Math.max(30, N ? Math.ceil(N * 1.6) : 40));
+    var nMax = Math.max(30, safe ? Math.ceil(safe * 1.6) : 40);
+    var lo=S.L===null?S.lo:center-2.5*e,hi=S.L===null?S.hi:center+2.5*e;
     function X(n) { return PADL + (n - 0.5) / nMax * (W - PADL - PADR); }
-    function Y(v) { return PADT + (S.hi - v) / (S.hi - S.lo) * (H - PADT - PADB); }
+    function Y(v) { return PADT + (hi - v) / (hi - lo) * (H - PADT - PADB); }
     ctx.clearRect(0, 0, W, H);
     // the band (at least 2px, so a small error stays visible)
     var y1 = Y(center + e), y2 = Y(center - e);
@@ -106,33 +128,43 @@
       text(String(t), X(t), H - PADB + 14, "#475569");
     }
     text("n", W - PADR, H - PADB + 26, "#334155", "right", "middle", "italic 14px 'Cambria Math', serif");
-    // the place N
-    if (N) {
-      ctx.strokeStyle = "#15803d"; ctx.lineWidth = 1.5; ctx.setLineDash([4, 4]);
+    [center-e,center+e].forEach(function(v){
+      text(Number(v.toPrecision(5)).toString(),PADL-6,Y(v),"#475569","right");
+    });
+    // The student's proposed starting index, when it is within the displayed range.
+    if (N && N<=nMax) {
+      var nColor=firstOutside(S,e,N)===null?"#15803d":"#dc2626";
+      ctx.strokeStyle = nColor; ctx.lineWidth = 1.5; ctx.setLineDash([4, 4]);
       ctx.beginPath(); ctx.moveTo(X(N) - 0.5 * (X(2) - X(1)), PADT); ctx.lineTo(X(N) - 0.5 * (X(2) - X(1)), H - PADB); ctx.stroke();
       ctx.setLineDash([]);
-      text("n = " + N, X(N) + 4, PADT + 6, "#15803d", "left", "top", "bold 13px Arial");
+      text("N = " + N, X(N) + 4, PADT + 6, nColor, "left", "top", "bold 13px Arial");
     }
     // the terms: inside the band blue, outside red
     var r = nMax > 150 ? 2 : nMax > 60 ? 2.8 : 3.8;
     for (var n = 1; n <= nMax; n++) {
-      var v = S.f(n), inside = Math.abs(v - center) < e;
+      var v = S.f(n), inside = S.L===null?Math.abs(v-center)<e:S.error(n)<e;
+      if(v<lo||v>hi)continue;
       ctx.fillStyle = inside ? "#1d4ed8" : "#dc2626";
-      ctx.beginPath(); ctx.arc(X(n), Y(Math.max(S.lo, Math.min(S.hi, v))), r, 0, 2 * Math.PI); ctx.fill();
+      ctx.beginPath(); ctx.arc(X(n), Y(v), r, 0, 2 * Math.PI); ctx.fill();
     }
     epsval.textContent = "ε = " + e;
     document.getElementById("now").innerHTML = "<i>a</i><sub><i>n</i></sub> = " + S.html;
     limEl.innerHTML = S.L === null ? "<span>(אין לה גבול)</span>" : "<span>(הגבול: <span class='m'><i>L</i> = " + S.L + "</span>)</span>";
-    if (N) {
-      read.className = "row read good";
-      read.innerHTML = "<span>החל מ-<span class='m'>n = " + N + "</span> <b>כל</b> האיברים בתוך הרצועה: <span class='m'>|a<sub>n</sub> − " + S.L + "| &lt; " + e + "</span>. האיברים האדומים, שלפני המקום הזה, אינם משנים את הגבול.</span>";
-    } else {
-      read.className = "row read bad";
-      read.innerHTML = "<span>אין מקום שממנו כל האיברים בתוך הרצועה סביב <span class='m'>" + center + "</span>: האיברים קופצים בין <span class='m'>1</span> ל-<span class='m'>−1</span>, ושום רצועה צרה לא מכילה את שניהם. כך גם סביב כל מספר אחר.</span>";
-    }
+    document.getElementById("zoom-caption").textContent=S.L===null
+      ?"מוצגים שני הערכים שהסדרה חוזרת אליהם. הבדיקה כוללת גם את האיברים שאינם מוצגים בציור."
+      :"הציור מתמקד בסביבת הגבול ומתקרב אליה כשמקטינים את השגיאה המותרת. איברים שמחוץ לטווח האנכי אינם מוצגים. הבדיקה כוללת גם את האיברים שאינם מוצגים בציור.";
   }
-  opts.addEventListener("change", draw);
-  slider.addEventListener("input", draw);
+  function changed(){read.className="row read";read.textContent="בחרו אינדקס ובדקו. אין צורך באינדקס הקטן ביותר.";draw();}
+  opts.addEventListener("change",changed);
+  slider.addEventListener("input",changed);
+  tailInput.addEventListener("input",changed);
+  tailInput.addEventListener("keydown",function(event){if(event.key==="Enter")checkTail();});
+  document.getElementById("check-tail").addEventListener("click",checkTail);
+  document.getElementById("suggest-tail").addEventListener("click",function(){
+    var N=sufficientN(SEQS[+sel.value],EPS[+slider.value]);
+    if(N===null){read.className="row read bad";read.textContent="אין אינדקס מתאים: האיברים השווים למינוס אחת ממשיכים להופיע מחוץ לרצועה.";return;}
+    tailInput.value=String(N);checkTail();
+  });
   draw();
 })();
 </script>
