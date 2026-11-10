@@ -466,6 +466,42 @@ details.lecture-solution { margin-top: -.4rem; }
 p code, li code, td code, .ix-msg code { direction: ltr; unicode-bidi: isolate; white-space: nowrap; }
 .eqline { text-align: center; margin: .5rem 0; }
 .eqline > p { margin: 0; }
+/* Short indexed answers keep their mathematical order, including on RTL pages. */
+.sequence-inputs {
+  display: flex; flex-wrap: wrap; align-items: baseline;
+  direction: ltr; gap: .4rem .8rem; width: fit-content; max-width: 100%; margin: .45rem auto;
+}
+.sequence-inputs > p { direction: ltr; unicode-bidi: isolate; text-align: center; margin: 0; }
+/* One concrete term per row: substitution, then the computed number. */
+.sequence-calculations { direction: ltr; width: fit-content; max-width: 100%; margin: .45rem auto; }
+.sequence-calculations > p { margin: .4rem 0; }
+.sequence-calculations > p > .fill-ltr { display: inline-flex; align-items: baseline; gap: .2rem; }
+.sequence-calculations > p > .fill-ltr > .math:first-child { min-width: 3rem; }
+/* Keep related answers in labelled columns, with the same widths in each part. */
+main .sequence-table table.table { display: table; width: 20rem; min-width: 0; max-width: 100%; table-layout: fixed; margin: .45rem 0 .6rem auto; overflow: visible; }
+main .sequence-table table.table th, main .sequence-table table.table td { padding: .25rem .35rem; vertical-align: baseline; }
+main .sequence-table table.table th { direction: rtl; font-size: .85em; font-weight: 500; }
+main .sequence-table table.table th:first-child { width: 3.5rem; }
+main .sequence-table table.table th:last-child { width: 5.5rem; }
+main .sequence-table table.table td .blank-input { max-width: calc(100% - .3rem); }
+main .sequence-formula-table table.table { width: 29rem; }
+main .sequence-formula-table table.table th:last-child { width: 13rem; }
+.sequence-formula { direction: ltr; width: fit-content; max-width: 100%; margin: .45rem 0 .6rem auto; }
+.sequence-formula > p { margin: 0; }
+.sequence-kind-ui { margin: .4rem 0 .75rem; }
+.sequence-kind-label { display: flex; align-items: center; gap: .5rem; }
+.sequence-kind-select { font: inherit; padding: .2rem .45rem; border: 1px solid #94a3b8; border-radius: 6px; background: white; }
+.sequence-classify .sequence-inputs { margin-left: auto; margin-right: 0; }
+.sequence-classify-field { display: flex; align-items: baseline; gap: .3rem; }
+.sequence-kind-panel > p { margin: .45rem 0; }
+.sequence-classify [hidden] { display: none !important; }
+@media (max-width: 600px) {
+  main .sequence-table table.table th, main .sequence-table table.table td { padding: .2rem .15rem; }
+  main .sequence-table table.table th:first-child { width: 2.5rem; }
+  main .sequence-table table.table th:last-child { width: 4.5rem; }
+  main .sequence-formula-table table.table th:last-child { width: 10rem; }
+  main .sequence-table .blank-input { font-size: .9em; }
+}
 span.blank { white-space: nowrap; }
 span.blank:not(.blank-ready) { text-decoration: underline; text-underline-offset: .25em; }
 .blank-input {
@@ -1179,7 +1215,7 @@ window.Quarto = {
 };
 </script>
 
-<script id="book-toc-data" type="application/json">[{"file":"01-Introduction.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#מערכות-המספרים-מהטבעיים-אל-הממשיים\" id=\"toc-מערכות-המספרים-מהטבעיים-אל-הממשיים\" class=\"nav-link active\" data-scroll-target=\"#מערכות-המספרים-מהטבעיים-אל-הממשיים\">\u003cspan class=\"header-section-number\">1.1\u003c/span> מערכות המספרים: מהטבעיים אל הממשיים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#ספירה-המספרים-הטבעיים-השלמים-והרציונליים\" id=\"toc-ספירה-המספרים-הטבעיים-השלמים-והרציונליים\" class=\"nav-link\" data-scroll-target=\"#ספירה-המספרים-הטבעיים-השלמים-והרציונליים\">ספירה: המספרים הטבעיים, השלמים והרציונליים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מדידה-המספרים-האי-רציונליים\" id=\"toc-מדידה-המספרים-האי-רציונליים\" class=\"nav-link\" data-scroll-target=\"#מדידה-המספרים-האי-רציונליים\">מדידה: המספרים האי-רציונליים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הישר-הממשי\" id=\"toc-הישר-הממשי\" class=\"nav-link\" data-scroll-target=\"#הישר-הממשי\">הישר הממשי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים\" id=\"toc-תרגילים\" class=\"nav-link\" data-scroll-target=\"#תרגילים\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#קבוצות-וקטעים\" id=\"toc-קבוצות-וקטעים\" class=\"nav-link\" data-scroll-target=\"#קבוצות-וקטעים\">\u003cspan class=\"header-section-number\">1.2\u003c/span> קבוצות וקטעים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#רישום-של-קבוצות\" id=\"toc-רישום-של-קבוצות\" class=\"nav-link\" data-scroll-target=\"#רישום-של-קבוצות\">רישום של קבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#שוויון-קבוצות\" id=\"toc-שוויון-קבוצות\" class=\"nav-link\" data-scroll-target=\"#שוויון-קבוצות\">שוויון קבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הכלה\" id=\"toc-הכלה\" class=\"nav-link\" data-scroll-target=\"#הכלה\">הכלה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#פעולות-על-קבוצות\" id=\"toc-פעולות-על-קבוצות\" class=\"nav-link\" data-scroll-target=\"#פעולות-על-קבוצות\">פעולות על קבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#קטעים-וקרניים\" id=\"toc-קטעים-וקרניים\" class=\"nav-link\" data-scroll-target=\"#קטעים-וקרניים\">קטעים וקרניים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#סרטוט-קבוצות-על-הישר\" id=\"toc-סרטוט-קבוצות-על-הישר\" class=\"nav-link\" data-scroll-target=\"#סרטוט-קבוצות-על-הישר\">סרטוט קבוצות על הישר\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#הקבוצה-הריקה\" id=\"toc-הקבוצה-הריקה\" class=\"nav-link\" data-scroll-target=\"#הקבוצה-הריקה\">הקבוצה הריקה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#נקודה-בודדת\" id=\"toc-נקודה-בודדת\" class=\"nav-link\" data-scroll-target=\"#נקודה-בודדת\">נקודה בודדת\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#כל-הישר\" id=\"toc-כל-הישר\" class=\"nav-link\" data-scroll-target=\"#כל-הישר\">כל הישר\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מוציאים-נקודה\" id=\"toc-מוציאים-נקודה\" class=\"nav-link\" data-scroll-target=\"#מוציאים-נקודה\">מוציאים נקודה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#קרניים\" id=\"toc-קרניים\" class=\"nav-link\" data-scroll-target=\"#קרניים\">קרניים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#קטעים\" id=\"toc-קטעים\" class=\"nav-link\" data-scroll-target=\"#קטעים\">קטעים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#כלי-הסרטוט\" id=\"toc-כלי-הסרטוט\" class=\"nav-link\" data-scroll-target=\"#כלי-הסרטוט\">כלי הסרטוט\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-1\" id=\"toc-תרגילים-1\" class=\"nav-link\" data-scroll-target=\"#תרגילים-1\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#ערך-מוחלט\" id=\"toc-ערך-מוחלט\" class=\"nav-link\" data-scroll-target=\"#ערך-מוחלט\">\u003cspan class=\"header-section-number\">1.3\u003c/span> אי־שוויונות וערך מוחלט\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#כללי-אי-שוויונים\" id=\"toc-כללי-אי-שוויונים\" class=\"nav-link\" data-scroll-target=\"#כללי-אי-שוויונים\">כללי אי-שוויונים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#ערך-מוחלט-מרחק-וקטעים\" id=\"toc-ערך-מוחלט-מרחק-וקטעים\" class=\"nav-link\" data-scroll-target=\"#ערך-מוחלט-מרחק-וקטעים\">ערך מוחלט, מרחק וקטעים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-2\" id=\"toc-תרגילים-2\" class=\"nav-link\" data-scroll-target=\"#תרגילים-2\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-וגרפים\" id=\"toc-פונקציות-וגרפים\" class=\"nav-link\" data-scroll-target=\"#פונקציות-וגרפים\">\u003cspan class=\"header-section-number\">1.4\u003c/span> פונקציות וגרפים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#המישור-מכפלה-קרטזית\" id=\"toc-המישור-מכפלה-קרטזית\" class=\"nav-link\" data-scroll-target=\"#המישור-מכפלה-קרטזית\">המישור: מכפלה קרטזית\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרף-של-פונקציה\" id=\"toc-הגרף-של-פונקציה\" class=\"nav-link\" data-scroll-target=\"#הגרף-של-פונקציה\">הגרף של פונקציה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציית-הסימן-והערך-השלם\" id=\"toc-פונקציית-הסימן-והערך-השלם\" class=\"nav-link\" data-scroll-target=\"#פונקציית-הסימן-והערך-השלם\">פונקציית הסימן והערך השלם\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מה-אינו-פונקציה\" id=\"toc-מה-אינו-פונקציה\" class=\"nav-link\" data-scroll-target=\"#מה-אינו-פונקציה\">מה אינו פונקציה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תחום-ההגדרה-הטבעי\" id=\"toc-תחום-ההגדרה-הטבעי\" class=\"nav-link\" data-scroll-target=\"#תחום-ההגדרה-הטבעי\">תחום ההגדרה הטבעי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-3\" id=\"toc-תרגילים-3\" class=\"nav-link\" data-scroll-target=\"#תרגילים-3\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הרכבת-פונקציות\" id=\"toc-הרכבת-פונקציות\" class=\"nav-link\" data-scroll-target=\"#הרכבת-פונקציות\">\u003cspan class=\"header-section-number\">1.5\u003c/span> בניית פונקציות מפונקציות פשוטות יותר\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#הרכבת-פונקציות-1\" id=\"toc-הרכבת-פונקציות-1\" class=\"nav-link\" data-scroll-target=\"#הרכבת-פונקציות-1\">הרכבת פונקציות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-4\" id=\"toc-תרגילים-4\" class=\"nav-link\" data-scroll-target=\"#תרגילים-4\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-זוגיות-ואי-זוגיות\" id=\"toc-פונקציות-זוגיות-ואי-זוגיות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-זוגיות-ואי-זוגיות\">\u003cspan class=\"header-section-number\">1.6\u003c/span> פונקציות זוגיות ואי-זוגיות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-5\" id=\"toc-תרגילים-5\" class=\"nav-link\" data-scroll-target=\"#תרגילים-5\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הזזה-ומתיחה-של-גרפים\" id=\"toc-הזזה-ומתיחה-של-גרפים\" class=\"nav-link\" data-scroll-target=\"#הזזה-ומתיחה-של-גרפים\">\u003cspan class=\"header-section-number\">1.7\u003c/span> הזזה ומתיחה של גרפים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-6\" id=\"toc-תרגילים-6\" class=\"nav-link\" data-scroll-target=\"#תרגילים-6\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פולינומים-ושורשיהם\" id=\"toc-פולינומים-ושורשיהם\" class=\"nav-link\" data-scroll-target=\"#פולינומים-ושורשיהם\">\u003cspan class=\"header-section-number\">1.8\u003c/span> פולינומים ושורשיהם\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-7\" id=\"toc-תרגילים-7\" class=\"nav-link\" data-scroll-target=\"#תרגילים-7\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הפונקציות-הטריגונומטריות\" id=\"toc-הפונקציות-הטריגונומטריות\" class=\"nav-link\" data-scroll-target=\"#הפונקציות-הטריגונומטריות\">\u003cspan class=\"header-section-number\">1.9\u003c/span> הפונקציות הטריגונומטריות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#רדיאנים\" id=\"toc-רדיאנים\" class=\"nav-link\" data-scroll-target=\"#רדיאנים\">רדיאנים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#ההגדרה-הגאומטרית\" id=\"toc-ההגדרה-הגאומטרית\" class=\"nav-link\" data-scroll-target=\"#ההגדרה-הגאומטרית\">ההגדרה הגאומטרית\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מה-רואים-בציור\" id=\"toc-מה-רואים-בציור\" class=\"nav-link\" data-scroll-target=\"#מה-רואים-בציור\">מה רואים בציור\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#ערכים-מיוחדים\" id=\"toc-ערכים-מיוחדים\" class=\"nav-link\" data-scroll-target=\"#ערכים-מיוחדים\">ערכים מיוחדים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרפים\" id=\"toc-הגרפים\" class=\"nav-link\" data-scroll-target=\"#הגרפים\">הגרפים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#טנגנס\" id=\"toc-טנגנס\" class=\"nav-link\" data-scroll-target=\"#טנגנס\">טנגנס\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הזזה-ומתיחה-של-פונקציות-טריגונומטריות\" id=\"toc-הזזה-ומתיחה-של-פונקציות-טריגונומטריות\" class=\"nav-link\" data-scroll-target=\"#הזזה-ומתיחה-של-פונקציות-טריגונומטריות\">הזזה ומתיחה של פונקציות טריגונומטריות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-8\" id=\"toc-תרגילים-8\" class=\"nav-link\" data-scroll-target=\"#תרגילים-8\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הפונקציה-המעריכית\" id=\"toc-הפונקציה-המעריכית\" class=\"nav-link\" data-scroll-target=\"#הפונקציה-המעריכית\">\u003cspan class=\"header-section-number\">1.10\u003c/span> הפונקציה המעריכית\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#חזקות-עם-מעריך-שאינו-טבעי\" id=\"toc-חזקות-עם-מעריך-שאינו-טבעי\" class=\"nav-link\" data-scroll-target=\"#חזקות-עם-מעריך-שאינו-טבעי\">חזקות עם מעריך שאינו טבעי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרפים-1\" id=\"toc-הגרפים-1\" class=\"nav-link\" data-scroll-target=\"#הגרפים-1\">הגרפים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-9\" id=\"toc-תרגילים-9\" class=\"nav-link\" data-scroll-target=\"#תרגילים-9\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-הפוכות\" id=\"toc-פונקציות-הפוכות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-הפוכות\">\u003cspan class=\"header-section-number\">1.11\u003c/span> פונקציות הפוכות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-10\" id=\"toc-תרגילים-10\" class=\"nav-link\" data-scroll-target=\"#תרגילים-10\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-נוספות\" id=\"toc-פונקציות-נוספות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-נוספות\">\u003cspan class=\"header-section-number\">1.12\u003c/span> פונקציות נוספות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#לוגריתמים\" id=\"toc-לוגריתמים\" class=\"nav-link\" data-scroll-target=\"#לוגריתמים\">לוגריתמים\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#חוקי-הלוגריתמים\" id=\"toc-חוקי-הלוגריתמים\" class=\"nav-link\" data-scroll-target=\"#חוקי-הלוגריתמים\">חוקי הלוגריתמים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרף\" id=\"toc-הגרף\" class=\"nav-link\" data-scroll-target=\"#הגרף\">הגרף\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#חזקות-ושורשים\" id=\"toc-חזקות-ושורשים\" class=\"nav-link\" data-scroll-target=\"#חזקות-ושורשים\">חזקות ושורשים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-רציונליות\" id=\"toc-פונקציות-רציונליות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-רציונליות\">פונקציות רציונליות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הפונקציות-הטריגונומטריות-ההפוכות\" id=\"toc-הפונקציות-הטריגונומטריות-ההפוכות\" class=\"nav-link\" data-scroll-target=\"#הפונקציות-הטריגונומטריות-ההפוכות\">הפונקציות הטריגונומטריות ההפוכות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-11\" id=\"toc-תרגילים-11\" class=\"nav-link\" data-scroll-target=\"#תרגילים-11\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"},{"file":"02-Sequences.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#סדרות\" id=\"toc-סדרות\" class=\"nav-link active\" data-scroll-target=\"#סדרות\">\u003cspan class=\"header-section-number\">2.1\u003c/span> סדרות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים\" id=\"toc-תרגילים\" class=\"nav-link\" data-scroll-target=\"#תרגילים\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#גבול-של-סדרה\" id=\"toc-גבול-של-סדרה\" class=\"nav-link\" data-scroll-target=\"#גבול-של-סדרה\">\u003cspan class=\"header-section-number\">2.2\u003c/span> גבול של סדרה\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#שאיפה-לאינסוף\" id=\"toc-שאיפה-לאינסוף\" class=\"nav-link\" data-scroll-target=\"#שאיפה-לאינסוף\">שאיפה לאינסוף\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מה-עושים-עם-גבול\" id=\"toc-מה-עושים-עם-גבול\" class=\"nav-link\" data-scroll-target=\"#מה-עושים-עם-גבול\">מה עושים עם גבול\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-1\" id=\"toc-תרגילים-1\" class=\"nav-link\" data-scroll-target=\"#תרגילים-1\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#סדרות-סטנדרטיות\" id=\"toc-סדרות-סטנדרטיות\" class=\"nav-link\" data-scroll-target=\"#סדרות-סטנדרטיות\">\u003cspan class=\"header-section-number\">2.3\u003c/span> סדרות סטנדרטיות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-2\" id=\"toc-תרגילים-2\" class=\"nav-link\" data-scroll-target=\"#תרגילים-2\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#חשבון-גבולות-סנדוויץ-והשוואה\" id=\"toc-חשבון-גבולות-סנדוויץ-והשוואה\" class=\"nav-link\" data-scroll-target=\"#חשבון-גבולות-סנדוויץ-והשוואה\">\u003cspan class=\"header-section-number\">2.4\u003c/span> חשבון גבולות, סנדוויץ’ והשוואה\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#כלל-הסנדוויץ\" id=\"toc-כלל-הסנדוויץ\" class=\"nav-link\" data-scroll-target=\"#כלל-הסנדוויץ\">כלל הסנדוויץ’\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#השוואה\" id=\"toc-השוואה\" class=\"nav-link\" data-scroll-target=\"#השוואה\">השוואה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-3\" id=\"toc-תרגילים-3\" class=\"nav-link\" data-scroll-target=\"#תרגילים-3\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#קיום-ואי-קיום-של-גבול\" id=\"toc-קיום-ואי-קיום-של-גבול\" class=\"nav-link\" data-scroll-target=\"#קיום-ואי-קיום-של-גבול\">\u003cspan class=\"header-section-number\">2.5\u003c/span> קיום ואי-קיום של גבול\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#סדרות-מונוטוניות\" id=\"toc-סדרות-מונוטוניות\" class=\"nav-link\" data-scroll-target=\"#סדרות-מונוטוניות\">סדרות מונוטוניות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#המספר-e\" id=\"toc-המספר-e\" class=\"nav-link\" data-scroll-target=\"#המספר-e\">המספר e\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מתי-אין-גבול\" id=\"toc-מתי-אין-גבול\" class=\"nav-link\" data-scroll-target=\"#מתי-אין-גבול\">מתי אין גבול\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-4\" id=\"toc-תרגילים-4\" class=\"nav-link\" data-scroll-target=\"#תרגילים-4\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"}]</script>
+<script id="book-toc-data" type="application/json">[{"file":"01-Introduction.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#מערכות-המספרים-מהטבעיים-אל-הממשיים\" id=\"toc-מערכות-המספרים-מהטבעיים-אל-הממשיים\" class=\"nav-link active\" data-scroll-target=\"#מערכות-המספרים-מהטבעיים-אל-הממשיים\">\u003cspan class=\"header-section-number\">1.1\u003c/span> מערכות המספרים: מהטבעיים אל הממשיים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#ספירה-המספרים-הטבעיים-השלמים-והרציונליים\" id=\"toc-ספירה-המספרים-הטבעיים-השלמים-והרציונליים\" class=\"nav-link\" data-scroll-target=\"#ספירה-המספרים-הטבעיים-השלמים-והרציונליים\">ספירה: המספרים הטבעיים, השלמים והרציונליים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מדידה-המספרים-האי-רציונליים\" id=\"toc-מדידה-המספרים-האי-רציונליים\" class=\"nav-link\" data-scroll-target=\"#מדידה-המספרים-האי-רציונליים\">מדידה: המספרים האי-רציונליים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הישר-הממשי\" id=\"toc-הישר-הממשי\" class=\"nav-link\" data-scroll-target=\"#הישר-הממשי\">הישר הממשי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים\" id=\"toc-תרגילים\" class=\"nav-link\" data-scroll-target=\"#תרגילים\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#קבוצות-וקטעים\" id=\"toc-קבוצות-וקטעים\" class=\"nav-link\" data-scroll-target=\"#קבוצות-וקטעים\">\u003cspan class=\"header-section-number\">1.2\u003c/span> קבוצות וקטעים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#רישום-של-קבוצות\" id=\"toc-רישום-של-קבוצות\" class=\"nav-link\" data-scroll-target=\"#רישום-של-קבוצות\">רישום של קבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#שוויון-קבוצות\" id=\"toc-שוויון-קבוצות\" class=\"nav-link\" data-scroll-target=\"#שוויון-קבוצות\">שוויון קבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הכלה\" id=\"toc-הכלה\" class=\"nav-link\" data-scroll-target=\"#הכלה\">הכלה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#פעולות-על-קבוצות\" id=\"toc-פעולות-על-קבוצות\" class=\"nav-link\" data-scroll-target=\"#פעולות-על-קבוצות\">פעולות על קבוצות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#קטעים-וקרניים\" id=\"toc-קטעים-וקרניים\" class=\"nav-link\" data-scroll-target=\"#קטעים-וקרניים\">קטעים וקרניים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#סרטוט-קבוצות-על-הישר\" id=\"toc-סרטוט-קבוצות-על-הישר\" class=\"nav-link\" data-scroll-target=\"#סרטוט-קבוצות-על-הישר\">סרטוט קבוצות על הישר\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#הקבוצה-הריקה\" id=\"toc-הקבוצה-הריקה\" class=\"nav-link\" data-scroll-target=\"#הקבוצה-הריקה\">הקבוצה הריקה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#נקודה-בודדת\" id=\"toc-נקודה-בודדת\" class=\"nav-link\" data-scroll-target=\"#נקודה-בודדת\">נקודה בודדת\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#כל-הישר\" id=\"toc-כל-הישר\" class=\"nav-link\" data-scroll-target=\"#כל-הישר\">כל הישר\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מוציאים-נקודה\" id=\"toc-מוציאים-נקודה\" class=\"nav-link\" data-scroll-target=\"#מוציאים-נקודה\">מוציאים נקודה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#קרניים\" id=\"toc-קרניים\" class=\"nav-link\" data-scroll-target=\"#קרניים\">קרניים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#קטעים\" id=\"toc-קטעים\" class=\"nav-link\" data-scroll-target=\"#קטעים\">קטעים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#כלי-הסרטוט\" id=\"toc-כלי-הסרטוט\" class=\"nav-link\" data-scroll-target=\"#כלי-הסרטוט\">כלי הסרטוט\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-1\" id=\"toc-תרגילים-1\" class=\"nav-link\" data-scroll-target=\"#תרגילים-1\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#ערך-מוחלט\" id=\"toc-ערך-מוחלט\" class=\"nav-link\" data-scroll-target=\"#ערך-מוחלט\">\u003cspan class=\"header-section-number\">1.3\u003c/span> אי־שוויונות וערך מוחלט\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#כללי-אי-שוויונים\" id=\"toc-כללי-אי-שוויונים\" class=\"nav-link\" data-scroll-target=\"#כללי-אי-שוויונים\">כללי אי-שוויונים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#ערך-מוחלט-מרחק-וקטעים\" id=\"toc-ערך-מוחלט-מרחק-וקטעים\" class=\"nav-link\" data-scroll-target=\"#ערך-מוחלט-מרחק-וקטעים\">ערך מוחלט, מרחק וקטעים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-2\" id=\"toc-תרגילים-2\" class=\"nav-link\" data-scroll-target=\"#תרגילים-2\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-וגרפים\" id=\"toc-פונקציות-וגרפים\" class=\"nav-link\" data-scroll-target=\"#פונקציות-וגרפים\">\u003cspan class=\"header-section-number\">1.4\u003c/span> פונקציות וגרפים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#המישור-מכפלה-קרטזית\" id=\"toc-המישור-מכפלה-קרטזית\" class=\"nav-link\" data-scroll-target=\"#המישור-מכפלה-קרטזית\">המישור: מכפלה קרטזית\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרף-של-פונקציה\" id=\"toc-הגרף-של-פונקציה\" class=\"nav-link\" data-scroll-target=\"#הגרף-של-פונקציה\">הגרף של פונקציה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציית-הסימן-והערך-השלם\" id=\"toc-פונקציית-הסימן-והערך-השלם\" class=\"nav-link\" data-scroll-target=\"#פונקציית-הסימן-והערך-השלם\">פונקציית הסימן והערך השלם\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מה-אינו-פונקציה\" id=\"toc-מה-אינו-פונקציה\" class=\"nav-link\" data-scroll-target=\"#מה-אינו-פונקציה\">מה אינו פונקציה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תחום-ההגדרה-הטבעי\" id=\"toc-תחום-ההגדרה-הטבעי\" class=\"nav-link\" data-scroll-target=\"#תחום-ההגדרה-הטבעי\">תחום ההגדרה הטבעי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-3\" id=\"toc-תרגילים-3\" class=\"nav-link\" data-scroll-target=\"#תרגילים-3\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הרכבת-פונקציות\" id=\"toc-הרכבת-פונקציות\" class=\"nav-link\" data-scroll-target=\"#הרכבת-פונקציות\">\u003cspan class=\"header-section-number\">1.5\u003c/span> בניית פונקציות מפונקציות פשוטות יותר\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#הרכבת-פונקציות-1\" id=\"toc-הרכבת-פונקציות-1\" class=\"nav-link\" data-scroll-target=\"#הרכבת-פונקציות-1\">הרכבת פונקציות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-4\" id=\"toc-תרגילים-4\" class=\"nav-link\" data-scroll-target=\"#תרגילים-4\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-זוגיות-ואי-זוגיות\" id=\"toc-פונקציות-זוגיות-ואי-זוגיות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-זוגיות-ואי-זוגיות\">\u003cspan class=\"header-section-number\">1.6\u003c/span> פונקציות זוגיות ואי-זוגיות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-5\" id=\"toc-תרגילים-5\" class=\"nav-link\" data-scroll-target=\"#תרגילים-5\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הזזה-ומתיחה-של-גרפים\" id=\"toc-הזזה-ומתיחה-של-גרפים\" class=\"nav-link\" data-scroll-target=\"#הזזה-ומתיחה-של-גרפים\">\u003cspan class=\"header-section-number\">1.7\u003c/span> הזזה ומתיחה של גרפים\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-6\" id=\"toc-תרגילים-6\" class=\"nav-link\" data-scroll-target=\"#תרגילים-6\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פולינומים-ושורשיהם\" id=\"toc-פולינומים-ושורשיהם\" class=\"nav-link\" data-scroll-target=\"#פולינומים-ושורשיהם\">\u003cspan class=\"header-section-number\">1.8\u003c/span> פולינומים ושורשיהם\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-7\" id=\"toc-תרגילים-7\" class=\"nav-link\" data-scroll-target=\"#תרגילים-7\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הפונקציות-הטריגונומטריות\" id=\"toc-הפונקציות-הטריגונומטריות\" class=\"nav-link\" data-scroll-target=\"#הפונקציות-הטריגונומטריות\">\u003cspan class=\"header-section-number\">1.9\u003c/span> הפונקציות הטריגונומטריות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#רדיאנים\" id=\"toc-רדיאנים\" class=\"nav-link\" data-scroll-target=\"#רדיאנים\">רדיאנים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#ההגדרה-הגאומטרית\" id=\"toc-ההגדרה-הגאומטרית\" class=\"nav-link\" data-scroll-target=\"#ההגדרה-הגאומטרית\">ההגדרה הגאומטרית\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מה-רואים-בציור\" id=\"toc-מה-רואים-בציור\" class=\"nav-link\" data-scroll-target=\"#מה-רואים-בציור\">מה רואים בציור\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#ערכים-מיוחדים\" id=\"toc-ערכים-מיוחדים\" class=\"nav-link\" data-scroll-target=\"#ערכים-מיוחדים\">ערכים מיוחדים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרפים\" id=\"toc-הגרפים\" class=\"nav-link\" data-scroll-target=\"#הגרפים\">הגרפים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#טנגנס\" id=\"toc-טנגנס\" class=\"nav-link\" data-scroll-target=\"#טנגנס\">טנגנס\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הזזה-ומתיחה-של-פונקציות-טריגונומטריות\" id=\"toc-הזזה-ומתיחה-של-פונקציות-טריגונומטריות\" class=\"nav-link\" data-scroll-target=\"#הזזה-ומתיחה-של-פונקציות-טריגונומטריות\">הזזה ומתיחה של פונקציות טריגונומטריות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-8\" id=\"toc-תרגילים-8\" class=\"nav-link\" data-scroll-target=\"#תרגילים-8\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#הפונקציה-המעריכית\" id=\"toc-הפונקציה-המעריכית\" class=\"nav-link\" data-scroll-target=\"#הפונקציה-המעריכית\">\u003cspan class=\"header-section-number\">1.10\u003c/span> הפונקציה המעריכית\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#חזקות-עם-מעריך-שאינו-טבעי\" id=\"toc-חזקות-עם-מעריך-שאינו-טבעי\" class=\"nav-link\" data-scroll-target=\"#חזקות-עם-מעריך-שאינו-טבעי\">חזקות עם מעריך שאינו טבעי\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרפים-1\" id=\"toc-הגרפים-1\" class=\"nav-link\" data-scroll-target=\"#הגרפים-1\">הגרפים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-9\" id=\"toc-תרגילים-9\" class=\"nav-link\" data-scroll-target=\"#תרגילים-9\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-הפוכות\" id=\"toc-פונקציות-הפוכות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-הפוכות\">\u003cspan class=\"header-section-number\">1.11\u003c/span> פונקציות הפוכות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-10\" id=\"toc-תרגילים-10\" class=\"nav-link\" data-scroll-target=\"#תרגילים-10\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-נוספות\" id=\"toc-פונקציות-נוספות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-נוספות\">\u003cspan class=\"header-section-number\">1.12\u003c/span> פונקציות נוספות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#לוגריתמים\" id=\"toc-לוגריתמים\" class=\"nav-link\" data-scroll-target=\"#לוגריתמים\">לוגריתמים\u003c/a>\n  \u003cul class=\"collapse\">\n  \u003cli>\u003ca href=\"#חוקי-הלוגריתמים\" id=\"toc-חוקי-הלוגריתמים\" class=\"nav-link\" data-scroll-target=\"#חוקי-הלוגריתמים\">חוקי הלוגריתמים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הגרף\" id=\"toc-הגרף\" class=\"nav-link\" data-scroll-target=\"#הגרף\">הגרף\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#חזקות-ושורשים\" id=\"toc-חזקות-ושורשים\" class=\"nav-link\" data-scroll-target=\"#חזקות-ושורשים\">חזקות ושורשים\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#פונקציות-רציונליות\" id=\"toc-פונקציות-רציונליות\" class=\"nav-link\" data-scroll-target=\"#פונקציות-רציונליות\">פונקציות רציונליות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#הפונקציות-הטריגונומטריות-ההפוכות\" id=\"toc-הפונקציות-הטריגונומטריות-ההפוכות\" class=\"nav-link\" data-scroll-target=\"#הפונקציות-הטריגונומטריות-ההפוכות\">הפונקציות הטריגונומטריות ההפוכות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-11\" id=\"toc-תרגילים-11\" class=\"nav-link\" data-scroll-target=\"#תרגילים-11\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"},{"file":"02-Sequences.html","html":"\u003cul>\n  \u003cli>\u003ca href=\"#סדרות\" id=\"toc-סדרות\" class=\"nav-link active\" data-scroll-target=\"#סדרות\">\u003cspan class=\"header-section-number\">2.1\u003c/span> סדרות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#דרכי-הגדרה-של-סדרה\" id=\"toc-דרכי-הגדרה-של-סדרה\" class=\"nav-link\" data-scroll-target=\"#דרכי-הגדרה-של-סדרה\">דרכי הגדרה של סדרה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#שתי-דרכים-לצייר-סדרה\" id=\"toc-שתי-דרכים-לצייר-סדרה\" class=\"nav-link\" data-scroll-target=\"#שתי-דרכים-לצייר-סדרה\">שתי דרכים לצייר סדרה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים\" id=\"toc-תרגילים\" class=\"nav-link\" data-scroll-target=\"#תרגילים\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#גבול-של-סדרה\" id=\"toc-גבול-של-סדרה\" class=\"nav-link\" data-scroll-target=\"#גבול-של-סדרה\">\u003cspan class=\"header-section-number\">2.2\u003c/span> גבול של סדרה\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#שאיפה-לאינסוף\" id=\"toc-שאיפה-לאינסוף\" class=\"nav-link\" data-scroll-target=\"#שאיפה-לאינסוף\">שאיפה לאינסוף\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מה-עושים-עם-גבול\" id=\"toc-מה-עושים-עם-גבול\" class=\"nav-link\" data-scroll-target=\"#מה-עושים-עם-גבול\">מה עושים עם גבול\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-1\" id=\"toc-תרגילים-1\" class=\"nav-link\" data-scroll-target=\"#תרגילים-1\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#סדרות-סטנדרטיות\" id=\"toc-סדרות-סטנדרטיות\" class=\"nav-link\" data-scroll-target=\"#סדרות-סטנדרטיות\">\u003cspan class=\"header-section-number\">2.3\u003c/span> סדרות סטנדרטיות\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#תרגילים-2\" id=\"toc-תרגילים-2\" class=\"nav-link\" data-scroll-target=\"#תרגילים-2\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#חשבון-גבולות-סנדוויץ-והשוואה\" id=\"toc-חשבון-גבולות-סנדוויץ-והשוואה\" class=\"nav-link\" data-scroll-target=\"#חשבון-גבולות-סנדוויץ-והשוואה\">\u003cspan class=\"header-section-number\">2.4\u003c/span> חשבון גבולות, סנדוויץ’ והשוואה\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#כלל-הסנדוויץ\" id=\"toc-כלל-הסנדוויץ\" class=\"nav-link\" data-scroll-target=\"#כלל-הסנדוויץ\">כלל הסנדוויץ’\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#השוואה\" id=\"toc-השוואה\" class=\"nav-link\" data-scroll-target=\"#השוואה\">השוואה\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-3\" id=\"toc-תרגילים-3\" class=\"nav-link\" data-scroll-target=\"#תרגילים-3\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003cli>\u003ca href=\"#קיום-ואי-קיום-של-גבול\" id=\"toc-קיום-ואי-קיום-של-גבול\" class=\"nav-link\" data-scroll-target=\"#קיום-ואי-קיום-של-גבול\">\u003cspan class=\"header-section-number\">2.5\u003c/span> קיום ואי-קיום של גבול\u003c/a>\n  \u003cul>\n  \u003cli>\u003ca href=\"#סדרות-מונוטוניות\" id=\"toc-סדרות-מונוטוניות\" class=\"nav-link\" data-scroll-target=\"#סדרות-מונוטוניות\">סדרות מונוטוניות\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#המספר-e\" id=\"toc-המספר-e\" class=\"nav-link\" data-scroll-target=\"#המספר-e\">המספר e\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#מתי-אין-גבול\" id=\"toc-מתי-אין-גבול\" class=\"nav-link\" data-scroll-target=\"#מתי-אין-גבול\">מתי אין גבול\u003c/a>\u003c/li>\n  \u003cli>\u003ca href=\"#תרגילים-4\" id=\"toc-תרגילים-4\" class=\"nav-link\" data-scroll-target=\"#תרגילים-4\">תרגילים\u003c/a>\u003c/li>\n  \u003c/ul>\u003c/li>\n  \u003c/ul>"}]</script>
 </head>
 
 <body class="nav-sidebar floating quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Skip to main content</a>
@@ -1250,6 +1286,8 @@ window.Quarto = {
   <ul>
   <li><a href="#סדרות" id="toc-סדרות" class="nav-link active" data-scroll-target="#סדרות"><span class="header-section-number">2.1</span> סדרות</a>
   <ul>
+  <li><a href="#דרכי-הגדרה-של-סדרה" id="toc-דרכי-הגדרה-של-סדרה" class="nav-link" data-scroll-target="#דרכי-הגדרה-של-סדרה">דרכי הגדרה של סדרה</a></li>
+  <li><a href="#שתי-דרכים-לצייר-סדרה" id="toc-שתי-דרכים-לצייר-סדרה" class="nav-link" data-scroll-target="#שתי-דרכים-לצייר-סדרה">שתי דרכים לצייר סדרה</a></li>
   <li><a href="#תרגילים" id="toc-תרגילים" class="nav-link" data-scroll-target="#תרגילים">תרגילים</a></li>
   </ul></li>
   <li><a href="#גבול-של-סדרה" id="toc-גבול-של-סדרה" class="nav-link" data-scroll-target="#גבול-של-סדרה"><span class="header-section-number">2.2</span> גבול של סדרה</a>
@@ -1306,189 +1344,636 @@ window.Quarto = {
 
 <section id="סדרות" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="סדרות"><span class="header-section-number">2.1</span> סדרות</h2>
-<p>בפרק 1 ראינו ש-<span class="math inline">\(\sqrt{2}\)</span> אינו רציונלי, ולכן הכתיבה העשרונית שלו לא נגמרת. אפשר רק לקרב אותו, ספרה אחר ספרה:</p>
-<p><span class="math display">\[1, \quad 1.4, \quad 1.41, \quad 1.414, \quad 1.4142, \quad \ldots\]</span></p>
-<p>רשימה כזו, שיש בה סדר ואין לה סוף, היא סדרה.</p>
+<p>נתחיל במספר <span class="math inline">\(3\)</span>, ובכל צעד נוסיף <span class="math inline">\(2\)</span>. כך נקבל <span class="math display">\[3,\ 5,\ 7,\ 9,\ldots\]</span> הכלל מאפשר להמשיך את הרשימה בלי סוף. לכל מספר ברשימה יש מקום: המספר הראשון הוא <span class="math inline">\(3\)</span>, השני הוא <span class="math inline">\(5\)</span>, וכן הלאה. רשימה אינסופית ומסודרת כזו נקראת <strong>סדרה</strong>.</p>
 <div id="box-def-sequence" class="thmbox thmbox-definition" title="סדרה">
 <p><strong>הגדרה 2.1.1 — סדרה.</strong></p>
-<p><span class="term"><strong>סדרה</strong></span> היא רשימה אינסופית ומסודרת של מספרים ממשיים:</p>
-<p><span class="math display">\[a_1, \quad a_2, \quad a_3, \quad \ldots\]</span></p>
-<p>המספר <span class="math inline">\(a_n\)</span> נקרא <span class="term"><strong>האיבר</strong></span> שבמקום <span class="math inline">\(,n\)</span> ו-<span class="math inline">\(n\)</span> נקרא <span class="term"><strong>האינדקס</strong></span>. נסמן את הסדרה כולה ב-<span class="math inline">\(a_n\)</span> או ב-<span class="math inline">\(.(a_n)\)</span></p>
-<p>במונחים של פרק 1: סדרה היא פונקציה שתחום ההגדרה שלה הוא <span class="math inline">\(,\mathbb{N}\)</span> ו-<span class="math inline">\(a_n\)</span> הוא הערך שלה ב-<span class="math inline">\(.n\)</span></p>
+<p><span class="term"><strong>סדרה</strong></span> היא רשימה אינסופית ומסודרת של מספרים ממשיים: <span class="math display">\[a_1,\ a_2,\ a_3,\ldots\]</span> המספר <span class="math inline">\(a_n\)</span> הוא <span class="term"><strong>האיבר</strong></span> שבמקום <span class="math inline">\(n\)</span>.</p>
+<p>המספר <span class="math inline">\(n\)</span> נקרא <span class="term"><strong>האינדקס</strong></span>: הוא מציין את מקומו של האיבר בסדרה.</p>
+<p>את הסדרה כולה נסמן <span class="math inline">\((a_n)\)</span>. בסדרה יש חשיבות לסדר, ומותר לאותו מספר להופיע בכמה מקומות.</p>
+<p>במונחים של פרק 1: סדרה היא פונקציה שמתאימה לכל מספר טבעי <span class="math inline">\(n\)</span> את האיבר <span class="math inline">\(a_n\)</span>. כאן נתחיל לספור מהאינדקס <span class="math inline">\(1\)</span>, אלא אם נאמר אחרת.</p>
 </div>
-<div class="thmbox thmbox-key-point thmicon-idea" data-icon="idea" title="שתי דרכים לתאר סדרה">
-<p><strong>חשוב לזכור — שתי דרכים לתאר סדרה.</strong></p>
-<ul>
-<li><strong>נוסחה:</strong> כלל שמחשב את <span class="math inline">\(a_n\)</span> ישירות מ-<span class="math inline">\(.n\)</span> למשל, הנוסחה <span class="math inline">\(a_n = 2n - 1\)</span> נותנת את הסדרה <span class="math inline">\(1, 3, 5, 7, \ldots\)</span> של המספרים האי-זוגיים.</li>
-<li><strong>רקורסיה:</strong> נותנים את האיבר הראשון (או כמה ראשונים), וכלל שמחשב כל איבר מהקודמים לו. למשל, <span class="math inline">\(a_1 = 1\)</span> ו-<span class="math inline">\(a_{n+1} = 2a_n\)</span> נותנים את הסדרה <span class="math inline">\(1, 2, 4, 8, \ldots\)</span> של חזקות <span class="math inline">\(2\)</span>.</li>
-</ul>
-</div>
-<div id="box-def-famous" class="thmbox thmbox-definition" title="סדרות מפורסמות">
-<p><strong>הגדרה 2.1.2 — סדרות מפורסמות.</strong></p>
-<ul>
-<li><span class="term"><strong>הסדרה הקבועה</strong></span> <span class="math inline">\(a_n = c\)</span> נותנת <span class="math inline">\(c, c, c, \ldots\)</span> בכל מקום.</li>
-<li><span class="term"><strong>הסדרה ההרמונית</strong></span> <span class="math inline">\(a_n = \frac{1}{n}\)</span> נותנת <span class="math inline">\(1, \frac{1}{2}, \frac{1}{3}, \frac{1}{4}, \ldots\)</span> בזה אחר זה.</li>
-<li><span class="term"><strong>סדרה מתחלפת</strong></span> היא סדרה שהסימנים של איבריה מתחלפים. למשל, <span class="math inline">\(a_n = (-1)^n\)</span> נותנת <span class="math inline">\(-1, 1, -1, 1, \ldots\)</span> לסירוגין.</li>
-<li><span class="term"><strong>סדרה חשבונית</strong></span>: בכל צעד מוסיפים אותו מספר <span class="math inline">\(d\)</span> (ההפרש), ולכן <span class="math inline">\(.a_n = a_1 + (n - 1)d\)</span></li>
-<li><span class="term"><strong>סדרה הנדסית</strong></span>: בכל צעד כופלים באותו מספר <span class="math inline">\(q\)</span> (המנה), ולכן <span class="math inline">\(.a_n = a_1 q^{n-1}\)</span></li>
-<li><span class="term"><strong>סדרת פיבונאצ’י</strong></span>: שני האיברים הראשונים הם <span class="math inline">\(,1\)</span> וכל איבר הוא סכום שני הקודמים לו: <span class="math inline">\(.a_{n+2} = a_{n+1} + a_n\)</span></li>
-</ul>
-</div>
-<p>את הסדרה מציירים כנקודות <span class="math inline">\(,(n, a_n)\)</span> בלי לחבר ביניהן: בין <span class="math inline">\(n = 1\)</span> ל-<span class="math inline">\(n = 2\)</span> אין איבר.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="figures/ch02-seq-points.png" class="img-fluid figure-img" style="width:95.0%" alt="שלושה גרפים של נקודות: נקודות שיורדות לעבר אפס, נקודות שקופצות בין מינוס אחת לאחת, ונקודות שעולות מהר"></p>
-<figcaption>שלוש סדרות כנקודות. משמאל, <span class="math inline">\(\frac{1}{n}\)</span> יורדת לעבר <span class="math inline">\(.0\)</span> באמצע, <span class="math inline">\((-1)^n\)</span> קופצת בין <span class="math inline">\(-1\)</span> ל-<span class="math inline">\(.1\)</span> מימין, סדרת פיבונאצ’י גדלה מהר; האיבר ה-<span class="math inline">\(12\)</span> שלה הוא <span class="math inline">\(.144\)</span></figcaption>
-</figure>
-</div>
-<p>יש עוד דרך לצייר סדרה: מסמנים את האיברים עצמם כנקודות על הישר הממשי. בציור כזה לא רואים את המקום של כל איבר בסדרה, אבל רואים היטב איפה האיברים מצטופפים.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="figures/ch02-seq-line.png" class="img-fluid figure-img" style="width:85.0%" alt="שלושה ישרים עם נקודות: נקודות שמצטופפות ליד אפס, שתי נקודות במינוס אחת ובאחת, ונקודות משני הצדדים של אחת שמצטופפות לידה"></p>
-<figcaption>אותן סדרות על הישר הממשי. למעלה, האיברים של <span class="math inline">\(\frac{1}{n}\)</span> מצטופפים ליד <span class="math inline">\(.0\)</span> באמצע, כל האיברים של <span class="math inline">\((-1)^n\)</span> נופלים על שתי נקודות בלבד, <span class="math inline">\(-1\)</span> ו-<span class="math inline">\(.1\)</span> למטה, האיברים של <span class="math inline">\(1 + \frac{(-1)^n}{n}\)</span> קופצים משני הצדדים של <span class="math inline">\(1\)</span> ומצטופפים לידו.</figcaption>
-</figure>
-</div>
-<div id="box-exm-seq-terms" class="thmbox thmbox-example" title="מחשבים איברים">
-<p><strong>דוגמה 2.1.3 — מחשבים איברים.</strong></p>
-<p>כתבו את האיברים מופרדים בפסיקים.</p>
+<div id="box-exm-seq-index" class="thmbox thmbox-example" title="האינדקס והאיבר">
+<p><strong>דוגמה 2.1.2 — האינדקס והאיבר.</strong></p>
+<p>בסדרה שבפתיחה: <span class="math display">\[\begin{aligned}
+a_1&amp;=3,\\
+a_2&amp;=5,\\
+a_3&amp;=7.
+\end{aligned}\]</span> בכתיב <span class="math inline">\(a_3=7\)</span>, <strong>האינדקס</strong> הוא <span class="math inline">\(3\)</span>, ו<strong>האיבר השלישי</strong> הוא <span class="math inline">\(7\)</span>.</p>
 <div class="fill">
-<p><strong>(א)</strong> הסדרה <span class="math inline">\(a_n = \frac{n + 1}{n}\)</span></p>
-<p><span class="fill-ltr"><span class="math inline">\(a_1 =\)</span> <span class="blank" data-ans="2"><span class="math inline">\(2\)</span></span></span>, <span class="fill-ltr"><span class="math inline">\(a_2 =\)</span> <span class="blank" data-ans="3/2"><span class="math inline">\(\frac{3}{2}\)</span></span></span>, <span class="fill-ltr"><span class="math inline">\(a_{10} =\)</span> <span class="blank" data-ans="11/10"><span class="math inline">\(\frac{11}{10}\)</span></span></span></p>
-<p><strong>(ב)</strong> שמונת האיברים הראשונים של סדרת פיבונאצ’י:</p>
-<div class="eqline">
-<p><span class="blank" kind="list" data-ans="1,1,2,3,5,8,13,21" data-w="24"><span class="math inline">\(1, 1, 2, 3, 5, 8, 13, 21\)</span></span></p>
+<p>האיבר הרביעי הוא <span class="blank" data-ans="9"><span class="math inline">\(9\)</span></span>.</p>
+<p>האינדקס של האיבר <span class="math inline">\(5\)</span> הוא <span class="blank" data-ans="2"><span class="math inline">\(2\)</span></span>.</p>
+<div class="explain">
+<p>האיבר הרביעי הוא <span class="math inline">\(9\)</span>: כלומר <span class="math inline">\(a_4=9\)</span>.</p>
+<p>האיבר השני הוא <span class="math inline">\(5\)</span>: כלומר <span class="math inline">\(a_2=5\)</span>.</p>
 </div>
-<p><strong>(ג)</strong> הסדרה החשבונית שמתחילה ב-<span class="math inline">\(4, 7, 10, 13\)</span></p>
-<p><span class="fill-ltr"><span class="math inline">\(a_n =\)</span> <span class="blank" data-ans="3n+1" data-vars="n"><span class="math inline">\(3n + 1\)</span></span></span>, <span class="fill-ltr"><span class="math inline">\(a_{20} =\)</span> <span class="blank" data-ans="61"><span class="math inline">\(61\)</span></span></span></p>
-<p><strong>(ד)</strong> הסדרה ההנדסית שמתחילה ב-<span class="math inline">\(3, 6, 12, 24\)</span></p>
-<p><span class="fill-ltr"><span class="math inline">\(a_n =\)</span> <span class="blank" data-ans="3*2^(n-1)" data-vars="n"><span class="math inline">\(3 \cdot 2^{n-1}\)</span></span></span></p>
-<div class="hint">
-<p>ב-(ב) כל איבר הוא סכום שני הקודמים לו. ב-(ג) ההפרש הוא <span class="math inline">\(,d = 3\)</span> וב-(ד) המנה היא <span class="math inline">\(.q = 2\)</span></p>
+</div>
+</div>
+<section id="דרכי-הגדרה-של-סדרה" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="דרכי-הגדרה-של-סדרה">דרכי הגדרה של סדרה</h3>
+<p>אי אפשר לרשום רשימה אינסופית במלואה. כדי להגדיר סדרה נותנים כלל שקובע את איבריה. נשתמש בשתי דרכים נפוצות.</p>
+<div id="box-method-sequence" class="thmbox thmbox-definition" title="דרכי הגדרה: נוסחה ורקורסיה">
+<p><strong>הגדרה 2.1.3 — דרכי הגדרה: נוסחה ורקורסיה.</strong></p>
+<p><strong>נוסחה לאיבר הכללי</strong> מחשבת את <span class="math inline">\(a_n\)</span> ישירות מתוך <span class="math inline">\(n\)</span>, בלי לחשב את האיברים שלפניו.</p>
+<p>למשל, הנוסחה <span class="math inline">\(a_n=2n+1\)</span> מגדירה את הסדרה שבפתיחה. כדי לחשב את האיבר העשירי מציבים <span class="math inline">\(n=10\)</span>: <span class="math display">\[a_{10}=2\cdot10+1=21.\]</span></p>
+<div class="fill">
+<p>חשבו את <span class="math inline">\(a_6\)</span>: בשדה הראשון כתבו את הביטוי לאחר הצבת האינדקס, ובשני את התוצאה כמספר.</p>
+<div class="sequence-calculations">
+<p><span class="fill-ltr"><span class="math inline">\(a_6=\)</span> <span class="blank" data-ans="13" data-allow-expression="true" form="calculation" data-w="10"><span class="math inline">\(2\cdot6+1\)</span></span> <span class="math inline">\(=\)</span> <span class="blank" data-ans="13" data-w="5"><span class="math inline">\(13\)</span></span></span></p>
+</div>
+</div>
+<p>בהגדרה באמצעות <span class="term"><strong>רקורסיה</strong></span> נותנים איבר ראשון, או כמה איברים ראשונים, וכלל לחישוב כל איבר חדש מתוך קודמיו.</p>
+<p>למשל, נותנים איבר ראשון: <span class="math display">\[a_1=1,\]</span> וכלל לחישוב האיבר הבא: <span class="math display">\[a_{n+1}=2a_n.\]</span> כלומר, מתחילים במספר <span class="math inline">\(1\)</span>, ובכל צעד כופלים את האיבר הקודם ב <span class="math inline">\(2\)</span>: <span class="math display">\[\begin{aligned}
+a_2&amp;=2\cdot1=2,\\
+a_3&amp;=2\cdot2=4.
+\end{aligned}\]</span></p>
+<div class="fill">
+<p>המשיכו באותו אופן: כתבו את החישוב, ואחריו את התוצאה.</p>
+<div class="sequence-calculations">
+<p><span class="fill-ltr"><span class="math inline">\(a_4=\)</span> <span class="blank" data-ans="8" data-allow-expression="true" form="calculation" data-w="10"><span class="math inline">\(2\cdot4\)</span></span> <span class="math inline">\(=\)</span> <span class="blank" data-ans="8" data-w="5"><span class="math inline">\(8\)</span></span></span></p>
+<p><span class="fill-ltr"><span class="math inline">\(a_5=\)</span> <span class="blank" data-ans="16" data-allow-expression="true" form="calculation" data-w="10"><span class="math inline">\(2\cdot8\)</span></span> <span class="math inline">\(=\)</span> <span class="blank" data-ans="16" data-w="5"><span class="math inline">\(16\)</span></span></span></p>
 </div>
 <div class="explain">
-<p><strong>(א)</strong> <span class="math inline">\(,a_1 = \frac{2}{1} = 2\)</span> <span class="math inline">\(,a_2 = \frac{3}{2}\)</span> <span class="math inline">\(.a_{10} = \frac{11}{10}\)</span></p>
-<p><strong>(ב)</strong> <span class="math inline">\(,1 + 1 = 2\)</span> <span class="math inline">\(,1 + 2 = 3\)</span> <span class="math inline">\(,2 + 3 = 5\)</span> <span class="math inline">\(,3 + 5 = 8\)</span> <span class="math inline">\(5 + 8 = 13\)</span> ו-<span class="math inline">\(.8 + 13 = 21\)</span></p>
-<p><strong>(ג)</strong> <span class="math inline">\(a_1 = 4\)</span> ו-<span class="math inline">\(,d = 3\)</span> ולכן <span class="math display">\[\begin{aligned} a_n &amp;= 4 + (n - 1) \cdot 3 \\ &amp;= 3n + 1 \\ a_{20} &amp;= 3 \cdot 20 + 1 = 61 \end{aligned}\]</span></p>
-<p><strong>(ד)</strong> <span class="math inline">\(,a_1 = 3\)</span> ובכל צעד כופלים ב-<span class="math inline">\(,2\)</span> ולכן <span class="math inline">\(.a_n = 3 \cdot 2^{n-1}\)</span></p>
+<p><span class="math display">\[\begin{aligned}
+a_4&amp;=2a_3=2\cdot4=8,\\
+a_5&amp;=2a_4=2\cdot8=16.
+\end{aligned}\]</span></p>
 </div>
 </div>
+<p>לאותה סדרה יכולות להיות שתי ההצגות: הסדרה הרקורסיבית בדוגמה מתוארת גם בנוסחה <span class="math inline">\(a_n=2^{n-1}\)</span>.</p>
 </div>
-<div class="thmbox thmbox-warning" title="כמה איברים ראשונים לא קובעים סדרה">
-<p><strong>שימו לב — כמה איברים ראשונים לא קובעים סדרה.</strong></p>
-<p>איך ממשיכים את <span class="math inline">\(2, 4, 8\)</span> ואחריהם שלוש נקודות? אולי <span class="math inline">\(16\)</span> (חזקות של <span class="math inline">\(2\)</span>), ואולי <span class="math inline">\(14\)</span> (ההפרשים <span class="math inline">\(2, 4, 6\)</span> גדלים ב-<span class="math inline">\(2\)</span>). לכן מתארים סדרה בנוסחה או ברקורסיה. כשמבקשים “נוסחה לפי האיברים הראשונים”, הכוונה לנוסחה הפשוטה ביותר שמתאימה להם.</p>
+<div class="thmbox thmbox-warning" title="כמה איברים ראשונים לא קובעים את ההמשך">
+<p><strong>שימו לב — כמה איברים ראשונים לא קובעים את ההמשך.</strong></p>
+<p>אחרי <span class="math inline">\(2,4,8\)</span> אפשר להמשיך ב <span class="math inline">\(16\)</span> אם כופלים בכל פעם ב <span class="math inline">\(2\)</span>, או ב <span class="math inline">\(14\)</span> אם מוסיפים לפי הסדר <span class="math inline">\(2,4,6,8,\ldots\)</span>. שתי האפשרויות מתאימות לשלושת האיברים הנתונים. כדי לדעת איזו סדרה מתוארת, צריך כלל או מידע נוסף.</p>
+</div>
+</section>
+<section id="שתי-דרכים-לצייר-סדרה" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="שתי-דרכים-לצייר-סדרה">שתי דרכים לצייר סדרה</h3>
+<p>נדגים על ששת האיברים הראשונים של <span class="math inline">\(a_n=2n+1\)</span>: המספרים <span class="math inline">\(3,5,7,9,11,13\)</span>.</p>
+<p><strong>במישור:</strong> מסמנים את הנקודות <span class="math inline">\((n,a_n)\)</span>. בציר האופקי מסמנים את האינדקס <span class="math inline">\(n\)</span>, ובציר האנכי את האיבר <span class="math inline">\(a_n\)</span>.</p>
+<p>למשל, האיבר <span class="math inline">\(a_2=5\)</span> נותן את הנקודה <span class="math inline">\((2,5)\)</span>. הקווים המקווקווים עוזרים לקרוא את השיעורים; הם אינם חלק מהגרף. לא מחברים בין הנקודות: בין האינדקסים <span class="math inline">\(1\)</span> ו <span class="math inline">\(2\)</span> אין אינדקס נוסף בסדרה.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/ch02-intro-plane.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="שש הנקודות אחת שלוש, שתיים חמש, שלוש שבע, ארבע תשע, חמש אחת עשרה ושש שלוש עשרה. כל אינדקס מסומן, וקווים מקווקווים מחברים כל נקודה לשיעוריה בצירים." width="560"></p>
+</figure>
+</div>
+<p><strong>על הישר הממשי:</strong> מסמנים את איברי הסדרה <span class="math inline">\(a_n\)</span> עצמם. למשל, את <span class="math inline">\(a_2\)</span> מסמנים בנקודה <span class="math inline">\(5\)</span>, כי האיבר השני הוא <span class="math inline">\(5\)</span>.</p>
+<p>התוויות מראות איזה איבר מסומן בכל נקודה; המיקום על הישר נקבע לפי <strong>האיבר</strong>, ולא לפי האינדקס.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/ch02-intro-line.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="על ישר המספרים מסומנים הערכים שלוש, חמש, שבע, תשע, אחת עשרה ושלוש עשרה, ומעליהם בהתאמה a1 עד a6." width="560"></p>
+</figure>
 </div>
 <div class="thmbox thmbox-self-check">
 <p><strong>בדיקה עצמית.</strong></p>
-<p><strong>(א)</strong> האם הרשימה שבה כל האיברים שווים ל-<span class="math inline">\(1\)</span> היא סדרה?</p>
+<p>אם <span class="math inline">\(a_4=-2\)</span>, היכן מסמנים אותו בכל ציור?</p>
+<div class="fill">
+<p>במישור מסמנים את הנקודה <span class="fill-ltr" dir="ltr">( <span class="blank" data-ans="4" data-w="3"><span class="math inline">\(4\)</span></span>, <span class="blank" data-ans="-2" data-w="3"><span class="math inline">\(-2\)</span></span> )</span>.</p>
+<p>על הישר הממשי מסמנים את האיבר בנקודה <span class="blank" data-ans="-2" data-w="3"><span class="math inline">\(-2\)</span></span>.</p>
+<div class="explain">
+<p>במישור זו הנקודה <span class="math inline">\((4,-2)\)</span>; על הישר זו הנקודה <span class="math inline">\(-2\)</span>, עם התווית <span class="math inline">\(a_4\)</span>.</p>
+</div>
+</div>
+</div>
+<div id="box-def-famous" class="thmbox thmbox-example" title="כמה סדרות מוכרות">
+<p><strong>דוגמה 2.1.4 — כמה סדרות מוכרות.</strong></p>
+<p>בכל ציור מופיעים ששת האיברים הראשונים.</p>
+<p><strong>(א) סדרה קבועה:</strong> כל האיברים שווים לאותו מספר, <span class="math inline">\(a_n=c\)</span>. למשל, עבור <span class="math inline">\(c=2\)</span> מתקבלת <span class="math inline">\(2,2,2,\ldots\)</span>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/ch02-intro-constant.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="שש נקודות בגובה שתיים, באינדקסים אחת עד שש." width="500"></p>
+</figure>
+</div>
+<p><strong>(ב) הסדרה ההרמונית:</strong> <span class="math inline">\(a_n=\frac1n\)</span>, כלומר <span class="math inline">\(1,\frac12,\frac13,\ldots\)</span>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/ch02-intro-harmonic.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="שש נקודות של הסדרה אחד חלקי n. כל אינדקס וכל ערך מסומנים." width="500"></p>
+</figure>
+</div>
+<p><strong>(ג) סדרה מתחלפת:</strong> איבר חיובי ואיבר שלילי מופיעים לסירוגין. למשל, <span class="math inline">\(a_n=(-1)^n\)</span> נותנת <span class="math inline">\(-1,1,-1,1,\ldots\)</span>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/ch02-intro-alternating.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="באינדקסים האי זוגיים הנקודות בגובה מינוס אחת, ובזוגיים בגובה אחת. כל ששת האינדקסים מסומנים." width="500"></p>
+</figure>
+</div>
+<p>על הישר הממשי, איברים בעלי אותו ערך נופלים על אותה נקודה: <span class="math inline">\(a_1,a_3,a_5\)</span> נמצאים כולם ב <span class="math inline">\(-1\)</span>, ו <span class="math inline">\(a_2,a_4,a_6\)</span> ב <span class="math inline">\(1\)</span>.</p>
+<p><strong>(ד) סדרה חשבונית:</strong> בכל צעד מוסיפים <span class="term"><strong>הפרש קבוע</strong></span> <span class="math inline">\(d\)</span>: <span class="math display">\[a_{n+1}=a_n+d.\]</span> הנוסחה לאיבר הכללי היא <span class="math display">\[a_n=a_1+(n-1)d.\]</span> יש <span class="math inline">\(n-1\)</span> צעדים מהאיבר הראשון לאיבר שבמקום <span class="math inline">\(n\)</span>.</p>
+<p>למשל, <span class="math inline">\(a_1=1\)</span> ו <span class="math inline">\(d=2\)</span> נותנים <span class="math inline">\(1,3,5,7,\ldots\)</span>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/ch02-intro-arithmetic.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="שש הנקודות של הסדרה אחת, שלוש, חמש, שבע, תשע, אחת עשרה. כל אינדקס וכל ערך מסומנים." width="500"></p>
+</figure>
+</div>
+<p><strong>(ה) סדרה הנדסית:</strong> בכל צעד כופלים ב-<span class="term"><strong>מנה קבועה</strong></span> <span class="math inline">\(q\)</span>: <span class="math display">\[a_{n+1}=qa_n.\]</span> כאשר <span class="math inline">\(q\ne0\)</span>, הנוסחה לאיבר הכללי היא <span class="math display">\[a_n=a_1q^{n-1}.\]</span> הכפל החוזר מסביר את החזקה <span class="math inline">\(n-1\)</span> בנוסחה.</p>
+<p>למשל, <span class="math inline">\(a_1=1\)</span> ו <span class="math inline">\(q=2\)</span> נותנים <span class="math inline">\(1,2,4,8,\ldots\)</span>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/ch02-intro-geometric.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="שש הנקודות של הסדרה אחת, שתיים, ארבע, שמונה, שש עשרה ושלושים ושתיים. כל אינדקס וכל ערך מסומנים." width="500"></p>
+</figure>
+</div>
+<p><strong>(ו) סדרת פיבונאצ’י:</strong> מתחילים ב <span class="math inline">\(a_1=a_2=1\)</span>, וכל איבר חדש הוא סכום שני קודמיו: <span class="math display">\[a_{n+2}=a_{n+1}+a_n.\]</span> כך מתקבלת הסדרה <span class="math inline">\(1,1,2,3,5,8,13,\ldots\)</span>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/ch02-intro-fibonacci.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="שש הנקודות של סדרת פיבונאצ'י: אחת, אחת, שתיים, שלוש, חמש ושמונה. שתי הנקודות הראשונות באותו גובה, אך במקומות שונים." width="500"></p>
+</figure>
+</div>
+</div>
+<div id="box-exm-seq-terms" class="thmbox thmbox-example" title="מחשבים איברים">
+<p><strong>דוגמה 2.1.5 — מחשבים איברים.</strong></p>
+<p><strong>(א)</strong> נתונה הסדרה <span class="math inline">\(a_n=\frac{n+1}{n}\)</span>. חשבו את האיברים המבוקשים.</p>
+<div class="fill">
+<p>בכל שורה כתבו תחילה את הביטוי לאחר הצבת האינדקס, ואחריו את התוצאה.</p>
+<div class="sequence-table" dir="ltr">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">האיבר</th>
+<th style="text-align: center;">הצבה בנוסחה</th>
+<th style="text-align: center;">תוצאה</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(a_1\)</span></td>
+<td style="text-align: center;"><span class="blank" data-ans="2" data-allow-expression="true" form="calculation" data-w="10"><span class="math inline">\(\frac{1+1}{1}\)</span></span></td>
+<td style="text-align: center;"><span class="blank" data-ans="2" data-w="5"><span class="math inline">\(2\)</span></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math inline">\(a_2\)</span></td>
+<td style="text-align: center;"><span class="blank" data-ans="3/2" data-allow-expression="true" form="calculation" data-w="10"><span class="math inline">\(\frac{2+1}{2}\)</span></span></td>
+<td style="text-align: center;"><span class="blank" data-ans="3/2" data-w="5"><span class="math inline">\(\frac{3}{2}\)</span></span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(a_{10}\)</span></td>
+<td style="text-align: center;"><span class="blank" data-ans="11/10" data-allow-expression="true" form="calculation" data-w="10"><span class="math inline">\(\frac{10+1}{10}\)</span></span></td>
+<td style="text-align: center;"><span class="blank" data-ans="11/10" data-w="5"><span class="math inline">\(\frac{11}{10}\)</span></span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="explain">
+<p>מציבים בכל פעם את האינדקס במקום <span class="math inline">\(n\)</span>: <span class="math display">\[\begin{aligned}
+a_1&amp;=\frac{1+1}{1}=2,\\[4pt]
+a_2&amp;=\frac{2+1}{2}=\frac{3}{2},\\[4pt]
+a_{10}&amp;=\frac{10+1}{10}=\frac{11}{10}.
+\end{aligned}\]</span></p>
+</div>
+</div>
+<p><strong>(ב)</strong> השלימו את שמונת האיברים הראשונים של סדרת פיבונאצ’י.</p>
+<div class="fill">
+<div class="sequence-inputs">
+<p><span class="fill-ltr"><span class="math inline">\(a_1=\)</span> <span class="blank" data-ans="1" data-w="3"><span class="math inline">\(1\)</span></span></span></p>
+<p><span class="fill-ltr"><span class="math inline">\(a_2=\)</span> <span class="blank" data-ans="1" data-w="3"><span class="math inline">\(1\)</span></span></span></p>
+</div>
+<div class="sequence-table" dir="ltr">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">האיבר</th>
+<th style="text-align: center;">חישוב</th>
+<th style="text-align: center;">תוצאה</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(a_3\)</span></td>
+<td style="text-align: center;"><span class="blank" data-ans="2" data-allow-expression="true" form="calculation" data-w="10"><span class="math inline">\(1+1\)</span></span></td>
+<td style="text-align: center;"><span class="blank" data-ans="2" data-w="5"><span class="math inline">\(2\)</span></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math inline">\(a_4\)</span></td>
+<td style="text-align: center;"><span class="blank" data-ans="3" data-allow-expression="true" form="calculation" data-w="10"><span class="math inline">\(1+2\)</span></span></td>
+<td style="text-align: center;"><span class="blank" data-ans="3" data-w="5"><span class="math inline">\(3\)</span></span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(a_5\)</span></td>
+<td style="text-align: center;"><span class="blank" data-ans="5" data-allow-expression="true" form="calculation" data-w="10"><span class="math inline">\(2+3\)</span></span></td>
+<td style="text-align: center;"><span class="blank" data-ans="5" data-w="5"><span class="math inline">\(5\)</span></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math inline">\(a_6\)</span></td>
+<td style="text-align: center;"><span class="blank" data-ans="8" data-allow-expression="true" form="calculation" data-w="10"><span class="math inline">\(3+5\)</span></span></td>
+<td style="text-align: center;"><span class="blank" data-ans="8" data-w="5"><span class="math inline">\(8\)</span></span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(a_7\)</span></td>
+<td style="text-align: center;"><span class="blank" data-ans="13" data-allow-expression="true" form="calculation" data-w="10"><span class="math inline">\(5+8\)</span></span></td>
+<td style="text-align: center;"><span class="blank" data-ans="13" data-w="5"><span class="math inline">\(13\)</span></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math inline">\(a_8\)</span></td>
+<td style="text-align: center;"><span class="blank" data-ans="21" data-allow-expression="true" form="calculation" data-w="10"><span class="math inline">\(8+13\)</span></span></td>
+<td style="text-align: center;"><span class="blank" data-ans="21" data-w="5"><span class="math inline">\(21\)</span></span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="hint">
+<p>שני האיברים הראשונים הם <span class="math inline">\(1\)</span>. אחר כך מחברים בכל פעם את שני האיברים הקודמים.</p>
+</div>
+<div class="explain">
+<p><span class="math inline">\(1,1,2,3,5,8,13,21\)</span>.</p>
+<p>למשל, <span class="math inline">\(a_7=a_5+a_6=5+8=13\)</span>.</p>
+</div>
+</div>
+<p><strong>(ג)</strong> סדרה חשבונית מתחילה באיברים <span class="math inline">\(4,7,10,13\)</span>.</p>
+<p>מצאו את האיבר הראשון ואת ההפרש, וכתבו נוסחה לאיבר הכללי.</p>
+<div class="fill">
+<div class="sequence-inputs">
+<p><span class="fill-ltr"><span class="math inline">\(a_1=\)</span> <span class="blank" data-ans="4" data-w="3"><span class="math inline">\(4\)</span></span></span></p>
+<p><span class="fill-ltr"><span class="math inline">\(d=\)</span> <span class="blank" data-ans="3" data-w="3"><span class="math inline">\(3\)</span></span></span></p>
+<p><span class="fill-ltr"><span class="math inline">\(a_n=\)</span> <span class="blank" data-ans="3n+1" data-vars="n" data-positive="n" data-integer="n" data-w="10"><span class="math inline">\(3n+1\)</span></span></span></p>
+</div>
+<p>כעת הציבו <span class="math inline">\(n=20\)</span> בנוסחה וחשבו:</p>
+<div class="sequence-table" dir="ltr">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">האיבר</th>
+<th style="text-align: center;">הצבה בנוסחה</th>
+<th style="text-align: center;">תוצאה</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(a_{20}\)</span></td>
+<td style="text-align: center;"><span class="blank" data-ans="61" data-allow-expression="true" form="calculation" data-w="10"><span class="math inline">\(3\cdot20+1\)</span></span></td>
+<td style="text-align: center;"><span class="blank" data-ans="61" data-w="5"><span class="math inline">\(61\)</span></span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="hint">
+<p>בנוסחה <span class="math inline">\(a_n=a_1+(n-1)d\)</span>, הציבו את האיבר הראשון ואת ההפרש.</p>
+</div>
+<div class="explain">
+<p><span class="math display">\[\begin{aligned}
+a_n&amp;=4+3(n-1)=3n+1,\\
+a_{20}&amp;=3\cdot20+1=61.
+\end{aligned}\]</span></p>
+</div>
+</div>
+<p><strong>(ד)</strong> סדרה הנדסית מתחילה באיברים <span class="math inline">\(3,6,12,24\)</span>.</p>
+<p>מצאו את האיבר הראשון ואת המנה, וכתבו נוסחה לאיבר הכללי.</p>
+<div class="fill">
+<div class="sequence-inputs">
+<p><span class="fill-ltr"><span class="math inline">\(a_1=\)</span> <span class="blank" data-ans="3" data-w="3"><span class="math inline">\(3\)</span></span></span></p>
+<p><span class="fill-ltr"><span class="math inline">\(q=\)</span> <span class="blank" data-ans="2" data-w="3"><span class="math inline">\(2\)</span></span></span></p>
+<p><span class="fill-ltr"><span class="math inline">\(a_n=\)</span> <span class="blank" data-ans="3*2^(n-1)" data-vars="n" data-positive="n" data-integer="n" data-w="10"><span class="math inline">\(3\cdot2^{n-1}\)</span></span></span></p>
+</div>
+<p>כעת הציבו <span class="math inline">\(n=6\)</span> בנוסחה וחשבו:</p>
+<div class="sequence-table" dir="ltr">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">האיבר</th>
+<th style="text-align: center;">הצבה בנוסחה</th>
+<th style="text-align: center;">תוצאה</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(a_6\)</span></td>
+<td style="text-align: center;"><span class="blank" data-ans="96" data-allow-expression="true" form="calculation" data-w="10"><span class="math inline">\(3\cdot2^{6-1}\)</span></span></td>
+<td style="text-align: center;"><span class="blank" data-ans="96" data-w="5"><span class="math inline">\(96\)</span></span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="hint">
+<p>בנוסחה <span class="math inline">\(a_n=a_1q^{n-1}\)</span>, הציבו את האיבר הראשון ואת המנה.</p>
+</div>
+<div class="explain">
+<p><span class="math display">\[\begin{aligned}
+a_n&amp;=3\cdot2^{n-1},\\
+a_6&amp;=3\cdot2^{6-1}=96.
+\end{aligned}\]</span></p>
+</div>
+</div>
+</div>
+<div class="thmbox thmbox-self-check">
+<p><strong>בדיקה עצמית.</strong></p>
+<p><strong>(א)</strong> האם הרשימה האינסופית שבה כל האיברים שווים ל <span class="math inline">\(1\)</span> היא סדרה?</p>
 <div class="tf-quiz" data-correct="1">
 <button type="button" class="tf-opt" data-val="1">כן</button>
 <button type="button" class="tf-opt" data-val="2">לא</button>
 <div class="tf-feedback" aria-live="polite"></div>
 <div class="tf-why">
-<p>כן, זו הסדרה הקבועה <span class="math inline">\(.a_n = 1\)</span> בסדרה מותר לאיברים לחזור.</p>
-</div>
-</div>
-<p><strong>(ב)</strong> מהו האיבר החמישי של <span class="math inline">\(?a_n = (-1)^n n\)</span></p>
-<div class="tf-quiz" data-correct="2">
-<button type="button" class="tf-opt" data-val="1">\(5\)</button>
-<button type="button" class="tf-opt" data-val="2">\(-5\)</button>
-<div class="tf-feedback" aria-live="polite"></div>
-<div class="tf-why">
-<p><span class="math inline">\(.a_5 = (-1)^5 \cdot 5 = -5\)</span> חזקה אי-זוגית של <span class="math inline">\(-1\)</span> שווה <span class="math inline">\(.{-}1\)</span></p>
+<p>איברים באינדקסים שונים יכולים להיות שווים. כתבו נוסחה לאיבר הכללי:</p>
+<div class="fill">
+<div class="eqline" dir="ltr">
+<p><span class="fill-ltr"><span class="math inline">\(a_n=\)</span> <span class="blank" data-ans="1" kind="expr" data-vars="n" data-positive="n" data-integer="n"><span class="math inline">\(1\)</span></span></span></p>
 </div>
 </div>
 </div>
-<div class="thmbox thmbox-summary">
-<p><strong>סיכום.</strong></p>
-<ul>
-<li>סדרה היא רשימה אינסופית <span class="math inline">\(a_1, a_2, a_3\)</span> וכן הלאה, ו-<span class="math inline">\(a_n\)</span> הוא האיבר שבמקום <span class="math inline">\(.n\)</span></li>
-<li>מתארים סדרה בנוסחה או ברקורסיה, ולא בכמה איברים ראשונים.</li>
-<li>סדרות מפורסמות: קבועה, הרמונית, מתחלפת, חשבונית, הנדסית, פיבונאצ’י.</li>
-</ul>
 </div>
+<p><strong>(ב)</strong> חשבו את האיבר החמישי של <span class="math inline">\(a_n=(-1)^n n\)</span> בשני שלבים.</p>
+<div class="fill">
+<p>בשדה הראשון הציבו <span class="math inline">\(n=5\)</span>, ובשני כתבו את התוצאה כמספר:</p>
+<div class="sequence-calculations">
+<p><span class="fill-ltr"><span class="math inline">\(a_5=\)</span> <span class="blank" data-ans="-5" data-allow-expression="true" form="calculation" data-w="10"><span class="math inline">\((-1)^5\cdot5\)</span></span> <span class="math inline">\(=\)</span> <span class="blank" data-ans="-5" data-w="5"><span class="math inline">\(-5\)</span></span></span></p>
+</div>
+<div class="explain">
+<p><span class="math inline">\((-1)^5=-1\)</span>, ולכן <span class="math inline">\((-1)^5\cdot5=-5\)</span>.</p>
+</div>
+</div>
+</div>
+</section>
 <section id="תרגילים" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="תרגילים">תרגילים</h3>
 <div id="box-q-seq-terms" class="thmbox thmbox-question" title="איברים מנוסחה">
-<p><strong>שאלה 2.1.4 — איברים מנוסחה.</strong></p>
-<p>חשבו.</p>
+<p><strong>שאלה 2.1.6 — איברים מנוסחה.</strong></p>
+<p>חשבו את האיברים המבוקשים. כתבו את ההצבה בנוסחה ואת התוצאה.</p>
 <div class="fill">
-<p><strong>(א)</strong> <span class="math inline">\(a_n = n^2 - n\)</span></p>
-<p><span class="fill-ltr"><span class="math inline">\(a_3 =\)</span> <span class="blank" data-ans="6"><span class="math inline">\(6\)</span></span></span></p>
-<p><strong>(ב)</strong> <span class="math inline">\(a_n = \frac{(-1)^n}{n}\)</span></p>
-<p><span class="fill-ltr"><span class="math inline">\(a_4 =\)</span> <span class="blank" data-ans="1/4"><span class="math inline">\(\frac{1}{4}\)</span></span></span>, <span class="fill-ltr"><span class="math inline">\(a_5 =\)</span> <span class="blank" data-ans="-1/5"><span class="math inline">\(-\frac{1}{5}\)</span></span></span></p>
-<p><strong>(ג)</strong> <span class="math inline">\(a_n = \frac{2^n}{n}\)</span></p>
-<p><span class="fill-ltr"><span class="math inline">\(a_3 =\)</span> <span class="blank" data-ans="8/3"><span class="math inline">\(\frac{8}{3}\)</span></span></span></p>
+<p><strong>(א)</strong> <span class="math inline">\(a_n=n^2-n\)</span></p>
+<div class="sequence-table" dir="ltr">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">האיבר</th>
+<th style="text-align: center;">הצבה בנוסחה</th>
+<th style="text-align: center;">תוצאה</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(a_3\)</span></td>
+<td style="text-align: center;"><span class="blank" data-ans="6" data-allow-expression="true" form="calculation" data-w="10"><span class="math inline">\(3^2-3\)</span></span></td>
+<td style="text-align: center;"><span class="blank" data-ans="6" data-w="5"><span class="math inline">\(6\)</span></span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>(ב)</strong> <span class="math inline">\(a_n=\frac{(-1)^n}{n}\)</span></p>
+<div class="sequence-table" dir="ltr">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">האיבר</th>
+<th style="text-align: center;">הצבה בנוסחה</th>
+<th style="text-align: center;">תוצאה</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(a_4\)</span></td>
+<td style="text-align: center;"><span class="blank" data-ans="1/4" data-allow-expression="true" form="calculation" data-w="10"><span class="math inline">\(\frac{(-1)^4}{4}\)</span></span></td>
+<td style="text-align: center;"><span class="blank" data-ans="1/4" data-w="5"><span class="math inline">\(\frac{1}{4}\)</span></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math inline">\(a_5\)</span></td>
+<td style="text-align: center;"><span class="blank" data-ans="-1/5" data-allow-expression="true" form="calculation" data-w="10"><span class="math inline">\(\frac{(-1)^5}{5}\)</span></span></td>
+<td style="text-align: center;"><span class="blank" data-ans="-1/5" data-w="5"><span class="math inline">\(-\frac{1}{5}\)</span></span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>(ג)</strong> <span class="math inline">\(a_n=\frac{2^n}{n}\)</span></p>
+<div class="sequence-table" dir="ltr">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">האיבר</th>
+<th style="text-align: center;">הצבה בנוסחה</th>
+<th style="text-align: center;">תוצאה</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(a_3\)</span></td>
+<td style="text-align: center;"><span class="blank" data-ans="8/3" data-allow-expression="true" form="calculation" data-w="10"><span class="math inline">\(\frac{2^3}{3}\)</span></span></td>
+<td style="text-align: center;"><span class="blank" data-ans="8/3" data-w="5"><span class="math inline">\(\frac{8}{3}\)</span></span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="explain">
+<p><strong>(א)</strong> <span class="math inline">\(a_3=3^2-3=6\)</span>.</p>
+<p><strong>(ב)</strong> <span class="math display">\[\begin{aligned}
+a_4&amp;=\frac{(-1)^4}{4}=\frac{1}{4},\\[4pt]
+a_5&amp;=\frac{(-1)^5}{5}=-\frac{1}{5}.
+\end{aligned}\]</span></p>
+<p><strong>(ג)</strong> <span class="math inline">\(a_3=2^3/3=8/3\)</span>.</p>
+</div>
 </div>
 </div>
 <div id="box-q-seq-recursion" class="thmbox thmbox-question" title="איברים מרקורסיה">
-<p><strong>שאלה 2.1.5 — איברים מרקורסיה.</strong></p>
-<p>הסדרה נתונה ברקורסיה: <span class="math inline">\(a_1 = 2\)</span> ו-<span class="math inline">\(.a_{n+1} = 3a_n - 1\)</span> חשבו:</p>
+<p><strong>שאלה 2.1.7 — איברים מרקורסיה.</strong></p>
+<p>נתונים <span class="math inline">\(a_1=2\)</span> ו <span class="math inline">\(a_{n+1}=3a_n-1\)</span>.</p>
+<p>מצאו את <span class="math inline">\(a_2\)</span>, <span class="math inline">\(a_3\)</span> ו <span class="math inline">\(a_4\)</span> בעזרת כלל הרקורסיה.</p>
 <div class="fill">
-<p><span class="fill-ltr"><span class="math inline">\(a_2 =\)</span> <span class="blank" data-ans="5"><span class="math inline">\(5\)</span></span></span>, <span class="fill-ltr"><span class="math inline">\(a_3 =\)</span> <span class="blank" data-ans="14"><span class="math inline">\(14\)</span></span></span>, <span class="fill-ltr"><span class="math inline">\(a_4 =\)</span> <span class="blank" data-ans="41"><span class="math inline">\(41\)</span></span></span></p>
+<div class="sequence-table" dir="ltr">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">האיבר</th>
+<th style="text-align: center;">חישוב</th>
+<th style="text-align: center;">תוצאה</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(a_2\)</span></td>
+<td style="text-align: center;"><span class="blank" data-ans="5" data-allow-expression="true" form="calculation" data-w="10"><span class="math inline">\(3\cdot2-1\)</span></span></td>
+<td style="text-align: center;"><span class="blank" data-ans="5" data-w="5"><span class="math inline">\(5\)</span></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math inline">\(a_3\)</span></td>
+<td style="text-align: center;"><span class="blank" data-ans="14" data-allow-expression="true" form="calculation" data-w="10"><span class="math inline">\(3\cdot5-1\)</span></span></td>
+<td style="text-align: center;"><span class="blank" data-ans="14" data-w="5"><span class="math inline">\(14\)</span></span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(a_4\)</span></td>
+<td style="text-align: center;"><span class="blank" data-ans="41" data-allow-expression="true" form="calculation" data-w="10"><span class="math inline">\(3\cdot14-1\)</span></span></td>
+<td style="text-align: center;"><span class="blank" data-ans="41" data-w="5"><span class="math inline">\(41\)</span></span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="hint">
+<p>בכל צעד השתמשו באיבר שחישבתם בצעד הקודם.</p>
+</div>
 <div class="explain">
-<p><span class="math inline">\(,a_2 = 3 \cdot 2 - 1 = 5\)</span> <span class="math inline">\(,a_3 = 3 \cdot 5 - 1 = 14\)</span> <span class="math inline">\(.a_4 = 3 \cdot 14 - 1 = 41\)</span></p>
+<p><span class="math display">\[\begin{aligned}
+a_2&amp;=3\cdot2-1=5,\\
+a_3&amp;=3\cdot5-1=14,\\
+a_4&amp;=3\cdot14-1=41.
+\end{aligned}\]</span></p>
 </div>
 </div>
 </div>
 <div id="box-q-seq-geometric" class="thmbox thmbox-question" title="סדרה הנדסית עם מנה שלילית">
-<p><strong>שאלה 2.1.6 — סדרה הנדסית עם מנה שלילית.</strong></p>
-<p><span class="math inline">\(a_1 = 2\)</span> והמנה היא <span class="math inline">\(.q = -3\)</span> כתבו את חמשת האיברים הראשונים, מופרדים בפסיקים.</p>
+<p><strong>שאלה 2.1.8 — סדרה הנדסית עם מנה שלילית.</strong></p>
+<p>בסדרה הנדסית נתונים <span class="math inline">\(a_1=2\)</span> ו <span class="math inline">\(q=-3\)</span>.</p>
+<p>כתבו נוסחה לאיבר הכללי, והשתמשו בה לחישוב האיברים השני עד החמישי.</p>
 <div class="fill">
-<div class="eqline">
-<p><span class="blank" kind="list" data-ans="2,-6,18,-54,162" data-w="24"><span class="math inline">\(2, -6, 18, -54, 162\)</span></span></p>
+<div class="sequence-formula" dir="ltr">
+<p><span class="fill-ltr"><span class="math inline">\(a_n=\)</span> <span class="blank" data-ans="2*(-3)^(n-1)" data-vars="n" data-positive="n" data-integer="n" data-w="14"><span class="math inline">\(2(-3)^{n-1}\)</span></span></span></p>
+</div>
+<div class="sequence-table" dir="ltr">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">האיבר</th>
+<th style="text-align: center;">הצבה בנוסחה</th>
+<th style="text-align: center;">תוצאה</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(a_2\)</span></td>
+<td style="text-align: center;"><span class="blank" data-ans="-6" data-allow-expression="true" form="calculation" data-w="10"><span class="math inline">\(2(-3)^{2-1}\)</span></span></td>
+<td style="text-align: center;"><span class="blank" data-ans="-6" data-w="5"><span class="math inline">\(-6\)</span></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math inline">\(a_3\)</span></td>
+<td style="text-align: center;"><span class="blank" data-ans="18" data-allow-expression="true" form="calculation" data-w="10"><span class="math inline">\(2(-3)^{3-1}\)</span></span></td>
+<td style="text-align: center;"><span class="blank" data-ans="18" data-w="5"><span class="math inline">\(18\)</span></span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(a_4\)</span></td>
+<td style="text-align: center;"><span class="blank" data-ans="-54" data-allow-expression="true" form="calculation" data-w="10"><span class="math inline">\(2(-3)^{4-1}\)</span></span></td>
+<td style="text-align: center;"><span class="blank" data-ans="-54" data-w="5"><span class="math inline">\(-54\)</span></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math inline">\(a_5\)</span></td>
+<td style="text-align: center;"><span class="blank" data-ans="162" data-allow-expression="true" form="calculation" data-w="10"><span class="math inline">\(2(-3)^{5-1}\)</span></span></td>
+<td style="text-align: center;"><span class="blank" data-ans="162" data-w="5"><span class="math inline">\(162\)</span></span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="hint">
+<p>הציבו את האיבר הראשון ואת המנה בנוסחה <span class="math inline">\(a_n=a_1q^{n-1}\)</span>. שימו לב לסוגריים סביב המנה השלילית.</p>
 </div>
 <div class="explain">
-<p>בכל צעד כופלים ב-<span class="math inline">\(,{-}3\)</span> ולכן הסימן מתחלף: זו גם סדרה מתחלפת.</p>
+<p>הנוסחה היא <span class="math inline">\(a_n=2(-3)^{n-1}\)</span>.</p>
+<p><span class="math display">\[\begin{aligned}
+a_2&amp;=2(-3)^1=-6,\\
+a_3&amp;=2(-3)^2=18,\\
+a_4&amp;=2(-3)^3=-54,\\
+a_5&amp;=2(-3)^4=162.
+\end{aligned}\]</span> סימני האיברים מתחלפים, כי בכל צעד כופלים במספר שלילי.</p>
 </div>
 </div>
 </div>
-<div id="box-q-seq-formula" class="thmbox thmbox-question" title="נוסחה מאיברים">
-<p><strong>שאלה 2.1.7 — נוסחה מאיברים.</strong></p>
-<p>מצאו את הנוסחה הפשוטה ביותר שמתאימה לאיברים הראשונים.</p>
+<div id="box-q-seq-formula" class="thmbox thmbox-question" title="נוסחה שמתאימה לאיברים">
+<p><strong>שאלה 2.1.9 — נוסחה שמתאימה לאיברים.</strong></p>
+<p>בכל סעיף נתונים ארבעת האיברים הראשונים. מצאו נוסחה לאיבר הכללי המתאימה להם; תיתכן יותר מנוסחה אחת.</p>
 <div class="fill">
-<p><strong>(א)</strong> <span class="math inline">\(7, 12, 17, 22\)</span></p>
-<p><span class="fill-ltr"><span class="math inline">\(a_n =\)</span> <span class="blank" data-ans="5n+2" data-vars="n"><span class="math inline">\(5n + 2\)</span></span></span></p>
-<p><strong>(ב)</strong> <span class="math inline">\(1, 4, 9, 16\)</span></p>
-<p><span class="fill-ltr"><span class="math inline">\(a_n =\)</span> <span class="blank" data-ans="n^2" data-vars="n"><span class="math inline">\(n^2\)</span></span></span></p>
-<p><strong>(ג)</strong> <span class="math inline">\(\frac{1}{2}, \frac{1}{4}, \frac{1}{8}, \frac{1}{16}\)</span></p>
-<p><span class="fill-ltr"><span class="math inline">\(a_n =\)</span> <span class="blank" data-ans="1/2^n" data-vars="n"><span class="math inline">\(\frac{1}{2^n}\)</span></span></span></p>
+<div class="sequence-table sequence-formula-table" dir="ltr">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">סעיף</th>
+<th style="text-align: center;">האיברים הנתונים</th>
+<th style="text-align: center;">נוסחה לאיבר הכללי</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">(א)</td>
+<td style="text-align: center;"><span class="math inline">\(7,12,17,22\)</span></td>
+<td style="text-align: center;"><span class="fill-ltr"><span class="math inline">\(a_n=\)</span> <span class="blank" data-ans="5n+2" data-vars="n" data-check-at="1,2,3,4" data-w="14"><span class="math inline">\(5n+2\)</span></span></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">(ב)</td>
+<td style="text-align: center;"><span class="math inline">\(1,4,9,16\)</span></td>
+<td style="text-align: center;"><span class="fill-ltr"><span class="math inline">\(a_n=\)</span> <span class="blank" data-ans="n^2" data-vars="n" data-check-at="1,2,3,4" data-w="14"><span class="math inline">\(n^2\)</span></span></span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">(ג)</td>
+<td style="text-align: center;"><span class="math inline">\(\frac12,\frac{1}{4},\frac18,\frac1{16}\)</span></td>
+<td style="text-align: center;"><span class="fill-ltr"><span class="math inline">\(a_n=\)</span> <span class="blank" data-ans="1/2^n" data-vars="n" data-check-at="1,2,3,4" data-w="14"><span class="math inline">\(\frac{1}{2^n}\)</span></span></span></td>
+</tr>
+</tbody>
+</table>
+</div>
 <div class="explain">
-<p><strong>(א)</strong> חשבונית עם <span class="math inline">\(a_1 = 7\)</span> ו-<span class="math inline">\(:d = 5\)</span> <span class="math display">\[\begin{aligned} a_n &amp;= 7 + 5(n - 1) \\ &amp;= 7 + 5n - 5 \\ &amp;= 5n + 2 \end{aligned}\]</span></p>
-<p><strong>(ב)</strong> אלה הריבועים <span class="math inline">\(,1^2, 2^2, 3^2, 4^2\)</span> ולכן <span class="math inline">\(.a_n = n^2\)</span></p>
-<p><strong>(ג)</strong> הנדסית עם <span class="math inline">\(a_1 = \frac{1}{2}\)</span> ו-<span class="math inline">\(,q = \frac{1}{2}\)</span> ולכן <span class="math inline">\(.a_n = \frac{1}{2}\left(\frac{1}{2}\right)^{n-1} = \frac{1}{2^n}\)</span></p>
+<p><strong>(א)</strong> אפשר להמשיך כסדרה חשבונית, עם הפרש <span class="math inline">\(5\)</span>: <span class="math display">\[a_n=7+5(n-1)=5n+2.\]</span></p>
+<p><strong>(ב)</strong> האיברים הנתונים הם הריבועים של האינדקסים שלהם: <span class="math display">\[a_n=n^2.\]</span></p>
+<p><strong>(ג)</strong> אפשר להמשיך כסדרה הנדסית, עם מנה <span class="math inline">\(\frac12\)</span>: <span class="math display">\[a_n=\frac1{2^n}.\]</span></p>
 </div>
 </div>
 </div>
-<div id="box-q-seq-kind" class="thmbox thmbox-question" title="חשבונית או הנדסית?">
-<p><strong>שאלה 2.1.8 — חשבונית או הנדסית?</strong></p>
-<p><strong>(א)</strong> הסדרה שמתחילה ב-<span class="math inline">\(5, 2, -1, -4\)</span></p>
-<div class="tf-quiz" data-correct="1">
-<button type="button" class="tf-opt" data-val="1">חשבונית</button>
-<button type="button" class="tf-opt" data-val="2">הנדסית</button>
-<button type="button" class="tf-opt" data-val="3">אף אחת</button>
-<div class="tf-feedback" aria-live="polite"></div>
-<div class="tf-why">
-<p>חשבונית: בכל צעד מוסיפים <span class="math inline">\(.{-}3\)</span></p>
+<div id="box-q-seq-kind" class="thmbox thmbox-question" title="חשבונית, הנדסית או אף אחת מהן?">
+<p><strong>שאלה 2.1.10 — חשבונית, הנדסית או אף אחת מהן?</strong></p>
+<p>בכל סעיף נתונים כמה איברים ראשונים. בדקו אם אפשר להמשיך אותם לסדרה חשבונית או לסדרה הנדסית.</p>
+<p>אם אפשר, מצאו את האיבר הראשון, את ההפרש או המנה, ונוסחה לאיבר הכללי. אחרת, הראו שההפרשים והמנות אינם קבועים.</p>
+<p><strong>(א)</strong> <span class="math inline">\(5,2,-1,-4\)</span></p>
+<div class="sequence-classify" data-answer="arithmetic" data-terms="5,2,-1,-4" data-formula="8-3n">
+<div class="hint">
+<p>בדקו את ההפרשים ואת המנות בין איברים עוקבים. האם הם קבועים?</p>
+</div>
+<div class="explain">
+<p>אפשר להמשיך לסדרה <strong>חשבונית</strong>: ההפרש בכל צעד הוא <span class="math inline">\(-3\)</span>. <span class="math display">\[a_1=5,\qquad d=-3.\]</span> הנוסחה לאיבר הכללי היא <span class="math display">\[a_n=5-3(n-1)=8-3n.\]</span></p>
 </div>
 </div>
-<p><strong>(ב)</strong> הסדרה שמתחילה ב-<span class="math inline">\(2, -6, 18, -54\)</span></p>
-<div class="tf-quiz" data-correct="2">
-<button type="button" class="tf-opt" data-val="1">חשבונית</button>
-<button type="button" class="tf-opt" data-val="2">הנדסית</button>
-<button type="button" class="tf-opt" data-val="3">אף אחת</button>
-<div class="tf-feedback" aria-live="polite"></div>
-<div class="tf-why">
-<p>הנדסית: בכל צעד כופלים ב-<span class="math inline">\(.{-}3\)</span></p>
+<p><strong>(ב)</strong> <span class="math inline">\(2,-6,18,-54\)</span></p>
+<div class="sequence-classify" data-answer="geometric" data-terms="2,-6,18,-54" data-formula="2*(-3)^(n-1)">
+<div class="hint">
+<p>בדקו את ההפרשים ואת המנות בין איברים עוקבים. גם מספר שלילי יכול להיות מנה קבועה.</p>
+</div>
+<div class="explain">
+<p>אפשר להמשיך לסדרה <strong>הנדסית</strong>: המנה בכל צעד היא <span class="math inline">\(-3\)</span>. <span class="math display">\[a_1=2,\qquad q=-3.\]</span> הנוסחה לאיבר הכללי היא <span class="math display">\[a_n=2(-3)^{n-1}.\]</span></p>
 </div>
 </div>
-<p><strong>(ג)</strong> הסדרה שמתחילה ב-<span class="math inline">\(1, 2, 4, 7, 11\)</span></p>
-<div class="tf-quiz" data-correct="3">
-<button type="button" class="tf-opt" data-val="1">חשבונית</button>
-<button type="button" class="tf-opt" data-val="2">הנדסית</button>
-<button type="button" class="tf-opt" data-val="3">אף אחת</button>
-<div class="tf-feedback" aria-live="polite"></div>
-<div class="tf-why">
-<p>אף אחת: ההפרשים <span class="math inline">\(1, 2, 3, 4\)</span> אינם קבועים, וגם המנות אינן קבועות.</p>
+<p><strong>(ג)</strong> <span class="math inline">\(1,2,4,7,11\)</span></p>
+<div class="sequence-classify" data-answer="neither" data-terms="1,2,4,7,11">
+<div class="hint">
+<p>די למצוא שני הפרשים שונים כדי לשלול סדרה חשבונית, ושתי מנות שונות כדי לשלול סדרה הנדסית.</p>
+</div>
+<div class="explain">
+<p><strong>אף אחת מהן.</strong> ההפרשים אינם קבועים: <span class="math display">\[a_2-a_1=1,\qquad a_3-a_2=2.\]</span> גם המנות אינן קבועות: <span class="math display">\[\frac{a_2}{a_1}=2,\qquad\frac{a_4}{a_3}=\frac74.\]</span> לכן אי אפשר להמשיך את האיברים הנתונים לסדרה חשבונית או הנדסית.</p>
 </div>
 </div>
 </div>

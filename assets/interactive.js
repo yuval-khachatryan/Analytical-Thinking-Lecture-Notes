@@ -1105,8 +1105,15 @@ function envText(env) {
 }
 
 // ref: the reference expression (the answer, or the previous line).
-function compareExpr(ref, got, vars, positive) {
+function compareExpr(ref, got, vars, positive, integers) {
   var envs = sampleEnvs(vars, positive), both = 0, bad = null, gotMissing = null;
+  if (integers && integers.length) envs.forEach(function (env) {
+    integers.forEach(function (v) {
+      if (!(v in env)) return;
+      env[v] = Math.round(env[v]);
+      if (positive && positive.indexOf(v) >= 0) env[v] = Math.max(1, env[v]);
+    });
+  });
   for (var i = 0; i < envs.length; i++) {
     var a = ev(ref, envs[i]), b = ev(got, envs[i]);
     if (isFinite(a) && isFinite(b)) {
@@ -1119,7 +1126,9 @@ function compareExpr(ref, got, vars, positive) {
     if (both === 0) return { ok: false, why: "undefined" };
     return { ok: true, gotMissing: gotMissing };
   }
-  var nice = niceEnvs(vars, positive);
+  var nice = niceEnvs(vars, positive).filter(function (env) {
+    return !(integers && integers.some(function (v) { return v in env && !Number.isInteger(env[v]); }));
+  });
   for (var j = 0; j < nice.length; j++) {
     var a2 = ev(ref, nice[j]), b2 = ev(got, nice[j]);
     if (isFinite(a2) && isFinite(b2) && !close(a2, b2, 1e-7)) { bad = nice[j]; break; }
@@ -1230,6 +1239,10 @@ function checkForm(form, ans, input) {
   }
   var n;
   try { n = parseExpr(input); } catch (e) { return null; }
+  if (form === "calculation") {
+    while (n.t === "neg") n = n.a;
+    return finishedNumber(n) ? "התוצאה נכונה. בשדה הזה כתבו את החישוב שהוביל אליה, בלי לפשט אותו; את התוצאה כתבו בשדה הבא." : null;
+  }
   if (form === "product") { while (n.t === "neg") n = n.a; return n.t === "mul" ? null : FORM_MSG.product; }
   if (form === "simple") return nodes(n) <= nodes(parseExpr(ans)) ? null : FORM_MSG.simple;
   return null;
@@ -1327,7 +1340,21 @@ function checkValue(kind, ans, input, vars, opts) {
   var allowed = (vars && vars.length ? vars : refVars);
   var stray = gotVars.filter(function (v) { return allowed.indexOf(v) < 0; });
   if (stray.length) return { ok: false, msg: "המשתנה \\(" + stray[0] + "\\) לא אמור להופיע כאן. השתמשו ב-\\(" + allowed.join(", ") + "\\)." };
-  var r = compareExpr(ref, got, allowed.length ? allowed : ["x"], opts.positive);
+  // An explicit finite-data task asks for a formula fitting the given terms,
+  // not an identity with the author's chosen continuation.
+  if (opts.checkAt && allowed.length === 1) {
+    var samples = opts.checkAt.split(",").map(Number), variable = allowed[0];
+    for (var si = 0; si < samples.length; si++) {
+      var env = {}; env[variable] = samples[si];
+      var expected = ev(ref, env), actual = ev(got, env);
+      if (!isFinite(actual)) return {ok:false,msg:"הביטוי אינו מוגדר עבור " + envText(env) + "."};
+      if (!close(expected, actual, 1e-9))
+        return {ok:false,msg:"עבור " + envText(env) + " מתקבל \\(" + fmtNum(actual) +
+          "\\), אבל האיבר הנתון הוא \\(" + fmtNum(expected) + "\\)."};
+    }
+    return {ok:true};
+  }
+  var r = compareExpr(ref, got, allowed.length ? allowed : ["x"], opts.positive, opts.integers);
   if (r.ok) return { ok: true };
   if (r.why === "value" && r.env) return { ok: false, msg: "לא בדיוק. עבור " + envText(r.env) + " הביטוי שלכם שווה \\(" + fmtNum(r.gotVal) + "\\), אבל צריך לקבל \\(" + fmtNum(r.refVal) + "\\)." };
   return { ok: false, msg: "הביטוי שלכם אינו שווה לתשובה." };
@@ -3412,7 +3439,7 @@ function initGroup(G) {
     if (ans === null) return;
     var kind = attr(sp, "kind") || guessKind(ans);
     var w = +attr(sp, "w") || Math.min(26, Math.max(4, normalize(ans).replace(/\s+/g, "").length + 2));
-    if (sp.closest("td, th")) w = Math.min(w, kind==="text"?14:7); // classifications need room for words
+    if (sp.closest("td, th") && !sp.closest(".sequence-table")) w = Math.min(w, kind==="text"?14:7); // classifications need room for words
     var shown = el("span", { class: "blank-answer" });
     while (sp.firstChild) shown.appendChild(sp.firstChild);
     shown.hidden = true;
@@ -3429,7 +3456,7 @@ function initGroup(G) {
     var it = { sp: sp, ans: ans, kind: kind, input: input, preview: pv, mark: mark, shown: shown,
       vars: (attr(sp, "vars") || "").split(",").map(function (s) { return s.trim(); }).filter(Boolean),
       miss: parseMiss(attr(sp, "miss")),
-      opts: { form: attr(sp, "form"), allowExpression: attr(sp,"allow-expression")==="true", positive: (attr(sp, "positive") || "").split(",").map(function (s) { return s.trim(); }).filter(Boolean) } };
+      opts: { form: attr(sp, "form"), checkAt: attr(sp, "check-at"), integers: (attr(sp,"integer") || "").split(",").filter(Boolean), allowExpression: attr(sp,"allow-expression")==="true", positive: (attr(sp, "positive") || "").split(",").map(function (s) { return s.trim(); }).filter(Boolean) } };
     input.addEventListener("focus", function () { if (isMathInput(input) && pv) pv.innerHTML = ""; });
     input.addEventListener("keydown", function (e) {
       if (e.key === "Enter" && !e.isComposing) { e.preventDefault(); checkOne(it, true); allDone(); }
@@ -3608,6 +3635,97 @@ function initGroup(G) {
     say(msg, "");
     bShow.hidden = false; bReset.hidden = true;
     tellPart(false);
+  }
+}
+// Classify first, then write the parameters and formula (or numerical evidence).
+function initSequenceClassify(box) {
+  var expected=attr(box,"answer"), terms=attr(box,"terms").split(","), formula=attr(box,"formula");
+  var model=box.querySelector(".explain"), hint=box.querySelector(".hint"), cache={};
+  if(model)model.hidden=true;if(hint)hint.hidden=true;
+  var select=el("select",{class:"sequence-kind-select","aria-label":"סוג הסדרה"},[
+    el("option",{value:"",text:"בחרו סוג סדרה"}),
+    el("option",{value:"arithmetic",text:"חשבונית"}),
+    el("option",{value:"geometric",text:"הנדסית"}),
+    el("option",{value:"neither",text:"אף אחת מהן"})
+  ]);
+  var panels=el("div",{class:"sequence-kind-panels"}),msg=el("div",{class:"ix-msg","aria-live":"polite"});
+  var ui=el("div",{class:"sequence-kind-ui"},[
+    el("label",{class:"sequence-kind-label"},["סוג הסדרה: ",select]),panels
+  ]);
+  ui.appendChild(el("div",{class:"ix-bar"},[
+    el("button",{type:"button",class:"ix-btn ix-main",text:"בדיקה",onclick:check}),
+    hint&&el("button",{type:"button",class:"ix-btn",text:"רמז",onclick:function(){hint.hidden=false;typeset(hint);}}),
+    el("button",{type:"button",class:"ix-btn ix-quiet",text:"הצגת תשובה",onclick:function(){if(model){model.hidden=false;typeset(model);}closeInputKeys();}}),
+    el("button",{type:"button",class:"ix-btn ix-quiet",text:"ניסיון חדש",onclick:reset})
+  ]));
+  ui.appendChild(msg);box.insertBefore(ui,box.firstChild);
+  select.addEventListener("change",function(){
+    closeInputKeys();say(msg,"");if(model)model.hidden=true;if(hint)hint.hidden=true;
+    Object.keys(cache).forEach(function(k){cache[k].node.hidden=true;});
+    if(select.value){var p=cache[select.value]||build(select.value);p.node.hidden=false;typeset(p.node);}
+  });
+  function field(panel,host,name,label,ans,kind,width,accessible) {
+    var input=mathInput({class:"blank-input",size:String(width),dir:"ltr","aria-label":accessible,autocomplete:"off"},kind);
+    var preview=el("span",{class:"ix-preview ix-field-preview",dir:"ltr"}),mark=el("span",{class:"blank-mark","aria-hidden":"true"});
+    var entry=el("span",{class:"blank-entry"},[input,preview]),blank=el("span",{class:"blank blank-ready"},[entry,mark]);
+    host.appendChild(el("p",{class:"sequence-classify-field",dir:"ltr"},[el("span",{html:mx("\\("+label+"=\\)")}),blank]));
+    var item={input:input,preview:preview,mark:mark,blank:blank,ans:ans,kind:kind};
+    input.setAttribute("data-field",name);panel.items.push(item);
+    bindInputKeys(input,kind==="expr"?[["n","n"],["שבר","/"],["חזקה","^"],["( )","()"]]:kind,true);
+    input.addEventListener("input",function(){
+      blank.classList.remove("ok","bad","warn");input.removeAttribute("aria-invalid");mark.textContent="";say(msg,"");if(model)model.hidden=true;
+      preview.innerHTML="";
+      if(!isMathInput(input)&&readInput(input).trim()){
+        var parsed=parsedSoFar(readInput(input),parseExpr);
+        if(parsed)showParsed(preview,"\\("+tex(parsed.node)+"\\)",parsed.whole);
+      }
+    });
+    input.addEventListener("focus",function(){if(isMathInput(input))preview.innerHTML="";});
+    input.addEventListener("keydown",function(e){if(e.key==="Enter"&&!e.isComposing){e.preventDefault();check();}});
+  }
+  function build(kind) {
+    var panel={node:el("div",{class:"sequence-kind-panel","data-kind":kind}),items:[]};cache[kind]=panel;panels.appendChild(panel.node);
+    if(kind==="neither") {
+      panel.node.appendChild(el("p",{text:"השוו את ההפרשים ואת המנות הבאים:"}));
+      var differences=el("div",{class:"sequence-inputs"}),ratios=el("div",{class:"sequence-inputs"});
+      panel.node.appendChild(differences);panel.node.appendChild(ratios);
+      field(panel,differences,"difference1","a_2-a_1","("+terms[1]+")-("+terms[0]+")","num",5,"ההפרש בין האיבר השני לראשון");
+      field(panel,differences,"difference2","a_3-a_2","("+terms[2]+")-("+terms[1]+")","num",5,"ההפרש בין האיבר השלישי לשני");
+      field(panel,ratios,"ratio1","\\frac{a_2}{a_1}","("+terms[1]+")/("+terms[0]+")","num",5,"מנת האיבר השני בראשון");
+      field(panel,ratios,"ratio2","\\frac{a_4}{a_3}","("+terms[3]+")/("+terms[2]+")","num",5,"מנת האיבר הרביעי בשלישי");
+    } else {
+      var params=el("div",{class:"sequence-inputs"}),general=el("div",{class:"sequence-formula"});
+      panel.node.appendChild(params);panel.node.appendChild(general);
+      field(panel,params,"first","a_1",terms[0],"num",5,"האיבר הראשון");
+      field(panel,params,"step",kind==="arithmetic"?"d":"q","("+terms[1]+")"+(kind==="arithmetic"?"-":"/")+"("+terms[0]+")","num",5,kind==="arithmetic"?"ההפרש הקבוע":"המנה הקבועה");
+      field(panel,general,"formula","a_n",formula||"0","expr",14,"נוסחה לאיבר הכללי");
+    }
+    return panel;
+  }
+  function check() {
+    var kind=select.value;
+    if(!kind){say(msg,"בחרו תחילה את סוג הסדרה.","info");select.focus();return;}
+    if(kind!==expected){
+      var why=kind==="arithmetic"?"לא כל ההפרשים בין איברים עוקבים שווים.":kind==="geometric"?"לא כל המנות בין איברים עוקבים שוות.":"בדקו שוב: אפשר להמשיך את האיברים הנתונים לסדרה חשבונית או הנדסית.";
+      say(msg,"הבחירה אינה מתאימה. "+why,"bad");return;
+    }
+    var firstBad=null;
+    cache[kind].items.forEach(function(item){
+      var result;
+      try {result=checkAnswer(item.kind,item.ans,readInput(item.input),item.kind==="expr"?["n"]:[],{positive:["n"],integers:["n"]});}
+      catch(e){result={ok:false,msg:errMsg(e)};}
+      item.blank.classList.toggle("ok",result.ok);item.blank.classList.toggle("bad",!result.ok&&!result.empty&&!result.partial);item.blank.classList.toggle("warn",!!result.partial);
+      item.input.setAttribute("aria-invalid",String(!result.ok&&!result.empty));
+      item.mark.textContent=result.ok?"✓":result.empty?"":result.partial?"!":"✗";
+      if(!result.ok&&!firstBad)firstBad={item:item,result:result};
+    });
+    if(firstBad){say(msg,"הבחירה נכונה. "+(firstBad.result.empty?"השלימו את החישובים.":firstBad.result.msg),firstBad.result.empty?"info":firstBad.result.partial?"warn":"bad");firstBad.item.input.focus();return;}
+    say(msg,"✓ התשובה נכונה!","good");if(model){model.hidden=false;typeset(model);}
+  }
+  function reset() {
+    closeInputKeys();select.value="";
+    Object.keys(cache).forEach(function(k){var p=cache[k];p.node.hidden=true;p.items.forEach(function(it){it.input.value="";it.input.removeAttribute("aria-invalid");it.preview.innerHTML="";it.mark.textContent="";it.blank.classList.remove("ok","bad","warn");});});
+    if(model)model.hidden=true;if(hint)hint.hidden=true;say(msg,"");select.focus();
   }
 }
 function parseMiss(s) {
@@ -5079,6 +5197,7 @@ function init() {
   }, true);
   initRefs();
   initBlanks();
+  document.querySelectorAll(".sequence-classify").forEach(initSequenceClassify);
   initSetCases();
   document.querySelectorAll(".composition-practice").forEach(initComposition);
   document.querySelectorAll(".derive").forEach(initDerive);
