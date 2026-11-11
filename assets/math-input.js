@@ -41,6 +41,13 @@
         cup:" U ", cap:" cap ", setminus:"\\", backslash:"\\", emptyset:"{}", varnothing:"{}", in:" in ", lbrace:"{", rbrace:"}",
         lbrack:"[", rbrack:"]", lparen:"(", rparen:")", vert:"|", mid:"|", colon:":", lvert:"|", rvert:"|", lfloor:"floor(", rfloor:")", lor:" or ", vee:" or ", land:" and ", wedge:" and ", neg:" not ", lnot:" not " };
       if (Object.prototype.hasOwnProperty.call(symbols, m)) return symbols[m];
+      if(m==="to"||m==="rightarrow")return "->";
+      if(m==="lim"){
+        space();var index="n";
+        if(s[at]==="_"){at++;var bound=argument().replace(/\s/g,"");var match=/^([a-z])->inf$/.exec(bound);if(!match)throw new Error("כאן מחשבים גבול כשהאינדקס שואף לאינסוף.");index=match[1];}
+        space();var body=s[at]==="("?group("(",")"):argument();
+        return "lim("+(index!=="n"?index+",":"")+body+")";
+      }
       if (/^(quad|qquad|enspace|thinspace|medspace|thickspace|displaystyle|textstyle|scriptstyle|scriptscriptstyle)$/.test(m)) return " ";
       if (/^(frac|dfrac|tfrac|cfrac)$/.test(m)) { var a = argument(), b = argument(); return "((" + a + ")/(" + b + "))"; }
       if (m === "sqrt") {
@@ -91,6 +98,7 @@
     return s;
   }
   var templates = {
+    "lim()":"\\lim_{n\\to\\infty}\\left(#0\\right)",
     "{x|}":"\\left\\{x\\mid #0\\right\\}",
     "/":"\\frac{#@}{#?}", "^":"#@^{#?}", "√()":"\\sqrt{#0}", "sqrt()":"\\sqrt{#0}", "cbrt()":"\\sqrt[3]{#0}", "root()":"\\sqrt[#?]{#0}",
     "()":"\\left(#0\\right)", "[]":"\\left[#0\\right]", "[)":"\\left[#0\\right)", "(]":"\\left(#0\\right]",
