@@ -99,6 +99,7 @@
   }
   var templates = {
     "lim()":"\\lim_{n\\to\\infty}\\left(#0\\right)",
+    "_":"#@_{#?}",
     "{x|}":"\\left\\{x\\mid #0\\right\\}",
     "/":"\\frac{#@}{#?}", "^":"#@^{#?}", "√()":"\\sqrt{#0}", "sqrt()":"\\sqrt{#0}", "cbrt()":"\\sqrt[3]{#0}", "root()":"\\sqrt[#?]{#0}",
     "()":"\\left(#0\\right)", "[]":"\\left[#0\\right]", "[)":"\\left[#0\\right)", "(]":"\\left(#0\\right]",
@@ -274,6 +275,8 @@
       if(selection){inserted="("+selection+")"+text+"()";offset=inserted.length-1;}
       else if(hasLeft){inserted=text+"()";offset=2;}
       else {inserted="()"+text+"()";offset=1;}
+    }else if(text==="_"){
+      inserted=selection+"_()";offset=inserted.length-1;
     }else if(text==="log_()"){
       inserted="log_()("+selection+")";offset=5;
     }else if(text==="root()"){
@@ -295,7 +298,10 @@
       input.dispatchEvent(new Event("input",{bubbles:true}));return true;
     }
     var logical=/^(או|וגם|ולא|לא)$/.test(text.trim());
-    control(input).insert(Object.prototype.hasOwnProperty.call(templates, text) ? templates[text] : text, {format:"latex", mode:"math", selectionMode:logical?"after":"placeholder"});
+    var insertion=Object.prototype.hasOwnProperty.call(templates,text)?templates[text]:text;
+    var indexed=/^([a-z])_\(([a-z])\)$/.exec(text);
+    if(indexed)insertion=indexed[1]+"_{"+indexed[2]+"}";
+    control(input).insert(insertion, {format:"latex", mode:"math", selectionMode:logical?"after":"placeholder"});
     // The next expression belongs outside the Hebrew text atom.
     if(logical)control(input).mode="math";
     return true;

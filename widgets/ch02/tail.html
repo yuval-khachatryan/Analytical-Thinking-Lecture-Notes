@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>בוחרים זנב של סדרה</title>
+<style>
+body{margin:0;background:transparent;font:15px/1.45 Arial,sans-serif;color:#1f2937}
+.w{padding:.55rem .7rem;border:1px solid #cbd5e1;border-radius:8px;background:white}
+.m{display:inline-block;direction:ltr;unicode-bidi:isolate;font:17px 'Cambria Math','Times New Roman',serif}
+.fr{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;line-height:1.1;margin:0 .12em}.fr>span:first-child{border-bottom:1px solid;padding:0 .1em}
+.heading{text-align:center}.controls{display:flex;align-items:center;flex-wrap:wrap;gap:.4rem .7rem}
+label{display:inline-flex;align-items:center;gap:.4rem}input{direction:ltr;width:9rem}
+button{font:inherit;border:1px solid #94a3b8;border-radius:6px;padding:.2rem .45rem;background:#f8fafc;color:inherit;cursor:pointer}button:disabled{opacity:.5;cursor:default}
+svg{display:block;width:100%;height:220px}p{margin:.35rem 0 0}.tail-line{color:#4338ca}.caption{font-size:.85rem;color:#475569}
+</style>
+<div class="w">
+  <div class="heading">מתחילים בסדרה <span class="m"><i>a</i><sub><i>n</i></sub> = <span class="fr"><span>1</span><span><i>n</i></span></span></span></div>
+  <svg id="plot" viewBox="0 0 760 220" role="img" aria-label="איברי הסדרה והזנב שנבחר"></svg>
+  <div class="controls">
+    <label for="start">האינדקס הראשון בזנב <span class="m">N</span><input id="start" type="range" min="1" max="9" step="1" value="5"></label>
+    <output id="index" for="start" class="m"></output>
+    <button id="change-prefix" type="button">שינוי האיברים שלפני N</button>
+    <button id="restore" type="button" hidden>שחזור הסדרה המקורית</button>
+  </div>
+  <div aria-live="polite">
+    <p class="tail-line">הזנב שנבחר: <span class="m" id="tail-terms"></span></p>
+    <p class="caption" id="explanation"></p>
+  </div>
+  <p class="caption">בכחול: כל האיברים החל מהאינדקס שבחרתם. באפור: האיברים שלפניו. מוצגים 12 האיברים הראשונים; הזנב ממשיך ללא סוף.</p>
+</div>
+<script src="../shared/autosize.js"></script>
+<script>
+(function(){
+  'use strict';
+  var plot=document.getElementById('plot'),slider=document.getElementById('start'),change=document.getElementById('change-prefix'),restore=document.getElementById('restore');
+  var changed=[[3,4],[1,1],[1,2],[7,8],[5,8],[3,8],[1,4],[1,2]],values=Array.from({length:12},function(_,i){return 1/(i+1);}),blue='#4f46e5',grey='#94a3b8';
+  function svg(tag,attrs,text){
+    var node=document.createElementNS('http://www.w3.org/2000/svg',tag);
+    Object.keys(attrs).forEach(function(key){node.setAttribute(key,attrs[key]);});
+    if(text!==undefined)node.textContent=text;plot.appendChild(node);return node;
+  }
+  function label(text,x,y,color,anchor){return svg('text',{x:x,y:y,fill:color||'#475569','text-anchor':anchor||'middle','font-family':'Arial, sans-serif','font-size':12,direction:'ltr'},text);}
+  function term(n){return values[n-1]===1/n?[1,n]:changed[n-1];}
+  function fraction(n){var q=term(n);return q[1]===1?String(q[0]):'<span class="fr"><span>'+q[0]+'</span><span>'+q[1]+'</span></span>';}
+  function plain(n){var q=term(n);return q[1]===1?String(q[0]):q[0]+'/'+q[1];}
+  function draw(message){
+    var N=Number(slider.value),width=Math.max(320,plot.getBoundingClientRect().width||760),left=40,right=30,top=23,bottom=183;
+    function X(n){return left+(n-.5)*(width-left-right)/12;}
+    function Y(value){return bottom-value*(bottom-top)/1.1;}
+    plot.setAttribute('viewBox','0 0 '+width+' 220');plot.replaceChildren();
+    plot.setAttribute('aria-label','הזנב מתחיל באיבר באינדקס '+N+'. האיברים שלפניו מסומנים באפור.');
+    var boundary=left+(N-1)*(width-left-right)/12;
+    svg('rect',{x:boundary,y:top,width:width-right-boundary,height:bottom-top,fill:'#eef2ff'});
+    svg('line',{x1:boundary,y1:top,x2:boundary,y2:bottom,stroke:blue,'stroke-dasharray':'4 4'});
+    svg('path',{d:'M '+left+' '+top+' V '+bottom+' H '+(width-right+10),fill:'none',stroke:'#64748b'});
+    svg('path',{d:'M '+(width-right+5)+' '+(bottom-3)+' L '+(width-right+10)+' '+bottom+' L '+(width-right+5)+' '+(bottom+3),fill:'none',stroke:'#64748b'});
+    [0,.5,1].forEach(function(value){label(value===.5?'½':String(value),left-9,Y(value)+4,'#64748b','end');});
+    label('n',width-right+10,bottom+30,'#475569','end');label('aₙ',left,top-8);
+    for(var n=1;n<=12;n++){
+      var tail=n>=N,value=values[n-1];
+      svg('line',{x1:X(n),y1:bottom,x2:X(n),y2:bottom+4,stroke:'#64748b'});
+      label(String(n),X(n),bottom+18,tail?blue:grey);
+      var point=svg('circle',{cx:X(n),cy:Y(value),r:n===N?5:3.8,fill:tail?blue:grey,opacity:tail?1:.65,'data-index':n,'data-tail':String(tail),'data-value':value});
+      var title=document.createElementNS('http://www.w3.org/2000/svg','title');title.textContent='a'+n+' = '+plain(n);point.appendChild(title);
+    }
+    label('a'+N+' = '+plain(N),X(N)+8,Y(values[N-1])-13,blue,'start');
+    label('…',width-right+8,Y(1/13)+4,blue);
+    document.getElementById('index').textContent='N = '+N;
+    document.getElementById('tail-terms').innerHTML=[N,N+1,N+2].map(function(n){return '<i>a</i><sub>'+n+'</sub>';}).join(', ')+', … = '+[N,N+1,N+2].map(fraction).join(', ')+', …';
+    document.getElementById('explanation').textContent=typeof message==='string'?message:N===1?'אין איברים לפני הזנב: בחרתם את הסדרה כולה.':(N===2?'לפני הזנב יש איבר אחד.':'לפני הזנב יש '+(N-1)+' איברים.')+' בחירת זנב אינה משנה את האיברים עצמם.';
+    change.disabled=N===1;restore.hidden=values.every(function(value,i){return value===1/(i+1);});
+  }
+  slider.addEventListener('input',function(){draw();});
+  change.addEventListener('click',function(){
+    if(change.disabled)return;var N=Number(slider.value);
+    for(var i=0;i<N-1;i++)values[i]=values[i]===1/(i+1)?changed[i][0]/changed[i][1]:1/(i+1);
+    draw((N===2?'שינינו את האיבר שלפני הזנב.':'שינינו את '+(N-1)+' האיברים שלפני הזנב.')+' כל איברי הזנב נשארו בדיוק כפי שהיו.');
+  });
+  restore.addEventListener('click',function(){values=values.map(function(_,i){return 1/(i+1);});draw('חזרנו לסדרה המקורית.');});
+  window.addEventListener('resize',function(){draw();});draw();
+})();
+</script>
+</html>

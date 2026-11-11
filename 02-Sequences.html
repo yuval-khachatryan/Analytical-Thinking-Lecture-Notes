@@ -720,7 +720,7 @@ span.blank.warn .blank-mark { color: #b45309; }
 .seq-bound-transcript li { margin: .25rem 0; }
 .seq-student-setup { margin-block: .4rem; }
 .seq-student-setup p { margin-block: .35rem; }
-.blank-choice { width: auto !important; min-width: 5rem; font: inherit; padding: .2rem .4rem; }
+.blank-choice { width: auto !important; min-width: 5rem; max-width: calc(100% - .3rem); box-sizing: border-box; direction: rtl; font: inherit; padding: .2rem .4rem; }
 .sequence-investigation-ui { font-size: .95rem; }
 .si-tail-controls, .si-fields { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem .8rem; }
 .si-tail-controls { margin-bottom: .5rem; font-size: .86rem; }
@@ -2245,6 +2245,7 @@ a_5&amp;=2(-3)^4=162.
 <p>שינוי של מספר סופי של איברים אינו משנה את הגבול או את עצם ההתכנסות.</p>
 </div>
 <p>למשל, אם נחליף את שלושת האיברים הראשונים של <span class="math inline">\(\frac1n\)</span> במספרים <span class="math inline">\(100\)</span>, <span class="math inline">\(-1000\)</span> ו <span class="math inline">\(7\)</span>, הזנב נשאר אותו זנב. כשבוחרים <span class="math inline">\(N\)</span> אפשר להתקדם מעבר לאיברים ששינינו, ולכן הגבול נשאר <span class="math inline">\(0\)</span>.</p>
+<iframe class="widget-frame" src="widgets/ch02/tail.html" loading="lazy" title="בחירת זנב ושינוי האיברים שלפניו"></iframe>
 <div class="thmbox thmbox-self-check">
 <p><strong>בדיקה עצמית.</strong></p>
 <p>שינינו את מיליון האיברים הראשונים של סדרה המתכנסת אל <span class="math inline">\(2\)</span>. האם הגבול יכול להשתנות?</p>
@@ -2282,9 +2283,12 @@ a_5&amp;=2(-3)^4=162.
 </figure>
 </div>
 </div>
+<div id="box-exm-subsequence-choice" class="thmbox thmbox-example" title="מהי תת־סדרה ומה לא?">
+<p><strong>דוגמה 2.2.8 — מהי תת־סדרה ומה לא?</strong></p>
 <p>נבחן את הסדרה <span class="math display">\[1,2,3,4,5,6,\ldots\]</span> הסדרה <span class="math display">\[2,4,6,\ldots\]</span> היא תת־סדרה שלה: בחרנו איברים מהסדרה המקורית ושמרנו על הסדר שבו הם מופיעים.</p>
 <p>לעומת זאת, הסדרה <span class="math display">\[2,1,3,4,5,6,\ldots\]</span> אינה תת־סדרה שלה. אלה אותם מספרים, אבל הסדר השתנה: אחרי שבחרנו את האיבר <span class="math inline">\(2\)</span>, אי אפשר לחזור לאינדקס של האיבר <span class="math inline">\(1\)</span>.</p>
 <p><strong>כל סדרה היא תת־סדרה של עצמה.</strong> אין חובה לדלג על איברים: בוחרים <span class="math inline">\(n_k=k\)</span>, ומקבלים את כל האיברים באותו סדר.</p>
+</div>
 <div class="thmbox thmbox-self-check" title="מה מותר לבחור?">
 <p><strong>בדיקה עצמית — מה מותר לבחור?</strong></p>
 <p>האם <span class="math inline">\(1,1,2,3,4,\ldots\)</span> היא תת־סדרה של <span class="math inline">\(1,2,3,4,\ldots\)</span>?</p>
@@ -2298,13 +2302,13 @@ a_5&amp;=2(-3)^4=162.
 </div>
 </div>
 <div id="box-thm-subsequence-limit" class="thmbox thmbox-theorem" title="הגבול של תת־סדרה">
-<p><strong>משפט 2.2.8 — הגבול של תת־סדרה.</strong></p>
+<p><strong>משפט 2.2.9 — הגבול של תת־סדרה.</strong></p>
 <p>אם סדרה מתכנסת אל <span class="math inline">\(L\)</span>, כל תת־סדרה שלה מתכנסת גם היא אל <span class="math inline">\(L\)</span>.</p>
 <p>לכן, אם שתי תתי־סדרות מתכנסות למספרים שונים, הסדרה המקורית אינה מתכנסת.</p>
 </div>
 <p>בחירת חלק מהאיברים אינה משנה את העובדה שכל האיברים מאינדקס מסוים והלאה קרובים לגבול. לכן תת־סדרה של סדרה מתכנסת אינה יכולה להוביל לגבול אחר.</p>
 <div id="box-exm-no-limit" class="thmbox thmbox-example" title="מפרידים בין אינדקסים זוגיים לאי־זוגיים">
-<p><strong>דוגמה 2.2.9 — מפרידים בין אינדקסים זוגיים לאי־זוגיים.</strong></p>
+<p><strong>דוגמה 2.2.10 — מפרידים בין אינדקסים זוגיים לאי־זוגיים.</strong></p>
 <p>נחזור אל <span class="math inline">\(a_n=(-1)^n\)</span>. נסמן את האינדקס של כל תת־סדרה באות <span class="math inline">\(k\)</span>.</p>
 <p>כאשר <span class="math inline">\(k=1,2,3,\ldots\)</span>:</p>
 <ul>
@@ -2361,7 +2365,7 @@ a_5&amp;=2(-3)^4=162.
 <section id="תרגילים-1" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="תרגילים-1">תרגילים</h3>
 <div id="box-q-epsilon-solve" class="thmbox thmbox-question" title="מהאי־שוויון לבחירת אינדקס">
-<p><strong>שאלה 2.2.10 — מהאי־שוויון לבחירת אינדקס.</strong></p>
+<p><strong>שאלה 2.2.11 — מהאי־שוויון לבחירת אינדקס.</strong></p>
 <p>נתונה <span class="math inline">\(a_n=\frac1n\)</span>. מצאו אינדקס <span class="math inline">\(N\)</span> כך שלכל <span class="math inline">\(n\ge N\)</span> המרחק של <span class="math inline">\(a_n\)</span> מאפס יהיה קטן מ <span class="math inline">\(0.02\)</span>.</p>
 <p>פתרו את האי־שוויון, ואז בחרו אינדקס טבעי מתאים.</p>
 <div class="derive" data-vars="n" data-solve="n" data-positive="n" data-integer="n" start="1/n<0.02">
@@ -2386,9 +2390,13 @@ a_5&amp;=2(-3)^4=162.
 </div>
 </div>
 <div id="box-q-error-place" class="thmbox thmbox-question" title="קירוב למספר שאינו אפס">
-<p><strong>שאלה 2.2.11 — קירוב למספר שאינו אפס.</strong></p>
+<p><strong>שאלה 2.2.12 — קירוב למספר שאינו אפס.</strong></p>
 <p>נתונה <span class="math inline">\(a_n=1+\frac2n\)</span>. מצאו אינדקס <span class="math inline">\(N\)</span> כך שלכל <span class="math inline">\(n\ge N\)</span> המרחק של <span class="math inline">\(a_n\)</span> מ <span class="math inline">\(1\)</span> יהיה קטן מ <span class="math inline">\(0.01\)</span>.</p>
-<div class="derive" data-vars="n" data-solve="n" data-positive="n" data-integer="n" start="abs(1+2/n-1)<0.01">
+<p>לפי <a href="#box-def-limit">הגדרת הגבול</a>, מחפשים <span class="math inline">\(N\)</span> שממנו והלאה מתקיים <span class="math display">\[|a_n-1|&lt;0.01.\]</span></p>
+<div class="derive" data-vars="n" data-solve="n" data-positive="n" data-integer="n" data-sequence-name="a" data-sequence-formula="1+2/n" start="abs(a_n-1)<0.01">
+<div class="step" data-line="abs(1+2/n-1)<0.01" action="sequence" value="a_n">
+<p>מציבים את הנוסחה של <span class="math inline">\(a_n\)</span> בתנאי על המרחק.</p>
+</div>
 <div class="step" data-line="-0.01<1+2/n-1<0.01" action="abs">
 <p>מפרקים את הערך המוחלט לאי־שוויון כפול.</p>
 </div>
@@ -2396,7 +2404,7 @@ a_5&amp;=2(-3)^4=162.
 <p>מפשטים את האגף האמצעי: <span class="math inline">\(1+\frac2n-1=\frac2n\)</span>.</p>
 </div>
 <div class="step" data-line="-n<200<n" action="mul" value="100n">
-<p>כופלים את כל האגפים במספר החיובי <span class="math inline">\(100n\)</span>. כיוון האי־שוויון נשמר.</p>
+<p>כופלים את כל האגפים במספר החיובי <span class="math inline">\(100n\)</span> כדי לבטל את המכנה ואת המספרים העשרוניים. כיוון האי־שוויון נשמר.</p>
 </div>
 <div class="step" data-line="-n<200 and 200<n" action="unchain">
 <p>כותבים את שני התנאים בנפרד, עם <strong>וגם</strong> ביניהם.</p>
@@ -2416,10 +2424,17 @@ a_5&amp;=2(-3)^4=162.
 </div>
 </div>
 <div id="box-q-error-below" class="thmbox thmbox-question" title="קירוב מהצד השני">
-<p><strong>שאלה 2.2.12 — קירוב מהצד השני.</strong></p>
+<p><strong>שאלה 2.2.13 — קירוב מהצד השני.</strong></p>
 <p>נתונה <span class="math inline">\(a_n=3-\frac4n\)</span>. מצאו אינדקס <span class="math inline">\(N\)</span> כך שלכל <span class="math inline">\(n\ge N\)</span> המרחק של <span class="math inline">\(a_n\)</span> מ <span class="math inline">\(3\)</span> יהיה קטן מ <span class="math inline">\(0.05\)</span>.</p>
-<p>כתבו את אי־השוויון המתאר את הדרישה למרחק, ואז פתרו אותו.</p>
-<div class="derive" data-vars="n" data-solve="n" data-positive="n" data-integer="n" data-student-setup="distance" start="abs(3-4/n-3)<0.05">
+<p>זהו התנאי מתוך <a href="#box-def-limit">הגדרת הגבול</a>: לכל <span class="math inline">\(\varepsilon&gt;0\)</span> צריך למצוא אינדקס <span class="math inline">\(N\)</span> כך שלכל <span class="math inline">\(n\ge N\)</span> מתקיים <span class="math display">\[
+|a_n-L|&lt;\varepsilon.
+\]</span> בתרגיל הזה נתונים <span class="math inline">\(L=3\)</span> ו <span class="math inline">\(\varepsilon=0.05\)</span>, ולכן מחפשים <span class="math inline">\(N\)</span> שממנו והלאה מתקיים <span class="math display">\[
+|a_n-3|&lt;0.05.
+\]</span> כתבו את התנאי בעוזר הפתרון. אחר כך הציבו את הנוסחה של <span class="math inline">\(a_n\)</span> ופתרו את האי־שוויון.</p>
+<div class="derive" data-vars="n" data-solve="n" data-positive="n" data-integer="n" data-student-setup="distance" data-sequence-name="a" data-sequence-formula="3-4/n" start="abs(a_n-3)<0.05">
+<div class="step" data-line="abs(3-4/n-3)<0.05" action="sequence" value="a_n">
+<p>מציבים את הנוסחה של <span class="math inline">\(a_n\)</span> בתנאי על המרחק.</p>
+</div>
 <div class="step" data-line="abs([-4/n])<0.05">
 <p>מפשטים את הביטוי בתוך הערך המוחלט.</p>
 </div>
@@ -2444,25 +2459,35 @@ a_5&amp;=2(-3)^4=162.
 </div>
 </div>
 <div id="box-q-limit-meaning" class="thmbox thmbox-question" title="מה קובעת ההגדרה?">
-<p><strong>שאלה 2.2.13 — מה קובעת ההגדרה?</strong></p>
-<p>בחרו כן או לא. בסעיפים שבהם מבוקש מספר, כתבו אותו.</p>
+<p><strong>שאלה 2.2.14 — מה קובעת ההגדרה?</strong></p>
+<p>ענו על השאלות. בסעיף (ג) בחרו גם נימוק.</p>
 <div class="fill">
-<p><strong>(א)</strong> עבור <span class="math inline">\(a_n=\frac1n\)</span> ו <span class="math inline">\(\varepsilon=0.1\)</span>, האם <span class="math inline">\(N=10\)</span> מתאים? <span class="blank" kind="text" data-ans="לא" data-w="4" data-choices="כן|לא">לא</span></p>
+<p><strong>(א)</strong> עבור <span class="math inline">\(a_n=\frac1n\)</span> ו <span class="math inline">\(\varepsilon=0.1\)</span>, האם <span class="math inline">\(N=10\)</span> מתאים ביחס לגבול <span class="math inline">\(0\)</span>? <span class="blank" kind="text" data-ans="לא" data-w="4" data-choices="כן|לא">לא</span></p>
 <p>ומה לגבי <span class="math inline">\(N=100\)</span>? <span class="blank" kind="text" data-ans="כן" data-w="4" data-choices="כן|לא">כן</span></p>
 <p><strong>(ב)</strong> החלפנו את מאה האיברים הראשונים של <span class="math inline">\(\frac1n\)</span> במספר <span class="math inline">\(1000\)</span>. הגבול של הסדרה החדשה הוא <span class="blank" data-ans="0"><span class="math inline">\(0\)</span></span>.</p>
 <p><strong>(ג)</strong> בסדרה <span class="math inline">\((-1)^n\)</span>, יש אינסוף איברים השווים <span class="math inline">\(1\)</span>. האם היא מתכנסת אל <span class="math inline">\(1\)</span>? <span class="blank" kind="text" data-ans="לא" data-w="4" data-choices="כן|לא">לא</span></p>
 <p>המרחק מ <span class="math inline">\(1\)</span> של כל איבר באינדקס אי־זוגי הוא <span class="blank" data-ans="2"><span class="math inline">\(2\)</span></span>.</p>
+<p>איזו עובדה מראה שאין לסדרה גבול?</p>
+<div class="tf-quiz" data-correct="2">
+<button type="button" class="tf-opt" data-val="1">הסדרה חסומה</button>
+<button type="button" class="tf-opt" data-val="2">שתי תתי־סדרות מתכנסות לגבולות שונים</button>
+<button type="button" class="tf-opt" data-val="3">יש בסדרה איברים חיוביים ואיברים שליליים</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p>באינדקסים הזוגיים מתקבלת תת־סדרה קבועה שגבולה <span class="math inline">\(1\)</span>, ובאי־זוגיים מתקבלת תת־סדרה קבועה שגבולה <span class="math inline">\(-1\)</span>. לפי <a href="#box-thm-subsequence-limit">המשפט על גבולות של תתי־סדרות</a>, הגבולות השונים מראים שהסדרה אינה מתכנסת.</p>
+</div>
+</div>
 <p><strong>(ד)</strong> מאה האיברים הראשונים של סדרה נמצאים במרחק קטן מ <span class="math inline">\(0.001\)</span> מהמספר <span class="math inline">\(5\)</span>. האם מכך בלבד אפשר להסיק שהגבול הוא <span class="math inline">\(5\)</span>? <span class="blank" kind="text" data-ans="לא" data-w="4" data-choices="כן|לא">לא</span></p>
 <div class="explain">
 <p><strong>(א)</strong> באינדקס <span class="math inline">\(10\)</span> השגיאה שווה ל <span class="math inline">\(0.1\)</span>, ואילו החל מאינדקס <span class="math inline">\(100\)</span> היא לכל היותר <span class="math inline">\(0.01\)</span>.</p>
 <p><strong>(ב)</strong> שינוי של מספר סופי של איברים אינו משנה את הגבול.</p>
-<p><strong>(ג)</strong> האיברים באינדקסים האי־זוגיים נשארים במרחק <span class="math inline">\(2\)</span> מהמספר <span class="math inline">\(1\)</span>.</p>
+<p><strong>(ג)</strong> האיברים באינדקסים האי־זוגיים שווים <span class="math inline">\(-1\)</span>, ולכן המרחק שלהם מ <span class="math inline">\(1\)</span> הוא <span class="math inline">\(|-1-1|=2\)</span>. הם מונעים התכנסות אל <span class="math inline">\(1\)</span>.</p>
 <p><strong>(ד)</strong> לא נתון דבר על האיברים הבאים. למשל, כולם יכולים להיות שווים לאפס.</p>
 </div>
 </div>
 </div>
 <div id="box-q-even-odd" class="thmbox thmbox-question" title="זוגיים ואי־זוגיים">
-<p><strong>שאלה 2.2.14 — זוגיים ואי־זוגיים.</strong></p>
+<p><strong>שאלה 2.2.15 — זוגיים ואי־זוגיים.</strong></p>
 <p>נתונה <span class="math inline">\(a_n=2+(-1)^n\)</span>. מצאו את שתי תתי־הסדרות וקבעו אם הסדרה מתכנסת.</p>
 <div class="fill">
 <div class="sequence-table" dir="ltr">
@@ -2489,6 +2514,16 @@ a_5&amp;=2(-3)^4=162.
 </table>
 </div>
 <p>האם <span class="math inline">\((a_n)\)</span> מתכנסת? <span class="blank" kind="text" data-ans="לא" data-w="4" data-choices="כן|לא">לא</span></p>
+<p>מה הנימוק?</p>
+<div class="tf-quiz" data-correct="1">
+<button type="button" class="tf-opt" data-val="1">שתי תתי־הסדרות מתכנסות לגבולות שונים</button>
+<button type="button" class="tf-opt" data-val="2">בסדרה מופיעים שני ערכים שונים</button>
+<button type="button" class="tf-opt" data-val="3">הסדרה חסומה</button>
+<div class="tf-feedback" aria-live="polite"></div>
+<div class="tf-why">
+<p>לפי <a href="#box-thm-subsequence-limit">המשפט על גבולות של תתי־סדרות</a>, אילו הסדרה הייתה מתכנסת, שתי תתי־הסדרות היו מתכנסות לאותו גבול. כאן הגבולות שונים, ולכן הסדרה אינה מתכנסת.</p>
+</div>
+</div>
 <div class="hint">
 <p>הציבו <span class="math inline">\(2k\)</span> במקום <span class="math inline">\(n\)</span> עבור האינדקסים הזוגיים, ו <span class="math inline">\(2k-1\)</span> עבור האינדקסים האי־זוגיים.</p>
 </div>
@@ -2498,7 +2533,7 @@ a_5&amp;=2(-3)^4=162.
 </div>
 </div>
 <div id="box-q-alternating-error" class="thmbox thmbox-question" title="סימן מתחלף ומרחק קטן">
-<p><strong>שאלה 2.2.15 — סימן מתחלף ומרחק קטן.</strong></p>
+<p><strong>שאלה 2.2.16 — סימן מתחלף ומרחק קטן.</strong></p>
 <p>נתונה <span class="math inline">\(a_n=\frac{(-1)^n}{n}\)</span>. בדקו את המרחק מאפס.</p>
 <div class="fill">
 <p>כתבו את המרחק מאפס לאחר פישוט: <span class="blank" data-ans="1/n" data-vars="n" data-positive="n" data-integer="n"><span class="math inline">\(\frac{1}{n}\)</span></span>.</p>
