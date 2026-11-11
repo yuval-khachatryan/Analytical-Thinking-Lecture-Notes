@@ -2694,7 +2694,7 @@ function replaceRelationParts(src,edits,cfg) {
     if(vs.some(function(v){return cfg.vars.indexOf(v)<0;}))throw new ParseError("בהחלפה הופיע משתנה חדש.");
     // Use the branch's fixed assumptions, never the equation being solved,
     // to justify removing bars. Then check the rewritten expressions normally.
-    var facts=algebraFacts({parts:[],ops:[]},cfg),before=absoluteInContext(part.node,facts),checkedAfter=absoluteInContext(after,facts),vars=cfg.vars,positive=cfg.positive||[];
+    var facts=algebraFacts({parts:[],ops:[]},cfg),before=absoluteInContext(expandSequenceTerms(part.node,cfg),facts),checkedAfter=absoluteInContext(expandSequenceTerms(after,cfg),facts),vars=cfg.vars,positive=cfg.positive||[];
     var valid=compareExpr(before,checkedAfter,vars,positive).ok&&compareExpr(checkedAfter,before,vars,positive).ok;
     niceEnvs(vars,positive).forEach(function(env){
       var a=ev(before,env),b=ev(checkedAfter,env);
@@ -3134,7 +3134,10 @@ function checkJustifiedStep(src,next,actions,cfg){
     if(!isRelation(got)||Object.keys(varsOf(got)).some(function(v){return cfg.vars.indexOf(v)<0;}))throw new ParseError("כתבו תנאי עם המשתנים של התרגיל.");
     if(!sequenceJustifiedShape(inCase(want,cfg),inCase(got,cfg),cfg))return {ok:false,expected:relationSource(simplifiedRelation(want,cfg)),got:relationSource(got),msg:"הנימוק אינו מתאים לשורה שכתבתם. לפי הפעולות שנבחרו צפוי: "+htmlRel(simplifiedRelation(want,cfg))+". התקבל: "+htmlRel(got)+"."};
     var widened=cfg.boundProof&&actions.some(function(a){return a.op==="lowerBound"||a.op==="upperBound";});
-    var explicitSubstitution=actions.some(function(a){return a.op==="sequence";})&&relationSource(parseRelation(src))!==relationSource(got);
+    // Both substitution tools have already checked each replacement and the
+    // resulting line. Expanding a defined term can leave the evaluated AST
+    // identical, while still being a genuine written step for the student.
+    var explicitSubstitution=actions.some(function(a){return a.op==="sequence"||a.op==="replace";})&&relationSource(parseRelation(src))!==relationSource(got);
     var v=widened||explicitSubstitution?{ok:true}:judgeStep(sequenceRelation(src,cfg),sequenceRelation(got,cfg),null,cfg);if(!v.ok)return v;
     v.reason=actionReason(actions,{source:src,cfg:cfg});return v;
   }catch(e){return {ok:false,msg:errMsg(e),expected:expected,got:next};}
@@ -4899,6 +4902,10 @@ function initRelationPractice(box,options) {
       help.addEventListener("toggle",function(){if(!help.open)return;
         suggestions.replaceChildren();
         var facts=algebraFacts({parts:[],ops:[]},cfgFor(r)),candidates=algebraCandidates(part.node,facts);
+        if(part.node.t==="fn"&&part.node.f==="seq")try{
+          var expanded=sequenceTermFormula(part.node,cfgFor(r));
+          candidates.unshift({node:expanded,source:expressionSource(expanded),label:"לפי הגדרת הסדרה"});
+        }catch(_){}
         candidates.forEach(function(candidate){
           try{replaceRelationParts(sourceFor(r),partEdits(part,candidate.source),cfgFor(r));}catch(_){return;}
           var choice=button(candidate.label,function(){
