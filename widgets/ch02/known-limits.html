@@ -7,7 +7,8 @@
 body{margin:0;font:15px/1.5 Arial,sans-serif;color:#1f2937;background:transparent}
 .w{padding:.6rem;border:1px solid #cbd5e1;background:white;border-radius:8px}
 canvas{display:block;width:100%;height:auto}.controls{display:flex;align-items:center;flex-wrap:wrap;gap:.4rem .8rem}
-label{display:inline-flex;align-items:center;gap:.4rem}input{direction:ltr;width:10rem}select{font:inherit;padding:.15rem;border:1px solid #94a3b8;border-radius:4px}
+label{display:inline-flex;align-items:center;gap:.4rem}input{direction:ltr;width:10rem}select,button{font:inherit;padding:.2rem .4rem;border:1px solid #94a3b8;border-radius:4px}button{cursor:pointer;background:#f3f0ff;color:#4338ca}
+.prediction{margin-top:.6rem;padding-top:.5rem;border-top:1px solid #ddd6fe}.good{color:#166534}.bad{color:#991b1b}
 .m{direction:ltr;unicode-bidi:isolate;display:inline-block;font:17px 'Cambria Math','Times New Roman',serif}
 .formula{text-align:center}.fr{display:inline-flex;flex-direction:column;text-align:center;vertical-align:middle;line-height:1.2}.fr>span:first-child{border-bottom:1px solid}
 .root{border-top:1px solid;padding-inline:.15em}.note{margin:.3rem 0 0;color:#475569;font-size:.9rem}[hidden]{display:none!important}
@@ -17,11 +18,21 @@ label{display:inline-flex;align-items:center;gap:.4rem}input{direction:ltr;width
   <canvas id="plot" width="760" height="270" aria-label="איברי הסדרה והגבול"></canvas>
   <div class="controls">
     <label id="q-control">הבסיס <span class="m">q</span><input id="q" type="range"><output class="m" id="q-value"></output></label>
-    <label id="a-control">המספר הקבוע <span class="m">a</span><select id="a"><option value="0.25">¼</option><option value="2">2</option><option value="4" selected>4</option><option value="16">16</option></select></label>
+    <label id="a-control">המספר הקבוע <span class="m">a</span><select id="a"><option value="0.25">¼</option><option value="1">1</option><option value="2">2</option><option value="4" selected>4</option><option value="16">16</option></select></label>
     <label id="p-control">המעריך <span class="m">p</span><select id="p"><option>1</option><option>2</option><option>3</option></select></label>
     <label>מספר האיברים<select id="count"><option>12</option><option selected>24</option><option>48</option><option>96</option><option>192</option></select></label>
   </div>
   <p class="note" id="readout" aria-live="polite"></p>
+  <div class="prediction" id="root-prediction" hidden>
+    <div class="controls">
+      <label>בסדרה שבחרתם, היכן נמצאים האיברים ביחס לגבול 1?
+        <select id="root-side"><option value="">בחרו תשובה</option><option value="above">כולם גדולים מ 1</option><option value="below">כולם קטנים מ 1</option><option value="equal">כולם שווים ל 1</option></select>
+      </label>
+      <button id="root-check" type="button">בדיקה</button>
+      <button id="root-reveal" type="button">הצגת תשובה</button>
+    </div>
+    <p id="root-feedback" class="note" aria-live="polite"></p>
+  </div>
 </div>
 <script src="../shared/autosize.js"></script>
 <script>
@@ -33,6 +44,7 @@ label{display:inline-flex;align-items:center;gap:.4rem}input{direction:ltr;width
   document.getElementById('q-control').hidden=kind==='roots';
   document.getElementById('a-control').hidden=kind!=='roots';
   document.getElementById('p-control').hidden=kind!=='ratio';
+  document.getElementById('root-prediction').hidden=kind!=='roots';
   q.min=kind==='ratio'?'1.2':'-1.2';q.max=kind==='ratio'?'4':'1.2';q.step='0.1';q.value=kind==='ratio'?'2':'0.5';
   function family(kind,q,a,p){
     if(kind==='roots')return {term:function(n){return Math.pow(a,1/n);},limit:1,note:'המספר שמתחת לשורש קבוע; סדר השורש גדל.'};
@@ -41,6 +53,20 @@ label{display:inline-flex;align-items:center;gap:.4rem}input{direction:ltr;width
     return {term:function(n){return Math.pow(q,n);},limit:converges?(q===1?1:0):null,note:q===0?'כל האיברים שווים לאפס.':Math.abs(q)<1?'הערך המוחלט קטן בכל צעד. בסיס שלילי גורם גם לחילופי סימן.':q===1?'כל האיברים שווים לאחת: הגבול הוא אחת, ולא אפס.':q===-1?'האיברים מתחלפים בין אחת למינוס אחת: אין גבול.':'הערכים המוחלטים גדלים: הסדרה אינה מתכנסת למספר.'};
   }
   function number(value){return Math.abs(value)>=10000?value.toExponential(1):Number(value.toPrecision(3)).toString();}
+  var side=document.getElementById('root-side'),feedback=document.getElementById('root-feedback');
+  function rootAnswer(){
+    var constant=Number(a.value);
+    return constant>1?{side:'above',text:'כל האיברים גדולים מ 1 ומתקרבים אליו מלמעלה. שורש מסדר טבעי של מספר גדול מ 1 עדיין גדול מ 1.'}:constant<1?{side:'below',text:'כל האיברים קטנים מ 1 ומתקרבים אליו מלמטה. שורש מסדר טבעי של מספר שבין 0 ל 1 עדיין נמצא בין 0 ל 1.'}:{side:'equal',text:'כל האיברים שווים ל 1: כל שורש של 1 הוא 1.'};
+  }
+  function clearFeedback(){feedback.textContent='';feedback.className='note';}
+  side.addEventListener('change',clearFeedback);
+  a.addEventListener('change',function(){side.value='';clearFeedback();});
+  document.getElementById('root-check').addEventListener('click',function(){
+    if(!side.value){feedback.textContent='בחרו תשובה ואז בדקו אותה.';feedback.className='note';return;}
+    var answer=rootAnswer(),ok=side.value===answer.side;
+    feedback.textContent=(ok?'✓ נכון. ':'עדיין לא. ')+answer.text;feedback.className='note '+(ok?'good':'bad');
+  });
+  document.getElementById('root-reveal').addEventListener('click',function(){feedback.textContent=rootAnswer().text;feedback.className='note';});
   function text(s,x,y,align,color){ctx.direction='ltr';ctx.font='12px Arial';ctx.textAlign=align||'center';ctx.textBaseline='middle';ctx.fillStyle=color||'#475569';ctx.fillText(s,x,y);}
   function draw(){
     var base=Number(q.value),constant=Number(a.value),power=Number(p.value),N=Number(count.value),S=family(kind,base,constant,power);
@@ -58,7 +84,7 @@ label{display:inline-flex;align-items:center;gap:.4rem}input{direction:ltr;width
     if(S.limit!==null){ctx.strokeStyle='#64748b';ctx.setLineDash([5,4]);ctx.beginPath();ctx.moveTo(left,Y(target));ctx.lineTo(W-right,Y(target));ctx.stroke();ctx.setLineDash([]);text('L = '+target,W-right-5,Y(target)-10,'right','#4338ca');}
     ctx.fillStyle='#4f46e5';values.forEach(function(value,i){ctx.beginPath();ctx.arc(X(i+1),Y(value),N>96?2:3.2,0,2*Math.PI);ctx.fill();});
     document.getElementById('q-value').textContent=String(base);
-    var expression=kind==='geometric'?(base<0?'('+base+')':base)+'<sup><i>n</i></sup>':kind==='roots'?'<sup><i>n</i></sup>√<span class="root">'+constant+'</span>':'<span class="fr"><span><i>n</i>'+(power===1?'':'<sup>'+power+'</sup>')+'</span><span>'+base+'<sup><i>n</i></sup></span></span>';
+    var expression=kind==='geometric'?(base<0?'('+base+')':base)+'<sup><i>n</i></sup>':kind==='roots'?'<sup><i>n</i></sup>√<span class="root">'+(constant===.25?'¼':constant)+'</span>':'<span class="fr"><span><i>n</i>'+(power===1?'':'<sup>'+power+'</sup>')+'</span><span>'+base+'<sup><i>n</i></sup></span></span>';
     document.getElementById('formula').innerHTML='<i>a</i><sub><i>n</i></sub> = '+expression+(S.limit===null?'':' → '+S.limit);
     document.getElementById('readout').innerHTML=S.note+' באינדקס <span class="m">n = '+N+'</span> מתקבל <span class="m">a<sub>'+N+'</sub> ≈ '+Number(values[N-1].toPrecision(4))+'</span>. הציור מציג רק מספר סופי של איברים.';
   }

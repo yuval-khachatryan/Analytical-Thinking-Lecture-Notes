@@ -1,0 +1,7 @@
+<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>מצמצמים את הרצועה</title><link rel="stylesheet" href="limit-activities.css"><link rel="stylesheet" href="epsilon-game.css"></head>
+<body><div class="w">
+<div id="stages" role="tablist" aria-label="מועמדים לגבול"></div>
+<section id="stage-panel" role="tabpanel"><p id="setup" class="heading"></p><svg id="plot"></svg>
+<div class="controls"><label id="candidate-label" hidden>המועמד <span class="m">L</span><input id="candidate" type="number" step="any" value="2"></label><label>סף השגיאה <span class="m">ε</span><select id="epsilon"></select></label><button id="check">בדיקה</button><button id="reveal">הצגת דוגמה לרצועה מתאימה</button><button id="reset">מההתחלה</button></div>
+<p id="read" class="read" aria-live="polite"></p><p class="caption">כחול: בתוך הרצועה. אדום: על השפה או בחוץ. הערכים 1 ו −1 חוזרים שוב ושוב, גם מעבר לאיברים המצוירים.</p></section>
+</div><script src="../shared/autosize.js"></script><script src="limit-activities.js"></script><script src="epsilon-game.js"></script></body></html>

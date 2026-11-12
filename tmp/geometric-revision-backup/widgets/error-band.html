@@ -1,0 +1,16 @@
+<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>סף השגיאה ואינדקס</title><link rel="stylesheet" href="limit-activities.css"></head><body><div class="w">
+<p class="heading m" id="formula"></p><svg id="plot"></svg>
+<div class="controls"><label>סף השגיאה <span class="m">ε</span><select id="epsilon" aria-label="סף השגיאה"></select></label><label>תחילת הזנב <span class="m">N</span><input id="index" type="number" min="1" max="10000000" step="1" value="10"></label><button id="check">בדיקת האינדקס</button><button id="suggest">הצעת אינדקס</button></div>
+<p id="read" class="read" aria-live="polite">בדקו את האינדקס, ואחר כך הקטינו את סף השגיאה.</p><p id="caption" class="caption"></p><p class="legend">כחול: בתוך הסביבה. אדום: על השפה או בחוץ.</p>
+</div><script src="../shared/autosize.js"></script><script src="limit-activities.js"></script><script>
+
+(function(){'use strict';var A=LimitActivities,$=function(id){return document.getElementById(id);},kind=new URLSearchParams(location.search).get('case')==='alternating-decay'?'alternating-decay':'reciprocal',eps=$('epsilon'),idx=$('index');
+A.choices.slice(3).forEach(function(e){var o=document.createElement('option');o.value=e.join('/');o.textContent=A.plain(e[0],e[1]);eps.appendChild(o);});eps.value='1/10';
+$('formula').innerHTML='a<sub>n</sub> = '+A.fraction(kind==='reciprocal'?'1':'(−1)<sup>n</sup>','n')+' → 0';
+function e(){return eps.value.split('/').map(Number);}function N(){return Number(idx.value);}
+function draw(){var v=A.plot($('plot'),kind,0,e(),Number.isSafeInteger(N())&&N()>0&&N()<=10000000?N():1);$('caption').textContent='מוצגים האינדקסים '+v.first+' עד '+v.last+'. התצוגה מתחילה באינדקס שבחרתם. כשיש איברים רחוקים מהגבול, טווח הציר האנכי גדל והרצועה נראית צרה יותר; סף השגיאה עצמו אינו משתנה. הבדיקה מתייחסת לכל האיברים מאינדקס N והלאה, גם לאלה שאינם מוצגים.';}
+function check(){var r=A.tail(kind,0,e(),N()),read=$('read');read.className='read '+(r.valid?(r.ok?'good':'bad'):'');read.textContent=!r.valid?'כתבו אינדקס טבעי בין 1 ל 10,000,000.':r.ok?'✓ לכל n ≥ '+N()+' מתקיים 1/n < '+A.plain(e()[0],e()[1])+'. הבחירה מתאימה גם לאיברים שאינם מוצגים.':'באינדקס '+r.outside+' השגיאה '+A.plain(1,r.outside)+' אינה קטנה מ '+A.plain(e()[0],e()[1])+'. צריך לבחור אינדקס מאוחר יותר. זה אינו אומר שהסדרה אינה מתכנסת.';draw();}
+function changed(){ $('read').className='read';$('read').textContent='הדרישה או האינדקס השתנו. בדקו מחדש.';draw();}
+eps.addEventListener('change',changed);idx.addEventListener('input',changed);$('check').addEventListener('click',check);$('suggest').addEventListener('click',function(){idx.value=String(Math.floor(e()[1]/e()[0])+1);check();});draw();})();
+
+</script></body></html>

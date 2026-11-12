@@ -1,0 +1,5 @@
+<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>סדרה ותת־סדרה</title><link rel="stylesheet" href="limit-activities.css"></head><body><div class="w">
+<p class="heading m">a<sub>n</sub> = 1/(n+1) → 0</p>
+<div class="controls"><label>בחירת אינדקסים<select id="selection"><option value="even">זוגיים: nₖ = 2k</option><option value="odd">אי־זוגיים: nₖ = 2k−1</option><option value="third">כל שלישי: nₖ = 3k</option></select></label><label>תצוגה<select id="mode"><option value="both">הסדרה והבחירה יחד</option><option value="only">תת־הסדרה בלבד</option></select></label><label>סף השגיאה<select id="epsilon"><option value=".25">1/4</option><option value=".1">1/10</option></select></label></div>
+<svg id="plot" role="img"></svg><p id="indices" class="heading m"></p><p id="read" class="read"></p><p class="caption">בכחול: הסדרה המקורית. בסגול: האיברים שנבחרו. מוצג חלק מהאיברים; שתי הסדרות ממשיכות ללא סוף.</p>
+</div><script src="../shared/autosize.js"></script><script src="limit-activities.js"></script><script src="subsequences.js"></script></body></html>

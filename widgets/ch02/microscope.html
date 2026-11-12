@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>קירובים של פאי בהגדלה</title>
+<link rel="stylesheet" href="limit-activities.css">
+<style>#plot{max-width:720px;margin-inline:auto}#scale{min-width:4rem}#terms{text-align:center}.term-value{white-space:nowrap;margin-inline:.5rem}</style>
+</head>
+<body><div class="w">
+<p class="heading m">3, 3.1, 3.14, 3.141, 3.1415, … → π</p>
+<svg id="plot" viewBox="0 0 720 180" role="img" aria-label="קירובים עשרוניים של פאי וסביבת אפסילון סביב פאי על ישר המספרים"></svg>
+<p class="caption">הפס הסגול מסמן את סביבת האפסילון <span class="m">(π − ε, π + ε)</span>, עם <span class="m">ε = <span class="fr"><span>1</span><span>1000</span></span></span>. סף השגיאה נשאר קבוע כשמגדילים.</p>
+<p id="terms" class="caption" dir="ltr"></p>
+<div class="controls"><label>הגדלה סביב <span class="m">π</span><input id="zoom" type="range" min="0" max="8" step="1" value="0" aria-label="הגדלה סביב פאי"></label><output id="scale" class="m"></output></div>
+<p id="read" class="read" aria-live="polite"></p>
+<p id="outside" class="caption"></p>
+<p class="caption">הגדלה משנה את קנה המידה, לא את המספרים. כל הקירובים הבאים אחרי הקירוב האחרון שמוצג קרובים עוד יותר אל π.</p>
+</div>
+<script src="../shared/autosize.js"></script>
+<script src="limit-activities.js"></script>
+<script src="microscope.js"></script>
+</body>
+</html>

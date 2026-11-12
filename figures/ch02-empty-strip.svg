@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 650 250" role="img"><title>רצועה סביב L, ללא איברי סדרה</title>
+<style>text{font:16px Georgia,serif;fill:#38445b;direction:ltr;text-anchor:middle}</style>
+<rect x="92" y="83" width="510" height="74" fill="#e2d9f7"/>
+<line x1="92" y1="83" x2="602" y2="83" stroke="#9376bd" stroke-width="1.2" stroke-dasharray="5 4"/>
+<line x1="92" y1="157" x2="602" y2="157" stroke="#9376bd" stroke-width="1.2" stroke-dasharray="5 4"/>
+<line x1="92" y1="120" x2="602" y2="120" stroke="#9376bd" stroke-width="1.2" stroke-dasharray=""/>
+<line x1="92" y1="25" x2="92" y2="210" stroke="#8996a8" stroke-width="1.2" stroke-dasharray=""/>
+<line x1="92" y1="210" x2="615" y2="210" stroke="#8996a8" stroke-width="1.2" stroke-dasharray=""/>
+<text x="46" y="88">L + ε</text>
+<text x="46" y="125">L</text>
+<text x="46" y="162">L − ε</text>
+<text x="620" y="232">n</text>
+<text x="65" y="25">aₙ</text>
+</svg>

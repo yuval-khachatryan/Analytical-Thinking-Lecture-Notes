@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>הפרדת סביבות סביב שני מספרים שונים</title>
+<link rel="stylesheet" href="limit-activities.css">
+</head>
+<body><div class="w">
+<p>המרכזים הם שני מספרים כלשהם <span class="m">a &lt; b</span>. המרחק ביניהם הוא <span class="m">b − a</span>.</p>
+<div class="controls"><label for="radius">רדיוס שתי הסביבות: <span class="m">ε =</span></label>
+<select id="radius" dir="ltr" aria-label="רדיוס הסביבות כחלק מהמרחק בין המרכזים">
+<option value="3/4">¾(b − a)</option>
+<option value="1/2">½(b − a)</option>
+<option value="1/4">¼(b − a)</option>
+<option value="1/8">⅛(b − a)</option>
+</select></div>
+<svg id="plot" viewBox="0 0 720 225" role="img" aria-label="סביבות סביב a ו b על שני עותקים של אותו ישר מספרים"></svg>
+<p id="read" class="read" aria-live="polite"></p>
+<p id="gap" class="caption"></p>
+<p class="caption">שתי השורות מציגות את אותו ישר מספרים ובאותו קנה מידה. עיגול ריק מציין קצה שאינו שייך לסביבה.</p>
+</div>
+<script src="../shared/autosize.js"></script>
+<script src="limit-activities.js"></script>
+<script src="neighborhoods.js"></script>
+</body></html>

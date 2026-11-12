@@ -37,7 +37,7 @@
         throw new Error("הסימן הזה אינו נתמך בבדיקה.");
       }
       var m = /^[a-z]+/i.exec(s.slice(at))[0]; at += m.length;
-      var symbols = { infty:"inf", pi:"pi", cdot:"*", times:"*", div:"/", le:"<=", leq:"<=", ge:">=", geq:">=", ne:"!=", neq:"!=",
+      var symbols = { infty:"inf", pi:"pi", epsilon:"ε", varepsilon:"ε", cdot:"*", times:"*", div:"/", le:"<=", leq:"<=", ge:">=", geq:">=", ne:"!=", neq:"!=",
         cup:" U ", cap:" cap ", setminus:"\\", backslash:"\\", emptyset:"{}", varnothing:"{}", in:" in ", lbrace:"{", rbrace:"}",
         lbrack:"[", rbrack:"]", lparen:"(", rparen:")", vert:"|", mid:"|", colon:":", lvert:"|", rvert:"|", lfloor:"floor(", rfloor:")", lor:" or ", vee:" or ", land:" and ", wedge:" and ", neg:" not ", lnot:" not " };
       if (Object.prototype.hasOwnProperty.call(symbols, m)) return symbols[m];
@@ -56,6 +56,11 @@
         return degree === null ? "sqrt(" + body + ")" : "root(" + degree + "," + body + ")";
       }
       if (m === "placeholder" || m === "prompt") throw new Error(EMPTY);
+      if(m === "class"){
+        // Only our presentation wrapper is accepted; it adds no mathematics.
+        if(group("{","}").trim()!=="course-logic")throw new Error("סימון העיצוב הזה אינו נתמך בבדיקה.");
+        return group("{","}");
+      }
       if (/^(text|mathrm|mathit|operatorname|mathbb)$/.test(m)) {
         var word = group("{", "}").trim();
         if (word === "או" || word === "or") return " or ";
@@ -97,17 +102,22 @@
     }
     return s;
   }
+  function logicalLatex(word){return "\\class{course-logic}{\\text{\u00a0"+word+"\u00a0}}";}
+  function isolateLogicalLatex(source){
+    return String(source||"").replace(/\\class\{course-logic\}\{\\text\{\s*(וגם|ולא|או|לא)\s*\}\}|\\text\{\s*(וגם|ולא|או|לא)\s*\}/g,function(_,wrapped,plain){return logicalLatex(wrapped||plain);});
+  }
   var templates = {
     "lim()":"\\lim_{n\\to\\infty}\\left(#0\\right)",
     "_":"#@_{#?}",
+    "_n":"#@_{n}",
     "{x|}":"\\left\\{x\\mid #0\\right\\}",
     "/":"\\frac{#@}{#?}", "^":"#@^{#?}", "√()":"\\sqrt{#0}", "sqrt()":"\\sqrt{#0}", "cbrt()":"\\sqrt[3]{#0}", "root()":"\\sqrt[#?]{#0}",
     "()":"\\left(#0\\right)", "[]":"\\left[#0\\right]", "[)":"\\left[#0\\right)", "(]":"\\left(#0\\right]",
     "||":"\\left|#0\\right|", "{}":"\\left\\{#0\\right\\}",
     "log_()":"\\log_{#?}\\left(#?\\right)", "sin()":"\\sin\\left(#0\\right)", "cos()":"\\cos\\left(#0\\right)", "tan()":"\\tan\\left(#0\\right)",
-    "ln()":"\\ln\\left(#0\\right)", "floor()":"\\lfloor#0\\rfloor", "∞":"\\infty", "-∞":"-\\infty", "π":"\\pi",
+    "ln()":"\\ln\\left(#0\\right)", "floor()":"\\lfloor#0\\rfloor", "ε":"\\varepsilon", "∞":"\\infty", "-∞":"-\\infty", "π":"\\pi",
     "∅":"\\emptyset", "ℝ":"\\mathbb{R}", " ∪ ":"\\cup", " ∩ ":"\\cap", " ∖ ":"\\setminus", "≤":"\\le", "≥":"\\ge", "≠":"\\ne",
-    " או ":"\\text{\u00a0או\u00a0}", " וגם ":"\\text{\u00a0וגם\u00a0}", " ולא ":"\\text{\u00a0ולא\u00a0}", " לא ":"\\text{\u00a0לא\u00a0}"
+    " או ":logicalLatex("או"), " וגם ":logicalLatex("וגם"), " ולא ":logicalLatex("ולא"), " לא ":logicalLatex("לא")
   };
   var toLatex = function (s) { return s; }, configured = false, activeReady = null;
   var libraryBases = ["https://cdn.jsdelivr.net/npm/mathlive@0.111.4/", "https://unpkg.com/mathlive@0.111.4/"], libraryBase = libraryBases[0];
@@ -150,17 +160,20 @@
     input.setAttribute("smart-mode", "false");
     input.setAttribute("smart-superscript", "false");
     input.setAttribute("dir", "ltr");
+    var logicStyle=document.createElement("style");
+    logicStyle.textContent=".course-logic{direction:rtl;unicode-bidi:isolate;display:inline-block;white-space:nowrap}.course-logic *{direction:inherit}";
+    input.appendChild(logicStyle);
     input.menuItems = [];
     input.inlineShortcuts = Object.assign({}, input.inlineShortcuts, {
-      inf:"\\infty", infinity:"\\infty", sqrt:"\\sqrt{#0}", cbrt:"\\sqrt[3]{#0}", pi:"\\pi",
+      inf:"\\infty", infinity:"\\infty", sqrt:"\\sqrt{#0}", cbrt:"\\sqrt[3]{#0}", pi:"\\pi", eps:"\\varepsilon", epsilon:"\\varepsilon",
       "או":templates[" או "], "וגם":templates[" וגם "], "ולא":templates[" ולא "], "לא":templates[" לא "]
     });
     input.addEventListener("paste", function (e) {
       var text = e.clipboardData && e.clipboardData.getData("text/plain");
       // A plain set difference uses a backslash too; it is not a LaTeX command.
-      if (!text || (/\\/.test(text) && !(kind === "set" && !/\\[a-z]+/i.test(text)))) return;
+      if (!text) return;
       try {
-        var latex = toLatex(text, kind);
+        var latex = /\\[a-z]+/i.test(text)?isolateLogicalLatex(text):isolateLogicalLatex(toLatex(text, kind));
         e.preventDefault(); e.stopImmediatePropagation();
         input.insert(latex, { format:"latex", selectionMode:"after" });
       } catch (_) { /* Leave incomplete input to the editor; the checker handles it. */ }
@@ -175,7 +188,7 @@
     if (props.size) host.style.width = Math.min(12, Math.max(3, +props.size * .6)) + "em";
     // Callers keep this wrapper throughout check/reveal/reset and row editing.
     Object.defineProperties(host, {
-      value: { get:function () { return active.value; }, set:function (v) { active.value = v; } },
+      value: { get:function () { return active.value; }, set:function (v) { active.value = isMath(active)?isolateLogicalLatex(v):v; } },
       control: { get:function () { return active; } },
       selectionStart: { get:function () { return active.selectionStart; } },
       selectionEnd: { get:function () { return active.selectionEnd; } }
@@ -239,7 +252,7 @@
       if (active.value && typeof active.selectionStart === "number" &&
           (active.selectionStart !== active.value.length || active.selectionEnd !== active.value.length)) return;
       var latex;
-      try { latex = toLatex(active.value, kind); }
+      try { latex = isolateLogicalLatex(toLatex(active.value, kind)); }
       catch (_) { return; } // Keep incomplete drafts intact until the next focus.
       var rich;
       try {
@@ -271,10 +284,12 @@
     if(start===null||start===undefined)start=end=value.length;
     var selection=value.slice(start,end),before=value.slice(0,start),after=value.slice(end),inserted=text,offset;
     if(text==="/"||text==="^") {
-      var hasLeft=/[\da-zπ∞)\]}!]\s*$/i.test(before);
+      var hasLeft=/[\da-zπεϵ∞)\]}!]\s*$/i.test(before);
       if(selection){inserted="("+selection+")"+text+"()";offset=inserted.length-1;}
       else if(hasLeft){inserted=text+"()";offset=2;}
       else {inserted="()"+text+"()";offset=1;}
+    }else if(text==="_n"){
+      inserted=selection+"_n";offset=inserted.length;
     }else if(text==="_"){
       inserted=selection+"_()";offset=inserted.length-1;
     }else if(text==="log_()"){
@@ -306,7 +321,7 @@
     if(logical)control(input).mode="math";
     return true;
   }
-  var api = { latexToPlain:latexToPlain, configure:configure, load:load, create:create, read:read, insert:insert, isMath:isMath, templates:templates, plainTemplate:plainTemplate };
+  var api = { logicalLatex:logicalLatex, isolateLogicalLatex:isolateLogicalLatex, latexToPlain:latexToPlain, configure:configure, load:load, create:create, read:read, insert:insert, isMath:isMath, templates:templates, plainTemplate:plainTemplate };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.CourseMathInput = api;
 })(typeof window !== "undefined" ? window : this);

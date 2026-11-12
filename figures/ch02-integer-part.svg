@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 190" role="img" aria-labelledby="title desc">
+<title id="title">החלק השלם והשלם הבא</title>
+<desc id="desc">החלק השלם של x נמצא משמאל ל x או באותו מקום. השלם הבא נמצא תמיד מימין ל x. באיור מוצג מספר בין שני שלמים עוקבים.</desc>
+<rect x="1" y="1" width="658" height="188" rx="12" fill="#faf9ff" stroke="#d5cee7"/>
+<g font-family="Arial, sans-serif" font-size="20" text-anchor="middle" fill="#334155" direction="ltr">
+<path d="M45 95H615 M605 90L615 95L605 100" fill="none" stroke="#64748b" stroke-width="1.5"/>
+<path d="M140 39V49 M140 44H490 M490 39V49" fill="none" stroke="#a99ac6"/>
+<text x="315" y="32" font-size="16" direction="rtl">צעד שלם אחד</text>
+<path d="M140 88V102 M490 88V102" stroke="#7255b4" stroke-width="2"/>
+<circle cx="300" cy="95" r="5" fill="#305bc2"/>
+<text x="300" y="80" fill="#305bc2">x</text>
+<text x="140" y="132" fill="#7255b4">⌊x⌋</text>
+<text x="490" y="132" fill="#7255b4">⌊x⌋ + 1</text>
+<text x="140" y="158" font-size="15" direction="rtl">החלק השלם</text>
+<text x="490" y="158" font-size="15" direction="rtl">השלם הבא</text>
+</g></svg>

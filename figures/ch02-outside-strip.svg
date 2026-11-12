@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 650 250" role="img"><title>איברים מחוץ לרצועה ממשיכים להופיע</title>
+<style>text{font:16px Georgia,serif;fill:#38445b;direction:ltr;text-anchor:middle}</style>
+<rect x="92" y="96" width="510" height="58" fill="#e2d9f7"/>
+<line x1="92" y1="96" x2="602" y2="96" stroke="#9376bd" stroke-width="1.2" stroke-dasharray="5 4"/>
+<line x1="92" y1="154" x2="602" y2="154" stroke="#9376bd" stroke-width="1.2" stroke-dasharray="5 4"/>
+<line x1="92" y1="125" x2="602" y2="125" stroke="#9376bd" stroke-width="1.2" stroke-dasharray=""/>
+<line x1="92" y1="25" x2="92" y2="210" stroke="#8996a8" stroke-width="1.2" stroke-dasharray=""/>
+<line x1="92" y1="210" x2="615" y2="210" stroke="#8996a8" stroke-width="1.2" stroke-dasharray=""/>
+<circle cx="115" cy="60" r="4" fill="#c13c53"/>
+<circle cx="155" cy="125" r="4" fill="#3b68bd"/>
+<circle cx="195" cy="60" r="4" fill="#c13c53"/>
+<circle cx="235" cy="125" r="4" fill="#3b68bd"/>
+<circle cx="275" cy="60" r="4" fill="#c13c53"/>
+<circle cx="315" cy="125" r="4" fill="#3b68bd"/>
+<circle cx="355" cy="60" r="4" fill="#c13c53"/>
+<circle cx="395" cy="125" r="4" fill="#3b68bd"/>
+<circle cx="435" cy="60" r="4" fill="#c13c53"/>
+<circle cx="475" cy="125" r="4" fill="#3b68bd"/>
+<circle cx="515" cy="60" r="4" fill="#c13c53"/>
+<circle cx="555" cy="125" r="4" fill="#3b68bd"/>
+<text x="63" y="130">L</text>
+<text x="615" y="60">⋯</text>
+<text x="615" y="125">⋯</text>
+<text x="620" y="232">n</text>
+</svg>
