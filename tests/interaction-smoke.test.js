@@ -34,7 +34,7 @@ function env(){
 function node(parent,tag,attrs={},text=''){const n=new Element(tag);Object.entries(attrs).forEach(([k,v])=>n.setAttribute(k,v));n.textContent=text;parent.appendChild(n);return n;}
 function button(root,label){const b=root.querySelectorAll('button').find(n=>n.textContent===label);assert.ok(b,'missing button '+label);return b;}
 function input(n,value){n.value=value;n.dispatchEvent({type:'input'});}
-const actionCategories={sides:['add','sub','mul','div','swap'],simplify:['simplify','replace','conditions','conditionReplace','combine'],cases:['splitCustom','splitSign','splitOr','endCase','abs','merge'],rules:['sqrt','cbrt','cube','zero','formula','log','exp']};
+const actionCategories={sides:['add','sub','mul','div','swap'],simplify:['simplify','replace','sequence','unchain','conditions','conditionReplace','combine'],cases:['splitCustom','splitSign','splitOr','endCase','abs','merge'],rules:['sqrt','cbrt','cube','zero','formula','log','exp']};
 function selectAction(row,op,i=0){
  const entry=row.querySelectorAll('.as-justification-entry')[i],category=entry.querySelector('.as-action-category'),select=entry.querySelector('.as-justification-rule');
  const group=Object.keys(actionCategories).find(g=>actionCategories[g].includes(op));
@@ -58,6 +58,7 @@ function partitionCases(row,conditions,excluded=[]){
 function justify(row,actions){
  const edit=row.querySelector('.as-justification-notice')?.querySelector('button');if(edit)edit.click();
  while(row.querySelectorAll('.as-justification-entry').length>1)row.querySelectorAll('.as-justification-entry').at(-1).querySelector('button').click();
+ if(!actions.length)button(row.querySelector('.as-justification-entry'),'מחיקת הפעולה').click();
  actions.forEach((action,i)=>{
   if(i)button(row,'צירוף פעולה').click();
   const entry=selectAction(row,action.op,i);
@@ -220,7 +221,7 @@ for (const rich of [false,true]) {
  const pending=[];E.context.setTimeout=(fn,ms)=>{if(ms===150)pending.push(fn);};
  point.blur();E.document.activeElement=keys.querySelector('button');pending.splice(0).forEach(fn=>fn());
  assert.equal(fill.querySelectorAll('.ix-local-keys').length,1); // Tab into keypad keeps it open.
- E.document.activeElement=button(fill,'בדיקה');keys.dispatchEvent({type:'focusout'});pending.splice(0).forEach(fn=>fn());
+ E.document.activeElement=button(fill,'בדיקת הקבוצה הכתובה');keys.dispatchEvent({type:'focusout'});pending.splice(0).forEach(fn=>fn());
  assert.equal(fill.querySelector('.ix-local-keys'),null);
  second.focus();button(fill,'הצגת התשובות').click();assert.equal(fill.querySelector('.ix-local-keys'),null);
  button(fill,'ניסיון חדש').click();first.focus();button(fill,'ניסיון חדש').click();assert.equal(fill.querySelector('.ix-local-keys'),null);
@@ -234,19 +235,19 @@ for (const rich of [false,true]) {
  }
  E.run(fs.readFileSync('assets/interactive.js','utf8'));E.document.dispatchEvent({type:'DOMContentLoaded'});
  assert.equal(d.querySelectorAll('.pw-input').length,1);assert.equal(d.querySelector('.pw-solution').hidden,true);
- const a=d.querySelector('.pw-input');input(a,'-12<=-3x');justify(d.querySelector('.as-step'),[{op:'sub',value:'5x'},{op:'sub',value:'8'}]);button(d,'הוספת שורה').click();input(d.querySelectorAll('.pw-input')[1],'x<=4');justify(d.querySelectorAll('.as-step')[1],[{op:'div',value:'-3'}]);button(d,'בדיקת הפתרון').click();assert.match(d.textContent,/הפתרון נכון/);
- input(a,'-13<=-3x');assert.doesNotMatch(d.textContent,/הפתרון נכון/);button(d,'בדיקת הפתרון').click();assert.match(d.textContent,/נעצרה/);
+ const a=d.querySelector('.pw-input');input(a,'-12<=-3x');justify(d.querySelector('.as-step'),[{op:'sub',value:'5x'},{op:'sub',value:'8'}]);button(d,'הוספת שורה').click();input(d.querySelectorAll('.pw-input')[1],'x<=4');justify(d.querySelectorAll('.as-step')[1],[{op:'div',value:'-3'}]);button(d,'סיום פתרון').click();assert.match(d.textContent,/הפתרון נכון/);
+ input(a,'-13<=-3x');assert.doesNotMatch(d.textContent,/הפתרון נכון/);button(d,'סיום פתרון').click();assert.match(d.textContent,/נעצרה/);
  input(a,'3x<=12');input(d.querySelectorAll('.pw-input')[1],'');
  justify(d.querySelector('.as-step'),[{op:'sub',value:'2x'},{op:'add',value:'4'}]);justify(d.querySelectorAll('.as-step')[1],[{op:'div',value:'3'}]);
- const second=d.querySelectorAll('.as-step')[1];button(second,'רמז').click();assert.match(second.querySelector('.pw-hints').textContent,/חלקו/);
- input(d.querySelectorAll('.pw-input')[1],'x<=4');button(d,'בדיקת הפתרון').click();assert.match(d.textContent,/הפתרון נכון/);
+ const second=d.querySelectorAll('.as-step')[1];button(second,'רמז').click();assert.match(second.querySelector('.pw-hints').textContent,/פעולות על האגפים ← חילוק/);
+ input(d.querySelectorAll('.pw-input')[1],'x<=4');button(d,'סיום פתרון').click();assert.match(d.textContent,/הפתרון נכון/);
  if(rich){
   assert.equal(a.control.tagName,'INPUT');a.focus();assert.equal(a.control.tagName,'MATH-FIELD');
-  input(a,String.raw`x\le\frac{12}{3}`);input(d.querySelectorAll('.pw-input')[1],'');
+  input(a,String.raw`x\le\frac{12}{3}`);input(d.querySelectorAll('.pw-input')[1],'');justify(d.querySelectorAll('.as-step')[1],[]);
   justify(d.querySelector('.as-step'),[{op:'sub',value:'2x'},{op:'add',value:'4'},{op:'div',value:'3'}]);
-  button(d,'בדיקת הפתרון').click();assert.match(d.textContent,/הפתרון נכון/);
-  input(a,String.raw`x\le\frac{12}{}`);button(d,'בדיקת הפתרון').click();assert.match(d.textContent,/מקום ריק/);assert.doesNotMatch(d.textContent,/הפתרון נכון/);
-  input(a,String.raw`x\le4`);button(d,'בדיקת הפתרון').click();assert.match(d.textContent,/הפתרון נכון/);
+  button(d,'סיום פתרון').click();assert.match(d.textContent,/הפתרון נכון/);
+  input(a,String.raw`x\le\frac{12}{}`);button(d,'סיום פתרון').click();assert.match(d.textContent,/מקום ריק/);assert.doesNotMatch(d.textContent,/הפתרון נכון/);
+  input(a,String.raw`x\le4`);button(d,'סיום פתרון').click();assert.match(d.textContent,/הפתרון נכון/);
   let inserted;a.control.insert=(value,options)=>{inserted={value,options};};a.focus();button(d,'x<sup>□</sup>').click();
   assert.equal(inserted.value,'#@^{#?}');assert.equal(inserted.options.selectionMode,'placeholder');
   a.control.dispatchEvent({type:'paste',clipboardData:{getData:()=> 'x<=3/4'},stopImmediatePropagation(){}});
@@ -268,7 +269,7 @@ for(const rich of [false,true])for(const example of [false,true]) {
  assert.equal(d.querySelector('.dv'),null);assert.equal(rows().length,1);
  assert.equal(d.querySelector('.pw-solution').hidden,true);
  let first=rows()[0],written=first.querySelector('.pw-input');
- button(first,'רמז').click();assert.match(first.querySelector('.pw-hints').textContent,/מחסירים/);
+ button(first,'רמז').click();assert.match(first.querySelector('.pw-hints').textContent,/פעולות על האגפים ← חיסור/);
  assert.equal(first.querySelector('.pw-hints').querySelector('.as-formula'),null);assert.equal(written.value,'');
  button(first,'הצגת צעד אפשרי').click();assert.ok(first.querySelector('.pw-hints').querySelector('.as-formula'));
  assert.equal(written.value,''); // Showing a hint/result never overwrites student work.
@@ -296,17 +297,17 @@ for(const rich of [false,true])for(const example of [false,true]) {
  button(third,'יישום הצעד והמשך').click();assert.equal(rows().length,3);
  assert.equal(engine.parseRelation(E.context.CourseMathInput.read(third.querySelector('.pw-input'))).disj[0].ops[0],'>');
  assert.equal(engine.relationSource(engine.parseRelation(E.context.CourseMathInput.read(third.querySelector('.pw-input')))),'x > -2');
- assert.match(d.textContent,/הפתרון נכון/);
+ button(d,'סיום פתרון').click();assert.match(d.textContent,/הפתרון נכון/);
  assert.equal(rows().length,3);assert.equal(rows().every(r=>r.querySelector('.as-editor').hidden),true);
  const saved=third.querySelector('.pw-input').value;button(first,'עריכה').click();setInput(written,'-2x<5');
  assert.equal(rows().every(r=>!r.querySelector('.as-editor').hidden),true);assert.equal(third.querySelector('.pw-input').value,saved);
  button(third,'הצגת צעד אפשרי').click();assert.match(third.querySelector('.pw-hints').textContent,/תקנו קודם/);
- button(d,'בדיקת הפתרון').click();assert.match(d.textContent,/נעצרה/);
+ button(d,'סיום פתרון').click();assert.match(d.textContent,/נעצרה/);
  button(d,'מההתחלה').click();assert.equal(rows().length,1);assert.equal(rows()[0].querySelector('.pw-input').value,'');
  assert.equal(d.querySelector('.pw-solution').hidden,true);
  button(rows()[0],'הצגת צעד אפשרי').click();button(rows()[0],'יישום הצעד והמשך').click();
  assert.equal(rows()[0].querySelector('.as-editor').hidden,true);button(rows()[1],'הצגת צעד אפשרי').click();
- button(rows()[1],'יישום הצעד והמשך').click();assert.match(d.textContent,/הפתרון נכון/);
+ button(rows()[1],'יישום הצעד והמשך').click();button(d,'סיום פתרון').click();assert.match(d.textContent,/הפתרון נכון/);
 }
 // Absolute-value splitting has a named tool, a readable rule and an opt-in result.
 for(const rich of [false,true]) {
@@ -547,10 +548,17 @@ for(const rich of [false,true])for(const route of ['operations','legacy_hint','c
    button(rows()[2].querySelector('.as-result'),'יישום הצעד והמשך').click();
   }
  }
- assert.equal(source(rows().at(-1)),'x < 0 או x > 1/2',route);
- assert.equal(rows().length,route==='operations'||route==='model_hint'?2:3);
+ if(route==='operations'||route==='model_hint'){
+  assert.match(source(rows()[1]),/^x > 0 וגם .+ או x < 0 וגם .+$/,'Division retains the case intersections');
+  assert.doesNotMatch(d.querySelector('.algebra-work').textContent,/✓ הפתרון נכון/);
+  const simplify=selectAction(rows()[2],'conditions');
+  previewAction(simplify).click();button(rows()[2].querySelector('.as-result'),'יישום הצעד והמשך').click();
+ }
+ assert.equal(M.isSolved(M.parseRelation(source(rows().at(-1))),'x'),true,route);
+ assert.equal(M.setEq(M.parseSet(source(rows().at(-1))),M.parseSet('x < 0 or x > 1/2')),true,route);
+ assert.equal(rows().length,3);
  assert.equal(rows().every(r=>r.querySelector('.as-editor').hidden),true);
- assert.match(d.querySelector('.algebra-work').textContent,/✓ הפתרון נכון/);
+ button(d,'סיום פתרון').click();assert.match(d.querySelector('.algebra-work').textContent,/✓ הפתרון נכון/);
  assert.equal(rows().filter(r=>source(r)==='x > 0 וגם 1 < 2x או x < 0 וגם 1 > 2x').length,1,'Never returns to the split');
 }
 // Empty/universal intersections have readable, editable set answers too.
@@ -566,7 +574,7 @@ for(const rich of [false,true])for(const [start,answer] of [['x<0 and x>=0','∅
  const entry=tool.querySelector('.as-condition-replacement');input(entry.querySelector('.as-condition-input'),rich?(answer==='ℝ'?'\\mathbb{R}':'\\varnothing'):answer);
  previewAction(tool).click();button(row.querySelector('.as-result'),'יישום הצעד והמשך').click();
  assert.equal(M.relationSource(M.parseRelation(E.context.CourseMathInput.read(row.querySelector('.pw-input')))),answer);
- assert.equal(row.querySelector('.as-editor').hidden,true);assert.match(d.textContent,/✓ הפתרון נכון/);
+ assert.equal(row.querySelector('.as-editor').hidden,true);button(d,'סיום פתרון').click();assert.match(d.textContent,/✓ הפתרון נכון/);
 }
 // Students choose the conditions, write their own simplification, and can work
 // on one case at a time. Checking and revealing suggestions do not apply a step.
@@ -609,7 +617,7 @@ for(const rich of [false,true])for(const simultaneous of [false,true]) {
   choose(next,'and.1.0.2','x<0');previewAction(next).click();button(second.querySelector('.as-result'),'יישום הצעד והמשך').click();
   assert.equal(M.relationSource(M.parseRelation(E.context.CourseMathInput.read(second.querySelector('.pw-input')))),'x > 1/2 או x < 0');
  }
- assert.match(d.querySelector('.algebra-work').textContent,/✓ הפתרון נכון/);
+ button(d,'סיום פתרון').click();assert.match(d.querySelector('.algebra-work').textContent,/✓ הפתרון נכון/);
 }
 // Arithmetic replacements also preserve the unselected side of a comparison.
 for(const rich of [false,true]) {
@@ -636,7 +644,7 @@ for(const rich of [false,true]) {
  assert.ok(button(d,'וגם'));assert.equal(d.querySelector('[aria-label="פאי"]'),null);
  input(field,rich?'x>1'+E.context.CourseMathInput.templates[' וגם ']+'x<7':'x>1 וגם x<7');
  justify(d.querySelector('.as-step'),[{op:'abs'},{op:'add',value:'4'}]);
- button(d,'בדיקת הצעד והמשך').click();assert.match(d.textContent,/הפתרון נכון/);
+ button(d,'בדיקת הצעד והמשך').click();button(d,'סיום פתרון').click();assert.match(d.textContent,/הפתרון נכון/);
  pi.querySelector('.pw-input').focus();assert.ok(button(pi,'π'));
 }
 // AND and OR must both render as isolated RTL text, including the reported case split.
@@ -675,7 +683,7 @@ for(const rich of [false,true]) {
  for(const word of ['או','וגם','ולא','לא']) {
   let insertion;field.control.mode='text';field.control.insert=(latex,options)=>{insertion={latex,options};};
   api.insert(field,' '+word+' ');
-  assert.equal(insertion.latex,String.raw`\text{`+'\u00a0'+word+'\u00a0}');
+  assert.equal(insertion.latex,String.raw`\class{course-logic}{\text{`+'\u00a0'+word+'\u00a0}}');
   assert.equal(insertion.options.selectionMode,'after');assert.equal(insertion.options.mode,'math');assert.equal(field.control.mode,'math');
   assert.equal(field.control.inlineShortcuts[word],insertion.latex);
  }
@@ -693,7 +701,7 @@ for(const rich of [false,true]) {
  const preview=row.querySelector('.as-action-preview');assert.ok(preview.querySelector('.as-formula'),preview.textContent);
  assert.equal(row.querySelector('.pw-input').value,'');
  button(preview,'יישום הצעד והמשך').click();assert.equal(row.querySelector('.as-editor').hidden,true,row.textContent);
- assert.match(d.textContent,/הפתרון נכון/);
+ button(d,'סיום פתרון').click();assert.match(d.textContent,/הפתרון נכון/);
 }
 // Manual numbered cases are covered in numbered-cases-dom.test.js.
 // Answer fields and sketches belong to the workspace; revealing a model preserves drafts.
@@ -714,7 +722,7 @@ for(const rich of [false,true]) {
   input(blank.querySelector('.blank-input'),'{3}');
   button(d,'פתרון לדוגמה').click();
   assert.match(solution.textContent,/קבוצת הפתרונות/);assert.equal(solution.querySelectorAll('.sp-answer').length,1);
-  assert.ok(solution.querySelectorAll('input, button').every(n=>n.closest('.sp-range')),'only folded viewport controls, no solution editors');
+  assert.ok(solution.querySelectorAll('input, button').every(n=>n.closest('.sp-range')||n.closest('.as-clean-solution')),'only viewport and clean-text controls, no solution editors');
   assert.equal(solution.querySelectorAll('.ix-hidden').length,0);assert.equal(solution.querySelector('.sp-practice'),null);
   assert.ok(solution.querySelector('svg'));assert.equal(solution.querySelector('svg').getAttribute('aria-label'),'סרטוט הקבוצה על הישר הממשי');
   assert.equal(blank.querySelector('.blank-input').value,'{3}');assert.ok(plot.querySelector('[data-point="3"]'),'student drawing retained');
@@ -787,20 +795,24 @@ for(const rich of [false,true]) {
 // Manual numbered cases are covered in numbered-cases-dom.test.js.
 // Initialize and solve the actual authored relation widgets, not only synthetic fixtures.
 {
- const M=require('../assets/interactive.js'),attrs=s=>{const a={};s.replace(/(\w+)="([^"]*)"/g,(_,k,v)=>a[k]=v);return a;};
+ const M=require('../assets/interactive.js'),attrs=s=>{const a={};s.replace(/([\w-]+)="([^"]*)"/g,(_,k,v)=>a[k]=v);return a;};
  let count=0;
  for(const file of fs.readdirSync('.').filter(f=>/^\d\d-.*\.qmd$/.test(f))) {
   const lines=fs.readFileSync(file,'utf8').split('\n');
   for(let i=0;i<lines.length;i++) {
    const m=/^(:{3,})\s*\{\.derive ([^\n]*)\}\s*$/.exec(lines[i]);if(!m)continue;
    const a=attrs(m[2]);if(a.limit||!M.parseRelation(a.start).disj.some(d=>d.ops.length))continue;
-   const path=[];for(let j=i+1;j<lines.length&&lines[j].trim()!==m[1];j++){const st=/^:::\s*\{\.step ([^\n]*)\}\s*$/.exec(lines[j]);if(st)path.push(attrs(st[1]).line);}
+   const path=[];for(let j=i+1;j<lines.length&&lines[j].trim()!==m[1];j++){const st=/^:::\s*\{\.step ([^\n]*)\}\s*$/.exec(lines[j]);if(st)path.push(attrs(st[1]));}
    const E=env(),box=node(E.document,'div',{class:'thmbox-example'}),d=node(box,'div',{class:'derive',...a});
-   path.forEach((line,j)=>node(d,'div',{class:'step','data-line':line},'hint '+j));
+   path.forEach((step,j)=>node(d,'div',{class:'step',...step},'hint '+j));
    E.run(fs.readFileSync('assets/math-input.js','utf8'));E.run(fs.readFileSync('assets/interactive.js','utf8'));E.document.dispatchEvent({type:'DOMContentLoaded'});
    assert.equal(d.querySelectorAll('.pw-input').length,1,a.start+' initializes');
    assert.equal(d.querySelectorAll('.pw-solution').length,1,a.start+' has a model solution panel');
-   for(let j=0;j<path.length*3+3;j++){
+   const config={mode:'rel',vars:(a.vars||'x').split(','),solve:a.solve||(a.vars||'x').split(',')[0],positive:(a.positive||'').split(',').filter(Boolean),requireJustification:true,explicitCases:true};
+   if(a['sequence-name'])config.sequenceDefinitions={[a['sequence-name']]:{index:config.solve,formula:a['sequence-formula']}};
+   if(a['bound-rule'])Object.assign(config,M.sequenceBoundConfig('n'));
+   const maxSteps=M.relationModel(a.start,path,config).entries.length;
+   for(let j=0;j<maxSteps+1;j++){
     const row=d.querySelectorAll('.as-step')[j];assert.ok(row,a.start+' row '+j);
     button(row,'הצגת צעד אפשרי').click();
     assert.ok(row.querySelector('.pw-hints').querySelector('.as-formula'),a.start+' can reveal the next step');
@@ -808,7 +820,7 @@ for(const rich of [false,true]) {
     assert.equal(row.querySelector('.as-editor').hidden,true,a.start+' accepts its justified hint: '+row.textContent);
     if(d.querySelectorAll('.as-step').length===j+1)break; // An isolated variable may already finish before arithmetic is simplified.
    }
-   assert.match(d.textContent,/הפתרון נכון/,a.start);count++;
+   button(d,'סיום פתרון').click();assert.match(d.textContent,/הפתרון נכון/,a.start);count++;console.log('Authored flow',count,a.start);
   }
  }
  assert.ok(count>20);console.log(count+' authored relation editors initialized, hinted and solved.');
@@ -848,18 +860,18 @@ for(const rich of [false,true]) {
  E.document.dispatchEvent({type:'DOMContentLoaded'});
  const field=blank.querySelector('.blank-input'),plot=fill.querySelector('.set-plot');
  assert.ok(plot);assert.equal(explanation.classList.contains('ix-hidden'),true);
- input(field,'[-1,1)');button(fill,'בדיקה').click();assert.equal(blank.classList.contains('warn'),true);
+ input(field,'[-1,1)');button(fill,'בדיקת הקבוצה הכתובה').click();assert.equal(blank.classList.contains('ok'),true);
  assert.equal(plot.querySelector('.sp-gap'),null);assert.equal(plot.querySelector('[data-point="0"]'),null);
  const end=(name,value)=>{const s=plot.querySelector('[data-end="'+name+'"]');s.value=value;s.dispatchEvent({type:'change'});};
  assert.equal(plot.querySelector('.sp-tick'),null);assert.equal(plot.querySelector('[data-label="0"]'),null);
  end('a','closed');input(plot.querySelector('[data-coordinate="a"]'),'-1');input(plot.querySelector('[data-coordinate="b"]'),'1');
  assert.equal(plot.querySelector('[data-coordinate="a"]').value,'-1');assert.equal(plot.querySelector('[data-coordinate="b"]').value,'1');
  button(plot,'הנחה על הישר').click();
- button(fill,'בדיקה').click();assert.equal(blank.classList.contains('ok'),true);assert.equal(explanation.classList.contains('ix-hidden'),false);
+ button(fill,'בדיקת הקבוצה הכתובה').click();assert.equal(blank.classList.contains('ok'),true);assert.equal(explanation.classList.contains('ix-hidden'),false);
  plot.querySelector('[data-point="1"]').dispatchEvent({type:'keydown',key:'Enter'});
  assert.equal(blank.classList.contains('ok'),true); // Ordinary clicks/keys do not change a point.
  button(plot,'נקודה').click();const added=plot.querySelector('[data-coordinate="point"]');input(added,'1');button(plot,'הנחה על הישר').click();
- assert.equal(blank.classList.contains('ok'),false);assert.equal(explanation.classList.contains('ix-hidden'),true);
+ assert.equal(blank.classList.contains('ok'),true);assert.equal(explanation.classList.contains('ix-hidden'),false);
  button(plot,'בדיקת הסרטוט').click();assert.match(plot.querySelector('.sp-status').textContent,/אינו שייך/);
  button(plot,'ביטול').click();button(plot,'בדיקת הסרטוט').click();assert.match(plot.querySelector('.sp-status').textContent,/נכון/);
  button(plot,'הצגת הסרטוט').click();assert.equal(plot.querySelector('[data-point="-1"]'),null);
@@ -987,10 +999,10 @@ for(const rich of [false,true]) {
    button(plot,'הנחה על הישר').click();
   }
   assert.equal(a.value,'');assert.equal(b.value,''); // Drawing never fills written answers.
-  input(a,entries[0].answer);button(fill,'בדיקה').click();
+  input(a,entries[0].answer);button(fill,'בדיקת הקבוצה הכתובה').click();
   assert.equal(entries[0].blank.classList.contains('ok'),true);assert.equal(entries[1].blank.classList.contains('ok'),false);
-  input(b,entries[0].answer);button(fill,'בדיקה').click();assert.equal(entries[1].blank.classList.contains('warn'),true);
-  input(b,entries[1].answer);scheduled();button(fill,'בדיקה').click();
+  input(b,entries[0].answer);button(fill,'בדיקת הקבוצה הכתובה').click();assert.equal(entries[1].blank.classList.contains('warn'),true);
+  input(b,entries[1].answer);scheduled();button(fill,'בדיקת הקבוצה הכתובה').click();
   assert.equal(entries[1].blank.classList.contains('ok'),true);
   const preview=entries[1].blank.querySelector('.ix-preview');
   assert.notEqual(preview.parentNode,a.parentNode); // Each answer owns its preview.

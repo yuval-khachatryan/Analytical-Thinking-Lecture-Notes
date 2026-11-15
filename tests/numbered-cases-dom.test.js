@@ -33,12 +33,12 @@ for(const rich of [false,true]){
  assert.match(t.row(6).querySelector('.as-compact').textContent,/משורה 3.*בשורה 5/);
  assert.ok(!t.row(7).querySelector('.as-source-line').children.some(o=>o.textContent==='שורה 5'),'closed case is absent from source choices');
  t.open(7,2,0);t.action(8,'add','3');t.commit(8);t.action(9,'div','2');t.commit(9);t.close(10,7,9);
- t.merge(11,2,[6,10]);assert.match(t.d.textContent,/✓ הפתרון נכון/);
+ t.merge(11,2,[6,10]);button(t.d,'סיום פתרון').click();assert.match(t.d.textContent,/✓ הפתרון נכון/);
  assert.equal(sameSet('{-1,4}',t.text(11)),true);
  assert.equal(t.row(3).querySelector('.as-compact').hidden,false,'case argument remains visible after merging');
  // Editing inside a closed case invalidates the later closures and union.
  button(t.row(4),'עריכה').click();input(t.row(4).querySelector('.pw-input'),'2x=1');
- button(t.d.querySelector('.algebra-work').querySelectorAll('.ix-bar').at(-1),'בדיקת הפתרון').click();
+ button(t.d.querySelector('.algebra-work').querySelectorAll('.ix-bar').at(-1),'סיום פתרון').click();
  assert.equal(t.row(11).querySelector('.as-editor').hidden,false);assert.doesNotMatch(t.d.textContent,/✓ הפתרון נכון/);
 }
 for(const rich of [false,true]){
@@ -49,12 +49,44 @@ for(const rich of [false,true]){
  t.action(5,'div','2');t.commit(5);t.close(6,3,5);
  t.open(7,2,1);t.action(8,'mul','x');t.commit(8);t.action(9,'div','2');t.commit(9);t.close(10,7,9);
  t.merge(11,2,[6,10]);assert.match(t.text(11),/וגם|and/);assert.doesNotMatch(t.d.textContent,/✓ הפתרון נכון/);
- t.action(12,'conditions');t.commit(12);assert.match(t.d.textContent,/✓ הפתרון נכון/);
+ t.action(12,'conditions');t.commit(12);button(t.d,'סיום פתרון').click();assert.match(t.d.textContent,/✓ הפתרון נכון/);
 }
 {
  const t=exercise('x=1 or x=2 or x=3',false);
  t.open(2,1,1,1);t.open(3,2,0);t.close(4,3,3);t.open(5,2,1);t.close(6,5,5);t.merge(7,2,[4,6]);t.close(8,2,7);
- t.open(9,1,0,1);t.close(10,9,9);t.merge(11,1,[8,10]);assert.match(t.d.textContent,/✓ הפתרון נכון/);
+ t.open(9,1,0,1);t.close(10,9,9);t.merge(11,1,[8,10]);button(t.d,'סיום פתרון').click();assert.match(t.d.textContent,/✓ הפתרון נכון/);
+}
+for(const rich of [false,true]){
+ const t=exercise('x=1 or x=2 or x=3',rich);
+ t.action(2,'splitOr');
+ assert.equal(t.row(2).querySelectorAll('.as-case-choice').length,3,'All three cases are immediately selectable');
+ assert.equal(t.row(2).querySelector('.as-or-grouping').open,false);
+ t.open(2,1,1);assert.equal(M.relationSource(M.parseRelation(t.text(2))),'x = 2');
+ t.close(3,2,2);t.open(4,1,0);t.close(5,4,4);
+ t.source(6,1);t.action(6,'merge');
+ for(const n of [3,5]){const pick=t.row(6).querySelector('[data-cite-line="'+n+'"]');pick.checked=true;pick.dispatchEvent({type:'change'});}
+ button(t.row(6),'הצגת התוצאה הצפויה').click();assert.match(t.row(6).querySelector('.as-action-preview').textContent,/חסר מקרה/);
+ t.open(6,1,2);t.close(7,6,6);t.merge(8,1,[3,5,7]);
+ button(t.d,'סיום פתרון').click();assert.match(t.d.textContent,/✓ הפתרון נכון/);
+ assert.equal(t.row(2).querySelector('.as-compact').hidden,false,'The middle-case argument stays visible');
+}
+for(const rich of [false,true]){
+ // The student's sign split keeps zero until it is explicitly excluded.
+ const t=exercise('1/x<2',rich);t.action(2,'splitSign','x');t.commit(2);
+ t.open(3,2,2);assert.match(t.text(3),/x = 0/);
+ const tool=t.action(4,'conditionReplace').querySelector('.as-conditions');
+ const fragment=tool.querySelector('.as-fragment-input');fragment.focus();input(fragment,rich?'\\frac{1}{x}<2':'1/x<2');
+ button(tool,'בחירת החלק').click();
+ const edit=tool.querySelector('.as-condition-replacement'),reason=edit.querySelector('.as-condition-reason');
+ reason.value='denominator';reason.dispatchEvent({type:'change'});
+ const denominator=edit.querySelector('.as-condition-denominator');denominator.focus();input(denominator,'x');
+ const result=edit.querySelector('.as-condition-input');result.focus();input(result,rich?'\\varnothing':'∅');
+ button(edit,'בדיקת הפישוט').click();assert.match(edit.textContent,/הפישוט נכון/);
+ t.commit(4);t.close(5,3,4);
+ t.open(6,2,0);t.action(7,'mul','x');t.commit(7);t.action(8,'div','2');t.commit(8);t.close(9,6,8);
+ t.open(10,2,1);t.action(11,'mul','x');t.commit(11);t.action(12,'div','2');t.commit(12);t.close(13,10,12);
+ t.merge(14,2,[5,9,13]);t.action(15,'conditions');t.commit(15);
+ button(t.d,'סיום פתרון').click();assert.match(t.d.textContent,/✓ הפתרון נכון/);assert.equal(sameSet(t.text(15),'(-inf,0)U(1/2,inf)'),true);
 }
 {
  const t=exercise('3-2x<7',false);t.action(2,'sub','3');t.commit(2);
@@ -62,7 +94,7 @@ for(const rich of [false,true]){
  assert.match(t.row(3).querySelector('.as-compact').textContent,/לפי שורה 1/);
  button(t.row(2),'עריכה').click();button(t.row(2),'מחיקת הצעד').click();
  // Stable source IDs still cite the original start, not a shifted row number.
- button(t.row(2),'בדיקת הצעד והמשך').click();assert.match(t.d.textContent,/✓ הפתרון נכון/);
+ button(t.row(2),'בדיקת הצעד והמשך').click();button(t.d,'סיום פתרון').click();assert.match(t.d.textContent,/✓ הפתרון נכון/);
 }
 {
  const t=exercise('|2x-3|=5',false);

@@ -77,7 +77,7 @@ local BOX = {
   thmthm = { word = "משפט",  css = "theorem"     },
   thmprp = { word = "טענה",  css = "proposition" },
   thmexm = { word = "דוגמה", css = "example"     },
-  thmqst = { word = "שאלה",  css = "question"   },
+  thmqst = { word = "תרגיל",  css = "question"   },
   thmsim = { word = "סימולציה", css = "simulation" },
   thmlem = { word = "למה",   css = "lemma"       },
   thmcor = { word = "מסקנה", css = "corollary"   },
@@ -87,6 +87,9 @@ local BOX = {
 
 -- Labelled but UNNUMBERED (see the header).
 local UNNUMBERED = {
+  thminsight = { word = "תובנה חשובה", css = "key-point" },
+  thmqa      = { word = "שאלה ותשובה", css = "key-point" },
+  thmexp     = { word = "הסבר",       css = "key-point" },
   thmanalogy = { word = "דימוי",       css = "key-point" },
   thmterm    = { word = "מונחים",      css = "terminology" },
   thmwarn    = { word = "שימו לב",     css = "warning"    },
@@ -445,6 +448,7 @@ process = function(blocks, in_optional)
       end
 
       local ic = icon_class(b)
+      if not ic and (has_class(orig, "thmexp") or has_class(orig, "thminsight")) then ic = "thmicon-idea" end
       if ic then b.classes[#b.classes + 1] = ic end
 
       if do_collapse and is_html then

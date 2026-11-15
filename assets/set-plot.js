@@ -81,7 +81,7 @@
     [['closed','● הוספת נקודה'],['open','○ הוצאת נקודה']].forEach(([v,t])=>{const o=el('option','',t);o.value=v;pointKind.appendChild(o);});pointKind.value='closed';
     const pointEntry=coordinate('מיקום הנקודה','point'),number=pointEntry.field;
     pointTemplate.appendChild(pointKind);pointTemplate.appendChild(pointEntry.box);
-    const place=button('הנחה על הישר',placeShape,'ix-btn ix-main');
+    const place=button('הנחה על הישר',placeShape);
     const deletePanel=el('div','sp-delete-panel'),entryStatus=el('div','sp-entry-status');entryStatus.setAttribute('aria-live','polite');
     tools.appendChild(template);tools.appendChild(pointTemplate);tools.appendChild(place);tools.appendChild(deletePanel);tools.appendChild(entryStatus);
     function setMode(next){
@@ -105,7 +105,7 @@
     svg.setAttribute('role','group');svg.setAttribute('aria-label','סרטוט הקבוצה על הישר הממשי');scroller.appendChild(svg);
     const status=el('div','sp-status');status.setAttribute('aria-live','polite');
     const bar=el('div','sp-bar');
-    const check=button('בדיקת הסרטוט',()=>checkPlot());
+    const check=button('בדיקת הסרטוט',()=>checkPlot(),'ix-btn ix-main');
     const reveal=button('הצגת הסרטוט',()=>show(!revealed));
     const undo=button('ביטול',()=>{M.undo();changed();});
     const clear=button('ניקוי',()=>{M.clear();changed();});
@@ -113,9 +113,9 @@
     const notation=el('details','sp-extra');notation.appendChild(el('summary','','הסרטוט כסימון של קבוצה'));
     const formula=el('div','sp-notation');notation.appendChild(formula);
     const rangeControls=el('details','sp-range');rangeControls.appendChild(el('summary','','טווח התצוגה'));
-    const rangeFields=el('div','sp-range-fields'),rangeMessage=el('div','sp-range-message');rangeMessage.setAttribute('aria-live','polite');
+    const rangeFields=el('div','sp-range-fields'),rangeMessage=el('div','sp-range-message');rangeMessage.setAttribute('aria-live','polite');rangeFields.setAttribute('dir','ltr');
     function rangeField(label,name){
-      const wrapper=el('label','',label),field=el('input');field.type='number';field.step='any';field.setAttribute('aria-label',label);field.setAttribute('data-view-bound',name);wrapper.appendChild(field);rangeFields.appendChild(wrapper);return field;
+      const wrapper=el('label','',label),field=el('input');wrapper.setAttribute('dir','rtl');field.type='number';field.step='any';field.setAttribute('aria-label',label);field.setAttribute('data-view-bound',name);wrapper.appendChild(field);rangeFields.appendChild(wrapper);return field;
     }
     const viewLeft=rangeField('גבול שמאלי','left'),viewRight=rangeField('גבול ימני','right');
     function validView(lo,hi){

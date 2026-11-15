@@ -23,12 +23,12 @@ for (const f of files) {
     let j = i + 1;
     for (; j < lines.length && lines[j].trim() !== fence; j++) {
       const s = /^:::\s*\{\.step ([^\n]*)\}\s*$/.exec(lines[j]);
-      if (s) steps.push({ line: attrsOf(s[1]).line, allowExpression:attrsOf(s[1])['allow-expression']==='true', at: j + 1 });
+      if (s) steps.push({ ...attrsOf(s[1]), allowExpression:attrsOf(s[1])['allow-expression']==='true', at:j+1 });
     }
     if (j >= lines.length) { fail('no closing fence ' + fence); continue; }
     if (!steps.length) { fail('no steps'); continue; }
     const seq = A.limit;
-    let prev, mode;
+    let prev, mode, prevSource=A.start;
     try {
       if (seq) { prev = M.parseExpr(A.start); mode = 'lim'; }
       else { prev = M.parseRelation(A.start); mode = prev.disj.some(d => d.ops.length) ? 'rel' : 'expr'; if (mode === 'expr') prev = M.parseExpr(A.start); }
@@ -37,6 +37,9 @@ for (const f of files) {
     if (!vars.length) vars = ['x'];
     const solve = A.solve || (vars.includes('x') ? 'x' : vars[0]);
     const cfg = { vars, solve, positive: (A.positive || '').split(',').filter(Boolean), verify: false, mode, seq };
+    if(A['sequence-name'] && A['sequence-formula']) cfg.sequenceDefinitions = {[A['sequence-name']]:{index:solve,formula:A['sequence-formula']}};
+    const branches=steps.some(st=>st.kind);
+    if(branches)try{M.relationModel(A.start,steps.map(({at,...step})=>step),{...cfg,requireJustification:true,explicitCases:true});}catch(e){fail(e.message);}
     for (const st of steps) {
       if (st.line === undefined) { fail(`line ${st.at}: a step without line=`); break; }
       const P = M.prepLine(st.line);
@@ -51,11 +54,12 @@ for (const f of files) {
         try { const r = M.checkAnswer(kind, b.ans, b.ans, vars, {allowExpression:st.allowExpression}); if (!r.ok) fail(`line ${st.at}: box [${b.ans}] fails its own check`); }
         catch (e) { fail(`line ${st.at}: box [${b.ans}] does not parse: ${e.message}`); }
       }
-      const r = M.judgeStep(prev, L, null, cfg);
+      const actions=M.authoredAction(st);
+      const r = branches ? {ok:true} : mode==="lim"&&st.action ? M.checkSequenceStep(prevSource,P.full,actions[0],seq) : A["bound-rule"] ? M.checkJustifiedStep(M.relationSource(prev),P.full,actions,M.sequenceBoundConfig("n")) : mode==="rel"&&st.action ? M.checkJustifiedStep(prevSource,P.full,actions,cfg) : M.judgeStep(prev, L, null, cfg);
       if (!r.ok) fail(`line ${st.at} "${st.line}": ${plain(r.msg)}`);
-      prev = L;
+      prev = L;prevSource=P.full;
     }
-    const done = mode === 'rel' ? M.isSolved(prev, solve)
+    const done = A['bound-rule'] ? true : mode === 'rel' ? M.isSolved(prev, solve)
       : mode === 'lim' ? M.limDone(prev, seq)
       : !A.goal || M.tex(prev) === M.tex(M.parseExpr(A.goal));
     if (!done) fail('the last line is not an answer');
@@ -69,3 +73,5 @@ function varsIn(s) {
   return o;
 }
 console.log(bad ? `${bad} problems in ${count} derivations` : `all ${count} derivations OK`);
+
+if(bad)process.exitCode=1;

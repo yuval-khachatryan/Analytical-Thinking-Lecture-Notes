@@ -72,7 +72,7 @@ assert.match(M.setInputTex('{x | x^2≠4}'),/\\ne/);
 assert.equal(I.templates['^'],'#@^{#?}');assert.equal(I.templates['≠'],String.raw`\ne`);
 assert.equal(I.templates['/'],String.raw`\frac{#@}{#?}`);
 for(const word of ['או','וגם','ולא','לא']) {
- assert.equal(I.templates[' '+word+' '],String.raw`\text{`+'\u00a0'+word+'\u00a0}');
+ assert.equal(I.templates[' '+word+' '],String.raw`\class{course-logic}{\text{`+'\u00a0'+word+'\u00a0}}');
 }
 same('x<-2'+I.templates[' או ']+'x>3','(-inf,-2)U(3,inf)','set',[]);
 same('x>1'+I.templates[' וגם ']+'x<3','(1,3)','set',[]);
@@ -165,7 +165,7 @@ for(const file of fs.readdirSync('.').filter(f=>/^\d\d-.*\.qmd$/.test(f))) {
  for(const m of src.matchAll(/\[\$([^$]*)\$\]\{\.blank ((?:[^"}]|"[^"]*")*)\}/g)){
   const a={};m[2].replace(/([\w-]+)="([^"]*)"/g,(_,k,v)=>a[k]=v);
   const kind=a.kind||M.guessKind(a.ans),vars=(a.vars||'').split(',').filter(Boolean);
-  const r=M.checkAnswer(kind,a.ans,read(m[1]),vars,{form:a.form,allowExpression:a['allow-expression']==='true',positive:(a.positive||'').split(',').filter(Boolean)});
+  const r=M.checkAnswer(kind,a.ans,read(m[1]),vars,{form:a.form,calculation:a.calculation,minAnswer:a['min-answer'],integerAnswer:a['integer-answer']==='true',checkAt:a['check-at'],integers:(a.integer||'').split(',').filter(Boolean),allowExpression:a['allow-expression']==='true',positive:(a.positive||'').split(',').filter(Boolean)});
   assert.equal(r.ok,true,file+': '+m[1]+' -> '+read(m[1])+': '+r.msg);count++;
  }
 }

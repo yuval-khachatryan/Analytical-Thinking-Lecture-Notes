@@ -12,6 +12,7 @@ project:
   # each page, and assets/navigation.js builds the tree.
   post-render:
     - node tools/build-navigation.mjs
+    - python3 tools/build-references.py
 
 book:
   title: "חשיבה אנליטית — מערכי הרצאה"

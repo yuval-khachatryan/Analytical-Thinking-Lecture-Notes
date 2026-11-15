@@ -35,4 +35,12 @@ good('x=1 or x=2 or x=3',nested,true);
 bad('x=1 or x=2 or x=3',[open(1,1),open(2,0),close(2,3)],/הפנימי/);
 bad('x=1 or x=2 or x=3',nested.slice(0,3).concat(close(2,2)),/אחדו קודם/);
 good('x=1 or x=2 or x=3',[open(1,0,2),close(2,2),open(1,1,2),close(4,4),merge(1,3,5)],true);
+// Associative OR alternatives are directly openable, including the middle one.
+const direct=choice=>({kind:'open',source:1,split:{},choice});
+const three=[direct(1),close(2,2),direct(2),close(4,4),direct(0),close(6,6),merge(1,3,5,7)];
+assert.equal(good('x=1 or x=2 or x=3',three,true).records[1].text,'x = 2');
+good('x=1 or x=2 or x=3',three.slice(0,6),false);
+bad('x=1 or x=2 or x=3',three.slice(0,4).concat(merge(1,3,5)),/חסר מקרה/);
+bad('x=1 or x=2 or x=3',three.slice(0,2).concat(direct(1)),/כבר נפתח/);
+bad('x=1 or x=2 or x=3',three.slice(0,3).concat(step(2,'x=2',{op:'simplify'})),/מקרה סגור|מקרה אחר/);
 console.log('Numbered proof checks passed: manual cases, references, scopes, nested closure, explicit merging and edits.');

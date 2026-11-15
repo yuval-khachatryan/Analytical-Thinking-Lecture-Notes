@@ -191,7 +191,7 @@ const divisionPartition={op:'partition',split:{conditions:['x>0','x<0','x=0'],ex
 const partitioned=M.executeAction('1/x<2',divisionPartition,explicit);
 assert.equal(check('1/x<2',partitioned,[divisionPartition],explicit).ok,true);
 assert.equal(M.parseRelation(partitioned).disj.length,2);
-assert.match(M.actionReason([divisionPartition]),/לא רלוונטי/);
+assert.match(M.actionReason([divisionPartition]),/אין פתרונות.*המכנה x מתאפס/);
 for(const exclusion of [{reason:'denominator',value:'2'}, {reason:'denominator',value:''}, {reason:'contradiction',value:'x>0'}]){
  const action=structuredClone(divisionPartition);action.split.excluded[2]=exclusion;
  assert.throws(()=>M.executeAction('1/x<2',action,explicit),'exclusion must match the actual source');

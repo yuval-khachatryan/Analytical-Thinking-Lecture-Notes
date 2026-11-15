@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>מיקרוסקופ לקירובים של פאי</title>
+<link rel="stylesheet" href="limit-activities.css">
+<style>
+#plot{max-width:720px;margin-inline:auto}#scale{min-width:3.5rem;text-align:center}
+#terms{display:block;text-align:center;line-height:1.8;font-size:18px;margin-bottom:.4rem}
+.term-value{white-space:nowrap}.distinct{color:#2757b8}.merged{color:#7351ba;font-weight:bold}.outside{color:#64748b;text-decoration:underline dotted;text-underline-offset:3px}
+.legend{text-align:center}.legend span{white-space:nowrap}button:disabled{opacity:.45;cursor:default}
+</style>
+</head>
+<body><div class="w">
+<p id="terms" class="m" dir="ltr" aria-label="הקירובים העשרוניים של פאי"></p>
+<p class="legend"><span class="distinct">כחול: נבדלים מ π לעין</span> · <span class="merged">סגול: אינם נבדלים מ π לעין</span> · <span class="outside">אפור וקו מקווקו: מחוץ לחלון</span></p>
+<svg id="plot" viewBox="0 0 720 180" role="img" aria-label="קירובים עשרוניים של פאי וסביבת אפסילון סביב פאי על ישר המספרים"></svg>
+<div class="controls">
+<label>סף השגיאה <span class="m">ε</span><select id="epsilon" dir="ltr" aria-label="סף השגיאה"><option value="0.01">1/100</option><option value="0.001" selected>1/1000</option><option value="0.0001">1/10000</option></select></label>
+<button id="zoom-in" type="button">הגדילו פי 10</button><button id="zoom-out" type="button">הקטינו פי 10</button><output id="scale" class="m" aria-live="polite"></output>
+</div>
+<p class="caption">הפס הבהיר מסמן את סביבת האפסילון <span class="m">(π − ε, π + ε)</span>. הגדלה משנה את קנה המידה; היא אינה משנה את האיברים או את סף השגיאה שבחרתם.</p>
+<p id="read" class="read" aria-live="polite"></p>
+<p id="outside" class="caption"></p>
+</div>
+<script src="../shared/autosize.js"></script>
+<script src="limit-activities.js"></script>
+<script src="microscope.js"></script>
+</body>
+</html>

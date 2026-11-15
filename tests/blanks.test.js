@@ -5,13 +5,14 @@ const src = fs.readdirSync('.').filter(f => /^\d\d-.*\.qmd$/.test(f)).map(f => f
 const re = /\[\$([^$]*)\$\]\{\.blank ((?:[^"}]|"[^"]*")*)\}/g;
 function attrs(s) { const o = {}; s.replace(/([\w-]+)="([^"]*)"/g, (_, k, v) => { o[k] = v; }); return o; }
 function texToInput(t) {
-  let s = t;
+  let s = t.replace(/\\log_\{(\d+)\}/g,'log_$1');
   for (let i = 0; i < 5; i++) {
     s = s.replace(/\\sqrt\[3\]\{([^{}]*)\}/g, 'cbrt($1)').replace(/\\sqrt\{([^{}]*)\}/g, 'sqrt($1)');
     s = s.replace(/\\[td]?frac\{([^{}]*)\}\{([^{}]*)\}/g, '(($1)/($2))');
     s = s.replace(/\^\{([^{}]*)\}/g, '^($1)');
   }
   s = s.replace(/\\in\b/g, ' in ').replace(/\\left|\\right|\\big|\\Big/g, '').replace(/\\mathbb\{R\}/g, 'R').replace(/\\setminus/g, '-')
+       .replace(/\\lfloor/g, 'floor(').replace(/\\rfloor/g, ')').replace(/\\(?:varepsilon|epsilon)/g, 'ε')
        .replace(/\\emptyset/g, '{}').replace(/\\\{/g, '{').replace(/\\\}/g, '}').replace(/\\cup/g, 'U')
        .replace(/\\infty/g, 'inf').replace(/\\pi/g, 'pi').replace(/\\log_\{?(\d+)\}?\s*([a-z0-9]+)/g, 'log_$1($2)')
        .replace(/\\sin\s*/g, 'sin ').replace(/\\le/g, '<=').replace(/\\cdot/g, '*').replace(/\\,/g, '')
@@ -25,7 +26,7 @@ while ((m = re.exec(src))) {
   const shown = m[1], a = attrs(m[2]);
   const kind = a.kind || M.guessKind(a.ans);
   const vars = (a.vars || '').split(',').filter(Boolean);
-  const opts = { form: a.form, allowExpression:a['allow-expression']==='true', positive: (a.positive || '').split(',').filter(Boolean) };
+  const opts = { form: a.form, calculation:a.calculation, minAnswer:a['min-answer'], integerAnswer:a['integer-answer']==='true', checkAt:a['check-at'], integers:(a.integer || '').split(',').filter(Boolean), allowExpression:a['allow-expression']==='true', positive: (a.positive || '').split(',').filter(Boolean) };
   let r;
   try { M.checkAnswer(kind, a.ans, a.ans, vars, {}); } catch (e) { console.log('ANS PARSE FAIL', a.ans, e.message); bad++; continue; }
   if (a.form === 'abs') continue;           // shown answer is a relation, not the set itself

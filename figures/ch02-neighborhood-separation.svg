@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 360" role="img" aria-labelledby="title desc">
+<title id="title">סביבות סביב שתיים ושש: חפיפה והפרדה</title>
+<desc id="desc">ברדיוס שלוש יש חפיפה בין הסביבות. ברדיוס אחת, שהוא רבע מהמרחק בין המרכזים, נשאר רווח.</desc>
+<rect x="1" y="1" width="658" height="358" rx="12" fill="#faf9ff" stroke="#d5cee7"/>
+<g font-family="Arial, sans-serif" font-size="17" text-anchor="middle" direction="ltr" fill="#334155">
+  <text x="330" y="27">ε = 3</text>
+  <rect x="278" y="44" width="104" height="103" fill="#cabce9" opacity=".45"/>
+  <g stroke="#cbd5e1"><path d="M40 67H620 M40 128H620"/><path d="M226 43V145 M434 43V145" stroke-dasharray="3 5"/></g>
+  <path d="M70 67H382" stroke="#7255b4" stroke-width="6"/>
+  <path d="M278 128H590" stroke="#bc6846" stroke-width="6"/>
+  <g fill="#faf9ff" stroke-width="2"><g stroke="#7255b4"><circle cx="70" cy="67" r="5"/><circle cx="382" cy="67" r="5"/></g><g stroke="#bc6846"><circle cx="278" cy="128" r="5"/><circle cx="590" cy="128" r="5"/></g></g>
+  <circle cx="226" cy="67" r="4" fill="#7255b4"/><circle cx="434" cy="128" r="4" fill="#bc6846"/>
+  <g fill="#7255b4"><text x="226" y="57">2</text><text x="70" y="92">−1</text><text x="382" y="92">5</text></g>
+  <g fill="#bc6846"><text x="434" y="118">6</text><text x="278" y="153">3</text><text x="590" y="153">9</text></g>
+  <path d="M24 180H636" stroke="#e1dced"/>
+  <text x="330" y="207">ε = 1</text>
+  <g stroke="#cbd5e1"><path d="M40 247H620 M40 308H620"/><path d="M226 223V325 M434 223V325" stroke-dasharray="3 5"/></g>
+  <path d="M174 247H278" stroke="#7255b4" stroke-width="6"/>
+  <path d="M382 308H486" stroke="#bc6846" stroke-width="6"/>
+  <g fill="#faf9ff" stroke-width="2"><g stroke="#7255b4"><circle cx="174" cy="247" r="5"/><circle cx="278" cy="247" r="5"/></g><g stroke="#bc6846"><circle cx="382" cy="308" r="5"/><circle cx="486" cy="308" r="5"/></g></g>
+  <circle cx="226" cy="247" r="4" fill="#7255b4"/><circle cx="434" cy="308" r="4" fill="#bc6846"/>
+  <g fill="#7255b4"><text x="226" y="237">2</text><text x="174" y="272">1</text><text x="278" y="272">3</text></g>
+  <g fill="#bc6846"><text x="434" y="298">6</text><text x="382" y="333">5</text><text x="486" y="333">7</text></g>
+  <path d="M278 284H382 M278 280V288 M382 280V288" fill="none" stroke="#35815b" stroke-width="2"/>
+  <text x="330" y="277" font-size="15" fill="#35815b" direction="rtl">רווח</text>
+</g>
+</svg>

@@ -195,6 +195,11 @@ mjx-container *,
   direction: ltr;
 }
 
+/* Hebrew logical words are one isolated RTL unit inside an LTR formula.
+   The descendant rule overrides the general MathJax direction reset above. */
+.course-logic { direction: rtl; unicode-bidi: isolate; display: inline-block; white-space: nowrap; }
+mjx-container .course-logic * { direction: inherit; }
+
 /* Keep inline math on one line. This backs up the MathJax linebreak config
    below; see the comment there for why v4 needs it at all. Display math is
    left alone -- MathJax gives it its own scroll box. */
@@ -362,8 +367,7 @@ details.lecture-solution { margin-top: -.4rem; }
 
 /* A new term where it is defined, and a one-line rule worth remembering. */
 .term {
-  white-space: nowrap; color: #6b21a8; background: #f3e8ff; border-radius: .22em; padding: .04em .2em;
-  font-weight: 700; box-decoration-break: clone; -webkit-box-decoration-break: clone;
+  color: #075985; font-weight: 700;
 }
 .key-rule {
   color: #075985; background: #e0f2fe; font-weight: 700; padding: .08em .25em;
@@ -389,6 +393,48 @@ details.lecture-solution { margin-top: -.4rem; }
 p code, li code, td code, .ix-msg code { direction: ltr; unicode-bidi: isolate; white-space: nowrap; }
 .eqline { text-align: center; margin: .5rem 0; }
 .eqline > p { margin: 0; }
+/* Short indexed answers keep their mathematical order, including on RTL pages. */
+.sequence-inputs {
+  display: flex; flex-wrap: wrap; align-items: baseline;
+  direction: ltr; gap: .4rem .8rem; width: fit-content; max-width: 100%; margin: .45rem auto;
+}
+.sequence-inputs > p { direction: ltr; unicode-bidi: isolate; text-align: center; margin: 0; }
+/* One concrete term per row: substitution, then the computed number. */
+.sequence-calculations { direction: ltr; width: fit-content; max-width: 100%; margin: .45rem auto; }
+.sequence-calculations > p { margin: .4rem 0; }
+.sequence-calculations > p > .fill-ltr { display: inline-flex; align-items: baseline; gap: .2rem; }
+.sequence-calculations > p > .fill-ltr > .math:first-child { min-width: 3rem; }
+/* Keep related answers in labelled columns, with the same widths in each part. */
+main .sequence-table table.table { display: table; width: 20rem; min-width: 0; max-width: 100%; table-layout: fixed; margin: .45rem 0 .6rem auto; overflow: visible; }
+main .sequence-table table.table th, main .sequence-table table.table td { padding: .25rem .35rem; vertical-align: baseline; }
+main .sequence-table table.table th { direction: rtl; font-size: .85em; font-weight: 500; }
+main .sequence-table table.table th:first-child { width: 3.5rem; }
+main .sequence-table table.table th:last-child { width: 5.5rem; }
+main .sequence-table table.table td .blank-input { max-width: calc(100% - .3rem); }
+.sequence-formula-item { width: 21rem; max-width: 100%; margin: .5rem 0 .85rem auto; }
+.sequence-formula-item > p { margin: 0 0 .15rem; text-align: right; }
+main .sequence-index-values table.table { display: table; width: 100%; min-width: 0; max-width: 100%; table-layout: fixed; margin: 0 0 .35rem; overflow: visible; }
+main .sequence-index-values table.table th, main .sequence-index-values table.table td { width: 20%; padding: .15rem .35rem; text-align: center; }
+.sequence-formula-item .sequence-formula { width: 100%; margin: .35rem 0 0; }
+.sequence-formula-item .fill-ltr { display: flex; align-items: baseline; gap: .3rem; max-width: 100%; }
+.sequence-formula-item .blank { flex: 1; min-width: 0; }
+.sequence-formula-item .blank-entry { display: flex; width: 100%; min-width: 0; }
+.sequence-formula-item .blank-input { width: 100% !important; min-width: 0; max-width: calc(100% - .3rem); box-sizing: border-box; }
+.sequence-formula { direction: ltr; width: fit-content; max-width: 100%; margin: .45rem 0 .6rem auto; }
+.sequence-formula > p { margin: 0; }
+.sequence-kind-ui { margin: .4rem 0 .75rem; }
+.sequence-kind-label { display: flex; align-items: center; gap: .5rem; }
+.sequence-kind-select { font: inherit; padding: .2rem .45rem; border: 1px solid #94a3b8; border-radius: 6px; background: white; }
+.sequence-classify .sequence-inputs { margin-left: auto; margin-right: 0; }
+.sequence-classify-field { display: flex; align-items: baseline; gap: .3rem; }
+.sequence-kind-panel > p { margin: .45rem 0; }
+.sequence-classify [hidden] { display: none !important; }
+@media (max-width: 600px) {
+  main .sequence-table table.table th, main .sequence-table table.table td { padding: .2rem .15rem; }
+  main .sequence-table table.table th:first-child { width: 2.5rem; }
+  main .sequence-table table.table th:last-child { width: 4.5rem; }
+  main .sequence-table .blank-input { font-size: .9em; }
+}
 span.blank { white-space: nowrap; }
 span.blank:not(.blank-ready) { text-decoration: underline; text-underline-offset: .25em; }
 .blank-input {
@@ -414,12 +460,13 @@ math-field::part(menu-toggle) { display: none; }
 math-field::part(virtual-keyboard-toggle) { color: #64748b; }
 .pw .mi-control.pw-input { width: 100%; min-width: 0; }
 .set-plot { margin: .3rem 0 .45rem; padding: .2rem .45rem; border-inline-start: 2px solid #cbd5e1; }
-.sp-practice > summary { cursor: pointer; color: #4338ca; }
+.sp-practice > summary { cursor: pointer; color: #475569; }
 .set-plot.sp-answer { border: 0; padding: 0; }
 .sp-scroll, .sp-range { width: 100%; max-width: 460px; margin-inline: auto; }
 .sp-range { margin-block: .15rem; font-size: .78rem; color: #64748b; }
 .sp-range > summary { cursor: pointer; }
 .sp-range-fields { display: flex; flex-wrap: wrap; gap: .3rem; align-items: end; padding-block: .25rem; }
+.sp-range-fields button { direction: rtl; }
 .sp-range-fields label { display: grid; gap: .1rem; }
 .sp-range-fields input { width: 7rem; max-width: 100%; direction: ltr; padding: .15rem; }
 .sp-range-message { color: #92400e; }
@@ -538,7 +585,7 @@ span.blank.warn .blank-mark { color: #b45309; }
 .pw-compare-button::before { content: "⇄"; margin-inline-end: .35rem; }
 .pw-compare-button:hover, .pw-view-close:hover { background: #f1f5f9; }
 .pw-compare-title { font-weight: 600; color: #475569; }
-.pw-view-panels { min-width: 0; }
+.pw-view-panels { min-width: 0; overflow-anchor: none; }
 .pw-view-panel { min-width: 0; margin: 0; padding: .65rem; border: 1px solid #cbd5e1; border-radius: .75rem; background: #fff; }
 .pw-view-panel:focus-visible { outline: 2px solid #d97706; outline-offset: 2px; }
 .pw-workspace { border-top: 3px solid #8b5cf6; }
@@ -582,6 +629,43 @@ span.blank.warn .blank-mark { color: #b45309; }
 .as-step-feedback { display: flex; align-items: center; gap: .3rem; color: #15803d; font-weight: 600; margin-bottom: .1rem; }
 .as-check { font-size: 1.15em; }
 .as-step.as-accepted { background: #f0fdf4; }
+.sequence-work .seq-controls, .sequence-work .seq-operands { display: flex; flex-wrap: wrap; align-items: start; gap: .35rem .65rem; margin: .35rem 0; }
+.sequence-work .seq-editor-field { display: flex; flex-direction: column; gap: .15rem; min-width: 0; max-width: 100%; font-size: .88rem; }
+.sequence-work .seq-editor-field[hidden] { display: none; }
+.sequence-work select { font: inherit; max-width: 100%; min-width: 0; border: 1px solid #94a3b8; border-radius: 6px; padding: .3rem; background: white; }
+.sequence-work .seq-operands > label { flex: 1 1 12rem; }
+.sequence-work .as-editor > .seq-editor-field .as-field { width: 100%; }
+.sequence-work .seq-step > .ix-msg { grid-column: 2; margin: 0; }
+.sequence-work .seq-picker { margin: .3rem 0; font-size: .88rem; }
+.sequence-work .seq-picker summary { cursor: pointer; color: #4338ca; }
+.sequence-work .seq-parts { display: flex; flex-wrap: wrap; gap: .25rem; margin: .3rem 0; }
+.sequence-work .seq-parts:empty, .sequence-work .seq-operands:empty { display: none; }
+.seq-bound-proof { margin: .4rem 0; padding: .35rem .5rem; border-inline-start: 2px solid #c7d2fe; }
+.seq-bound-proof > summary { color: #4338ca; font-weight: 600; cursor: pointer; }
+.seq-bound-proof[hidden], .as-proof-work[hidden], .seq-bound-working[hidden], .si-setup-box[hidden] { display: none; }
+.seq-bound-proof .pw { margin: .3rem 0; padding: 0; }
+.seq-bound-transcript { margin: .35rem 0; padding-inline-start: 1.4rem; }
+.seq-bound-transcript li { margin: .25rem 0; }
+.seq-student-setup { margin-block: .4rem; }
+.seq-student-setup p { margin-block: .35rem; }
+.blank-choice { width: auto !important; min-width: 5rem; max-width: calc(100% - .3rem); box-sizing: border-box; direction: rtl; font: inherit; padding: .2rem .4rem; }
+.sequence-investigation-ui { font-size: .95rem; }
+.si-tail-controls, .si-fields { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem .8rem; }
+.si-tail-controls { margin-bottom: .5rem; font-size: .86rem; }
+.si-tail-controls label { display: flex; align-items: center; gap: .35rem; }
+.si-index { width: 5rem; }
+.si-field { display: flex; flex-direction: column; align-items: start; gap: .2rem; margin: .3rem 0; min-width: 0; max-width: 100%; }
+.si-field[hidden] { display: none; }
+.si-field > span:first-child { font-size: .88rem; }
+.sequence-investigation-ui select { font: inherit; max-width: 100%; padding: .25rem .4rem; border: 1px solid #94a3b8; border-radius: 5px; background: white; }
+.si-stage { border-top: 1px solid #dbe2ea; padding: .45rem 0; }
+.si-stage > summary { font-weight: 600; color: #3730a3; cursor: pointer; }
+.si-stage .ix-btn { margin: .25rem .15rem; }
+.si-stage .as-expr-field { width: min(100%, 28rem); }
+.si-stage p { margin: .4rem 0; }
+.si-comparison-row { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; width: fit-content; max-width: 100%; margin: .4rem 0; }
+.si-note { font-size: .86rem; color: #475569; }
+.si-calculation[hidden] { display: none; }
 .as-tools { display: flex; flex-wrap: wrap; gap: .25rem .8rem; margin: .35rem 0; font-size: .9rem; }
 .as-tools > details { min-width: 0; max-width: 100%; }
 .as-tools > details[open] { flex-basis: 100%; }
@@ -599,6 +683,13 @@ span.blank.warn .blank-mark { color: #b45309; }
 .as-fragment-match { display: flex; flex-direction: column; max-width: 100%; }
 .as-fragment-match > .as-formula { max-width: 100%; overflow-x: auto; }
 .as-condition-rule select { max-width: 100%; font: inherit; padding: .2rem; }
+.as-condition-exclusion, .as-case-exclusion { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem .5rem; flex-basis: 100%; min-width: 0; }
+.as-condition-exclusion > .as-field, .as-case-exclusion > .as-field { flex: 0 1 16rem; min-width: 0; }
+.as-domain-requirements, .as-covering-cases { flex-basis: 100%; min-width: 0; }
+.as-covering-cases { display: flex; flex-wrap: wrap; gap: .3rem; }
+.as-covering-cases .as-part { min-width: 0; }
+.as-condition-exclusion select, .as-case-exclusion select { max-width: 100%; font: inherit; padding: .2rem; }
+.as-condition-exclusion[hidden], .as-case-exclusion[hidden], .as-covering-cases[hidden] { display: none; }
 .as-operation-controls select { max-width: 100%; min-height: 36px; padding: .2rem; border: 1px solid #94a3b8; border-radius: 6px; background: white; color: inherit; font: inherit; }
 .as-parts { display: flex; flex-wrap: wrap; gap: .3rem; margin: .35rem 0; }
 .as-part { display: inline-flex; align-items: center; gap: .3rem; max-width: 100%; padding: .15rem .4rem; border: 1px solid #cbd5e1; border-radius: 6px; cursor: pointer; }
@@ -825,8 +916,8 @@ a.xref-open { background: #ede9fe; border-radius: 3px; }
    use 'macro parameter character #' in math mode").
    --------------------------------------------------------------------------- */
 window.MathJax = {
-  loader: { load: ["[tex]/color"] },
-  tex: { packages: { "[+]": ["color"] } },
+  loader: { load: ["[tex]/color", "[tex]/html"] },
+  tex: { packages: { "[+]": ["color", "html"] } },
   output: {
     displayOverflow: "scroll",
     linebreaks: { inline: false }
@@ -1071,3 +1162,8 @@ window.addEventListener("message", function (e) {
   }
 });
 </script>
+
+<style>
+.checklist-options{display:flex;flex-wrap:wrap;gap:.45rem .8rem}.checklist-option{display:flex;align-items:center;gap:.4rem;padding:.25rem .5rem;border:1px solid #d5cce8;border-radius:.4rem;background:#faf9fe;cursor:pointer}.checklist-option input{accent-color:#7351ba;width:1.1rem;height:1.1rem}.checklist-option:focus-within{outline:2px solid #7351ba;outline-offset:2px}
+.as-model-transcript .as-model-step{border-inline-start:3px solid #bdb1e0;padding:.45rem .6rem;margin:.4rem 0;background:#faf9fe}.as-model-transcript .as-compact{min-width:0;display:block}.as-model-transcript .as-formula{overflow-x:auto;padding:.15rem 0}.as-model-transcript .as-reason{margin-top:.25rem}.as-clean-solution{margin-top:.6rem}.as-clean-text{padding:.5rem;min-width:0}.as-clean-paragraph{margin-block:.7rem}.as-clean-reason p{margin-block:.25rem}.as-clean-formula{overflow-x:auto;text-align:center;margin-block:.35rem}.as-clean-bounds{list-style:none;padding-inline:0}
+</style>

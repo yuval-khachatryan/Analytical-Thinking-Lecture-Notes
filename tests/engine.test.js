@@ -34,6 +34,10 @@ t('wrong value remains wrong',M.checkAnswer('num','10','7+4').partial,undefined)
 t('opt-in is not a truthy string',M.checkAnswer('num','10','7+3',[],{allowExpression:'false'}).ok,false);
 t('equivalent expression answers unchanged',C('expr','10','7+3'),true);
 // expressions
+t('uppercase limit variable',M.checkAnswer('expr','sqrt(2+L)','sqrt(L+2)',['L'],{positive:['L']}).ok,true);
+t('uppercase positive variable domain',M.checkAnswer('expr','L','sqrt(L^2)',['L'],{positive:['L']}).ok,true);
+t('different limit expression rejected',M.checkAnswer('expr','sqrt(2+L)','sqrt(2)+L',['L'],{positive:['L']}).ok,false);
+t('unlisted variable still rejected',M.checkAnswer('expr','sqrt(2+L)','sqrt(2+x)',['L'],{positive:['L']}).ok,false);
 t('expr inv', C('expr', '(x+2)/5', 'x/5+2/5'), true);
 t('expr wrong', C('expr', '(x+2)/5', '(x-2)/5'), false);
 t('expr msg', M.checkAnswer('expr', '(x+2)/5', '(x-2)/5').msg.slice(0, 10), 'לא בדיוק. ');

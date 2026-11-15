@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 320" role="img" aria-labelledby="title desc">
+<title id="title">בוחרים איברים בקפיצות קדימה</title>
+<desc id="desc">בשורה הראשונה בוחרים את האינדקסים אחת, שלוש, ארבע ושבע, וכל החצים מצביעים קדימה. בשורה השנייה בוחרים את כל האינדקסים לפי הסדר: הסדרה היא תת־סדרה של עצמה.</desc>
+<defs><marker id="forward" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1L7 4L1 7" fill="none" stroke="#7255b4" stroke-width="1.5"/></marker></defs>
+<rect x="1" y="1" width="658" height="318" rx="12" fill="#faf9ff" stroke="#d5cee7"/>
+<g font-family="Arial, sans-serif" text-anchor="middle" fill="#334155">
+<text x="330" y="27" font-size="17" direction="rtl">אפשר לדלג על איברים; כל קפיצה היא קדימה</text>
+<g fill="none" stroke="#7255b4" stroke-width="1.7" marker-end="url(#forward)">
+<path d="M54 76Q129 35 204 76"/><path d="M204 76Q242 49 280 76"/><path d="M280 76Q394 29 508 76"/>
+<path d="M508 76Q564 42 620 76" stroke-dasharray="4 4"/>
+</g>
+<g font-size="21" direction="ltr">
+<g fill="#7255b4"><text x="54" y="103">a₁</text><text x="204" y="103">a₃</text><text x="280" y="103">a₄</text><text x="508" y="103">a₇</text></g>
+<g fill="#8a95a6"><text x="129" y="103">a₂</text><text x="356" y="103">a₅</text><text x="432" y="103">a₆</text><text x="584" y="103">a₈</text></g><text x="629" y="103">…</text>
+</g>
+<g font-size="14" direction="ltr" fill="#7255b4"><text x="54" y="128">n₁ = 1</text><text x="204" y="128">n₂ = 3</text><text x="280" y="128">n₃ = 4</text><text x="508" y="128">n₄ = 7</text></g>
+<path d="M24 150H636" stroke="#e1dced"/>
+<text x="330" y="179" font-size="17" direction="rtl">אפשר גם לבחור כל איבר — בלי לדלג</text>
+<g fill="none" stroke="#7255b4" stroke-width="1.7" marker-end="url(#forward)">
+<path d="M54 225Q91 193 129 225"/><path d="M129 225Q166 193 204 225"/><path d="M204 225Q242 193 280 225"/>
+<path d="M280 225Q318 193 356 225"/><path d="M356 225Q394 193 432 225"/><path d="M432 225Q470 193 508 225"/><path d="M508 225Q546 193 584 225"/>
+<path d="M584 225Q608 206 632 225" stroke-dasharray="4 4"/>
+</g>
+<g font-size="21" direction="ltr" fill="#7255b4"><text x="54" y="251">a₁</text><text x="129" y="251">a₂</text><text x="204" y="251">a₃</text><text x="280" y="251">a₄</text><text x="356" y="251">a₅</text><text x="432" y="251">a₆</text><text x="508" y="251">a₇</text><text x="584" y="251">a₈</text><text x="629" y="251">…</text></g>
+<text x="330" y="290" direction="ltr" font-size="19">nₖ = k</text>
+</g></svg>

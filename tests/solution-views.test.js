@@ -29,13 +29,18 @@ for(const rich of [false,true]){
  const plot=fill.querySelector('.set-plot');button(plot,'נקודה').click();input(plot.querySelector('[data-coordinate="point"]'),'3');button(plot,'הנחה על הישר').click();
  const help=work.querySelector('.pw-help');help.open=true;work.scrollTop=70;
  modelTab.click();assert.equal(model.hidden,false);assert.equal(work.hidden,true);assert.equal(model.getAttribute('role'),'tabpanel');
- assert.equal(model.querySelectorAll('.sp-answer').length,1);assert.equal(model.querySelectorAll('.as-model-references').length,1);
- const formulaCount=model.querySelectorAll('.as-model-references').length;model.scrollTop=45;
+ assert.equal(model.querySelectorAll('.sp-answer').length,1);assert.match(model.textContent,/box-thm-inequalities/);assert.equal(model.getAttribute('data-model-checked'),'true');
+ for(const scope of [model,work]){
+  const range=scope.querySelector('.sp-range-fields');assert.equal(range.getAttribute('dir'),'ltr','plot coordinates must read from left to right');
+  const ends=range.querySelectorAll('[data-view-bound]');assert.equal(ends[0].getAttribute('data-view-bound'),'left');assert.equal(ends[1].getAttribute('data-view-bound'),'right');
+  assert.equal(ends[0].parentNode.getAttribute('dir'),'rtl','Hebrew labels retain RTL direction');
+ }
+ const formulaCount=model.querySelectorAll('.as-model-transcript').length;model.scrollTop=45;
  button(d,'השוואה').click();assert.equal(views.classList.contains('pw-comparing'),true);
  assert.equal(work.hidden,false);assert.equal(model.hidden,false);assert.equal(work.scrollTop,70);
  assert.equal(work.getAttribute('role'),'region');assert.equal(views.querySelector('.pw-tabs').hidden,true);
  button(d,'חזרה ללשוניות').click();assert.equal(work.hidden,true);assert.equal(model.hidden,false,'return to the model tab, not always the writing tab');
- assert.equal(model.scrollTop,45);assert.equal(model.querySelectorAll('.as-model-references').length,formulaCount,'model references are not duplicated');
+ assert.equal(model.scrollTop,45);assert.equal(model.querySelectorAll('.as-model-transcript').length,formulaCount,'model references are not duplicated');
  workTab.click();assert.equal(work.querySelector('.pw-input'),field,'switching must retain the actual editor');
  assert.equal(E.context.CourseMathInput.read(field),'-2x<4');assert.equal(help.open,true);
  assert.equal(E.context.CourseMathInput.read(blank.querySelector('.blank-input')),'(-2,inf)');assert.ok(plot.querySelector('[data-point="3"]'));
@@ -56,5 +61,16 @@ for(const rich of [false,true]){
  E.document.dispatchEvent({type:'click',target:ref,button:0});const copy=E.document.querySelector('.xref-panel');
  assert.ok(copy);assert.equal(copy.querySelector('.pw-view-controls'),null);assert.equal(copy.querySelector('.pw-workspace'),null);
  assert.equal(copy.querySelector('.pw-solution').hidden,false);assert.equal(copy.querySelector('.pw-view-panels').hidden,false);
+ // Collapsing an earlier exercise must not move the controls just clicked.
+ let scroll=300,frames=[];
+ E.context.scrollBy=({top})=>{scroll+=top;};E.context.requestAnimationFrame=f=>frames.push(f);
+ workTab.click();frames=[];
+ const otherControls=other.d.querySelector('.pw-view-controls');
+ otherControls.getBoundingClientRect=()=>({top:800+(work.hidden?0:160)-scroll});
+ const top=otherControls.getBoundingClientRect().top;
+ button(other.d,'פתרון לדוגמה').click();
+ assert.equal(otherControls.getBoundingClientRect().top,top);
+ scroll+=24; // Simulate native anchoring during the following layout.
+ frames.splice(0).forEach(f=>f());assert.equal(otherControls.getBoundingClientRect().top,top);
 }
 console.log('Solution views passed: tabs, comparison, keyboard navigation, drafts, plots, reset, independent questions and static reference copies.');

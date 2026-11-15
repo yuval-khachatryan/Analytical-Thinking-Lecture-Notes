@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 650 280" role="img" aria-labelledby="title">
+<title id="title">aₙ = 1 − 1/n: limit 1; upper bounds 1 and 2</title>
+<style>text{font:15px Georgia,serif;fill:#334155}.axis{stroke:#94a3b8;stroke-width:1.2}</style>
+<path class="axis" fill="none" d="M 58 34 V 240 H 626"/>
+<path class="axis" d="M 54 229.99 h 4"/>
+<text x="49.00" y="234.99" text-anchor="end">0</text>
+<path class="axis" d="M 54 146.59 h 4"/>
+<text x="49.00" y="151.59" text-anchor="end">1</text>
+<path class="axis" d="M 54 63.19 h 4"/>
+<text x="49.00" y="68.19" text-anchor="end">2</text>
+<path stroke="#6d4bc3" stroke-width="1.6" stroke-dasharray="5 4" d="M 58 146.59 H 626"/>
+<text x="623.00" y="137.59" text-anchor="end" style="fill:#6d4bc3">L = 1</text>
+<path stroke="#527a82" stroke-width="1.6" stroke-dasharray="5 4" d="M 58 63.19 H 626"/>
+<text x="623.00" y="54.19" text-anchor="end" style="fill:#527a82">M = 2</text>
+<circle cx="81.67" cy="229.99" r="3.8" fill="#6d4bc3"/>
+<path class="axis" d="M 81.67 240 v 4"/>
+<text x="81.67" y="260.00" text-anchor="middle">1</text>
+<circle cx="129.00" cy="188.29" r="3.8" fill="#6d4bc3"/>
+<path class="axis" d="M 129.00 240 v 4"/>
+<text x="129.00" y="260.00" text-anchor="middle">2</text>
+<circle cx="176.33" cy="174.39" r="3.8" fill="#6d4bc3"/>
+<path class="axis" d="M 176.33 240 v 4"/>
+<text x="176.33" y="260.00" text-anchor="middle">3</text>
+<circle cx="223.67" cy="167.44" r="3.8" fill="#6d4bc3"/>
+<path class="axis" d="M 223.67 240 v 4"/>
+<text x="223.67" y="260.00" text-anchor="middle">4</text>
+<circle cx="271.00" cy="163.27" r="3.8" fill="#6d4bc3"/>
+<path class="axis" d="M 271.00 240 v 4"/>
+<text x="271.00" y="260.00" text-anchor="middle">5</text>
+<circle cx="318.33" cy="160.49" r="3.8" fill="#6d4bc3"/>
+<path class="axis" d="M 318.33 240 v 4"/>
+<text x="318.33" y="260.00" text-anchor="middle">6</text>
+<circle cx="365.67" cy="158.51" r="3.8" fill="#6d4bc3"/>
+<path class="axis" d="M 365.67 240 v 4"/>
+<text x="365.67" y="260.00" text-anchor="middle">7</text>
+<circle cx="413.00" cy="157.02" r="3.8" fill="#6d4bc3"/>
+<path class="axis" d="M 413.00 240 v 4"/>
+<text x="413.00" y="260.00" text-anchor="middle">8</text>
+<circle cx="460.33" cy="155.86" r="3.8" fill="#6d4bc3"/>
+<path class="axis" d="M 460.33 240 v 4"/>
+<text x="460.33" y="260.00" text-anchor="middle">9</text>
+<circle cx="507.67" cy="154.93" r="3.8" fill="#6d4bc3"/>
+<path class="axis" d="M 507.67 240 v 4"/>
+<text x="507.67" y="260.00" text-anchor="middle">10</text>
+<circle cx="555.00" cy="154.17" r="3.8" fill="#6d4bc3"/>
+<path class="axis" d="M 555.00 240 v 4"/>
+<text x="555.00" y="260.00" text-anchor="middle">11</text>
+<circle cx="602.33" cy="153.54" r="3.8" fill="#6d4bc3"/>
+<path class="axis" d="M 602.33 240 v 4"/>
+<text x="602.33" y="260.00" text-anchor="middle">12</text>
+<text x="626.00" y="273.00" text-anchor="end">n</text>
+<text x="41.00" y="21.00" text-anchor="middle">aₙ</text>
+</svg>
