@@ -1429,7 +1429,7 @@ window.Quarto = {
 <p><strong>הגדרה 2.1.1 — סדרה.</strong></p>
 <p><span class="term"><strong>סדרה</strong></span> היא רשימה אינסופית ומסודרת של מספרים ממשיים: <span class="math display">\[a_1,\ a_2,\ a_3,\ldots\]</span> המספר <span class="math inline">\(a_n\)</span> הוא <span class="term"><strong>האיבר</strong></span> שבמקום <span class="math inline">\(n\)</span>.</p>
 <p>המספר <span class="math inline">\(n\)</span> נקרא <span class="term"><strong>האינדקס</strong></span>: הוא מציין את מקומו של האיבר בסדרה.</p>
-<p>את הסדרה כולה נסמן <span class="math inline">\((a_n)\)</span>. בסדרה יש חשיבות לסדר, ומותר לאותו מספר להופיע בכמה מקומות.</p>
+<p>את הסדרה כולה נסמן <span class="math inline">\((a_n)_{n=1}^{\infty}\)</span>. הסימון מציין שהאינדקס עובר על <span class="math inline">\(1,2,3,\ldots\)</span>; לעומת זאת, <span class="math inline">\(a_n\)</span> מציין איבר אחד. בסדרה יש חשיבות לסדר, ומותר לאותו מספר להופיע בכמה מקומות.</p>
 <p>במונחים של פרק 1: סדרה היא פונקציה שמתאימה לכל מספר טבעי <span class="math inline">\(n\)</span> את האיבר <span class="math inline">\(a_n\)</span>. כאן נתחיל לספור מהאינדקס <span class="math inline">\(1\)</span>, אלא אם נאמר אחרת.</p>
 </div>
 <div id="box-exm-seq-index" class="thmbox thmbox-example" title="האינדקס והאיבר">
@@ -2126,7 +2126,7 @@ a_5&amp;=2(-3)^4=162.
 <h3 class="unnumbered anchored" data-anchor-id="הגדרת-הגבול">הגדרת הגבול</h3>
 <div id="box-def-limit" class="thmbox thmbox-definition" title="גבול של סדרה">
 <p><strong>הגדרה 2.2.4 — גבול של סדרה.</strong></p>
-<p>הסדרה <span class="math inline">\((a_n)\)</span> <span class="term"><strong>מתכנסת</strong></span> למספר <span class="math inline">\(L\)</span> אם לכל <span class="math inline">\(\varepsilon&gt;0\)</span> יש אינדקס טבעי <span class="math inline">\(N\)</span> כך שלכל <span class="math inline">\(n\ge N\)</span> מתקיים <span class="math display">\[|a_n-L|&lt;\varepsilon.\]</span> המספר <span class="math inline">\(L\)</span> נקרא <span class="term"><strong>הגבול</strong></span> של הסדרה. כותבים <span class="math display">\[\lim_{n\to\infty}a_n=L.\]</span> אפשר לכתוב גם <span class="math inline">\(a_n\to L\)</span>, ולומר שהסדרה <strong>שואפת</strong> אל <span class="math inline">\(L\)</span>. סדרה שאינה מתכנסת למספר ממשי נקראת <span class="term"><strong>מתבדרת</strong></span>.</p>
+<p>הסדרה <span class="math inline">\((a_n)_{n=1}^{\infty}\)</span> <span class="term"><strong>מתכנסת</strong></span> למספר <span class="math inline">\(L\)</span> אם לכל <span class="math inline">\(\varepsilon&gt;0\)</span> יש אינדקס טבעי <span class="math inline">\(N\)</span> כך שלכל <span class="math inline">\(n\ge N\)</span> מתקיים <span class="math display">\[|a_n-L|&lt;\varepsilon.\]</span> המספר <span class="math inline">\(L\)</span> נקרא <span class="term"><strong>הגבול</strong></span> של הסדרה. כותבים <span class="math display">\[\lim_{n\to\infty}a_n=L.\]</span> אפשר לכתוב גם <span class="math inline">\(a_n\to L\)</span>, ולומר שהסדרה <strong>שואפת</strong> אל <span class="math inline">\(L\)</span>. סדרה שאינה מתכנסת למספר ממשי נקראת <span class="term"><strong>מתבדרת</strong></span>.</p>
 </div>
 <p>נפרש את ההגדרה: <span class="math inline">\(a_n\)</span> הוא האיבר באינדקס <span class="math inline">\(n\)</span>, ו <span class="math inline">\(L\)</span> הוא המועמד לגבול. המרחק <span class="math inline">\(|a_n-L|\)</span> הוא השגיאה בפועל; <span class="math inline">\(\varepsilon&gt;0\)</span> הוא סף השגיאה. התנאי אומר שהשגיאה קטנה מהסף, ואפשר לכתוב אותו גם כך: <span class="math display">\[L-\varepsilon&lt;a_n&lt;L+\varepsilon.\]</span> הקטע הפתוח <span class="math inline">\((L-\varepsilon,L+\varepsilon)\)</span> נקרא <span class="term"><strong>סביבת אפסילון</strong></span> של <span class="math inline">\(L\)</span>. נקודות הקצה אינן כלולות בו.</p>
 <div class="quarto-figure quarto-figure-center">
@@ -2134,7 +2134,7 @@ a_5&amp;=2(-3)^4=162.
 <p><img src="figures/ch02-limit-definition.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="הקטע הפתוח סביב L ברדיוס אפסילון. נקודות הקצה אינן כלולות בו." width="560"></p>
 </figure>
 </div>
-<div id="box-limit-geometric" class="thmbox thmbox-key-point" title="פירוש גאומטרי של התכנסות">
+<div id="box-limit-geometric" class="thmbox thmbox-key-point thmicon-idea" title="פירוש גאומטרי של התכנסות">
 <p><strong>הסבר — פירוש גאומטרי של התכנסות.</strong></p>
 <p>בגרף של סדרה מציירים את הנקודות <span class="math inline">\((n,a_n)\)</span>: האינדקס הוא הקואורדינטה האופקית, והאיבר הוא הגובה. כדי לראות אילו איברים קרובים אל <span class="math inline">\(L\)</span>, מציירים שני קווים אופקיים בגבהים <span class="math inline">\(L-\varepsilon\)</span> ו <span class="math inline">\(L+\varepsilon\)</span>. השטח שביניהם נקרא <strong>רצועה סביב <span class="math inline">\(L\)</span></strong>. רוחבה האנכי הוא <span class="math inline">\(2\varepsilon\)</span>; הקווים שעל שפתה אינם חלק ממנה.</p>
 <div class="quarto-figure quarto-figure-center">
@@ -2144,19 +2144,20 @@ a_5&amp;=2(-3)^4=162.
 </div>
 <p><strong>מה נדרש להתכנסות?</strong> לכל <span class="math inline">\(\varepsilon&gt;0\)</span> צריך להיות אינדקס <span class="math inline">\(N\)</span> כך שלכל <span class="math inline">\(n\ge N\)</span>, הנקודה <span class="math inline">\((n,a_n)\)</span> נמצאת ברצועה. כלומר, מאינדקס מסוים כל האיברים נכנסים ונשארים בפנים. אפשר לחשוב על הרצועה כעל ״בית״: לא מספיק לבקר בו; צריך להישאר בו מאינדקס מסוים והלאה.</p>
 <p>ברצועה רחבה ייתכן שדי להתקדם מעט. ברצועה צרה ייתכן שצריך להתקדם הרבה מאוד. <strong>צרה ככל שתהיה הרצועה, בסופו של דבר כל האיברים צריכים להישאר בתוכה.</strong> האינדקס <span class="math inline">\(N\)</span> יכול להשתנות כשמשנים את <span class="math inline">\(\varepsilon\)</span>.</p>
-<p>להמחשה, בציורים הבאים מופיעה הסדרה <span class="math inline">\(a_n=1/n\)</span> סביב <span class="math inline">\(L=0\)</span>. בדוגמה בהמשך נבדוק את התכנסותה. בציור השני מוצגים איברים מאוחרים יותר ובהגדלה אנכית, כדי שגם הרצועה הצרה תהיה נראית.</p>
+<p>למשל, ברצועה הרחבה שבציור אפשר לבחור <span class="math inline">\(N=11\)</span>: כל האיברים מהאינדקס הזה והלאה בתוכה. עבור הרצועה הצרה יותר צריך להתקדם רחוק יותר; בציור אפשר לבחור <span class="math inline">\(N=101\)</span>. בשני המקרים, כל האיברים שמאותו אינדקס והלאה נשארים בפנים.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="figures/ch02-convergence-strips.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="שני ציורים להמחשת התכנסות. ברצועה רחבה די להתקדם מעט, ובצרה צריך להתקדם יותר. בשניהם כל האיברים מאינדקס מתאים והלאה נשארים בפנים." width="650"></p>
 </figure>
 </div>
 <p><strong>ועל ישר המספרים?</strong> שם מציירים את האיברים <span class="math inline">\(a_n\)</span> עצמם. הרצועה מוחלפת בקטע הפתוח <span class="math inline">\((L-\varepsilon,L+\varepsilon)\)</span>, כלומר בסביבת אפסילון של <span class="math inline">\(L\)</span>. הדרישה אותה דרישה: כל סביבה כזאת מכילה את כל האיברים מאינדקס מתאים והלאה.</p>
-<div id="box-sim-limit-microscope" class="thmbox thmbox-simulation" title="מגדילים כדי לראות את ההבדל">
-<p><strong>סימולציה 2.2.5 — מגדילים כדי לראות את ההבדל.</strong></p>
-<p>ניקח את הקירובים העשרוניים של <span class="math inline">\(\pi\)</span>, שבכל צעד משאירים בהם עוד ספרה: <span class="math display">\[3,\quad3.1,\quad3.14,\quad3.141,\quad3.1415,\quad\ldots\]</span> בתצוגה ההתחלתית, הקירובים <span class="math inline">\(a_4=3.141\)</span> ו <span class="math inline">\(a_5=3.1415\)</span> כבר נראים באותו מקום כמו <span class="math inline">\(\pi\)</span>: אי אפשר להבחין ביניהם בעין. הגדילו את התמונה סביב <span class="math inline">\(\pi\)</span>: חלק מהנקודות ייפרדו, ויהיה אפשר לראות את ההבדלים שהוסתרו קודם.</p>
-<iframe class="widget-frame" src="widgets/ch02/microscope.html" loading="lazy" title="קירובים עשרוניים של פאי בהגדלה"></iframe>
-<p>המספרים עצמם אינם משתנים כשמגדילים. ברזולוציה קבועה, סביבה קטנה מספיק סביב <span class="math inline">\(\pi\)</span> נראית כמו נקודה אחת. מאחר שהקירובים מתקרבים אל <span class="math inline">\(\pi\)</span>, רק מספר סופי של איברים נראים בנפרד ממנו; יתר האיברים מצטופפים באותו סימון. עדיין יש אינסוף איברים, והם אינם שווים ל <span class="math inline">\(\pi\)</span>.</p>
+<p>באיור הבא, עבור סביבת האפסילון שנבחרה אפשר לבחור <span class="math inline">\(N=5\)</span>. מהאיבר <span class="math inline">\(a_5\)</span> והלאה כל האיברים בתוך הסביבה.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/ch02-limit-resolution.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="איברי סדרה על ישר המספרים מתקרבים אל L. סביב L מסומנת סביבת אפסילון צרה. מהאיבר a_N ואילך האיברים בתוכה, ובהמשך סימוניהם מתלכדים לעין עם L." width="700"></p>
+</figure>
 </div>
+<p><strong>ברזולוציה הזאת, רק כמה נקודות נבדלות מ <span class="math inline">\(L\)</span> לעין</strong>, אף שיכולים להיות אינסוף ערכים שונים של איברי הסדרה. סימוני האיברים המאוחרים נראים באותו מקום כמו <span class="math inline">\(L\)</span>; אין פירוש הדבר שערכיהם שווים לו. הגדלה יכולה לחשוף את ההבדלים, כפי שנראה בסימולציה שבהמשך.</p>
 <p><strong>איך רואים ש <span class="math inline">\(L\)</span> אינו הגבול?</strong> מספיק למצוא רצועה אחת סביבו שעבורה תמיד יש עוד איבר בחוץ, לא משנה כמה רחוק מתקדמים בציר האינדקסים. במילים פשוטות: <strong>האיברים שמחוץ לרצועה אף פעם לא נגמרים.</strong> יש אינסוף איברים כאלה; גם איבר שעל השפה נחשב מחוץ לרצועה.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -2165,6 +2166,13 @@ a_5&amp;=2(-3)^4=162.
 </div>
 <p>כך שוללים את המועמד <span class="math inline">\(L\)</span>. ייתכן שהסדרה מתכנסת למספר אחר; כדי להראות שאינה מתכנסת כלל צריך לשלול כל מועמד.</p>
 </div>
+<div id="box-sim-limit-microscope" class="thmbox thmbox-simulation" title="מיקרוסקופ לקירובים של פאי">
+<p><strong>סימולציה 2.2.5 — מיקרוסקופ לקירובים של פאי.</strong></p>
+<p>ניקח את הקירובים העשרוניים של <span class="math inline">\(\pi\)</span>: מתחילים ב <span class="math inline">\(3\)</span>, ובכל צעד משאירים עוד ספרה אחרי הנקודה. כל האיברים שנשתמש בהם מופיעים בראש הסימולציה.</p>
+<p>התבוננו באיברים לפי סדרם: מאיבר מסוים והלאה כולם בתוך סביבת האפסילון המסומנת. בחרו <span class="math inline">\(\varepsilon=1/10000\)</span>: הסביבה כעת צרה כל כך, שבהגדלה ההתחלתית האיברים שבתוכה נראים באותו מקום כמו <span class="math inline">\(\pi\)</span>.</p>
+<p>עכשיו לחצו על <strong>הגדילו פי 10</strong>, פעם או פעמיים, כאילו אתם מביטים דרך מיקרוסקופ. נקודות שנראו כמו נקודה אחת נפרדות. האיברים וסף השגיאה לא השתנו — רק היכולת שלנו לראות את ההבדלים. המספרים הסגולים הם הקירובים שעדיין אינם נבדלים מ <span class="math inline">\(\pi\)</span> לעין בהגדלה הנוכחית.</p>
+<iframe class="widget-frame" src="widgets/ch02/microscope.html" loading="lazy" title="מיקרוסקופ: קירובים עשרוניים של פאי בהגדלה"></iframe>
+</div>
 </section>
 <section id="ארבע-דוגמאות-בסיסיות" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="ארבע-דוגמאות-בסיסיות">ארבע דוגמאות בסיסיות</h3>
@@ -2172,7 +2180,9 @@ a_5&amp;=2(-3)^4=162.
 <div id="box-exm-constant-limit" class="thmbox thmbox-example" title="כל האיברים שווים לגבול">
 <p><strong>דוגמה 2.2.6 — כל האיברים שווים לגבול.</strong></p>
 <p>בסדרה הקבועה <span class="math inline">\(a_n=4\)</span>, נבדוק שהמספר <span class="math inline">\(4\)</span> הוא הגבול.</p>
-<p>השגיאה של כל איבר היא <span class="math display">\[|a_n-4|=|4-4|=0.\]</span> לכל סף שגיאה <span class="math inline">\(\varepsilon&gt;0\)</span> מתקיים <span class="math inline">\(0&lt;\varepsilon\)</span>. לכן אפשר לבחור <span class="math inline">\(N=1\)</span>: כל האיברים, כבר מהראשון, עומדים בדרישה. לפי ההגדרה, <span class="math display">\[\lim_{n\to\infty}4=4.\]</span> אותו חישוב עובד לכל קבוע <span class="math inline">\(C\)</span>: השגיאה היא <span class="math inline">\(|C-C|=0\)</span>, ולכן סדרה שכל איבריה שווים <span class="math inline">\(C\)</span> מתכנסת אל <span class="math inline">\(C\)</span>.</p>
+<p>כדי להשתמש בהגדרת הגבול, נפתח במילים <strong>״יהי <span class="math inline">\(\varepsilon&gt;0\)</span>״</strong>. פירושן: ניקח מספר חיובי כלשהו, בלי לקבוע לו ערך מסוים. הטיעון צריך לעבוד לכל בחירה כזאת.</p>
+<p>עלינו למצוא <strong>אינדקס טבעי <span class="math inline">\(N\)</span></strong> כך שהשגיאה תהיה קטנה מהסף <strong>לכל <span class="math inline">\(n\ge N\)</span></strong>.</p>
+<p>נבחר <span class="math inline">\(N=1\)</span>. לכל <span class="math inline">\(n\ge1\)</span> מתקיים <span class="math display">\[|a_n-4|=|4-4|=0&lt;\varepsilon.\]</span> כלומר, כל האיברים עומדים בדרישה כבר מהראשון. הבחירה הזאת עובדת לכל <span class="math inline">\(\varepsilon&gt;0\)</span>, ולכן לפי ההגדרה <span class="math display">\[\lim_{n\to\infty}4=4.\]</span> אותו חישוב עובד לכל סדרה קבועה <span class="math inline">\(a_n=C\)</span>: בוחרים <span class="math inline">\(N=1\)</span> ומקבלים <span class="math inline">\(|a_n-C|=0&lt;\varepsilon\)</span> לכל <span class="math inline">\(n\ge1\)</span>. לכן סדרה שכל איבריה שווים <span class="math inline">\(C\)</span> מתכנסת אל <span class="math inline">\(C\)</span>.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="figures/ch02-constant-limit.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="כל האיברים של הסדרה הקבועה ארבע נמצאים בגובה ארבע, בתוך כל רצועה חיובית סביב ארבע." width="520"></p>
@@ -2194,8 +2204,18 @@ a_5&amp;=2(-3)^4=162.
 </div>
 </div>
 </div>
+<div id="box-method-limit-proof" class="thmbox thmbox-key-point" title="תבנית להוכחת גבול לפי ההגדרה">
+<p><strong>שיטת פתרון 2.2.7 — תבנית להוכחת גבול לפי ההגדרה.</strong></p>
+<p>כדי להראות שסדרה <span class="math inline">\((a_n)_{n=1}^{\infty}\)</span> מתכנסת למספר <span class="math inline">\(L\)</span>, עובדים כך:</p>
+<ol type="1">
+<li><strong>״יהי <span class="math inline">\(\varepsilon&gt;0\)</span>״.</strong> לוקחים סף שגיאה חיובי כלשהו. אין קובעים לו ערך מסוים, כי צריך לטפל בכל סף שגיאה חיובי.</li>
+<li><strong>בוחרים אינדקס טבעי <span class="math inline">\(N\)</span></strong> שיתאים לסף הזה. מותר שהבחירה תהיה תלויה ב <span class="math inline">\(\varepsilon\)</span>.</li>
+<li><strong>לוקחים אינדקס כלשהו <span class="math inline">\(n\ge N\)</span></strong>, ומראים שמתקיים <span class="math display">\[|a_n-L|&lt;\varepsilon.\]</span> צריך להסביר מדוע האי־שוויון מתקיים לכל אינדקס כזה, ולא רק עבור <span class="math inline">\(n=N\)</span>.</li>
+<li><strong>מסיקים לפי ההגדרה:</strong> לכל <span class="math inline">\(\varepsilon&gt;0\)</span> מצאנו <span class="math inline">\(N\)</span> מתאים, ולכן <span class="math inline">\(a_n\to L\)</span>.</li>
+</ol>
+</div>
 <div id="box-exm-one-over-n" class="thmbox thmbox-example" title="אף איבר אינו שווה לגבול">
-<p><strong>דוגמה 2.2.7 — אף איבר אינו שווה לגבול.</strong></p>
+<p><strong>דוגמה 2.2.8 — אף איבר אינו שווה לגבול.</strong></p>
 <p>נבדוק שהסדרה <span class="math display">\[a_n=\frac1n\]</span> מתכנסת אל <span class="math inline">\(0\)</span>. איבריה הראשונים הם <span class="math display">\[1,\frac{1}{2},\frac13,\frac14,\ldots\]</span> השגיאה של האיבר <span class="math inline">\(a_n\)</span> היא <span class="math display">\[\left|\frac1n-0\right|=\frac1n.\]</span> כדי להתחיל לבדוק את הטענה, נבחר סף שגיאה קבוע, למשל <span class="math inline">\(\varepsilon=\frac1{10}\)</span>. האם יש אינדקס שממנו והלאה השגיאה של כל האיברים קטנה מהסף הזה?</p>
 <p>אם לא היה אינדקס כזה, כבר היינו יודעים ש <span class="math inline">\(0\)</span> אינו הגבול. אם נמצא אינדקס מתאים, עדיין נצטרך להראות שאפשר לעשות זאת לכל סף שגיאה חיובי.</p>
 <p>נפתור את האי־שוויון המתאים. מכיוון ש <span class="math inline">\(n&gt;0\)</span>, מותר לכפול בו בלי לשנות את כיוון האי־שוויון: <span class="math display">\[\begin{aligned}
@@ -2245,22 +2265,24 @@ a_5&amp;=2(-3)^4=162.
 <p>כל אינדקס טבעי גדול מ <span class="math inline">\(1000\)</span> מתאים. האינדקס <span class="math inline">\(11\)</span>, שהתאים לסף השגיאה הקודם, כבר אינו מספיק.</p>
 </div>
 </div>
-<p>הבדיקות האלה לבדן אינן מספיקות: בהגדרה נדרש <strong>כל</strong> <span class="math inline">\(\varepsilon&gt;0\)</span>. לכן חוזרים על החישוב עם סף שגיאה כללי: <span class="math display">\[\frac1n&lt;\varepsilon\quad\Longleftrightarrow\quad n&gt;\frac1\varepsilon.\]</span></p>
+<p>הבדיקות האלה לבדן אינן מספיקות: בהגדרה נדרש <strong>כל</strong> <span class="math inline">\(\varepsilon&gt;0\)</span>. כעת נוכיח שהבחירה אפשרית לכל סף שגיאה.</p>
+<p><strong>יהי <span class="math inline">\(\varepsilon&gt;0\)</span></strong>. נרצה למצוא <strong>אינדקס טבעי <span class="math inline">\(N\)</span></strong> שעבורו <strong>לכל <span class="math inline">\(n\ge N\)</span></strong> יתקיים <span class="math inline">\(|a_n-0|&lt;\varepsilon\)</span>. מאחר שהשגיאה היא <span class="math inline">\(1/n\)</span>, הדרישה שקולה ל <span class="math display">\[\frac1n&lt;\varepsilon\quad\Longleftrightarrow\quad n&gt;\frac1\varepsilon.\]</span></p>
 <div id="box-def-integer-part">
-<p>נותר לבחור אינדקס טבעי <span class="math inline">\(N&gt;1/\varepsilon\)</span>. במצבים כאלה אפשר למצוא את השלם הקטן ביותר שגדול ממספר נתון <span class="math inline">\(x\)</span>, בעזרת פונקציית הערך השלם.</p>
-<p>לפי <a href="./01-Introduction.html#box-def-floor" data-xref="01-Introduction.html#box-def-floor" target="_blank" rel="noopener">הגדרת הערך השלם</a>, <span class="math inline">\(\lfloor x\rfloor\)</span> הוא השלם הגדול ביותר שאינו גדול מ <span class="math inline">\(x\)</span>. כשמוסיפים לו <span class="math inline">\(1\)</span>, מקבלים את השלם הבא. הוא כבר גדול מ <span class="math inline">\(x\)</span>, ואין שלם אחר ביניהם. לכן מתקיים <span class="math display">\[\lfloor x\rfloor\le x&lt;\lfloor x\rfloor+1.\]</span> על הישר, <span class="math inline">\(x\)</span> נמצא בין שני השלמים האלה: הוא יכול להיות שווה לשמאלי, אבל לא לימני. לכן השלם הימני הוא בדיוק השלם הקטן ביותר שגדול מ <span class="math inline">\(x\)</span>.</p>
+<p><strong>כדי לכתוב בחירה מפורשת של <span class="math inline">\(N\)</span></strong>, נשתמש בשיטה נפוצה המבוססת על פונקציית הערך השלם.</p>
+<p>נזכיר כי לפי <a href="./01-Introduction.html#box-def-floor" data-xref="01-Introduction.html#box-def-floor" target="_blank" rel="noopener">הגדרת הערך השלם</a>, <span class="math inline">\(\lfloor x\rfloor\)</span> הוא <strong>השלם הגדול ביותר שקטן או שווה ל <span class="math inline">\(x\)</span></strong>. לכן <span class="math inline">\(\lfloor x\rfloor+1\)</span> הוא שלם שגדול מ <span class="math inline">\(x\)</span>, ולמעשה <strong>השלם הקטן ביותר שגדול ממנו</strong>: <span class="math display">\[\lfloor x\rfloor\le x&lt;\lfloor x\rfloor+1.\]</span></p>
+<p>אצלנו <span class="math inline">\(x=1/\varepsilon\)</span>, ולכן <strong>נבחר</strong> <span class="math display">\[N=\left\lfloor\frac1\varepsilon\right\rfloor+1.\]</span></p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="figures/ch02-integer-part.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="מספר x בין שני שלמים עוקבים. השלם שמשמאל הוא החלק השלם של x; הוספת אחת נותנת את השלם הבא, שנמצא מימין ל x." width="560"></p>
+<p><img src="figures/ch02-integer-part.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="מספר x בין שני שלמים עוקבים. השלם שמשמאל הוא הערך השלם של x; הוספת אחת נותנת את השלם הקטן ביותר שגדול מ x." width="560"></p>
 </figure>
 </div>
-<p>למשל, עבור <span class="math inline">\(x=\frac{21}{2}\)</span> מחשבים תחילה <span class="math display">\[\left\lfloor\frac{21}{2}\right\rfloor=10.\]</span> מוסיפים <span class="math inline">\(1\)</span> ומקבלים <span class="math inline">\(11\)</span>, שהוא השלם הקטן ביותר שגדול מ <span class="math inline">\(\frac{21}{2}\)</span>.</p>
 </div>
-<p>נציב <span class="math inline">\(x=1/\varepsilon\)</span> ונבחר <span class="math display">\[N=\left\lfloor\frac1\varepsilon\right\rfloor+1.\]</span> לפי האי־שוויון שהסברנו, <span class="math inline">\(N&gt;1/\varepsilon&gt;0\)</span>, ולכן <span class="math inline">\(N\)</span> טבעי. במספרים חיוביים, ככל שהמכנה גדול יותר השבר קטן יותר, ולכן <span class="math display">\[\frac1N&lt;\frac1{1/\varepsilon}=\varepsilon.\]</span> לכל אינדקס <span class="math inline">\(n\ge N\)</span> המכנה גדול לפחות כמו <span class="math inline">\(N\)</span>, ולכן <span class="math display">\[|a_n-0|=\frac1n\le\frac1N&lt;\varepsilon.\]</span> מצאנו בחירה מתאימה לכל <span class="math inline">\(\varepsilon&gt;0\)</span>, ולכן לפי הגדרת הגבול <span class="math display">\[\frac1n\longrightarrow0.\]</span></p>
+<p>לפי האי־שוויון שהסברנו, <span class="math inline">\(N&gt;1/\varepsilon&gt;0\)</span>, ולכן <span class="math inline">\(N\)</span> טבעי. במספרים חיוביים, ככל שהמכנה גדול יותר השבר קטן יותר, ולכן <span class="math display">\[\frac1N&lt;\frac1{1/\varepsilon}=\varepsilon.\]</span> כעת ניקח <strong>אינדקס כלשהו <span class="math inline">\(n\ge N\)</span></strong>. המכנה גדול לפחות כמו <span class="math inline">\(N\)</span>, ולכן <span class="math display">\[|a_n-0|=\frac1n\le\frac1N&lt;\varepsilon.\]</span> מצאנו <span class="math inline">\(N\)</span> מתאים לסף השגיאה שבחרנו, והראינו שהדרישה מתקיימת <strong>לכל <span class="math inline">\(n\ge N\)</span></strong>. מכיוון ש <span class="math inline">\(\varepsilon&gt;0\)</span> היה כלשהו, הטיעון עובד לכל סף שגיאה חיובי. לכן לפי הגדרת הגבול <span class="math display">\[\frac1n\longrightarrow0.\]</span></p>
 </div>
 <div id="box-method-integer-above" class="thmbox thmbox-key-point" title="השלם הקטן ביותר שגדול ממספר נתון">
-<p><strong>שיטת פתרון 2.2.8 — השלם הקטן ביותר שגדול ממספר נתון.</strong></p>
+<p><strong>שיטת פתרון 2.2.9 — השלם הקטן ביותר שגדול ממספר נתון.</strong></p>
 <p>כדי למצוא את השלם הקטן ביותר <span class="math inline">\(m\)</span> שגדול ממש ממספר ממשי <span class="math inline">\(x\)</span>, מחשבים את הערך השלם של <span class="math inline">\(x\)</span> ומוסיפים <span class="math inline">\(1\)</span>: <span class="math display">\[m=\lfloor x\rfloor+1.\]</span> כש <span class="math inline">\(x\ge0\)</span>, המספר שמתקבל טבעי. בבחירת האינדקס <span class="math inline">\(N\)</span> בהגדרת הגבול אין חובה לבחור את הקטן ביותר: גם כל אינדקס טבעי גדול יותר מתאים.</p>
+<p>למשל, עבור <span class="math inline">\(x=\frac{21}{2}\)</span> מחשבים תחילה <span class="math display">\[\left\lfloor\frac{21}{2}\right\rfloor=10.\]</span> מוסיפים <span class="math inline">\(1\)</span> ומקבלים <span class="math inline">\(11\)</span>, שהוא השלם הקטן ביותר שגדול מ <span class="math inline">\(\frac{21}{2}\)</span>.</p>
 <div class="fill">
 <p>מהו השלם הקטן ביותר שגדול ממש מ <span class="math inline">\(\frac{17}{4}\)</span>? <span class="blank" data-ans="5" data-integer-answer="true"><span class="math inline">\(5\)</span></span>.</p>
 <div class="explain">
@@ -2268,11 +2290,15 @@ a_5&amp;=2(-3)^4=162.
 </div>
 </div>
 </div>
+<div id="box-insight-epsilon-index" class="thmbox thmbox-key-point thmicon-idea" title="האינדקס יכול להיות תלוי בסף השגיאה">
+<p><strong>תובנה חשובה — האינדקס יכול להיות תלוי בסף השגיאה.</strong></p>
+<p><strong>קודם בוחרים <span class="math inline">\(\varepsilon\)</span>, ורק אחר כך בוחרים <span class="math inline">\(N\)</span> שמתאים לו.</strong> ספי שגיאה שונים עשויים לדרוש אינדקסים שונים. בסדרה <span class="math inline">\(a_n=1/n\)</span> בחרנו <span class="math inline">\(N=\lfloor1/\varepsilon\rfloor+1\)</span>, ולכן הקטנת הסף עשויה לדרוש אינדקס גדול יותר. בסדרה הקבועה <span class="math inline">\(a_n=4\)</span>, לעומת זאת, אותו <span class="math inline">\(N=1\)</span> מתאים לכל סף שגיאה חיובי.</p>
+</div>
 <div id="box-sim-error-band" class="thmbox thmbox-simulation" title="סף השגיאה ובחירת האינדקס">
-<p><strong>סימולציה 2.2.9 — סף השגיאה ובחירת האינדקס.</strong></p>
-<p>בסדרה <span class="math inline">\(a_n=1/n\)</span>, שהתכנסותה אל <span class="math inline">\(0\)</span> הוכחה בדוגמה, בחרו <span class="math inline">\(\varepsilon\)</span> ואינדקס <span class="math inline">\(N\)</span>. הרצועה מראה את דרישת הדיוק; הקו האנכי מסמן מהיכן בודקים את כל האיברים. אפשר להיעזר בבחירה <span class="math inline">\(N=\lfloor1/\varepsilon\rfloor+1\)</span>.</p>
+<p><strong>סימולציה 2.2.10 — סף השגיאה ובחירת האינדקס.</strong></p>
+<p>בסדרה <span class="math inline">\(a_n=1/n\)</span>, שהתכנסותה אל <span class="math inline">\(0\)</span> הוכחה בדוגמה, בחרו <span class="math inline">\(\varepsilon\)</span>. הבחירה <span class="math inline">\(N=\lfloor1/\varepsilon\rfloor+1\)</span> תחושב ותופיע אוטומטית. אפשר גם להקליד אינדקס אחר ולבדוק אותו. הרצועה מראה את דרישת הדיוק; הקו האנכי מסמן מהיכן בודקים את כל האיברים.</p>
 <iframe class="widget-frame" src="widgets/ch02/error-band.html?case=reciprocal" loading="lazy" title="אחת חלקי n: סף השגיאה, האינדקס והאיברים"></iframe>
-<p>נסו <span class="math inline">\(\varepsilon=1/10\)</span> עם <span class="math inline">\(N=10\)</span> ואחר כך <span class="math inline">\(N=11\)</span>. הקטינו את סף השגיאה ובדקו אם האינדקס שבחרתם עדיין מתאים. הבדיקה נעזרת בנוסחה ומתייחסת גם לכל האיברים שמעבר לציור.</p>
+<p>עבור <span class="math inline">\(\varepsilon=1/10\)</span>, הקלידו <span class="math inline">\(N=10\)</span> ובדקו אותו, ואחר כך נסו <span class="math inline">\(N=11\)</span>. הקטינו את סף השגיאה וראו כיצד האינדקס המחושב משתנה. הבדיקה נעזרת בנוסחה ומתייחסת גם לכל האיברים שמעבר לציור.</p>
 </div>
 <div class="thmbox thmbox-self-check" title="האינדקס והגבול">
 <p><strong>בדיקה עצמית — האינדקס והגבול.</strong></p>
@@ -2296,9 +2322,8 @@ a_5&amp;=2(-3)^4=162.
 </div>
 </div>
 <div id="box-exm-alternating-converges" class="thmbox thmbox-example" title="מתקרבים משני הצדדים">
-<p><strong>דוגמה 2.2.10 — מתקרבים משני הצדדים.</strong></p>
+<p><strong>דוגמה 2.2.11 — מתקרבים משני הצדדים.</strong></p>
 <p>נבדוק את המועמד <span class="math inline">\(L=0\)</span> עבור <span class="math display">\[a_n=\frac{(-1)^n}{n}.\]</span> איבריה הראשונים הם <span class="math display">\[-1,\frac{1}{2},-\frac13,\frac14,\ldots\]</span> באינדקסים אי־זוגיים האיברים קטנים מהגבול <span class="math inline">\(0\)</span>, ובזוגיים הם גדולים ממנו. לזה הכוונה ב״משני הצדדים״: פעם מתחת לגבול ופעם מעליו. נבדוק את המרחק ממנו: <span class="math display">\[\left|\frac{(-1)^n}{n}-0\right|=\frac1n.\]</span> אלה בדיוק המרחקים מאפס של איברי הסדרה <span class="math inline">\(1/n\)</span>. לכן, לכל <span class="math inline">\(\varepsilon&gt;0\)</span>, בוחרים <span class="math inline">\(N&gt;\frac1\varepsilon\)</span>, ומקבלים שגם הסדרה <span class="math inline">\((-1)^n/n\)</span> מתכנסת לאפס.</p>
-<iframe class="widget-frame" src="widgets/ch02/error-band.html?case=alternating-decay" loading="lazy" title="סימן מתחלף ומרחק קטן: התכנסות משני הצדדים"></iframe>
 <p>האם התכנסות מחייבת להישאר באותו צד של הגבול?</p>
 <div class="tf-quiz" data-correct="2">
 <button type="button" class="tf-opt" data-val="1">כן</button>
@@ -2309,17 +2334,17 @@ a_5&amp;=2(-3)^4=162.
 </div>
 </div>
 </div>
+<div id="box-sim-alternating-decay" class="thmbox thmbox-simulation" title="סף השגיאה בהתקרבות משני הצדדים">
+<p><strong>סימולציה 2.2.12 — סף השגיאה בהתקרבות משני הצדדים.</strong></p>
+<p>בסדרה <span class="math inline">\(a_n=(-1)^n/n\)</span>, שהוכחנו כי היא מתכנסת לאפס, בחרו <span class="math inline">\(\varepsilon\)</span>. האינדקס <span class="math inline">\(N=\lfloor1/\varepsilon\rfloor+1\)</span> יופיע אוטומטית; אפשר להקליד אינדקס אחר ולבדוק אותו. שימו לב: האיברים מחליפים צד, אך מאינדקס מתאים כולם נשארים בתוך הרצועה.</p>
+<iframe class="widget-frame" src="widgets/ch02/error-band.html?case=alternating-decay" loading="lazy" title="סימן מתחלף ומרחק קטן: התכנסות משני הצדדים"></iframe>
+</div>
 <div id="box-exm-alternating-diverges" class="thmbox thmbox-example" title="סדרה שאינה מתכנסת">
-<p><strong>דוגמה 2.2.11 — סדרה שאינה מתכנסת.</strong></p>
+<p><strong>דוגמה 2.2.13 — סדרה שאינה מתכנסת.</strong></p>
 <p>נראה שהסדרה <span class="math display">\[a_n=(-1)^n,\qquad -1,1,-1,1,\ldots\]</span> אינה מתכנסת. נתחיל בניסיונות לבחור גבול, ונראה מדוע בדיקה עבור סף שגיאה אחד עלולה להטעות.</p>
 <p><strong>ניסיון ראשון: <span class="math inline">\(L=1\)</span>.</strong> עבור <span class="math inline">\(\varepsilon=5/2\)</span> כל האיברים בתוך הסביבה. נראה מבטיח, אבל נקטין ל <span class="math inline">\(\varepsilon=1/2\)</span>: כל ההופעות של <span class="math inline">\(-1\)</span> בחוץ, משום שמרחקן מ <span class="math inline">\(1\)</span> הוא <span class="math inline">\(2\)</span>. הן חוזרות אחרי כל אינדקס שנבחר. לכן <span class="math inline">\(1\)</span> אינו הגבול.</p>
 <p><strong>ניסיון שני: <span class="math inline">\(L=-1\)</span>.</strong> שוב, <span class="math inline">\(\varepsilon=5/2\)</span> מכניס את כל האיברים לסביבה. אבל עבור <span class="math inline">\(\varepsilon=1/2\)</span>, כל ההופעות של <span class="math inline">\(1\)</span> בחוץ. לכן גם <span class="math inline">\(-1\)</span> אינו הגבול.</p>
 <p><strong>אולי האמצע, <span class="math inline">\(L=0\)</span>?</strong> עבור <span class="math inline">\(\varepsilon=3/2\)</span> כולם בפנים. עבור <span class="math inline">\(\varepsilon=1/2\)</span> כולם בחוץ: מרחקו של כל איבר מאפס הוא <span class="math inline">\(1\)</span>.</p>
-<div id="box-sim-epsilon-challenge" class="thmbox thmbox-simulation" title="מצמצמים את הרצועה ובודקים את הטענה">
-<p><strong>סימולציה 2.2.12 — מצמצמים את הרצועה ובודקים את הטענה.</strong></p>
-<p>בכל לשונית נבדוק מועמד לגבול הסדרה <span class="math inline">\(a_n=(-1)^n\)</span>. צמצמו את הרצועה עד שתראו ערך שחוזר מחוץ לה. בלשונית האחרונה אפשר לבחור מועמד משלכם.</p>
-<iframe class="widget-frame" src="widgets/ch02/epsilon-game.html" loading="lazy" title="שוללים מועמד לגבול באמצעות רצועה צרה"></iframe>
-</div>
 <p><strong>ומה לגבי מספר אחר <span class="math inline">\(L\)</span>?</strong> אם <span class="math inline">\(L\ne1\)</span>, המרחק <span class="math inline">\(d=|L-1|\)</span> חיובי. נבחר <span class="math inline">\(\varepsilon=d/4\)</span>. הסביבה סביב <span class="math inline">\(L\)</span> מגיעה לכיוון <span class="math inline">\(1\)</span> רק רבע מהמרחק ביניהם, ולכן <span class="math inline">\(1\)</span> מחוץ לה. כל האיברים באינדקסים הזוגיים שווים <span class="math inline">\(1\)</span>, כך שיש אינסוף איברים בחוץ. את המועמד <span class="math inline">\(L=1\)</span> כבר שללנו בניסיון הראשון. לכן אין לסדרה גבול.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -2329,7 +2354,7 @@ a_5&amp;=2(-3)^4=162.
 <p>אם <span class="math inline">\(L\)</span> שונה גם מ <span class="math inline">\(1\)</span> וגם מ <span class="math inline">\(-1\)</span>, אפשר לצמצם עוד: נבחר רבע מהמרחק אל הקרוב מביניהם. אז אף איבר בסדרה אינו בסביבה. לעומת זאת, סביב <span class="math inline">\(L=1\)</span> או <span class="math inline">\(L=-1\)</span> תמיד יישארו בפנים האיברים השווים למרכז. אין צורך להוציא את כולם; אינסוף איברים בחוץ כבר מספיקים.</p>
 </div>
 <div id="box-prp-neighborhood-separation" class="thmbox thmbox-key-point" title="מפרידים בין שני מספרים שונים">
-<p><strong>שיטת פתרון 2.2.13 — מפרידים בין שני מספרים שונים.</strong></p>
+<p><strong>שיטת פתרון 2.2.14 — מפרידים בין שני מספרים שונים.</strong></p>
 <p>השתמשנו ברעיון הבא: לשני מספרים <span class="math inline">\(a&lt;b\)</span> יש מרחק חיובי <span class="math inline">\(b-a\)</span>. אם נבחר <span class="math display">\[\varepsilon=\frac{b-a}{4},\]</span> הסביבות <span class="math inline">\((a-\varepsilon,a+\varepsilon)\)</span> ו <span class="math inline">\((b-\varepsilon,b+\varepsilon)\)</span> אינן חופפות.</p>
 <p>כל סביבה נמשכת רק רבע מהדרך אל המרכז האחר, ולכן נשאר ביניהן רווח: <span class="math display">\[a+\varepsilon&lt;b-\varepsilon.\]</span> הבחירה עובדת לכל שני מספרים שונים, קרובים ככל שיהיו. לא צריך למצוא את הרדיוס הגדול ביותר שמתאים; רבע מהמרחק תמיד מספיק.</p>
 <div class="fill">
@@ -2338,6 +2363,11 @@ a_5&amp;=2(-3)^4=162.
 <p>רבע מהמרחק הוא <span class="math inline">\(1\)</span>. הסביבות הן <span class="math inline">\((1,3)\)</span> ו <span class="math inline">\((5,7)\)</span>, ואין מספר שנמצא בשתיהן.</p>
 </div>
 </div>
+</div>
+<div id="box-sim-epsilon-challenge" class="thmbox thmbox-simulation" title="מצמצמים את הרצועה ובודקים את הטענה">
+<p><strong>סימולציה 2.2.15 — מצמצמים את הרצועה ובודקים את הטענה.</strong></p>
+<p>בכל לשונית נבדוק מועמד לגבול הסדרה <span class="math inline">\(a_n=(-1)^n\)</span>. צמצמו את הרצועה עד שתראו ערך שחוזר מחוץ לה. בלשונית האחרונה אפשר לבחור מועמד משלכם.</p>
+<iframe class="widget-frame" src="widgets/ch02/epsilon-game.html" loading="lazy" title="שוללים מועמד לגבול באמצעות רצועה צרה"></iframe>
 </div>
 <div class="thmbox thmbox-self-check" title="פגענו ביעד. האם זה מספיק?">
 <p><strong>בדיקה עצמית — פגענו ביעד. האם זה מספיק?</strong></p>
@@ -2442,8 +2472,8 @@ a_5&amp;=2(-3)^4=162.
 <section id="זנב-של-סדרה" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="זנב-של-סדרה">זנב של סדרה</h3>
 <div id="box-def-sequence-tail" class="thmbox thmbox-definition" title="זנב של סדרה">
-<p><strong>הגדרה 2.2.14 — זנב של סדרה.</strong></p>
-<p>בסדרה <span class="math inline">\((a_n)\)</span>, ה<span class="term"><strong>זנב</strong></span> שמתחיל באינדקס <span class="math inline">\(N\)</span> הוא סדרת כל האיברים מאינדקס זה והלאה, לפי סדרם: <span class="math display">\[a_N,a_{N+1},a_{N+2},\ldots\]</span> כוללים את האיבר <span class="math inline">\(a_N\)</span> עצמו ואת <strong>כל</strong> האיברים שאחריו; אין דילוגים בין האיברים.</p>
+<p><strong>הגדרה 2.2.16 — זנב של סדרה.</strong></p>
+<p>בסדרה <span class="math inline">\((a_n)_{n=1}^{\infty}\)</span>, ה<span class="term"><strong>זנב</strong></span> שמתחיל באינדקס <span class="math inline">\(N\)</span> הוא סדרת כל האיברים מאינדקס זה והלאה, לפי סדרם: <span class="math display">\[a_N,a_{N+1},a_{N+2},\ldots\]</span> כוללים את האיבר <span class="math inline">\(a_N\)</span> עצמו ואת <strong>כל</strong> האיברים שאחריו; אין דילוגים בין האיברים.</p>
 </div>
 <p>באיור בחרנו <span class="math inline">\(N=4\)</span>: משאירים בחוץ את שלושת האיברים הראשונים, והזנב הוא <span class="math inline">\(a_4,a_5,a_6,\ldots\)</span>.</p>
 <div class="quarto-figure quarto-figure-center">
@@ -2452,7 +2482,7 @@ a_5&amp;=2(-3)^4=162.
 </figure>
 </div>
 <div id="box-exm-count-occurrences" class="thmbox thmbox-example" title="סופרים איברים, לא ערכים שונים">
-<p><strong>דוגמה 2.2.15 — סופרים איברים, לא ערכים שונים.</strong></p>
+<p><strong>דוגמה 2.2.17 — סופרים איברים, לא ערכים שונים.</strong></p>
 <p>נתונה הסדרה <span class="math display">\[1,1,1,\frac32,2,2,2,\ldots\]</span> כל האיברים מאינדקס <span class="math inline">\(5\)</span> והלאה שווים <span class="math inline">\(2\)</span>. עבור <span class="math inline">\(L=2\)</span> ו <span class="math inline">\(\varepsilon=\frac14\)</span>, הסביבה היא <span class="math inline">\((\frac74,\frac94)\)</span>.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -2472,7 +2502,7 @@ a_5&amp;=2(-3)^4=162.
 <p>בסדרה המתכנסת אל <span class="math inline">\(L\)</span>, לכל <span class="math inline">\(\varepsilon&gt;0\)</span> יש רק מספר סופי של איברים מחוץ לסביבה. כולם באינדקסים שלפני <span class="math inline">\(N\)</span>; מאינדקס <span class="math inline">\(N\)</span> והלאה אין עוד חריגים. על ישר המספרים כמה איברים יכולים להופיע באותה נקודה, ולכן בספירה צריך לזכור את האינדקסים שלהם.</p>
 </div>
 <div id="box-prp-limit-tail" class="thmbox thmbox-proposition" title="שינוי של מספר סופי של איברים">
-<p><strong>טענה 2.2.16 — שינוי של מספר סופי של איברים.</strong></p>
+<p><strong>טענה 2.2.18 — שינוי של מספר סופי של איברים.</strong></p>
 <p>שינוי של מספר סופי של איברים אינו משנה את הגבול או את עצם ההתכנסות.</p>
 </div>
 <p>למשל, אם נחליף את שלושת האיברים הראשונים של <span class="math inline">\(\frac1n\)</span> במספרים <span class="math inline">\(100\)</span>, <span class="math inline">\(-1000\)</span> ו <span class="math inline">\(7\)</span>, הזנב נשאר אותו זנב. כשבוחרים <span class="math inline">\(N\)</span> אפשר להתקדם מעבר לאיברים ששינינו, ולכן הגבול נשאר <span class="math inline">\(0\)</span>.</p>
@@ -2514,7 +2544,7 @@ a_5&amp;=2(-3)^4=162.
 </div>
 </div>
 <div id="box-q-shifted-sequence" class="thmbox thmbox-question" title="אותם איברים, אינדקסים אחרים">
-<p><strong>תרגיל 2.2.17 — אותם איברים, אינדקסים אחרים.</strong></p>
+<p><strong>תרגיל 2.2.19 — אותם איברים, אינדקסים אחרים.</strong></p>
 <p>נתונה סדרה <span class="math inline">\(a_n\to L\)</span>. נקבע מספר טבעי <span class="math inline">\(k&gt;0\)</span> ונגדיר סדרה חדשה <span class="math display">\[b_n=a_{n+k}.\]</span> המספר <span class="math inline">\(k\)</span> קבוע, ואילו <span class="math inline">\(n\)</span> סופר את איברי הסדרה החדשה. למשל, כש <span class="math inline">\(k=3\)</span>, <span class="math display">\[b_1=a_4,\quad b_2=a_5,\quad b_3=a_6,\quad\ldots\]</span></p>
 <p><strong>(א)</strong> אלו בדיוק איברי הזנב <span class="math inline">\(a_{k+1},a_{k+2},\ldots\)</span>, באותו סדר ועם אינדקסים חדשים. האם גם <span class="math inline">\(b_n\to L\)</span>?</p>
 <div class="tf-quiz" data-correct="1">
@@ -2547,7 +2577,7 @@ a_5&amp;=2(-3)^4=162.
 <section id="למה-הגבול-יחיד" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="למה-הגבול-יחיד">למה הגבול יחיד?</h3>
 <div id="box-thm-limit-unique" class="thmbox thmbox-theorem" title="יחידות הגבול">
-<p><strong>משפט 2.2.18 — יחידות הגבול.</strong></p>
+<p><strong>משפט 2.2.20 — יחידות הגבול.</strong></p>
 <p>לסדרה מתכנסת יש גבול אחד בלבד.</p>
 </div>
 <p>כפי שראינו ב <a href="#box-prp-neighborhood-separation" data-xref="02-Sequences.html#box-prp-neighborhood-separation" target="_blank" rel="noopener">שיטה להפרדת שני מספרים</a>, אפשר לצייר סביב שני מספרים שונים <span class="math inline">\(L_1,L_2\)</span> סביבות שאין ביניהן חפיפה.</p>
@@ -2577,8 +2607,8 @@ a_5&amp;=2(-3)^4=162.
 <section id="שתי-התנהגויות-באותה-סדרה" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="שתי-התנהגויות-באותה-סדרה">שתי התנהגויות באותה סדרה</h3>
 <div id="box-def-subsequence" class="thmbox thmbox-definition" title="תת־סדרה">
-<p><strong>הגדרה 2.2.19 — תת־סדרה.</strong></p>
-<p>בוחרים אינדקסים טבעיים <span class="math inline">\(n_1,n_2,n_3,\ldots\)</span>, כך שבכל בחירה מתקדמים לאינדקס גדול יותר: <span class="math display">\[n_{k+1}&gt;n_k.\]</span> האיברים שנבחרו הם <span class="math display">\[a_{n_1},a_{n_2},a_{n_3},\ldots\]</span> זוהי <span class="term"><strong>תת־סדרה</strong></span> של <span class="math inline">\((a_n)\)</span>, ומסמנים אותה <span class="math inline">\((a_{n_k})\)</span>.</p>
+<p><strong>הגדרה 2.2.21 — תת־סדרה.</strong></p>
+<p>בוחרים אינדקסים טבעיים <span class="math inline">\(n_1,n_2,n_3,\ldots\)</span>, כך שבכל בחירה מתקדמים לאינדקס גדול יותר: <span class="math display">\[n_{k+1}&gt;n_k.\]</span> האיברים שנבחרו הם <span class="math display">\[a_{n_1},a_{n_2},a_{n_3},\ldots\]</span> זוהי <span class="term"><strong>תת־סדרה</strong></span> של <span class="math inline">\((a_n)_{n=1}^{\infty}\)</span>, ומסמנים אותה <span class="math inline">\((a_{n_k})_{k=1}^{\infty}\)</span>.</p>
 <p>האינדקס <span class="math inline">\(k\)</span> סופר את האיברים בתת־הסדרה; <span class="math inline">\(n_k\)</span> הוא האינדקס של האיבר שנבחר בסדרה המקורית.</p>
 <p>אפשר לחשוב על הבחירה כעל קפיצות בין איברי הסדרה: קופצים תמיד <strong>קדימה, לפחות אינדקס אחד בכל צעד</strong>. אפשר לעבור לאיבר הבא, ואפשר לדלג על כמה איברים. אסור לחזור לאחור או להישאר באותו אינדקס.</p>
 <p>למשל, אם בוחרים <span class="math inline">\(n_k=2k\)</span>, מקבלים את האיברים באינדקסים הזוגיים: <span class="math display">\[a_2,a_4,a_6,\ldots\]</span></p>
@@ -2589,7 +2619,7 @@ a_5&amp;=2(-3)^4=162.
 </div>
 </div>
 <div id="box-exm-subsequence-choice" class="thmbox thmbox-example" title="מהי תת־סדרה ומה לא?">
-<p><strong>דוגמה 2.2.20 — מהי תת־סדרה ומה לא?</strong></p>
+<p><strong>דוגמה 2.2.22 — מהי תת־סדרה ומה לא?</strong></p>
 <p>נבחן את הסדרה <span class="math display">\[1,2,3,4,5,6,\ldots\]</span> הסדרה <span class="math display">\[2,4,6,\ldots\]</span> היא תת־סדרה שלה: בחרנו איברים מהסדרה המקורית ושמרנו על הסדר שבו הם מופיעים.</p>
 <p>לעומת זאת, הסדרה <span class="math display">\[2,1,3,4,5,6,\ldots\]</span> אינה תת־סדרה שלה. אלה אותם מספרים, אבל הסדר השתנה: אחרי שבחרנו את האיבר <span class="math inline">\(2\)</span>, אי אפשר לחזור לאינדקס של האיבר <span class="math inline">\(1\)</span>.</p>
 <p><strong>כל סדרה היא תת־סדרה של עצמה.</strong> אין חובה לדלג על איברים: בוחרים <span class="math inline">\(n_k=k\)</span>, ומקבלים את כל האיברים באותו סדר.</p>
@@ -2613,20 +2643,20 @@ a_5&amp;=2(-3)^4=162.
 </div>
 </div>
 <div id="box-thm-subsequence-limit" class="thmbox thmbox-theorem" title="הגבול של תת־סדרה">
-<p><strong>משפט 2.2.21 — הגבול של תת־סדרה.</strong></p>
+<p><strong>משפט 2.2.23 — הגבול של תת־סדרה.</strong></p>
 <p>אם סדרה מתכנסת אל <span class="math inline">\(L\)</span>, כל תת־סדרה שלה מתכנסת גם היא אל <span class="math inline">\(L\)</span>.</p>
 <p>לכן, אם שתי תתי־סדרות מתכנסות למספרים שונים, הסדרה המקורית אינה מתכנסת.</p>
 </div>
 <p>בחירת חלק מהאיברים אינה משנה את העובדה שכל האיברים מאינדקס מסוים והלאה קרובים לגבול. לכן תת־סדרה של סדרה מתכנסת אינה יכולה להוביל לגבול אחר.</p>
 <div id="box-sim-subsequence" class="thmbox thmbox-simulation" title="בוחרים חלק מהאיברים">
-<p><strong>סימולציה 2.2.22 — בוחרים חלק מהאיברים.</strong></p>
+<p><strong>סימולציה 2.2.24 — בוחרים חלק מהאיברים.</strong></p>
 <p>נסתכל על <span class="math inline">\(a_n=\frac1{n+1}\)</span>, המתכנסת אל <span class="math inline">\(0\)</span>: לכל <span class="math inline">\(\varepsilon&gt;0\)</span>, בחירה של <span class="math inline">\(N&gt;1/\varepsilon\)</span> מבטיחה <span class="math inline">\(1/(n+1)&lt;\varepsilon\)</span> לכל <span class="math inline">\(n\ge N\)</span>.</p>
 <p>בחרו תת־סדרה. בתצוגה המשותפת, האיברים שנבחרו מופיעים בצבע אחר באינדקסים המקוריים <span class="math inline">\(n_k\)</span>. בתצוגת תת־הסדרה בלבד, האיברים נשארים באותם גבהים, אבל ציר האינדקסים הוא <span class="math inline">\(k=1,2,3,\ldots\)</span>.</p>
 <iframe class="widget-frame" src="widgets/ch02/subsequences.html" loading="lazy" title="סדרה ותת־סדרה על אותו גרף ובנפרד"></iframe>
 <p>אחרי שכל איברי הסדרה המקורית נכנסו לרצועה, גם האיברים שבוחרים מתוכה נמצאים בה. הבחירה יכולה לדלג קדימה, אבל אינה יכולה לחזור לאיברים המוקדמים שמחוץ לרצועה.</p>
 </div>
 <div id="box-exm-no-limit" class="thmbox thmbox-example" title="קודם בוחרים אינדקסים, ואז מציבים">
-<p><strong>דוגמה 2.2.23 — קודם בוחרים אינדקסים, ואז מציבים.</strong></p>
+<p><strong>דוגמה 2.2.25 — קודם בוחרים אינדקסים, ואז מציבים.</strong></p>
 <p>נחזור אל <span class="math inline">\(a_n=(-1)^n\)</span>. נבחר את האינדקסים הזוגיים בסדרה המקורית: <span class="math display">\[n_1=2,\quad n_2=4,\quad n_3=6,\quad\ldots\]</span> כלומר, הנוסחה לאינדקס שנבחר היא <span class="math display">\[n_k=2k.\]</span> רק עכשיו מציבים אותו בנוסחת האיבר: <span class="math display">\[a_{n_k}=(-1)^{n_k}=(-1)^{2k}=1.\]</span></p>
 <table class="caption-top table">
 <colgroup>
@@ -2685,7 +2715,7 @@ a_5&amp;=2(-3)^4=162.
 </div>
 </div>
 <div id="box-exm-distance-editor" class="thmbox thmbox-example" title="מציבים את האיבר בעוזר הפתרון">
-<p><strong>דוגמה 2.2.24 — מציבים את האיבר בעוזר הפתרון.</strong></p>
+<p><strong>דוגמה 2.2.26 — מציבים את האיבר בעוזר הפתרון.</strong></p>
 <p>נתון <span class="math inline">\(a_n=1+\frac2n\)</span>. נתרגל את התנאי <span class="math inline">\(|a_n-1|&lt;\frac14\)</span>.</p>
 <p>תחילה בחרו <strong>פישוט והחלפה ← הצבה לפי הגדרת הסדרה</strong>, והקלידו <span class="math inline">\(a_n\)</span>. בצעד הבא בחרו <strong>פישוט האגפים</strong>: המספרים <span class="math inline">\(1\)</span> ו <span class="math inline">\(-1\)</span> מתבטלים, ו <span class="math inline">\(2/n\)</span> חיובי. אחר כך כופלים במספרים חיוביים דרך <strong>פעולות על האגפים ← כפל</strong>.</p>
 <div class="derive" data-vars="n" data-solve="n" data-positive="n" data-sequence-name="a" data-sequence-formula="1+2/n" start="abs(a_n-1)<1/4">
@@ -2707,7 +2737,7 @@ a_5&amp;=2(-3)^4=162.
 <section id="תרגילים-1" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="תרגילים-1">תרגילים</h3>
 <div id="box-q-epsilon-solve" class="thmbox thmbox-question" title="מהאי־שוויון לבחירת אינדקס">
-<p><strong>תרגיל 2.2.25 — מהאי־שוויון לבחירת אינדקס.</strong></p>
+<p><strong>תרגיל 2.2.27 — מהאי־שוויון לבחירת אינדקס.</strong></p>
 <p>הראו שהסדרה <span class="math inline">\(a_n=\frac2{n+1}\)</span> מתכנסת אל <span class="math inline">\(0\)</span>.</p>
 <p><strong>(א)</strong> מצאו אינדקס שממנו השגיאה קטנה מ <span class="math inline">\(1/50\)</span>.</p>
 <div class="derive" data-vars="n" data-solve="n" data-positive="n" start="2/(n+1)<1/50">
@@ -2750,7 +2780,7 @@ a_5&amp;=2(-3)^4=162.
 </div>
 </div>
 <div id="box-q-error-place" class="thmbox thmbox-question" title="קירוב למספר שאינו אפס">
-<p><strong>תרגיל 2.2.26 — קירוב למספר שאינו אפס.</strong></p>
+<p><strong>תרגיל 2.2.28 — קירוב למספר שאינו אפס.</strong></p>
 <p>הראו שהסדרה <span class="math inline">\(a_n=1+\frac2n\)</span> מתכנסת אל <span class="math inline">\(1\)</span>.</p>
 <p><strong>(א) סף שגיאה מספרי.</strong> מצאו אינדקס <span class="math inline">\(N\)</span> שממנו והלאה השגיאה קטנה מ <span class="math inline">\(\frac1{100}\)</span>.</p>
 <p>לפי <a href="#box-def-limit" data-xref="02-Sequences.html#box-def-limit" target="_blank" rel="noopener">הגדרת הגבול</a>, מחפשים <span class="math inline">\(N\)</span> שממנו והלאה מתקיים <span class="math display">\[|a_n-1|&lt;\frac{1}{100}.\]</span></p>
@@ -2806,7 +2836,7 @@ a_5&amp;=2(-3)^4=162.
 </div>
 </div>
 <div id="box-q-reject-candidate" class="thmbox thmbox-question" title="מועמד לא מתאים, אבל יש גבול">
-<p><strong>תרגיל 2.2.27 — מועמד לא מתאים, אבל יש גבול.</strong></p>
+<p><strong>תרגיל 2.2.29 — מועמד לא מתאים, אבל יש גבול.</strong></p>
 <p>בסדרה <span class="math inline">\(a_n=1+\frac2n\)</span> כבר הראינו שהגבול הוא <span class="math inline">\(1\)</span>. כעת הראו שהמספר <span class="math inline">\(0\)</span> אינו הגבול.</p>
 <div class="fill">
 <p>המרחק של האיבר <span class="math inline">\(a_n\)</span> מאפס הוא <span class="blank" data-ans="1+2/n" data-vars="n" data-positive="n" data-integer="n"><span class="math inline">\(1+\frac{2}{n}\)</span></span>.</p>
@@ -2836,7 +2866,7 @@ a_5&amp;=2(-3)^4=162.
 </div>
 </div>
 <div id="box-q-error-below" class="thmbox thmbox-question" title="קירוב מהצד השני">
-<p><strong>תרגיל 2.2.28 — קירוב מהצד השני.</strong></p>
+<p><strong>תרגיל 2.2.30 — קירוב מהצד השני.</strong></p>
 <p>הראו שהסדרה <span class="math inline">\(a_n=3-\frac4n\)</span> מתכנסת אל <span class="math inline">\(3\)</span>. תחילה מצאו אינדקס <span class="math inline">\(N\)</span> שממנו והלאה השגיאה קטנה מ <span class="math inline">\(\frac1{20}\)</span>, ואחר כך עברו לסף שגיאה כללי.</p>
 <p>זהו התנאי מתוך <a href="#box-def-limit" data-xref="02-Sequences.html#box-def-limit" target="_blank" rel="noopener">הגדרת הגבול</a>: לכל <span class="math inline">\(\varepsilon&gt;0\)</span> צריך למצוא אינדקס <span class="math inline">\(N\)</span> כך שלכל <span class="math inline">\(n\ge N\)</span> מתקיים <span class="math display">\[
 |a_n-L|&lt;\varepsilon.
@@ -2881,7 +2911,7 @@ a_5&amp;=2(-3)^4=162.
 </div>
 </div>
 <div id="box-q-limit-meaning" class="thmbox thmbox-question" title="מה קובעת ההגדרה?">
-<p><strong>תרגיל 2.2.29 — מה קובעת ההגדרה?</strong></p>
+<p><strong>תרגיל 2.2.31 — מה קובעת ההגדרה?</strong></p>
 <p>ענו על השאלות. בסעיף (ג) בחרו גם נימוק.</p>
 <div class="fill">
 <p><strong>(א)</strong> עבור <span class="math inline">\(a_n=\frac1n\)</span> ו <span class="math inline">\(\varepsilon=\frac{1}{10}\)</span>, האם <span class="math inline">\(N=10\)</span> מתאים ביחס לגבול <span class="math inline">\(0\)</span>? <span class="blank" kind="text" data-ans="לא" data-w="4" data-choices="כן|לא">לא</span></p>
@@ -2909,7 +2939,7 @@ a_5&amp;=2(-3)^4=162.
 </div>
 </div>
 <div id="box-q-even-odd" class="thmbox thmbox-question" title="זוגיים ואי־זוגיים">
-<p><strong>תרגיל 2.2.30 — זוגיים ואי־זוגיים.</strong></p>
+<p><strong>תרגיל 2.2.32 — זוגיים ואי־זוגיים.</strong></p>
 <p>נתונה <span class="math inline">\(a_n=2+(-1)^n\)</span>. מצאו את שתי תתי־הסדרות וקבעו אם הסדרה מתכנסת.</p>
 <div class="fill">
 <div class="sequence-table" dir="ltr">
@@ -2968,7 +2998,7 @@ a_5&amp;=2(-3)^4=162.
 </div>
 </div>
 <div id="box-q-alternating-error" class="thmbox thmbox-question" title="סימן מתחלף ומרחק קטן">
-<p><strong>תרגיל 2.2.31 — סימן מתחלף ומרחק קטן.</strong></p>
+<p><strong>תרגיל 2.2.33 — סימן מתחלף ומרחק קטן.</strong></p>
 <p>נתונה <span class="math inline">\(a_n=\frac{2(-1)^n}{n+1}\)</span>. בדקו את המרחק מאפס.</p>
 <div class="fill">
 <p>כתבו את המרחק מאפס לאחר פישוט: <span class="blank" data-ans="2/(n+1)" data-vars="n" data-positive="n" data-integer="n"><span class="math inline">\(\frac{2}{n+1}\)</span></span>.</p>
@@ -2993,7 +3023,7 @@ a_5&amp;=2(-3)^4=162.
 </div>
 </div>
 <div id="box-q-decimal-decay" class="thmbox thmbox-question" title="התכנסות מהירה: משתמשים בלוגריתם">
-<p><strong>תרגיל 2.2.32 — התכנסות מהירה: משתמשים בלוגריתם.</strong></p>
+<p><strong>תרגיל 2.2.34 — התכנסות מהירה: משתמשים בלוגריתם.</strong></p>
 <p>הראו שהסדרה <span class="math inline">\(a_n=1/10^n\)</span> מתכנסת אל <span class="math inline">\(0\)</span>. הכתיבה <span class="math inline">\(10^{-n}\)</span> מתארת אותו איבר.</p>
 <p><strong>(א)</strong> מצאו אינדקס שממנו השגיאה קטנה מ <span class="math inline">\(1/1000\)</span>. אפשר להשתמש בלוגריתם בבסיס <span class="math inline">\(10\)</span>, כפי שראינו בפרק 1.</p>
 <div class="derive" data-vars="n" data-solve="n" data-positive="n" start="10^(-n)<1/1000">
@@ -3033,7 +3063,7 @@ a_5&amp;=2(-3)^4=162.
 </div>
 </div>
 <div id="box-q-three-subsequences" class="thmbox thmbox-question" title="שלוש תתי־סדרות קבועות">
-<p><strong>תרגיל 2.2.33 — שלוש תתי־סדרות קבועות.</strong></p>
+<p><strong>תרגיל 2.2.35 — שלוש תתי־סדרות קבועות.</strong></p>
 <p>נתונה הסדרה שבה שלושת הערכים חוזרים שוב ושוב: <span class="math display">\[2,-1,4,2,-1,4,2,-1,4,\ldots\]</span> נבחר בנפרד את האינדקסים <span class="math inline">\(1,4,7,\ldots\)</span>, את האינדקסים <span class="math inline">\(2,5,8,\ldots\)</span> ואת האינדקסים <span class="math inline">\(3,6,9,\ldots\)</span>.</p>
 <div class="fill">
 <p>בבחירה הראשונה, <span class="fill-ltr"><span class="math inline">\(n_k=\)</span> <span class="blank" data-ans="3k-2" data-vars="k" data-positive="k" data-integer="k" data-w="9"><span class="math inline">\(3k-2\)</span></span></span>, ולכן <span class="fill-ltr"><span class="math inline">\(a_{n_k}=\)</span> <span class="blank" data-ans="2" data-w="3"><span class="math inline">\(2\)</span></span></span>.</p>
@@ -3055,7 +3085,7 @@ a_5&amp;=2(-3)^4=162.
 </div>
 </div>
 <div id="box-q-interleaved-zero" class="thmbox thmbox-question" title="קופצת לאפס ובחזרה — האם היא מתכנסת?">
-<p><strong>תרגיל 2.2.34 — קופצת לאפס ובחזרה — האם היא מתכנסת?</strong></p>
+<p><strong>תרגיל 2.2.36 — קופצת לאפס ובחזרה — האם היא מתכנסת?</strong></p>
 <p>נתונה הסדרה <span class="math display">\[1,0,\frac12,0,\frac13,0,\frac14,0,\ldots\]</span> כל איבר זוגי שווה לאפס. באינדקסים האי־זוגיים מופיעים, לפי הסדר, <span class="math inline">\(1,1/2,1/3,\ldots\)</span>.</p>
 <p><strong>(א) מזהים את שתי הבחירות.</strong></p>
 <div class="fill">

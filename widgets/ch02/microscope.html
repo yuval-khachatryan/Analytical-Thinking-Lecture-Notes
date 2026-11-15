@@ -3,19 +3,26 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>קירובים של פאי בהגדלה</title>
+<title>מיקרוסקופ לקירובים של פאי</title>
 <link rel="stylesheet" href="limit-activities.css">
-<style>#plot{max-width:720px;margin-inline:auto}#scale{min-width:4rem}#terms{text-align:center}.term-value{white-space:nowrap;margin-inline:.5rem}</style>
+<style>
+#plot{max-width:720px;margin-inline:auto}#scale{min-width:3.5rem;text-align:center}
+#terms{display:block;text-align:center;line-height:1.8;font-size:18px;margin-bottom:.4rem}
+.term-value{white-space:nowrap}.distinct{color:#2757b8}.merged{color:#7351ba;font-weight:bold}.outside{color:#64748b;text-decoration:underline dotted;text-underline-offset:3px}
+.legend{text-align:center}.legend span{white-space:nowrap}button:disabled{opacity:.45;cursor:default}
+</style>
 </head>
 <body><div class="w">
-<p class="heading m">3, 3.1, 3.14, 3.141, 3.1415, … → π</p>
+<p id="terms" class="m" dir="ltr" aria-label="הקירובים העשרוניים של פאי"></p>
+<p class="legend"><span class="distinct">כחול: נבדלים מ π לעין</span> · <span class="merged">סגול: אינם נבדלים מ π לעין</span> · <span class="outside">אפור וקו מקווקו: מחוץ לחלון</span></p>
 <svg id="plot" viewBox="0 0 720 180" role="img" aria-label="קירובים עשרוניים של פאי וסביבת אפסילון סביב פאי על ישר המספרים"></svg>
-<p class="caption">הפס הסגול מסמן את סביבת האפסילון <span class="m">(π − ε, π + ε)</span>, עם <span class="m">ε = <span class="fr"><span>1</span><span>1000</span></span></span>. סף השגיאה נשאר קבוע כשמגדילים.</p>
-<p id="terms" class="caption" dir="ltr"></p>
-<div class="controls"><label>הגדלה סביב <span class="m">π</span><input id="zoom" type="range" min="0" max="8" step="1" value="0" aria-label="הגדלה סביב פאי"></label><output id="scale" class="m"></output></div>
+<div class="controls">
+<label>סף השגיאה <span class="m">ε</span><select id="epsilon" dir="ltr" aria-label="סף השגיאה"><option value="0.01">1/100</option><option value="0.001" selected>1/1000</option><option value="0.0001">1/10000</option></select></label>
+<button id="zoom-in" type="button">הגדילו פי 10</button><button id="zoom-out" type="button">הקטינו פי 10</button><output id="scale" class="m" aria-live="polite"></output>
+</div>
+<p class="caption">הפס הבהיר מסמן את סביבת האפסילון <span class="m">(π − ε, π + ε)</span>. הגדלה משנה את קנה המידה; היא אינה משנה את האיברים או את סף השגיאה שבחרתם.</p>
 <p id="read" class="read" aria-live="polite"></p>
 <p id="outside" class="caption"></p>
-<p class="caption">הגדלה משנה את קנה המידה, לא את המספרים. כל הקירובים הבאים אחרי הקירוב האחרון שמוצג קרובים עוד יותר אל π.</p>
 </div>
 <script src="../shared/autosize.js"></script>
 <script src="limit-activities.js"></script>
