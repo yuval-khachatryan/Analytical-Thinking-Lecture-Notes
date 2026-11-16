@@ -105,13 +105,21 @@ for(const width of [320,480,720]){
 }
 const subsequences=require('../widgets/ch02/subsequences.js');
 for(const kind of ['even','odd','third']){
- const terms=subsequences.terms(kind,8);assert.ok(terms.every((t,i)=>t.value===1/(t.n+1)&&(!i||t.n>terms[i-1].n)));
+ const terms=subsequences.terms(kind,8);assert.ok(terms.every((t,i)=>t.value===1/t.n&&(!i||t.n>terms[i-1].n)));
  const E=env();E.context.addEventListener=()=>{};const svg=node(E.document,'svg',{id:'plot'});
  for(const [id,value] of [['selection',kind],['mode','both'],['epsilon','.1']])node(E.document,'select',{id,value});
  for(const id of ['indices','read'])node(E.document,'p',{id});
  E.run(fs.readFileSync('widgets/ch02/limit-activities.js','utf8'));E.run(fs.readFileSync('widgets/ch02/subsequences.js','utf8'));
  assert.equal(svg.getAttribute('data-axis'),'n');
+ function checkPoints(){for(const p of svg.querySelectorAll('circle')){
+  const n=Number(p.getAttribute('data-original-index'));
+  assert.equal(Number(p.getAttribute('data-value')),1/n);
+  assert.ok(Number(p.getAttribute('cy'))>22&&Number(p.getAttribute('cy'))<190,'all terms, including a_1=1, stay in view');
+  assert.ok(p.querySelector('title').textContent.endsWith(' = 1/'+n));
+ }}
+ checkPoints();
  const mode=E.document.getElementById('mode');mode.value='only';mode.dispatchEvent({type:'change'});assert.equal(svg.getAttribute('data-axis'),'k');
+ checkPoints();
  assert.equal(svg.querySelectorAll('circle').length,8);
  svg.querySelectorAll('circle').forEach((p,i)=>assert.equal(Number(p.getAttribute('data-original-index')),terms[i].n));
 }
