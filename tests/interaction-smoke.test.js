@@ -10,9 +10,21 @@ class Element {
  get previousSibling(){return this.parentNode?.children[this.parentNode.children.indexOf(this)-1]||null;}
  setAttribute(k,v){this.attrs[k]=String(v);if(k==='value')this.value=String(v);if(k==='width'||k==='height')this[k]=+v;}
  getAttribute(k){return this.attrs[k]??null;}removeAttribute(k){delete this.attrs[k];}
- appendChild(n){n.remove();this.children.push(n);n.parentNode=this;return n;}
- insertBefore(n,b){if(!b)return this.appendChild(n);n.remove();this.children.splice(this.children.indexOf(b),0,n);n.parentNode=this;return n;}
- remove(){if(this.parentNode){this.parentNode.children=this.parentNode.children.filter(c=>c!==this);this.parentNode=null;}}
+ get isConnected(){return this.tagName==='DOCUMENT'||!!this.parentNode?.isConnected;}
+ notifyConnection(){
+  if(!this.isConnected)return;
+  if(this.tagName==='MATH-FIELD'&&!this._mounted){
+   this._mounted=true;
+   let doc=this;while(doc.parentNode)doc=doc.parentNode;
+   const mount=()=>{if(this.isConnected)this.dispatchEvent({type:'mount'});};
+   if(doc.deferMathMounts)(doc.mathMountQueue??=[]).push(mount);else mount();
+  }
+  [...this.children].forEach(c=>c.notifyConnection());
+ }
+ notifyDisconnection(){this._mounted=false;this.children.forEach(c=>c.notifyDisconnection());}
+ appendChild(n){n.remove();this.children.push(n);n.parentNode=this;n.notifyConnection();return n;}
+ insertBefore(n,b){if(!b)return this.appendChild(n);n.remove();this.children.splice(this.children.indexOf(b),0,n);n.parentNode=this;n.notifyConnection();return n;}
+ remove(){if(this.parentNode){this.parentNode.children=this.parentNode.children.filter(c=>c!==this);this.parentNode=null;this.notifyDisconnection();}}
  replaceChildren(...cs){this.children.forEach(c=>c.parentNode=null);this.children=[];this._text='';cs.forEach(c=>this.appendChild(c));}
  matches(sel){return sel.split(',').some(s=>{s=s.trim();const a=/^([\w-]+)?\[([^=^\]]+)(?:(\^?=)["']?([^"'\]]+)["']?)?\]$/.exec(s);if(a)return (!a[1]||this.tagName===a[1].toUpperCase())&&this.attrs[a[2]]!==undefined&&(!a[3]||(a[3]==='^='?this.attrs[a[2]].startsWith(a[4]):this.attrs[a[2]]===a[4]));if(s.startsWith('#'))return this.attrs.id===s.slice(1);const parts=s.split('.');return (!parts[0]||this.tagName===parts[0].toUpperCase())&&parts.slice(1).every(c=>this.classList.contains(c));});}
  closest(s){return this.matches(s)?this:this.parentNode?.closest(s)||null;}
@@ -26,7 +38,15 @@ class Element {
  cloneNode(deep){const n=new Element(this.tagName);n.attrs={...this.attrs};n._text=this._text;n.value=this.value;if(deep)this.children.forEach(c=>n.appendChild(c.cloneNode(true)));return n;}
 }
 function env(){
- const document=new Element('document');document.readyState='loading';document.createElement=t=>new Element(t);document.createElementNS=(_,t)=>new Element(t);document.createTextNode=s=>{const n=new Element('text');n.textContent=s;return n;};document.getElementById=id=>document.querySelector('#'+id);
+ const document=new Element('document');document.readyState='loading';document.createElement=t=>{
+  const n=new Element(t);
+  if(t==='math-field')for(const property of ['menuItems','inlineShortcuts']){
+   let value=property==='menuItems'?[]:{};
+   Object.defineProperty(n,property,{get(){if(!n._mounted)throw Error('Mathfield not mounted');return value;},set(v){if(!n._mounted)throw Error('Mathfield not mounted');value=v;},configurable:true});
+  }
+  return n;
+ };document.createElementNS=(_,t)=>new Element(t);document.createTextNode=s=>{const n=new Element('text');n.textContent=s;return n;};document.getElementById=id=>document.querySelector('#'+id);
+ document.flushMathMounts=()=>{const queue=document.mathMountQueue||[];document.mathMountQueue=[];queue.forEach(f=>f());};
  document.head=document.appendChild(new Element('head'));
  const context={document,console,URLSearchParams,structuredClone,location:{search:''},setTimeout:()=>{},clearTimeout:()=>{},Event:class{constructor(type){this.type=type;}}};context.window=context;context.MathJax={typeset:()=>{},typesetClear:()=>{}};
  return {document,context:vm.createContext(context),run:s=>vm.runInContext(s,context)};
@@ -679,7 +699,7 @@ for(const rich of [false,true]) {
 {
  const E=env();E.context.MathfieldElement=function(){};E.context.customElements={get:()=>true};
  E.run(fs.readFileSync('assets/math-input.js','utf8'));
- const api=E.context.CourseMathInput,field=api.create({},'set');field.focus();
+ const api=E.context.CourseMathInput,field=api.create({},'set');E.document.appendChild(field);field.focus();
  for(const word of ['או','וגם','ולא','לא']) {
   let insertion;field.control.mode='text';field.control.insert=(latex,options)=>{insertion={latex,options};};
   api.insert(field,' '+word+' ');

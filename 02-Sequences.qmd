@@ -3041,6 +3041,10 @@ $$-M\le a_n\le M,$$
 
 :::
 
+::: {#box-warn-bounded-not-convergent .thmwarn title="טעות נפוצה — חסימות אינה מבטיחה התכנסות"}
+**איברי סדרה יכולים להישאר בין שני חסמים בלי להתקרב למספר אחד.** למשל, הסדרה $a_n=(-1)^n$ חסומה: $-1\le a_n\le1$ לכל $n\ge1$. עם זאת, איבריה מתחלפים בין $-1$ לבין $1$, ו[כפי שהראינו, היא אינה מתכנסת](#box-exm-alternating-diverges).
+:::
+
 :::: {.thmchk title="מה קורה כשהחסמים מתלכדים?"}
 
 ::::: fill
@@ -3104,7 +3108,7 @@ $a_n=$ [$M$]{.blank kind="expr" ans="M" vars="M"}
 כל סדרה מתכנסת היא חסומה.
 :::
 
-מאינדקס מסוים האיברים נשארים בתחום קטן סביב הגבול. לפניו יש רק מספר סופי של איברים, ואפשר להרחיב את התחום כך שיכלול גם אותם. עם זאת, חסימות לבדה אינה מבטיחה התכנסות: $(-1)^n$ נשארת בין $-1$ לבין $1$ ואינה מתכנסת.
+מאינדקס מסוים האיברים נשארים בתחום קטן סביב הגבול. לפניו יש רק מספר סופי של איברים, ואפשר להרחיב את התחום כך שיכלול גם אותם.
 
 למשל, בסדרה שבה $a_1=-3$, $a_2=5$ ו $a_n=\frac{1}{n}$ לכל $n\ge3$, הזנב קרוב לאפס. כדי לחסום את **כל** הסדרה כוללים גם את שני האיברים הראשונים: $-3\le a_n\le5$.
 
@@ -3126,7 +3130,7 @@ $$-1,2,-3,4,-5,6,\ldots$$
 :::
 :::::
 
-### חסימות בעזרת אי־שוויונות מוכרים {#sec-bounds-inequalities}
+### חסימות בעזרת אי־שוויונות מוכרים {#sec-bounds-inequalities .unnumbered}
 
 **המטרה: למצוא שני חסמים קבועים, שאינם תלויים ב $n$.** נתחיל מחסמי הסינוס והקוסינוס, נלמד לפעול עליהם, ואחר כך נשתמש בחסמי פונקציות נוספות ובאי־שוויונות אלגבריים.
 
@@ -3501,7 +3505,7 @@ $$0\le a_n\le1.$$
 ![](figures/ch02-bounds-logarithm.svg){fig-alt="איברי n כפול הלוגריתם הטבעי של אחת ועוד אחת חלקי n נשארים בין אפס לאחת." width="480" fig-align="center"}
 ::::
 
-### חסימות בעזרת אינדוקציה {#sec-bounds-induction}
+### חסימות בעזרת אינדוקציה {#sec-bounds-induction .unnumbered}
 
 באינדוקציה מתחילים באיבר הראשון ומראים שהטענה עוברת מכל איבר לאיבר הבא. כך מגיעים לכל האינדקסים הטבעיים. בסדרה רקורסיבית משתמשים לשם כך בכלל המעבר.
 
@@ -3539,15 +3543,185 @@ $$1\le\frac{a_n+2}{2}=a_{n+1}\le2.$$
 
 **בהנחה משתמשים רק באינדקס הנוכחי; את הטענה על כל האינדקסים מקבלים בסוף, מן הבסיס ומצעד האינדוקציה יחד.**
 
-תרגילים בנושא חסימות מופיעים [בסוף הפרק](#sec-sequence-bounds-exercises).
+### תרגילים {#sec-sequence-bounds-exercises .unnumbered}
 
-::: {#box-warn-monotone-not-convergent .thmwarn title="טעות נפוצה — מונוטוניות אינה מבטיחה התכנסות"}
-**גם סדרה שמתקדמת תמיד באותו כיוון עלולה לא להתכנס למספר ממשי.** למשל, $a_n=n$ עולה ממש, אך אינה חסומה מלעיל ולכן אינה מתכנסת למספר ממשי.
+#### שימוש באי־שוויונות מוכרים {.unnumbered}
 
-![](figures/ch02-unbounded-indices.svg){fig-alt="הסדרה a_n=n עולה בכל צעד, אבל אינה נעצרת מתחת לחסם מלעיל. עלייה לבדה אינה מבטיחה התכנסות למספר ממשי." width="440" fig-align="center"}
+::::: {#box-q-bounds-trig .thmqst title="בונים חסימות שלב אחר שלב"}
+בכל הסעיפים $n\ge1$.
 
-בהמשך נראה כיצד מונוטוניות **יחד עם חסם בצד המתאים** מבטיחות התכנסות.
+**(א)** נתונה $a_n=3-2\cos(n)$. התחילו מ[חסמי הקוסינוס](#box-known-sequence-inequalities) ומצאו חסמים לסדרה.
+
+:::: {.derive vars="n" positive="n" bound-rule="cos" start="-1<=cos(n)<=1"}
+::: {.step line="[2]>=-2*cos(n)>=[-2]" action="mul" value="-2"}
+כופלים ב $-2$ והופכים את שני הכיוונים.
 :::
+::: {.step line="[5]>=3-2*cos(n)>=[1]" action="add" value="3"}
+מוסיפים $3$ לכל האגפים. מתקבל $1\le a_n\le5$, ובפרט $|a_n|\le5$.
+:::
+::::
+
+**(ב)** נתונה $b_n=\sin(n)+\cos(n)$. השתמשו ב[אי־שוויון המשולש](01-Introduction.qmd#box-thm-abs-props).
+
+:::: fill
+$$|b_n|\le|\sin(n)|+|\cos(n)|.$$
+חסמו כל מחובר:
+
+::: {.eqline dir="ltr"}
+$|b_n|\le$ [$1$]{.blank ans="1"} $+$ [$1$]{.blank ans="1"} $=$ [$2$]{.blank ans="2"}
+:::
+
+::: explain
+לפי [חסמי הסינוס והקוסינוס](#box-known-sequence-inequalities), כל אחד מהערכים המוחלטים קטן מ $1$ או שווה לו. לכן $|b_n|\le2$, ומכאן $-2\le b_n\le2$. אין צורך לדעת את ערכם המדויק של הסינוס והקוסינוס.
+:::
+::::
+
+**(ג)** נתונה $c_n=2+\arcsin\left(\frac{1}{n+1}\right)$.
+
+:::: fill
+תחילה בודקים את הקלט. מאחר ש $n+1\ge2$, מתקיים
+
+::: {.eqline dir="ltr"}
+$0<\frac{1}{n+1}\le$ [$\frac{1}{2}$]{.blank ans="1/2"}
+:::
+
+הקלט ב $[-1,1]$. הוסיפו $2$ ל[חסמי $\arcsin$](#box-rule-inverse-trig-bounds):
+
+::: {.eqline dir="ltr"}
+[$2-\frac{\pi}{2}$]{.blank ans="2-pi/2" allow-expression="true"} $\le c_n\le$ [$2+\frac{\pi}{2}$]{.blank ans="2+pi/2" allow-expression="true"}
+:::
+
+::: explain
+מ[חסמי $\arcsin$](#box-rule-inverse-trig-bounds) מקבלים $-\frac{\pi}{2}\le\arcsin\left(\frac{1}{n+1}\right)\le\frac{\pi}{2}$. מוסיפים $2$ לכל האגפים ומקבלים את החסמים $2-\frac{\pi}{2}$ ו $2+\frac{\pi}{2}$. שניהם קבועים, ולכן הסדרה חסומה.
+:::
+::::
+:::::
+
+::::: {#box-q-bounds-inverse .thmqst title="תחום ההגדרה וטווח הערכים"}
+בכל הסעיפים $n\ge1$.
+
+**(א)** נתונה $a_n=\arccos\left(\frac{n-1}{n+1}\right)$.
+
+:::: fill
+כתבו את הקלט בצורה שתעזור לבדוק את תחומו:
+
+::: {.eqline dir="ltr"}
+$\frac{n-1}{n+1}=1-$ [$\frac{2}{n+1}$]{.blank kind="expr" ans="2/(n+1)" vars="n" positive="n" integer="n"}
+:::
+
+מאחר ש $0<\frac{2}{n+1}\le1$, הקלט ב $[0,1)$, ולכן גם ב $[-1,1]$. השתמשו ב[חסמי $\arccos$](#box-rule-inverse-trig-bounds):
+
+::: {.eqline dir="ltr"}
+[$0$]{.blank ans="0"} $\le a_n\le$ [$\pi$]{.blank ans="pi" allow-expression="true"}
+:::
+
+::: explain
+הכתיבה $\frac{n-1}{n+1}=1-\frac{2}{n+1}$ מראה שהקלט בתחום ההגדרה לכל $n\ge1$. לפי [חסמי $\arccos$](#box-rule-inverse-trig-bounds), $0\le a_n\le\pi$, ובפרט $|a_n|\le\pi$.
+:::
+::::
+
+**(ב)** נתונה $b_n=\arctan(n^2)-\frac{\pi}{2}$. כל $n^2$ הוא קלט מותר. חסרו $\frac{\pi}{2}$ מ[חסמי $\arctan$](#box-rule-inverse-trig-bounds).
+
+:::: fill
+::: {.eqline dir="ltr"}
+[$-\pi$]{.blank ans="-pi" allow-expression="true"} $< b_n <$ [$0$]{.blank ans="0"}
+:::
+
+מכאן אפשר לבחור בחסימה $|b_n|\le M$ את $M=$ [$\pi$]{.blank ans="pi" allow-expression="true"}.
+
+::: explain
+מתחילים מ[חסמי $\arctan$](#box-rule-inverse-trig-bounds): $-\frac{\pi}{2}<\arctan(n^2)<\frac{\pi}{2}$. לאחר החיסור מקבלים $-\pi<b_n<0$. לכן $|b_n|<\pi$, ובפרט החסימה החלשה $|b_n|\le\pi$ נכונה.
+:::
+::::
+:::::
+
+::::: {#box-q-bounds-algebra .thmqst title="ריבוע אי־שלילי ואי־שוויון הממוצעים בפעולה"}
+בכל הסעיפים $n\ge1$.
+
+**(א)** נחסום את $a_n=\frac{\sqrt n}{n+4}$ באמצעות [אי־שוויון הממוצעים](#box-rule-square-amgm).
+
+:::: fill
+כדי לקבל בממוצע החשבוני את $\frac{n+4}{2}$, נציב $u=n$ ו $v=$ [$4$]{.blank ans="4"}. שני המספרים חיוביים.
+
+בממוצע ההנדסי מתקבל
+
+::: {.eqline dir="ltr"}
+$\sqrt{uv}=\sqrt{4n}=$ [$2$]{.blank ans="2"} $\sqrt n$
+:::
+
+לכן $2\sqrt n\le\frac{n+4}{2}$. נכפול ב $2$ ונקבל
+
+::: {.eqline dir="ltr"}
+[$4$]{.blank ans="4"} $\sqrt n\le n+4$
+:::
+
+מחלקים ב $4(n+4)>0$. מאחר שגם המונה חיובי,
+
+::: {.eqline dir="ltr"}
+$0<a_n\le$ [$\frac{1}{4}$]{.blank ans="1/4"}
+:::
+
+::: explain
+מציבים $u=n$ ו $v=4$ ב[אי־שוויון הממוצעים](#box-rule-square-amgm) ומקבלים $2\sqrt n\le\frac{n+4}{2}$. מכאן $4\sqrt n\le n+4$, ולכן $0<\frac{\sqrt n}{n+4}\le\frac{1}{4}$. החסם קבוע, ולכן הסדרה חסומה.
+:::
+::::
+
+**(ב)** נחסום את $b_n=\frac{n}{n^2+1}$ באמצעות [ריבוע אי־שלילי](#box-rule-nonnegative-square): $(n-1)^2\ge0$.
+
+:::: fill
+נפתח את הריבוע:
+
+::: {.eqline dir="ltr"}
+$n^2-$ [$2$]{.blank ans="2"} $n+1\ge0$
+:::
+
+נעביר את האיבר האמצעי לאגף השני:
+
+::: {.eqline dir="ltr"}
+$n^2+1\ge$ [$2$]{.blank ans="2"} $n$
+:::
+
+נחלק ב $2(n^2+1)>0$. מאחר ש $n>0$, מתקבל
+
+::: {.eqline dir="ltr"}
+$0<b_n\le$ [$\frac{1}{2}$]{.blank ans="1/2"}
+:::
+
+::: explain
+מ[אי־שליליות הריבוע](#box-rule-nonnegative-square) מקבלים $n^2-2n+1\ge0$, ולכן $n^2+1\ge2n$. לאחר החלוקה מתקבל $\frac{1}{2}\ge\frac{n}{n^2+1}>0$. כך מצאנו חסם קבוע גם בלי לחשב גבול.
+:::
+::::
+:::::
+
+#### אינדוקציה {.unnumbered}
+
+::::: {#box-q-induction-bound .thmqst title="מתרגלים את הבסיס ואת המעבר"}
+נתונה הסדרה
+$$b_1=1,\qquad b_{n+1}=\frac{b_n+3}{2}.$$
+הראו בעזרת [אינדוקציה](#box-method-induction) ש $1\le b_n\le3$ לכל $n\ge1$.
+
+:::: fill
+**בסיס.** האיבר הראשון הוא $b_1=$ [$1$]{.blank ans="1"}, ולכן הוא בקטע $[1,3]$.
+
+**מעבר.** נניח ש $1\le b_n\le3$. לאחר חיבור $3$ לכל האגפים:
+
+::: {.eqline dir="ltr"}
+[$4$]{.blank ans="4"} $\le b_n+3\le$ [$6$]{.blank ans="6"}
+:::
+
+לאחר חלוקה ב $2>0$:
+
+::: {.eqline dir="ltr"}
+[$2$]{.blank ans="2"} $\le b_{n+1}\le$ [$3$]{.blank ans="3"}
+:::
+
+מכאן גם $1\le b_{n+1}\le3$. הבסיס והמעבר מוכיחים שהחסימה נכונה לכל האיברים.
+
+::: explain
+מתחילים מ $b_1=1\in[1,3]$. אם $1\le b_n\le3$, אז $4\le b_n+3\le6$, ולכן $2\le b_{n+1}\le3$. הקטע $[2,3]$ נמצא בתוך $[1,3]$, ולכן כלל המעבר משאיר את האיבר הבא בקטע המבוקש. לפי [שיטת האינדוקציה](#box-method-induction), כל איברי הסדרה ב $[1,3]$.
+:::
+::::
+:::::
 
 ## מונוטוניות {#sec-monotonicity}
 
@@ -3568,6 +3742,14 @@ $$a_n\ge a_{n+1}.$$
 למשל, $\frac1n$ יורדת ממש, ו $1-\frac1n$ עולה ממש: ככל ש $n$ גדל, מחסרים מ $1$ מספר חיובי קטן יותר. סדרה קבועה היא גם עולה וגם יורדת לפי ההגדרות האלה.
 
 ![](figures/ch02-monotone-directions.png){fig-alt="הסדרה אחת חלקי n יורדת, והסדרה אחת פחות אחת חלקי n עולה. כל נקודה מייצגת איבר; אין מחברים בין הנקודות." width="560" fig-align="center"}
+
+::: {#box-warn-monotone-not-convergent .thmwarn title="טעות נפוצה — מונוטוניות אינה מבטיחה התכנסות"}
+**גם סדרה שמתקדמת תמיד באותו כיוון עלולה לא להתכנס למספר ממשי.** למשל, $a_n=n$ עולה ממש, אך אינה חסומה מלעיל ולכן אינה מתכנסת למספר ממשי.
+
+![](figures/ch02-unbounded-indices.svg){fig-alt="הסדרה a_n=n עולה בכל צעד, אבל אינה נעצרת מתחת לחסם מלעיל. עלייה לבדה אינה מבטיחה התכנסות למספר ממשי." width="440" fig-align="center"}
+
+בהמשך נראה כיצד מונוטוניות **יחד עם חסם בצד המתאים** מבטיחות התכנסות.
+:::
 
 :::: {.thmchk}
 חמשת האיברים הראשונים עולים. האם די בכך כדי לקבוע שהסדרה עולה?
@@ -4972,185 +5154,3 @@ $$2^1,\quad2^{1.4},\quad2^{1.41},\quad2^{1.414},\ldots$$
 | צמוד | בחישוב הפרש שורשים משתמשים בסכום שלהם, ולהפך, כדי לקבל הפרש ריבועים. |
 | גבול אינסופי | האיברים עוברים כל גובה ונשארים מעליו, או יורדים מתחת לכל גובה ונשארים מתחתיו. |
 :::
-
-## תרגילים {#sec-sequence-exercises}
-
-### חסימות {#sec-sequence-bounds-exercises .unnumbered}
-
-#### שימוש באי־שוויונות מוכרים {.unnumbered}
-
-::::: {#box-q-bounds-trig .thmqst title="בונים חסימות שלב אחר שלב"}
-בכל הסעיפים $n\ge1$.
-
-**(א)** נתונה $a_n=3-2\cos(n)$. התחילו מ[חסמי הקוסינוס](#box-known-sequence-inequalities) ומצאו חסמים לסדרה.
-
-:::: {.derive vars="n" positive="n" bound-rule="cos" start="-1<=cos(n)<=1"}
-::: {.step line="[2]>=-2*cos(n)>=[-2]" action="mul" value="-2"}
-כופלים ב $-2$ והופכים את שני הכיוונים.
-:::
-::: {.step line="[5]>=3-2*cos(n)>=[1]" action="add" value="3"}
-מוסיפים $3$ לכל האגפים. מתקבל $1\le a_n\le5$, ובפרט $|a_n|\le5$.
-:::
-::::
-
-**(ב)** נתונה $b_n=\sin(n)+\cos(n)$. השתמשו ב[אי־שוויון המשולש](01-Introduction.qmd#box-thm-abs-props).
-
-:::: fill
-$$|b_n|\le|\sin(n)|+|\cos(n)|.$$
-חסמו כל מחובר:
-
-::: {.eqline dir="ltr"}
-$|b_n|\le$ [$1$]{.blank ans="1"} $+$ [$1$]{.blank ans="1"} $=$ [$2$]{.blank ans="2"}
-:::
-
-::: explain
-לפי [חסמי הסינוס והקוסינוס](#box-known-sequence-inequalities), כל אחד מהערכים המוחלטים קטן מ $1$ או שווה לו. לכן $|b_n|\le2$, ומכאן $-2\le b_n\le2$. אין צורך לדעת את ערכם המדויק של הסינוס והקוסינוס.
-:::
-::::
-
-**(ג)** נתונה $c_n=2+\arcsin\left(\frac{1}{n+1}\right)$.
-
-:::: fill
-תחילה בודקים את הקלט. מאחר ש $n+1\ge2$, מתקיים
-
-::: {.eqline dir="ltr"}
-$0<\frac{1}{n+1}\le$ [$\frac{1}{2}$]{.blank ans="1/2"}
-:::
-
-הקלט ב $[-1,1]$. הוסיפו $2$ ל[חסמי $\arcsin$](#box-rule-inverse-trig-bounds):
-
-::: {.eqline dir="ltr"}
-[$2-\frac{\pi}{2}$]{.blank ans="2-pi/2" allow-expression="true"} $\le c_n\le$ [$2+\frac{\pi}{2}$]{.blank ans="2+pi/2" allow-expression="true"}
-:::
-
-::: explain
-מ[חסמי $\arcsin$](#box-rule-inverse-trig-bounds) מקבלים $-\frac{\pi}{2}\le\arcsin\left(\frac{1}{n+1}\right)\le\frac{\pi}{2}$. מוסיפים $2$ לכל האגפים ומקבלים את החסמים $2-\frac{\pi}{2}$ ו $2+\frac{\pi}{2}$. שניהם קבועים, ולכן הסדרה חסומה.
-:::
-::::
-:::::
-
-::::: {#box-q-bounds-inverse .thmqst title="תחום ההגדרה וטווח הערכים"}
-בכל הסעיפים $n\ge1$.
-
-**(א)** נתונה $a_n=\arccos\left(\frac{n-1}{n+1}\right)$.
-
-:::: fill
-כתבו את הקלט בצורה שתעזור לבדוק את תחומו:
-
-::: {.eqline dir="ltr"}
-$\frac{n-1}{n+1}=1-$ [$\frac{2}{n+1}$]{.blank kind="expr" ans="2/(n+1)" vars="n" positive="n" integer="n"}
-:::
-
-מאחר ש $0<\frac{2}{n+1}\le1$, הקלט ב $[0,1)$, ולכן גם ב $[-1,1]$. השתמשו ב[חסמי $\arccos$](#box-rule-inverse-trig-bounds):
-
-::: {.eqline dir="ltr"}
-[$0$]{.blank ans="0"} $\le a_n\le$ [$\pi$]{.blank ans="pi" allow-expression="true"}
-:::
-
-::: explain
-הכתיבה $\frac{n-1}{n+1}=1-\frac{2}{n+1}$ מראה שהקלט בתחום ההגדרה לכל $n\ge1$. לפי [חסמי $\arccos$](#box-rule-inverse-trig-bounds), $0\le a_n\le\pi$, ובפרט $|a_n|\le\pi$.
-:::
-::::
-
-**(ב)** נתונה $b_n=\arctan(n^2)-\frac{\pi}{2}$. כל $n^2$ הוא קלט מותר. חסרו $\frac{\pi}{2}$ מ[חסמי $\arctan$](#box-rule-inverse-trig-bounds).
-
-:::: fill
-::: {.eqline dir="ltr"}
-[$-\pi$]{.blank ans="-pi" allow-expression="true"} $< b_n <$ [$0$]{.blank ans="0"}
-:::
-
-מכאן אפשר לבחור בחסימה $|b_n|\le M$ את $M=$ [$\pi$]{.blank ans="pi" allow-expression="true"}.
-
-::: explain
-מתחילים מ[חסמי $\arctan$](#box-rule-inverse-trig-bounds): $-\frac{\pi}{2}<\arctan(n^2)<\frac{\pi}{2}$. לאחר החיסור מקבלים $-\pi<b_n<0$. לכן $|b_n|<\pi$, ובפרט החסימה החלשה $|b_n|\le\pi$ נכונה.
-:::
-::::
-:::::
-
-::::: {#box-q-bounds-algebra .thmqst title="ריבוע אי־שלילי ואי־שוויון הממוצעים בפעולה"}
-בכל הסעיפים $n\ge1$.
-
-**(א)** נחסום את $a_n=\frac{\sqrt n}{n+4}$ באמצעות [אי־שוויון הממוצעים](#box-rule-square-amgm).
-
-:::: fill
-כדי לקבל בממוצע החשבוני את $\frac{n+4}{2}$, נציב $u=n$ ו $v=$ [$4$]{.blank ans="4"}. שני המספרים חיוביים.
-
-בממוצע ההנדסי מתקבל
-
-::: {.eqline dir="ltr"}
-$\sqrt{uv}=\sqrt{4n}=$ [$2$]{.blank ans="2"} $\sqrt n$
-:::
-
-לכן $2\sqrt n\le\frac{n+4}{2}$. נכפול ב $2$ ונקבל
-
-::: {.eqline dir="ltr"}
-[$4$]{.blank ans="4"} $\sqrt n\le n+4$
-:::
-
-מחלקים ב $4(n+4)>0$. מאחר שגם המונה חיובי,
-
-::: {.eqline dir="ltr"}
-$0<a_n\le$ [$\frac{1}{4}$]{.blank ans="1/4"}
-:::
-
-::: explain
-מציבים $u=n$ ו $v=4$ ב[אי־שוויון הממוצעים](#box-rule-square-amgm) ומקבלים $2\sqrt n\le\frac{n+4}{2}$. מכאן $4\sqrt n\le n+4$, ולכן $0<\frac{\sqrt n}{n+4}\le\frac{1}{4}$. החסם קבוע, ולכן הסדרה חסומה.
-:::
-::::
-
-**(ב)** נחסום את $b_n=\frac{n}{n^2+1}$ באמצעות [ריבוע אי־שלילי](#box-rule-nonnegative-square): $(n-1)^2\ge0$.
-
-:::: fill
-נפתח את הריבוע:
-
-::: {.eqline dir="ltr"}
-$n^2-$ [$2$]{.blank ans="2"} $n+1\ge0$
-:::
-
-נעביר את האיבר האמצעי לאגף השני:
-
-::: {.eqline dir="ltr"}
-$n^2+1\ge$ [$2$]{.blank ans="2"} $n$
-:::
-
-נחלק ב $2(n^2+1)>0$. מאחר ש $n>0$, מתקבל
-
-::: {.eqline dir="ltr"}
-$0<b_n\le$ [$\frac{1}{2}$]{.blank ans="1/2"}
-:::
-
-::: explain
-מ[אי־שליליות הריבוע](#box-rule-nonnegative-square) מקבלים $n^2-2n+1\ge0$, ולכן $n^2+1\ge2n$. לאחר החלוקה מתקבל $\frac{1}{2}\ge\frac{n}{n^2+1}>0$. כך מצאנו חסם קבוע גם בלי לחשב גבול.
-:::
-::::
-:::::
-
-#### אינדוקציה {.unnumbered}
-
-::::: {#box-q-induction-bound .thmqst title="מתרגלים את הבסיס ואת המעבר"}
-נתונה הסדרה
-$$b_1=1,\qquad b_{n+1}=\frac{b_n+3}{2}.$$
-הראו בעזרת [אינדוקציה](#box-method-induction) ש $1\le b_n\le3$ לכל $n\ge1$.
-
-:::: fill
-**בסיס.** האיבר הראשון הוא $b_1=$ [$1$]{.blank ans="1"}, ולכן הוא בקטע $[1,3]$.
-
-**מעבר.** נניח ש $1\le b_n\le3$. לאחר חיבור $3$ לכל האגפים:
-
-::: {.eqline dir="ltr"}
-[$4$]{.blank ans="4"} $\le b_n+3\le$ [$6$]{.blank ans="6"}
-:::
-
-לאחר חלוקה ב $2>0$:
-
-::: {.eqline dir="ltr"}
-[$2$]{.blank ans="2"} $\le b_{n+1}\le$ [$3$]{.blank ans="3"}
-:::
-
-מכאן גם $1\le b_{n+1}\le3$. הבסיס והמעבר מוכיחים שהחסימה נכונה לכל האיברים.
-
-::: explain
-מתחילים מ $b_1=1\in[1,3]$. אם $1\le b_n\le3$, אז $4\le b_n+3\le6$, ולכן $2\le b_{n+1}\le3$. הקטע $[2,3]$ נמצא בתוך $[1,3]$, ולכן כלל המעבר משאיר את האיבר הבא בקטע המבוקש. לפי [שיטת האינדוקציה](#box-method-induction), כל איברי הסדרה ב $[1,3]$.
-:::
-::::
-:::::

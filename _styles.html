@@ -460,11 +460,22 @@ span.blank:not(.blank-ready) { text-decoration: underline; text-underline-offset
 .mi-control > input, .mi-control > math-field { width: 100%; min-width: 0; border: 0; padding: 0; margin: 0; background: transparent; color: inherit; font: inherit; text-align: inherit; }
 .mi-control > input:focus { outline: none; }
 .mi-control > math-field { min-height: 2.4rem; font-size: 1.12em; --caret-color: #4f46e5; --selection-background-color: #e0e7ff; --placeholder-color: #64748b; --contains-highlight-background-color: #eef2ff; }
+.mi-control > math-field[hidden] { display: none !important; }
 .mi-control:focus-within { border-color: #4f46e5; outline: 3px solid #fbbf24; outline-offset: 2px; }
 .mi-control[aria-invalid="true"] { border-color: #b91c1c; }
 math-field::part(menu-toggle) { display: none; }
-math-field::part(virtual-keyboard-toggle) { color: #64748b; }
+math-field::part(virtual-keyboard-toggle) { display: none; }
+.mi-control > .mi-keyboard-button { display: none; }
 .pw .mi-control.pw-input { width: 100%; min-width: 0; }
+@media (any-pointer: coarse) {
+  /* The field and its keyboard button have separate borders and tap targets. */
+  .mi-control.mi-with-keyboard { gap: .35rem; padding: 0; border-style: none; background: transparent; min-width: min(100%, 7rem); box-sizing: border-box; }
+  .mi-control.mi-with-keyboard:focus-within { outline: none; }
+  .mi-control.mi-with-keyboard > math-field { flex: 1 1 0; width: 0; padding: .1rem .35rem; border: 1px solid; border-color: inherit; border-radius: 6px; background: #fff; box-sizing: border-box; }
+  .mi-control.mi-with-keyboard > math-field:focus-within { outline: 3px solid #fbbf24; outline-offset: 2px; }
+  .mi-control.mi-with-keyboard > .mi-keyboard-button { display: inline-flex; flex: 0 0 44px; align-items: center; justify-content: center; width: 44px; height: 44px; min-height: 44px; margin: 0; padding: 0; border: 1px solid #94a3b8; border-radius: 6px; background: #f8fafc; color: #334155; font-size: 1.35rem; cursor: pointer; touch-action: manipulation; }
+  .mi-control.mi-with-keyboard > .mi-keyboard-button:focus-visible { outline: 3px solid #fbbf24; outline-offset: 2px; }
+}
 .set-plot { margin: .3rem 0 .45rem; padding: .2rem .45rem; border-inline-start: 2px solid #cbd5e1; }
 .sp-practice > summary { cursor: pointer; color: #475569; }
 .set-plot.sp-answer { border: 0; padding: 0; }
