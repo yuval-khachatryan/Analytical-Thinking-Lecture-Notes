@@ -14,7 +14,7 @@ button{font:inherit;border:1px solid #94a3b8;border-radius:6px;padding:.2rem .45
 svg{display:block;width:100%;height:220px}p{margin:.35rem 0 0}.tail-line{color:#4338ca}.caption{font-size:.85rem;color:#475569}
 </style>
 <div class="w">
-  <div class="heading">מתחילים בסדרה <span class="m"><i>a</i><sub><i>n</i></sub> = <span class="fr"><span>1</span><span><i>n</i></span></span></span></div>
+  <div class="heading">מתחילים בסדרה <span class="m"><i>a</i><sub><i>n</i></sub> = <span class="fr"><span>1</span><span><i>n</i></span></span></span>, שגבולה <span class="m">0</span></div>
   <svg id="plot" viewBox="0 0 760 220" role="img" aria-label="איברי הסדרה והזנב שנבחר"></svg>
   <div class="controls">
     <label for="start">האינדקס הראשון בזנב <span class="m">N</span><input id="start" type="range" min="1" max="9" step="1" value="5"></label>
@@ -42,7 +42,7 @@ svg{display:block;width:100%;height:220px}p{margin:.35rem 0 0}.tail-line{color:#
   function label(text,x,y,color,anchor){return svg('text',{x:x,y:y,fill:color||'#475569','text-anchor':anchor||'middle','font-family':'Arial, sans-serif','font-size':12,direction:'ltr'},text);}
   function term(n){return values[n-1]===1/n?[1,n]:changed[n-1];}
   function fraction(n){var q=term(n);return q[1]===1?String(q[0]):'<span class="fr"><span>'+q[0]+'</span><span>'+q[1]+'</span></span>';}
-  function plain(n){var q=term(n);return q[1]===1?String(q[0]):q[0]+'/'+q[1];}
+  function plain(n){var q=term(n);return q[1]===1?String(q[0]):q[0]+' חלקי '+q[1];}
   function draw(message){
     var N=Number(slider.value),width=Math.max(320,plot.getBoundingClientRect().width||760),left=40,right=30,top=23,bottom=183;
     function X(n){return left+(n-.5)*(width-left-right)/12;}
@@ -63,7 +63,14 @@ svg{display:block;width:100%;height:220px}p{margin:.35rem 0 0}.tail-line{color:#
       var point=svg('circle',{cx:X(n),cy:Y(value),r:n===N?5:3.8,fill:tail?blue:grey,opacity:tail?1:.65,'data-index':n,'data-tail':String(tail),'data-value':value});
       var title=document.createElementNS('http://www.w3.org/2000/svg','title');title.textContent='a'+n+' = '+plain(n);point.appendChild(title);
     }
-    label('a'+N+' = '+plain(N),X(N)+8,Y(values[N-1])-13,blue,'start');
+    var q=term(N),lx=X(N)+8,ly=Y(values[N-1])-13;
+    label('a'+N+' =',lx,ly,blue,'start');
+    if(q[1]===1)label(String(q[0]),lx+42,ly,blue);
+    else{
+      label(String(q[0]),lx+42,ly-6,blue);
+      svg('line',{x1:lx+32,x2:lx+52,y1:ly-3,y2:ly-3,stroke:blue});
+      label(String(q[1]),lx+42,ly+9,blue);
+    }
     label('…',width-right+8,Y(1/13)+4,blue);
     document.getElementById('index').textContent='N = '+N;
     document.getElementById('tail-terms').innerHTML=[N,N+1,N+2].map(function(n){return '<i>a</i><sub>'+n+'</sub>';}).join(', ')+', … = '+[N,N+1,N+2].map(fraction).join(', ')+', …';

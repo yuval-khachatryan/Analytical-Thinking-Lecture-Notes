@@ -25,18 +25,17 @@ for(const N of [0,-1,1.5,Infinity,10000001])assert.equal(A.tail('reciprocal',0,[
 
 const smoke=fs.readFileSync('tests/interaction-smoke.test.js','utf8');
 const {env,node,input,button}=new Function('require',smoke.slice(0,smoke.indexOf('// A stalled/failed'))+';return {env,node,input,button};')(require);
-// Execute actual handlers with a mocked SVG DOM; this is not a layout test.
+// Execute the automatic-cutoff handler; this is not a layout test.
 {
- const E=env();
- const svg=node(E.document,'svg',{id:'plot'}),eps=node(E.document,'select',{id:'epsilon'}),tail=node(E.document,'input',{id:'index',value:'10'});
- for(const id of ['formula','read','caption','point-values'])node(E.document,'p',{id});
- const check=node(E.document,'button',{id:'check'}),suggest=node(E.document,'button',{id:'suggest'});
+ const E=env();E.context.addEventListener=()=>{};
+ const svg=node(E.document,'svg',{id:'plot'}),eps=node(E.document,'select',{id:'epsilon'});
+ for(const id of ['formula','read','caption','cutoff-value'])node(E.document,'p',{id});
  E.run(fs.readFileSync('widgets/ch02/limit-activities.js','utf8'));
  E.run(fs.readFileSync('widgets/ch02/error-band.html','utf8').match(/<script>\s*([\s\S]*?)<\/script>/)[1]);
- check.click();assert.match(E.document.getElementById('read').className,/bad/);
- tail.value='11';check.click();assert.match(E.document.getElementById('read').className,/good/);
- eps.value='1/1000';eps.dispatchEvent({type:'change'});check.click();assert.match(E.document.getElementById('read').className,/bad/);
- suggest.click();assert.equal(tail.value,'1001');assert.match(E.document.getElementById('read').className,/good/);
+ assert.equal(E.document.getElementById('cutoff-value').textContent,'11');
+ eps.value='1/1000';eps.dispatchEvent({type:'change'});
+ assert.equal(E.document.getElementById('cutoff-value').textContent,'1001');
+ assert.ok(E.document.getElementById('read').innerHTML.includes('n ≥ 1001'));
  assert.ok(svg.querySelectorAll('title').length<=12,'compact window keeps exact labels');
 }
 for(const rich of [false,true]){

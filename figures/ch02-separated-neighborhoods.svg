@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 100" role="img" aria-labelledby="title">
+  <title id="title">שתי סביבות פתוחות נפרדות על ישר המספרים</title>
+  <path d="M25 50H575" fill="none" stroke="#8996a8" stroke-width="1.5"/>
+  <path d="M85 50H225M365 50H505" fill="none" stroke="#9376bd" stroke-width="8" stroke-opacity=".4"/>
+  <g fill="white" stroke="#7351ba" stroke-width="2">
+    <circle cx="85" cy="50" r="5"/>
+    <circle cx="225" cy="50" r="5"/>
+    <circle cx="365" cy="50" r="5"/>
+    <circle cx="505" cy="50" r="5"/>
+  </g>
+  <g fill="#7351ba">
+    <circle cx="155" cy="50" r="4"/>
+    <circle cx="435" cy="50" r="4"/>
+  </g>
+</svg>

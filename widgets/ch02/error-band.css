@@ -1,0 +1,10 @@
+.error-band{max-width:850px;margin:auto;padding:1rem;box-sizing:border-box}
+.error-band .formula-line{text-align:center;margin:0 0 .65rem}
+.error-band .formula-line .m{font-size:1.35rem}
+.error-band .controls{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:.7rem 1rem}
+.error-band .cutoff{direction:ltr;unicode-bidi:isolate}
+.error-band math{font-size:1.25rem;direction:ltr;unicode-bidi:isolate}
+.error-band .plot-guide,.error-band .caption{font-size:.9rem}
+.error-band .read{padding:.65rem;line-height:1.6}
+.error-band .calculation{text-align:center;margin:.45rem 0;font-size:1.15rem}
+@media(max-width:520px){.error-band{padding:.7rem}.error-band .calculation .m{font-size:1rem}}

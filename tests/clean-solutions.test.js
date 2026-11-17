@@ -32,4 +32,13 @@ const attrs=s=>Object.fromEntries([...s.matchAll(/([\w-]+)="([^"]*)"/g)].map(m=>
  E.run(source);E.document.dispatchEvent({type:'DOMContentLoaded'});button(d,'פתרון לדוגמה').click();
  const clean=d.querySelector('.as-clean-text');assert.match(clean.textContent,/\\\(3\\\)/);assert.doesNotMatch(clean.textContent,/בחרו|←|\$3\$/);
 }
+// Named results remain expandable references in the clean prose alternative.
+{
+ const E=env(),d=node(E.document,'div',{class:'derive',start:'lim(3)',limit:'n'});
+ node(d,'div',{class:'step',line:'3',action:'standard',clean:'לפי [גבולות מוכרים](#box-thm-standard), הגבול הוא $3$.'});
+ E.run(source);E.document.dispatchEvent({type:'DOMContentLoaded'});button(d,'פתרון לדוגמה').click();
+ const html=d.querySelector('.as-clean-text').querySelectorAll('.as-clean-reason').map(n=>n.innerHTML).join('');
+ assert.match(html,/<a href="#box-thm-standard" target="_blank" rel="noopener">גבולות מוכרים<\/a>/);
+ assert.doesNotMatch(html,/\[גבולות מוכרים\]/);
+}
 console.log('Clean solutions: rendered formulas, authored prose, case conditions, merge explanations and one explanation per expanded transition passed.');

@@ -113,7 +113,7 @@ def fig_squeeze():
     points(ax, n, 1 / n, GREY, 4); points(ax, n, -1 / n, GREY, 4); points(ax, n, a, C4, 6)
     ax.text(3.2, 0.42, r"$\frac{1}{n}$", color=INK, fontsize=15)
     ax.text(3.2, -0.5, r"$-\frac{1}{n}$", color=INK, fontsize=15)
-    ax.text(9.5, 0.2, r"$\frac{\sin n}{n}$", color=C4, fontsize=15)
+    ax.text(9.5, 0.2, r"$\frac{\sin(n)}{n}$", color=C4, fontsize=15)
     save(fig, "ch02-squeeze")
 
 

@@ -12,6 +12,8 @@ the styling classes (.thmbox / .thmbox-<type>, defined in _styles.html for HTML)
 The chapter number is read from the input filename NN-slug.qmd.
 
 Extensions:
+  * .thmsolved — worked question (שאלה פתורה): an example with a solution
+                assistant or substantial guided work. Shares the same counter.
   * .thmsim   — interactive simulation. Numbered on the SAME running counter as
                 everything else, which is why the box must exist in both formats:
                 if it appeared only in HTML, every box after it in the section
@@ -77,6 +79,7 @@ local BOX = {
   thmthm = { word = "משפט",  css = "theorem"     },
   thmprp = { word = "טענה",  css = "proposition" },
   thmexm = { word = "דוגמה", css = "example"     },
+  thmsolved = { word = "שאלה פתורה", css = "worked-question" },
   thmqst = { word = "תרגיל",  css = "question"   },
   thmsim = { word = "סימולציה", css = "simulation" },
   thmlem = { word = "למה",   css = "lemma"       },

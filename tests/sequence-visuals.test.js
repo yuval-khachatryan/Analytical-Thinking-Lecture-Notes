@@ -2,33 +2,48 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
 const A=require('../widgets/ch02/limit-activities.js'),microscope=require('../widgets/ch02/microscope.js');
 const smoke=fs.readFileSync('tests/interaction-smoke.test.js','utf8');
 const {env,node}=new Function('require',smoke.slice(0,smoke.indexOf('// A stalled/failed'))+';return {env,node};')(require);
-// Epsilon computes a safe cutoff; students may still type and test any index.
+// Epsilon alone controls the cutoff; both sequence views update every displayed result.
 for(const kind of ['reciprocal','alternating-decay']){
  const E=env();E.context.location.search='?case='+kind;
+ const resize=[];E.context.addEventListener=(event,fn)=>{if(event==='resize')resize.push(fn);};
  const $=id=>E.document.getElementById(id);
  node(E.document,'svg',{id:'plot'});node(E.document,'select',{id:'epsilon'});
- node(E.document,'input',{id:'index',value:'11'});node(E.document,'button',{id:'check'});
- for(const id of ['formula','cutoff-value','point-values','read','caption'])node(E.document,'p',{id});
+ node(E.document,'div',{id:'epsilon-options'});
+ for(const id of ['formula','cutoff-value','read','caption'])node(E.document,'p',{id});
  E.run(fs.readFileSync('widgets/ch02/limit-activities.js','utf8'));
  E.run(fs.readFileSync('widgets/ch02/error-band.html','utf8').match(/<script>\s*([\s\S]*?)<\/script>/)[1]);
- assert.equal($('index').value,'11');assert.equal($('cutoff-value').textContent,'11');
- $('index').value='10';$('index').dispatchEvent({type:'input'});$('check').click();
- assert.equal($('index').value,'10');assert.ok($('read').classList.contains('bad'));
- assert.equal($('cutoff-value').textContent,'11','computed cutoff is separate from the editable index');
- $('index').value='20';$('index').dispatchEvent({type:'input'});$('index').dispatchEvent({type:'keydown',key:'Enter'});
- assert.ok($('read').classList.contains('good'),'larger cutoffs remain valid');
- for(const e of A.choices.slice(3)){
-  $('epsilon').value=e.join('/');$('epsilon').dispatchEvent({type:'change'});
-  const expected=String(Math.floor(e[1]/e[0])+1);
-  assert.equal($('index').value,expected);assert.equal($('cutoff-value').textContent,expected);
-  assert.equal($('read').classList.contains('good'),false,'an epsilon change clears earlier check feedback');
-  $('check').click();assert.ok($('read').classList.contains('good'));
+ assert.equal($('cutoff-value').textContent,'11');
+ const fractions=$('epsilon-options').querySelectorAll('[role="option"]');
+ const menu=$('epsilon-options').querySelector('[role="listbox"]'),trigger=$('epsilon-options').querySelector('[role="combobox"]');
+ assert.equal(menu.hidden,true);trigger.click();assert.equal(menu.hidden,false);
+ assert.equal(fractions.length,A.choices.slice(3).length);
+ assert.equal($('epsilon').hidden,true);
+ assert.equal(fractions.filter(b=>b.innerHTML.includes('class="fr"')).length,fractions.length-1);
+ for(const width of [320,480,720]){
+  $('plot').getBoundingClientRect=()=>({width});
+  for(const e of A.choices.slice(3)){
+   fractions.find(b=>b.getAttribute('data-value')===e.join('/')).click();
+   const expected=Math.floor(e[1]/e[0])+1;
+   assert.equal($('cutoff-value').textContent,String(expected));
+   assert.equal(fractions.find(b=>b.getAttribute('aria-selected')==='true').getAttribute('data-value'),e.join('/'));
+   assert.equal(A.tail(kind,0,e,expected).ok,true,'automatic cutoff works for the entire tail');
+   assert.equal(A.tail(kind,0,e,expected-1).ok,false,'strict boundary requires the next natural index');
+   assert.ok($('read').innerHTML.includes('n ≥ '+expected));
+   const points=$('plot').querySelectorAll('circle');
+   assert.equal(points.find(p=>p.getAttribute('data-index')===String(expected-1)).getAttribute('opacity'),'0.3');
+   assert.equal(points.find(p=>p.getAttribute('data-index')===String(expected)).getAttribute('stroke-width'),'2');
+   for(const point of points){
+    assert.ok(+point.getAttribute('cx')>0&&+point.getAttribute('cx')<width);
+    assert.ok(+point.getAttribute('cy')>22&&+point.getAttribute('cy')<213);
+    if(+point.getAttribute('data-index')>=expected)assert.equal(point.getAttribute('fill'),'#305bc2');
+   }
+  }
  }
- for(const value of ['','0','1.5','-1','10000001']){
-  $('index').value=value;$('index').dispatchEvent({type:'input'});$('check').click();
-  assert.equal($('index').value,value,'typing is never clamped or overwritten');
-  assert.match($('read').textContent,/כתבו אינדקס טבעי/);
- }
+ trigger.dispatchEvent({type:'keydown',key:'ArrowDown'});
+ fractions[0].dispatchEvent({type:'keydown',key:'End'});fractions.at(-1).click();
+ assert.equal(menu.hidden,true);assert.equal(trigger.getAttribute('aria-expanded'),'false');
+ assert.equal($('epsilon').value,'1/100000');assert.equal($('cutoff-value').textContent,'100001');
+ resize.forEach(fn=>fn());assert.equal($('cutoff-value').textContent,'100001');
 }
 // Every selected term stays on screen; shrinking epsilon changes neither N nor values.
 for(const [kind,L] of [['reciprocal',0],['alternating-decay',0],['alternating',0],['alternating',1],['constant',3]]){
@@ -68,6 +83,8 @@ assert.equal(microscope.maxZoom,2);
 for(let n=1;n<=9;n++)assert.ok(Math.abs(microscope.error(n)-(Math.PI-Number(microscope.decimal(n))))<1e-15);
 {
  const E=env();E.context.addEventListener=()=>{};const svg=node(E.document,'svg',{id:'plot'}),epsilon=node(E.document,'select',{id:'epsilon',value:'0.001'});
+ node(E.document,'div',{id:'epsilon-options'});
+ for(const [value,label] of [['0.01','1/100'],['0.001','1/1000'],['0.0001','1/10000']])node(epsilon,'option',{value},label);
  const up=node(E.document,'button',{id:'zoom-in'}),down=node(E.document,'button',{id:'zoom-out'});
  for(const id of ['terms','scale','read','outside'])node(E.document,'p',{id});
  E.run(fs.readFileSync('widgets/ch02/limit-activities.js','utf8'));E.run(fs.readFileSync('widgets/ch02/microscope.js','utf8'));
@@ -82,14 +99,21 @@ for(let n=1;n<=9;n++)assert.ok(Math.abs(microscope.error(n)-(Math.PI-Number(micr
  assert.ok(svg.querySelector('[data-index="5"]'));
  assert.match(E.document.getElementById('read').textContent,/a₄.*a₅.*π/);
  const oldXs=microscope.view(0).terms.map(t=>t.x);
- epsilon.value='0.0001';epsilon.dispatchEvent({type:'change'});labels();
+ E.document.getElementById('epsilon-options').querySelectorAll('button').find(b=>b.getAttribute('data-value')==='0.0001').click();labels();
+ assert.equal(epsilon.hidden,true);assert.equal(epsilon.value,'0.0001');
  assert.equal(svg.getAttribute('data-zoom'),'0');assert.deepEqual(microscope.view(0,.0001).terms.map(t=>t.x),oldXs);
  assert.ok(microscope.view(0,.0001).terms.filter(t=>t.inside).every(t=>t.state==='merged'));
+ assert.match(E.document.getElementById('read').innerHTML,/a₅ = 3\.1415/,'membership explanation identifies the first enclosed value');
+ assert.match(E.document.getElementById('read').innerHTML,/a₄ = 3\.141<\/bdi> נמצא מחוץ לקטע הסגול/,'visual merging does not imply interval membership');
  for(let z=1;z<=microscope.maxZoom;z++){
   up.click();labels();assert.equal(svg.getAttribute('data-epsilon'),'0.0001');assert.equal(svg.getAttribute('data-zoom'),String(z));
  }
  assert.equal(up.disabled,true);assert.equal(svg.getAttribute('data-merged-from'),'6');
  assert.ok(microscope.view(2,.0001).terms.some(t=>t.inside&&t.state==='distinct'),'microscope separates points without changing epsilon');
+ assert.match(E.document.getElementById('read').innerHTML,/a₅ = 3\.1415<\/bdi> נמצא בתוך הקטע הסגול/);
+ assert.match(E.document.getElementById('read').innerHTML,/a₆ = 3\.14159/);
+ assert.match(E.document.getElementById('read').innerHTML,/a₇ = 3\.141592/);
+ assert.match(E.document.getElementById('read').innerHTML,/עדיין רואים את הנקודה שלו בנפרד/,'the two cutoffs are explained through a visible counterexample');
  assert.match(E.document.getElementById('outside').textContent,/משמאל/);
  epsilon.value='0.01';epsilon.dispatchEvent({type:'change'});labels();
  assert.equal(svg.getAttribute('data-zoom'),'2');
@@ -114,6 +138,8 @@ for(const kind of ['even','odd','third']){
  function checkPoints(){for(const p of svg.querySelectorAll('circle')){
   const n=Number(p.getAttribute('data-original-index'));
   assert.equal(Number(p.getAttribute('data-value')),1/n);
+  const selected=svg.getAttribute('data-axis')==='k'||terms.some(t=>t.n===n);
+  assert.equal(p.getAttribute('fill'),selected?'#7949b8':'#3d77b7','purple marks selected terms; blue marks only unselected terms');
   assert.ok(Number(p.getAttribute('cy'))>22&&Number(p.getAttribute('cy'))<190,'all terms, including a_1=1, stay in view');
   assert.ok(p.querySelector('title').textContent.endsWith(' = 1/'+n));
  }}

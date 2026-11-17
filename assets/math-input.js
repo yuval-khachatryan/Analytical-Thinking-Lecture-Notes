@@ -44,6 +44,7 @@
       if(m==="to"||m==="rightarrow")return "->";
       if(m==="lim"){
         space();var index="n";
+        var placement=/^\\(?:limits|nolimits)(?![a-zA-Z])/.exec(s.slice(at));if(placement){at+=placement[0].length;space();}
         if(s[at]==="_"){at++;var bound=argument().replace(/\s/g,"");var match=/^([a-z])->inf$/.exec(bound);if(!match)throw new Error("כאן מחשבים גבול כשהאינדקס שואף לאינסוף.");index=match[1];}
         space();var body=s[at]==="("?group("(",")"):argument();
         return "lim("+(index!=="n"?index+",":"")+body+")";
@@ -107,7 +108,7 @@
     return String(source||"").replace(/\\class\{course-logic\}\{\\text\{\s*(וגם|ולא|או|לא)\s*\}\}|\\text\{\s*(וגם|ולא|או|לא)\s*\}/g,function(_,wrapped,plain){return logicalLatex(wrapped||plain);});
   }
   var templates = {
-    "lim()":"\\lim_{n\\to\\infty}\\left(#0\\right)",
+    "lim()":"\\lim\\limits_{n\\to\\infty}\\left(#0\\right)",
     "_":"#@_{#?}",
     "_n":"#@_{n}",
     "{x|}":"\\left\\{x\\mid #0\\right\\}",
@@ -134,7 +135,11 @@
       libraryBase=libraryBases[index];
       var script = document.createElement("script");script.async=true;
       script.src=libraryBase+"mathlive.min.js";
-      script.addEventListener("load",function(){if(activeReady)activeReady();});
+      script.addEventListener("load",function(){
+        if(activeReady)activeReady();
+        // The script can finish before the custom element is registered.
+        if(root.customElements&&root.customElements.whenDefined)root.customElements.whenDefined("math-field").then(function(){if(activeReady)activeReady();});
+      });
       script.addEventListener("error",function(){
         script.remove();
         // One bounded fallback; failed downloads never block exercise initialization.
@@ -166,8 +171,18 @@
     input.menuItems = [];
     input.inlineShortcuts = Object.assign({}, input.inlineShortcuts, {
       inf:"\\infty", infinity:"\\infty", sqrt:"\\sqrt{#0}", cbrt:"\\sqrt[3]{#0}", pi:"\\pi", eps:"\\varepsilon", epsilon:"\\varepsilon",
+      lim:templates["lim()"], "->":"\\to",
       "או":templates[" או "], "וגם":templates[" וגם "], "ולא":templates[" ולא "], "לא":templates[" לא "]
     });
+    // Use the typed character, rather than a US keyboard's physical key.
+    // MathLive's implicit argument (#@) preserves the preceding term/selection.
+    input.addEventListener("keydown",function(e){
+      if(e.isComposing||e.ctrlKey||e.metaKey||e.altKey||input.mode&&input.mode!=="math")return;
+      var key=e.key==="√"?"sqrt()":e.key;
+      if(["/","^","_","sqrt()"].indexOf(key)<0)return;
+      e.preventDefault();e.stopPropagation();if(e.stopImmediatePropagation)e.stopImmediatePropagation();
+      input.insert(templates[key],{format:"latex",mode:"math",selectionMode:"placeholder"});
+    },true);
     input.addEventListener("paste", function (e) {
       var text = e.clipboardData && e.clipboardData.getData("text/plain");
       // A plain set difference uses a backslash too; it is not a LaTeX command.
@@ -232,8 +247,8 @@
       });
       control.addEventListener("keydown",function(e){
         if(control!==active||isMath(control)||e.isComposing||e.ctrlKey||e.metaKey||e.altKey)return;
-        if(e.key==="/"||e.key==="^"){
-          e.preventDefault();e.stopPropagation();insert(host,e.key);
+        if(e.key==="/"||e.key==="^"||e.key==="_"||e.key==="√"){
+          e.preventDefault();e.stopPropagation();insert(host,e.key==="√"?"sqrt()":e.key);
         }else if(e.key==="Tab"){
           var at=control.selectionStart,slots=[],m,re=/\(\s*\)/g;
           while((m=re.exec(control.value)))slots.push(m.index+1);
@@ -275,6 +290,7 @@
     }
     events(active);
     host.appendChild(active);
+    upgrade();
     return host;
   }
   function control(input) { return input && (input.control || input); }

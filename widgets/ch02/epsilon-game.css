@@ -1,10 +1,26 @@
-.stages-heading{display:flex;align-items:baseline;justify-content:space-between;gap:.5rem}
-#stages{display:flex;flex-wrap:wrap;gap:.3rem;margin:.5rem 0;border-bottom:1px solid #c8c4e6;padding-bottom:.4rem}
-#stages button{min-width:2.8rem;background:#f0eefb}
+.epsilon-game{max-width:850px;margin:auto;padding:1rem;box-sizing:border-box}
+.epsilon-game .purpose{margin:0 0 .85rem}
+#stages{display:flex;flex-wrap:wrap;gap:.35rem;margin:.5rem 0 .8rem}
+#stages button{min-width:4rem;background:white}
 #stages button[aria-selected=true]{background:#6650a4;color:#fff;border-color:#6650a4;font-weight:bold}
-#stages button.complete:not([aria-selected=true]){background:#edf8ef;border-color:#71a781;color:#196537}
-.setup{display:flex;align-items:center;flex-wrap:wrap;gap:.5rem 1.8rem;margin:.6rem 0}
-.setup .m{font-size:1.2rem}#stage-panel:focus-visible{outline:2px solid #6954c4;outline-offset:3px}
-.answers{align-items:start}.answers label{display:flex;align-items:start;flex-direction:column;gap:.2rem}
-#reason-detail{margin:.4rem 0}select{max-width:100%}.footer{margin-top:.5rem}#next{margin-inline-start:auto;background:#e7e1fb}
-@media(max-width:480px){.answers label{width:100%}.answers select{width:100%}.setup{gap:.35rem 1rem}}
+.setup{text-align:center;margin:.6rem 0}
+.setup .m{font-size:1.2rem}
+#stage-panel:focus-visible{outline:2px solid #6954c4;outline-offset:3px}
+.epsilon-game select{max-width:100%;direction:ltr}
+.epsilon-game .controls{gap:.65rem}
+.epsilon-game .instructions{font-size:.93rem;margin:.65rem 0}
+.epsilon-game .requirement{text-align:center;background:#eee9fa;padding:.6rem;border-radius:7px}
+.epsilon-game .legend{display:flex;flex-wrap:wrap;justify-content:center;gap:.3rem 1.25rem}
+.epsilon-game .inside{color:#305bc2}.epsilon-game .outside{color:#a52940}
+.epsilon-game .caption{margin:.4rem 0 .7rem}
+.epsilon-game .read{padding:.75rem;line-height:1.7}
+.epsilon-game .read strong{display:block}
+.epsilon-game .calculation{text-align:center;margin:.3rem 0}
+.epsilon-game .help{margin-top:.75rem;border-top:1px solid #d8d1e9;padding-top:.6rem}
+.epsilon-game summary{cursor:pointer}
+@media(max-width:480px){.epsilon-game{padding:.7rem}.epsilon-game .controls label{align-items:start;gap:.35rem}.epsilon-game .calculation .m{font-size:1rem}}
+
+.epsilon-slider #epsilon-value{min-width:5rem;text-align:center}
+.epsilon-slider input[type=range]{flex:1;min-width:8rem;max-width:18rem}
+
+.epsilon-range-control{display:flex;align-items:center;gap:.45rem;flex:1;min-width:12rem;max-width:22rem}

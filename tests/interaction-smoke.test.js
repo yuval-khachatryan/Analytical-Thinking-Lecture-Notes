@@ -242,7 +242,7 @@ for (const rich of [false,true]) {
  const second=d.querySelectorAll('.as-step')[1];button(second,'רמז').click();assert.match(second.querySelector('.pw-hints').textContent,/פעולות על האגפים ← חילוק/);
  input(d.querySelectorAll('.pw-input')[1],'x<=4');button(d,'סיום פתרון').click();assert.match(d.textContent,/הפתרון נכון/);
  if(rich){
-  assert.equal(a.control.tagName,'INPUT');a.focus();assert.equal(a.control.tagName,'MATH-FIELD');
+  assert.equal(a.control.tagName,'MATH-FIELD');a.focus();assert.equal(a.control.tagName,'MATH-FIELD');
   input(a,String.raw`x\le\frac{12}{3}`);input(d.querySelectorAll('.pw-input')[1],'');justify(d.querySelectorAll('.as-step')[1],[]);
   justify(d.querySelector('.as-step'),[{op:'sub',value:'2x'},{op:'add',value:'4'},{op:'div',value:'3'}]);
   button(d,'סיום פתרון').click();assert.match(d.textContent,/הפתרון נכון/);
@@ -668,7 +668,7 @@ for(const rich of [false,true]) {
  input(field,source);rendered(row.querySelector('.pw-preview').innerHTML);
  if(rich){
   E.context.MathfieldElement=function(){};E.context.customElements={get:()=>true};field.focus();
-  assert.equal(field.control.tagName,'MATH-FIELD');assert.equal(row.querySelector('.pw-preview').innerHTML,'');
+  assert.equal(field.control.tagName,'MATH-FIELD');rendered(row.querySelector('.pw-preview').innerHTML);
   assert.deepEqual(M.solveSet(M.parseRelation(E.context.CourseMathInput.read(field)),'x',{}).map(p=>({...p,a:p.a||0,b:p.b||0})),M.parseSet('(-inf,0)U(1/2,inf)'));
  }
  justify(row,[{op:'mul',value:'x'}]);button(row,'בדיקת הצעד והמשך').click();assert.equal(row.querySelector('.as-editor').hidden,true);
@@ -911,10 +911,10 @@ for(const rich of [false,true]) {
  button(fill,'בדיקה').click();assert.equal(blank.classList.contains('ok'),true);
  input(field,'R-{1,');scheduled();assert.equal(preview.innerHTML,'');
  input(field,'R-{-1,2,4}');scheduled();
- // Optional typesetting arriving later must not rewrite the draft or leave a stale preview.
+ // Optional typesetting arriving later preserves the draft and its preview.
  E.context.MathfieldElement=function(){};E.context.customElements={get:()=>true};field.focus();
  assert.match(field.value,/\\mathbb\{R\}\\setminus/);assert.doesNotMatch(field.value,/\\cup/);
- assert.equal(preview.innerHTML,'');scheduled();assert.equal(preview.innerHTML,'');
+ assert.match(preview.innerHTML,/\\mathbb\{R\}\\setminus/);scheduled();assert.match(preview.innerHTML,/\\mathbb\{R\}\\setminus/);
  button(fill,'בדיקה').click();assert.equal(blank.classList.contains('ok'),true);
  let pasted;field.control.insert=value=>{pasted=value;};
  for(const source of ['R-{-1,2,4}',String.raw`R \ {-1,2,4}`]) {

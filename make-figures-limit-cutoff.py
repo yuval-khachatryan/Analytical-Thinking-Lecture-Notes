@@ -24,7 +24,7 @@ for ax, indices, ylim in [(axes[0], np.arange(1, 13), (-.13, 1.07)),
     ax.set_xlabel('$n$', loc='right')
     ax.spines[['top', 'right']].set_visible(False)
 axes[0].set_yticks([-.1, 0, .1, .5, 1], [r'$-\frac{1}{10}$', '$0$', r'$\frac{1}{10}$', r'$\frac{1}{2}$', '$1$'])
-axes[0].set_title(r'$a_n=1/n$')
+axes[0].set_title(r'$a_n=\frac{1}{n}$')
 axes[1].set_title(r'$L=0,\quad\varepsilon=\frac{1}{10}$')
 axes[1].set_yticks([-.1, 0, .1], [r'$L-\varepsilon=-\frac{1}{10}$', r'$L=0$', r'$L+\varepsilon=\frac{1}{10}$'])
 axes[1].axvline(11, color=BLUE, linestyle=':', linewidth=1)

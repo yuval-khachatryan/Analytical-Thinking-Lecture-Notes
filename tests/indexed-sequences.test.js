@@ -9,12 +9,32 @@ function check(src,next,actions,ok=true,c=cfg){
 }
 for(const [plain,latex] of [
  ['a_n','a_{n}'],['a_{n+1}','a_{n + 1}'],['a_(2n)','a_{2 n}'],
- ['a_3','a_{3}'],['a_n^2','a_{n}^{2}'],['a_(n^2)','a_{n^{2}}']
+ ['a_3','a_{3}'],['a_n^2','a_{n}^{2}'],['a_(n^2)','a_{n^{2}}'],
+ ['a_m','a_{m}'],['a_(n_k)','a_{n_{k}}'],['a_(n_(k+1))','a_{n_{k + 1}}']
 ]){
  const tree=M.parseExpr(plain);assert.equal(M.tex(tree),latex);
  assert.deepEqual(M.parseExpr(I.latexToPlain(latex)),tree);
  assert.deepEqual(M.parseExpr(source(tree)),tree);
 }
+// Notation and symbolic algebra do not require a numerical sequence formula.
+for(const term of ['a_m','a_(n_k)','a_(n_(k+1))']){
+ assert.equal(M.checkAnswer('expr',term,I.latexToPlain(M.tex(M.parseExpr(term))),['m','k'],{}).ok,true);
+ assert.equal(M.checkAnswer('expr',term+'+'+term,'2*'+term,['m','k'],{}).ok,true);
+ check(term+'-1<2',term+'<3',[{op:'add',value:'1'}],true,{...cfg,vars:['m','k'],solve:'k',positive:['m','k'],sequenceDefinitions:{}});
+ check(term+'-1<2',term+'<4',[{op:'add',value:'1'}],false,{...cfg,vars:['m','k'],solve:'k',positive:['m','k'],sequenceDefinitions:{}});
+}
+for(const [a,b] of [['a_m','a_n'],['a_(n_k)','a_(n_(k+1))'],['a_(n_k)','a_n*k'],['a_(n_k)','b_(n_k)']])
+ assert.equal(M.checkAnswer('expr',a,b,['m','n','k'],{}).ok,false,'Distinct sequence terms are not interchangeable');
+const nested={...cfg,vars:['k'],solve:'k',positive:['k'],indexSequences:['n']};
+check('a_(n_k)>1','1+2/n_k>1',[{op:'sequence',value:'a_(n_k)'}],true,nested);
+check('a_(n_k+1)>1','1+2/(n_k+1)>1',[{op:'sequence',value:'a_(n_k+1)'}],true,nested);
+check('a_m>1','1+2/m>1',[{op:'sequence',value:'a_m'}],true,{...cfg,vars:['m'],solve:'m',positive:['m']});
+for(const c of [{...nested,indexSequences:[]},{...nested,positive:[]}]){
+ const result=check('a_(n_k)>1','1+2/n_k>1',[{op:'sequence',value:'a_(n_k)'}],false,c);
+ assert.match(result.msg,/הסימון תקין/);
+}
+check('a_(n_k-1)>1','1+2/(n_k-1)>1',[{op:'sequence',value:'a_(n_k-1)'}],false,nested);
+check('a_m>1','a_m/a_m>1/a_m',[{op:'div',value:'a_m'}],false,{...cfg,vars:['m'],solve:'m',positive:['m'],sequenceDefinitions:{}});
 assert.equal(I.templates['_'],'#@_{#?}');
 assert.equal(I.templates['_n'],'#@_{n}');
 assert.deepEqual(I.plainTemplate('b',1,1,'_n'),{value:'b_n',caret:3});

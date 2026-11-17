@@ -41,11 +41,13 @@ def sequence_axes(title, limit):
     return fig, ax
 
 n = np.arange(1, 21)
-fig, ax = sequence_axes(r'$1/n^p\longrightarrow0\quad(p>0)$', 0)
+fig, ax = sequence_axes(r'$\frac{1}{n^p}\longrightarrow0$', 0)
 for p, color in [(.5, BLUE), (1, '#0f766e'), (2, RED)]:
-    ax.scatter(n, 1/n.astype(float)**p, s=16, color=color, label=f'$p={p:g}$')
+    label=r'$p=\frac{1}{2}$' if p==.5 else f'$p={p:g}$'
+    ax.scatter(n, 1/n.astype(float)**p, s=16, color=color, label=label)
 ax.legend(ncol=4, fontsize=9, loc='upper right')
 ax.set_ylim(-.07, 1.15)
+ax.set_yticks([0,.5,1], ['$0$', r'$\frac{1}{2}$', '$1$'])
 fig.tight_layout()
 fig.savefig(OUT / 'ch02-reciprocal-powers.png', dpi=180, bbox_inches='tight', facecolor='white')
 plt.close(fig)
@@ -53,7 +55,7 @@ plt.close(fig)
 fig, ax = sequence_axes(r'$\sqrt[n]{n}\longrightarrow1$', 1)
 ax.scatter(n, n**(1/n.astype(float)), s=20, color=BLUE)
 ax.set_ylim(.96, 1.5)
-ax.set_yticks([1, 1.2, 1.4])
+ax.set_yticks([1, 1.2, 1.4], ['$1$', r'$\frac{6}{5}$', r'$\frac{7}{5}$'])
 fig.tight_layout()
 fig.savefig(OUT / 'ch02-root-n.png', dpi=180, bbox_inches='tight', facecolor='white')
 plt.close(fig)

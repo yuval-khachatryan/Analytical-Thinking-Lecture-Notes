@@ -5,7 +5,8 @@ const src = fs.readdirSync('.').filter(f => /^\d\d-.*\.qmd$/.test(f)).map(f => f
 const re = /\[\$([^$]*)\$\]\{\.blank ((?:[^"}]|"[^"]*")*)\}/g;
 function attrs(s) { const o = {}; s.replace(/([\w-]+)="([^"]*)"/g, (_, k, v) => { o[k] = v; }); return o; }
 function texToInput(t) {
-  let s = t.replace(/\\log_\{(\d+)\}/g,'log_$1');
+  let s = t.replace(/\\log_(?:\{(\d+)\}|(\d+)(?=\())/g,
+    (_,braced,plain) => 'log_' + (braced || plain));
   for (let i = 0; i < 5; i++) {
     s = s.replace(/\\sqrt\[3\]\{([^{}]*)\}/g, 'cbrt($1)').replace(/\\sqrt\{([^{}]*)\}/g, 'sqrt($1)');
     s = s.replace(/\\[td]?frac\{([^{}]*)\}\{([^{}]*)\}/g, '(($1)/($2))');

@@ -22,6 +22,7 @@ if(!root.document)return;
 var A=root.LimitActivities,doc=root.document,$=function(id){return doc.getElementById(id);},svg=$('plot'),epsilon=$('epsilon'),level=0;
 function name(n){return 'a'+String(n).replace(/[0-9]/g,function(d){return '₀₁₂₃₄₅₆₇₈₉'[d];});}
 function math(s){return '<bdi class="m">'+s+'</bdi>';}
+function term(n){return math(name(n)+' = '+decimal(n));}
 function draw(){
  var v=view(level,epsilon.value),visible=v.terms.filter(function(t){return t.state!=='outside';}),y=94;
  svg.replaceChildren();svg.setAttribute('data-merged-from',String(v.merged));svg.setAttribute('data-epsilon',String(v.epsilon));svg.setAttribute('data-zoom',String(v.zoom));
@@ -54,15 +55,19 @@ function draw(){
  var list=$('terms');list.replaceChildren();
  v.terms.forEach(function(t,i){
   var span=doc.createElement('span');span.className='term-value '+t.state;span.setAttribute('data-term',String(t.index));
-  span.title=name(t.index)+' = '+t.value+' — '+(t.state==='merged'?'לא ניתן להבחין בינו לבין פאי בהגדלה הזאת':t.state==='outside'?'משמאל לחלון ההגדלה':'ניתן להבחין בינו לבין פאי');
+  span.title=name(t.index)+' = '+t.value+' — '+(t.state==='merged'?'אינו נבדל מ π לעין':t.state==='outside'?'משמאל לחלון ההגדלה':'נבדל מ π לעין');
   span.textContent=t.value;list.appendChild(span);if(i<v.terms.length-1)list.appendChild(doc.createTextNode(', '));
  });
  var end=doc.createElement('span');end.className='merged';end.textContent=', … → π';list.appendChild(end);
  $('scale').textContent='× '+Math.pow(10,v.zoom);$('zoom-in').disabled=v.zoom===MAX_ZOOM;$('zoom-out').disabled=v.zoom===0;
- $('read').innerHTML='בסביבה המסומנת נמצאים '+math(name(v.firstInside))+' וכל האיברים שאחריו. בהגדלה הזאת אי אפשר להבחין בעין בין '+math(name(v.merged))+', '+math(name(v.merged+1))+' ובין '+math('π')+': הסימונים נראים כמו נקודה אחת, אף שהמספרים שונים.';
- $('outside').textContent=v.terms.some(function(t){return t.state==='outside';})?'האיברים האפורים נמצאים משמאל לחלון ההגדלה. הם לא התלכדו עם π; אפשר לראות אותם שוב כשמקטינים.':'';
+ var separateInside=v.terms.find(function(t){return t.inside&&t.state==='distinct';}),mergedOutside=v.terms.find(function(t){return !t.inside&&t.state==='merged';});
+ var comparison=separateInside?' למשל, '+term(separateInside.index)+' נמצא בתוך הקטע הסגול, אבל עדיין רואים את הנקודה שלו בנפרד מהנקודה של '+math('π')+'.':mergedOutside?' למשל, '+term(mergedOutside.index)+' נמצא מחוץ לקטע הסגול, אבל בהגדלה הזאת אי אפשר לראות את הנקודה שלו בנפרד מהנקודה של '+math('π')+'.':'';
+ $('read').innerHTML='<p><strong class="epsilon-key">האיברים שבקטע הסגול:</strong> האיבר הראשון הוא '+term(v.firstInside)+'. המרחק שלו מ '+math('π')+' קטן מהערך שבחרתם, '+math('ε = '+A.fraction(1,Math.round(1/v.epsilon)))+'. כך גם כל האיברים שאחריו.</p>'+
+ '<p><strong>בהגדלה '+math('× '+Math.pow(10,v.zoom))+':</strong> '+term(v.merged)+' הוא האיבר הראשון שאת הנקודה שלו אי אפשר לראות בנפרד מהנקודה של '+math('π')+'. כך גם '+term(v.merged+1)+' וכל האיברים שאחריו, <strong>אף שערכיהם שונים מ '+math('π')+'</strong>.'+comparison+'</p>';
+ $('outside').textContent=v.terms.some(function(t){return t.state==='outside';})?'האיברים האפורים נמצאים משמאל לחלון ההגדלה. הקטינו כדי לראות אותם.':'';
 }
 $('zoom-in').addEventListener('click',function(){level=Math.min(MAX_ZOOM,level+1);draw();});
 $('zoom-out').addEventListener('click',function(){level=Math.max(0,level-1);draw();});
 epsilon.addEventListener('change',draw);draw();
+A.fractionPicker($('epsilon'),$('epsilon-options'));
 })(typeof window!=='undefined'?window:globalThis);

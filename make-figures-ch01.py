@@ -542,9 +542,9 @@ def fig_unit_circle():
     ax.plot([px, px], [0, py], color=C1, lw=1.6, ls="--")
     ax.plot([0, px], [py, py], color=C3, lw=1.6, ls="--")
     ax.plot([px], [py], "o", color=C1, ms=8, zorder=6)
-    ax.text(px + 0.05, py + 0.05, r"$(\cos\theta,\ \sin\theta)$", fontsize=14)
-    ax.text(px, -0.1, r"$\cos\theta$", ha="center", va="top", color=C1, fontsize=13)
-    ax.text(-0.06, py, r"$\sin\theta$", ha="right", va="center", color=C3, fontsize=13)
+    ax.text(px + 0.05, py + 0.05, r"$(\cos(\theta),\ \sin(\theta))$", fontsize=14)
+    ax.text(px, -0.1, r"$\cos(\theta)$", ha="center", va="top", color=C1, fontsize=13)
+    ax.text(-0.06, py, r"$\sin(\theta)$", ha="right", va="center", color=C3, fontsize=13)
     ax.plot([1], [0], "o", color=INK, ms=5)
     ax.text(1.03, 0.04, "$(1,0)$", fontsize=11)
     ax.set_xticks([])
@@ -614,7 +614,7 @@ def start_point(ax):
 def fig_trig_props():
     th = 0.6
     c, s_ = np.cos(th), np.sin(th)
-    P = r"$(\cos\theta,\ \sin\theta)$"
+    P = r"$(\cos(\theta),\ \sin(\theta))$"
 
     # (a) one more full turn returns to the same point
     fig, ax = plt.subplots(figsize=(4, 4)); circle_base(ax); start_point(ax)
@@ -647,8 +647,8 @@ def fig_trig_props():
     ax.plot([0, ct, ct, 0], [0, 0, st, 0], color=C1, lw=1.8)
     q = 0.08
     ax.plot([ct - q, ct - q, ct], [0, q, q], color=INK, lw=1)
-    ax.text(ct / 2, -0.06, r"$\cos\theta$", fontsize=14, ha="center", va="top")
-    ax.text(ct + 0.06, st / 2, r"$\sin\theta$", fontsize=14, ha="left", va="center")
+    ax.text(ct / 2, -0.06, r"$\cos(\theta)$", fontsize=14, ha="center", va="top")
+    ax.text(ct + 0.06, st / 2, r"$\sin(\theta)$", fontsize=14, ha="left", va="center")
     ax.text(ct / 2 - 0.08, st / 2 + 0.06, "$1$", fontsize=15, ha="right", va="bottom")
     pt(ax, ct, st, C1)
     assert abs(ct ** 2 + st ** 2 - 1) < 1e-12
@@ -661,7 +661,7 @@ def fig_trig_props():
     ax.text(1.07 * np.cos(th / 2), -1.07 * np.sin(th / 2), r"$-\theta$", color=C3, fontsize=15, ha="left", va="center")
     ax.plot([c, c], [s_, -s_], color=GREY, ls="--", lw=1.2)
     pt(ax, c, s_, C1, P, dx=-0.05, dy=0.1, ha="center")
-    pt(ax, c, -s_, C3, r"$(\cos\theta,\ -\sin\theta)$", dx=-0.05, dy=-0.1, ha="center", va="top")
+    pt(ax, c, -s_, C3, r"$(\cos(\theta),\ -\sin(\theta))$", dx=-0.05, dy=-0.1, ha="center", va="top")
     assert abs(np.cos(-th) - c) < 1e-12 and abs(np.sin(-th) + s_) < 1e-12
     save(fig, "trig-even")
 
@@ -673,7 +673,7 @@ def fig_trig_props():
     ax.text(1.12 * np.cos(m), 1.12 * np.sin(m), r"$+\pi$", color=VIOLET, fontsize=15, ha="right", va="bottom")
     ax.plot([c, -c], [s_, -s_], color=GREY, ls="--", lw=1.2)
     pt(ax, c, s_, C1, P, dx=0.0, dy=0.1, ha="left")
-    pt(ax, -c, -s_, VIOLET, r"$(-\cos\theta,\ -\sin\theta)$", dx=0.0, dy=-0.12, ha="center", va="top")
+    pt(ax, -c, -s_, VIOLET, r"$(-\cos(\theta),\ -\sin(\theta))$", dx=0.0, dy=-0.12, ha="center", va="top")
     assert abs(np.cos(th + np.pi) + c) < 1e-12 and abs(np.sin(th + np.pi) + s_) < 1e-12
     save(fig, "trig-half-turn")
 
@@ -685,7 +685,7 @@ def fig_trig_props():
     ax.text(-1.07 * np.cos(th / 2), 1.07 * np.sin(th / 2), r"$\theta$", color=C3, fontsize=15, ha="right", va="center")
     ax.plot([c, -c], [s_, s_], color=GREY, ls="--", lw=1.2)
     pt(ax, c, s_, C1, P, dx=0.02, dy=0.12, ha="center")
-    pt(ax, -c, s_, C3, r"$(-\cos\theta,\ \sin\theta)$", dx=-0.02, dy=0.12, ha="center")
+    pt(ax, -c, s_, C3, r"$(-\cos(\theta),\ \sin(\theta))$", dx=-0.02, dy=0.12, ha="center")
     assert abs(np.cos(np.pi - th) + c) < 1e-12 and abs(np.sin(np.pi - th) - s_) < 1e-12
     save(fig, "trig-reflect-y")
 
@@ -701,7 +701,7 @@ def fig_trig_props():
     ax.text(0.8 * np.sin(t / 2), 0.8 * np.cos(t / 2), r"$\theta$", color=C3, fontsize=15, ha="center", va="center")
     ax.plot([ct, st], [st, ct], color=GREY, ls="--", lw=1.2)
     pt(ax, ct, st, C1, P, dx=0.1, dy=0.0, ha="left", va="center")
-    pt(ax, st, ct, C3, r"$(\sin\theta,\ \cos\theta)$", dx=0.06, dy=0.1, ha="left", va="bottom")
+    pt(ax, st, ct, C3, r"$(\sin(\theta),\ \cos(\theta))$", dx=0.06, dy=0.1, ha="left", va="bottom")
     assert abs(np.cos(np.pi / 2 - t) - st) < 1e-12 and abs(np.sin(np.pi / 2 - t) - ct) < 1e-12
     save(fig, "trig-complement")
 
@@ -710,8 +710,8 @@ def fig_sin_cos():
     fig, ax = plt.subplots(figsize=(9, 3.2))
     axes_through_origin(ax, (-2 * np.pi - 0.3, 2 * np.pi + 0.3), (-1.5, 1.5))
     x = np.linspace(-2 * np.pi, 2 * np.pi, 800)
-    ax.plot(x, np.sin(x), color=C3, lw=2.2, label=r"$\sin x$")
-    ax.plot(x, np.cos(x), color=C1, lw=2.2, label=r"$\cos x$")
+    ax.plot(x, np.sin(x), color=C3, lw=2.2, label=r"$\sin(x)$")
+    ax.plot(x, np.cos(x), color=C1, lw=2.2, label=r"$\cos(x)$")
     pi_ticks(ax, -2 * np.pi, 2 * np.pi, 0.5)
     ax.set_yticks([-1, 1])
     ax.legend(loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=2, fontsize=13, frameon=False)
@@ -728,7 +728,7 @@ def fig_tan():
         ax.axvline(a, color=C4, ls="--", lw=1.2)
     pi_ticks(ax, -3 * np.pi / 2, 3 * np.pi / 2, 0.5)
     ax.set_yticks([-4, -2, 2, 4])
-    ax.set_title(r"$\tan x$")
+    ax.set_title(r"$\tan(x)$")
     save(fig, "tan")
 
 
@@ -802,7 +802,7 @@ def fig_exp_ln():
     x = np.linspace(-3, np.log2(5), 300)
     ax.plot(x, 2 ** x, color=C1, lw=2.2, label=r"$2^x$")
     x = np.linspace(0.11, 5, 300)
-    ax.plot(x, np.log2(x), color=C2, lw=2.2, label=r"$\log_2 x$")
+    ax.plot(x, np.log2(x), color=C2, lw=2.2, label=r"$\log_2(x)$")
     x = np.linspace(-3, 5, 10)
     ax.plot(x, x, color=GREY, ls="--", lw=1.2, label="$y=x$")
     ax.plot([0, 1], [1, 0], "o", color=INK, ms=5, zorder=6)
@@ -886,9 +886,9 @@ def fig_inverse_trig():
     fig, axs = plt.subplots(2, 3, figsize=(11, 6.6))
     # top row: the original function, restricted piece highlighted
     tops = [
-        (r"$\sin x$", np.sin, (-np.pi / 2, np.pi / 2)),
-        (r"$\cos x$", np.cos, (0, np.pi)),
-        (r"$\tan x$", np.tan, (-np.pi / 2 + 0.02, np.pi / 2 - 0.02)),
+        (r"$\sin(x)$", np.sin, (-np.pi / 2, np.pi / 2)),
+        (r"$\cos(x)$", np.cos, (0, np.pi)),
+        (r"$\tan(x)$", np.tan, (-np.pi / 2 + 0.02, np.pi / 2 - 0.02)),
     ]
     for ax, (title, f, (lo, hi)) in zip(axs[0], tops):
         axes_through_origin(ax, (-1.6 * np.pi, 1.6 * np.pi), (-2.5, 2.5))
@@ -913,13 +913,13 @@ def fig_inverse_trig():
     ax.plot(x, np.arcsin(x), color=C2, lw=2.4)
     pi_ticks(ax, -np.pi / 2, np.pi / 2, 0.5, axis="y")
     ax.set_xticks([-1, 1])
-    ax.set_title(r"$\arcsin x$", fontsize=14)
+    ax.set_title(r"$\arcsin(x)$", fontsize=14)
     ax = axs[1, 1]
     axes_through_origin(ax, (-1.6, 1.6), (-0.5, 3.6))
     ax.plot(x, np.arccos(x), color=C2, lw=2.4)
     pi_ticks(ax, 0, np.pi, 0.5, axis="y")
     ax.set_xticks([-1, 1])
-    ax.set_title(r"$\arccos x$", fontsize=14)
+    ax.set_title(r"$\arccos(x)$", fontsize=14)
     ax = axs[1, 2]
     axes_through_origin(ax, (-6, 6), (-2, 2))
     x = np.linspace(-6, 6, 400)
@@ -928,7 +928,7 @@ def fig_inverse_trig():
         ax.axhline(a, color=C4, ls="--", lw=1.1)
     pi_ticks(ax, -np.pi / 2, np.pi / 2, 0.5, axis="y")
     ax.set_xticks([-4, 4])
-    ax.set_title(r"$\arctan x$", fontsize=14)
+    ax.set_title(r"$\arctan(x)$", fontsize=14)
     fig.tight_layout()
     save(fig, "inverse-trig")
 
@@ -1397,8 +1397,8 @@ def fig_unit_circle_walk():
     a1.plot([0, px], [0, 0], color=C3, lw=3.5)
     a1.plot([px, px], [0, py], color=C4, lw=3.5)
     a1.plot(px, py, "o", color=C1, ms=9, zorder=5)
-    a1.text(px / 2, -0.17, r"$\cos\theta$", color=C3, ha="center", va="top", fontsize=13)
-    a1.text(px - 0.08, py / 2, r"$\sin\theta$", color=C4, ha="right", va="center", fontsize=13)
+    a1.text(px / 2, -0.17, r"$\cos(\theta)$", color=C3, ha="center", va="top", fontsize=13)
+    a1.text(px - 0.08, py / 2, r"$\sin(\theta)$", color=C4, ha="right", va="center", fontsize=13)
     a1.text(0.62, 0.95, r"$\theta$", color=C2, fontsize=15)
     a1.set_xticks([]); a1.set_yticks([])
     axes_through_origin(a2, (0, 4 * np.pi + 0.3), (-1.3, 1.3), grid=False)
@@ -1410,7 +1410,7 @@ def fig_unit_circle_walk():
     a2.set_xticks([np.pi, 2 * np.pi, 3 * np.pi, 4 * np.pi])
     a2.set_xticklabels([r"$\pi$", r"$2\pi$", r"$3\pi$", r"$4\pi$"])
     a2.set_yticks([-1, 1])
-    a2.text(t0 + 0.25, np.sin(t0) + 0.12, r"$(\theta,\ \sin\theta)$", color=C4, fontsize=13)
+    a2.text(t0 + 0.25, np.sin(t0) + 0.12, r"$(\theta,\ \sin(\theta))$", color=C4, fontsize=13)
     assert abs(np.sin(t0) - np.sqrt(3) / 2) < 1e-12
     fig.tight_layout()
     save(fig, "unit-circle-walk")
