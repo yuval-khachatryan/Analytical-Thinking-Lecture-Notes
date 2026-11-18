@@ -20,7 +20,8 @@ function draw(){
   if(last<=12||j===1||j%2===0)label(j,X(j),bottom+18);
  }
  $('indices').textContent='nₖ = '+(kind==='even'?'2k':kind==='odd'?'2k−1':'3k')+';  '+picked.slice(0,3).map(function(t){return 'b'+t.k+' = a'+t.n;}).join(', ')+', …';
- $('read').textContent=only?'כאן האינדקס k סופר את הבחירות. הגובה של כל נקודה נשאר ערך האיבר המקורי שנבחר. גם כל האיברים המאוחרים יותר בתת־הסדרה נשארים ברצועה.':'כל נקודה סגולה היא נקודה של הסדרה המקורית. מאינדקס מסוים והלאה כל האיברים המקוריים נמצאים ברצועה; גם האיברים שנבחרים מאותו אינדקס והלאה נמצאים בה.';
+ $('read').textContent=only?'כאן k הוא האינדקס בתת־הסדרה: הבחירה הראשונה, השנייה וכן הלאה. כל איבר שנבחר נשאר באותו גובה.':'כאן כל איבר מוצג באינדקס המקורי שלו. מאינדקס מסוים והלאה כל העיגולים בתוך הרצועה — ובפרט הסגולים.';
 }
 ['selection','mode','epsilon'].forEach(function(id){$(id).addEventListener('change',draw);});root.addEventListener('resize',draw);draw();
+A.fractionPicker($('epsilon'),$('epsilon-options'));
 })(typeof window!=='undefined'?window:globalThis);

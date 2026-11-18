@@ -1,7 +1,18 @@
-<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>מצמצמים את הרצועה</title><link rel="stylesheet" href="limit-activities.css"><link rel="stylesheet" href="epsilon-game.css"></head>
-<body><div class="w">
+<!doctype html>
+<html lang="he" dir="rtl">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>סף אחד אינו מספיק</title><link rel="stylesheet" href="limit-activities.css"><link rel="stylesheet" href="epsilon-game.css"></head>
+<body><div class="w epsilon-game">
+<p><strong>1. בוחרים מועמד לגבול</strong></p>
 <div id="stages" role="tablist" aria-label="מועמדים לגבול"></div>
-<section id="stage-panel" role="tabpanel"><p id="setup" class="heading"></p><svg id="plot"></svg>
-<div class="controls"><label id="candidate-label" hidden>המועמד <span class="m">L</span><input id="candidate" class="numeric-input" type="text" inputmode="decimal" value="2" autocomplete="off"></label><label>סף השגיאה <span class="m">ε</span><select id="epsilon"></select></label><button id="check">בדיקה</button><button id="reveal">הצגת דוגמה לרצועה מתאימה</button><button id="reset">מההתחלה</button></div>
-<p id="read" class="read" aria-live="polite"></p><p class="caption">כחול: בתוך הרצועה. אדום: על השפה או בחוץ. הערכים 1 ו −1 חוזרים שוב ושוב, גם מעבר לאיברים המצוירים.</p></section>
+<section id="stage-panel" role="tabpanel">
+<p id="setup" class="setup"></p>
+<div class="controls epsilon-slider"><label for="epsilon-range"><strong>2. משנים את <span class="m">ε</span></strong></label><div class="epsilon-range-control" dir="ltr"><span class="m"><span class="fr"><span>1</span><span>10</span></span></span><input id="epsilon-range" type="range" min="1" max="25" step="1" value="25" aria-label="בחירת ε"><span class="m"><span class="fr"><span>5</span><span>2</span></span></span></div><output id="epsilon-value" for="epsilon-range"></output><button id="check">בדיקת הרצועה</button></div>
+<select id="epsilon" hidden aria-label="בחירת ε"></select>
+<p id="requirement" class="requirement"></p>
+<svg id="plot"></svg>
+<p class="legend"><span class="inside">כחול: בתוך הרצועה</span><span class="outside">אדום: על השפה או בחוץ</span></p>
+<p class="caption">הערכים <span class="m">1</span> ו <span class="m">−1</span> ממשיכים להתחלף גם מעבר לציור. שינוי <span class="m">ε</span> משנה רק את הרצועה.</p>
+<div id="read" class="read" aria-live="polite"></div>
+<details class="help"><summary>עזרה ואיפוס</summary><div class="controls"><button id="reveal">הצגת רצועה צרה ובדיקה</button><button id="reset">מההתחלה</button></div></details>
+</section>
 </div><script src="../shared/autosize.js"></script><script src="limit-activities.js"></script><script src="epsilon-game.js"></script></body></html>

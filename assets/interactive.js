@@ -1125,6 +1125,10 @@ function envText(env) {
 
 // ref: the reference expression (the answer, or the previous line).
 function compareExpr(ref, got, vars, positive, integers) {
+  if(hasSequenceTerm(ref)||hasSequenceTerm(got)){
+    var symbolic=sequenceSymbolicPair(ref,got,{vars:vars,positive:positive||[]});
+    return compareExpr(symbolic.left,symbolic.right,symbolic.cfg.vars,positive,integers);
+  }
   var envs = sampleEnvs(vars, positive), both = 0, bad = null, gotMissing = null;
   if (integers && integers.length) envs.forEach(function (env) {
     integers.forEach(function (v) {
@@ -2047,7 +2051,7 @@ function judgeLimStep(prev, line, ruleKey, cfg) {
         (LIM_FORM_ADVICE[L.f] || "");
       return out;
     }
-    if (L.k === "osc" || (L.k === "none" && L.bounded)) { out.msg = "בשורה יש סדרה כמו \\(\\sin " + v + "\\), שאין לה גבול בעצמה. כאן חשבון הגבולות לא עוזר; נסו את כלל הסנדוויץ'."; return out; }
+    if (L.k === "osc" || (L.k === "none" && L.bounded)) { out.msg = "בשורה יש סדרה כמו \\(\\sin(" + v + ")\\), שאין לה גבול בעצמה. כאן חשבון הגבולות לא עוזר; נסו את כלל הסנדוויץ'."; return out; }
     if (L.k === "none") { out.msg = "בשורה יש סדרה שאין לה גבול (כמו \\((-1)^{" + v + "}\\)), ולכן אי אפשר להציב גבול."; return out; }
     if (L.k === "unk") { out.msg = "את הגבול של השורה הזו אי אפשר לקבל ישירות מהסדרות הסטנדרטיות ומחשבון הגבולות. נסו קודם לשנות אותה."; return out; }
     if (!V || !sameLim(L, V)) {
@@ -2063,7 +2067,7 @@ function judgeLimStep(prev, line, ruleKey, cfg) {
       out.partial = true; return out;
     }
     if (cfg.verify && L.b && ruleKey !== "bounded") {
-      out.msg = "השורה נכונה. כאן יש סדרה חסומה (כמו \\(\\sin " + v + "\\)) כפול סדרה ששואפת לאפס: בחרו \"" + LIMRULES.bounded.label + "\".";
+      out.msg = "השורה נכונה. כאן יש סדרה חסומה (כמו \\(\\sin(" + v + ")\\)) כפול סדרה ששואפת לאפס: בחרו \"" + LIMRULES.bounded.label + "\".";
       out.partial = true; return out;
     }
     out.ok = true; return out;
@@ -2936,7 +2940,7 @@ function expandIsolatedAbsolute(src) {
 
 // A justification is an executable list of operations, never a trusted label
 // or a stored expected answer. Rebuild its result from the current source.
-var ACTION_NAMES={reciprocalBound:"חסימת הופכי של ביטוי חיובי",sequence:"הצבה לפי הגדרת הסדרה",lowerBound:"הקטנת החסם התחתון",upperBound:"הגדלת החסם העליון",sub:"חיסור",add:"חיבור",mul:"כפל",div:"חילוק",simplify:"פישוט האגפים",swap:"החלפת אגפים",abs:"פירוק ערך מוחלט",unchain:"פירוק אי־שוויון כפול לתנאי וגם",conditions:"חיתוך ואיחוד תנאים",replace:"החלפת ביטויים שווים",conditionReplace:"פישוט התנאים שנבחרו",sqrt:"הוצאת שורש ריבועי (שני הסימנים)",cbrt:"הוצאת שורש שלישי",cube:"העלאה בחזקה שלישית",zero:"מכפלה שווה לאפס",formula:"נוסחת השורשים",log:"לוגריתם בבסיס",exp:"העלאת הבסיס בחזקת האגפים",partition:"חלוקה למקרים",cases:"עבודה בכל מקרה בנפרד",merge:"איחוד המקרים"};
+var ACTION_NAMES={reciprocalBound:"חסימת הופכי של ביטוי חיובי",sequence:"הצבה לפי הגדרת הסדרה",lowerBound:"הקטנת החסם מלרע",upperBound:"הגדלת החסם מלעיל",sub:"חיסור",add:"חיבור",mul:"כפל",div:"חילוק",simplify:"פישוט האגפים",swap:"החלפת אגפים",abs:"פירוק ערך מוחלט",unchain:"פירוק אי־שוויון כפול לתנאי וגם",conditions:"חיתוך ואיחוד תנאים",replace:"החלפת ביטויים שווים",conditionReplace:"פישוט התנאים שנבחרו",sqrt:"הוצאת שורש ריבועי (שני הסימנים)",cbrt:"הוצאת שורש שלישי",cube:"העלאה בחזקה שלישית",zero:"מכפלה שווה לאפס",formula:"נוסחת השורשים",log:"לוגריתם בבסיס",exp:"העלאת הבסיס בחזקת האגפים",partition:"חלוקה למקרים",cases:"עבודה בכל מקרה בנפרד",merge:"איחוד המקרים"};
 function mapSequenceTree(node,visit){
   if(node.t==="fn"&&node.f==="seq")return visit(node);
   var out=Object.assign({},node);
@@ -2944,36 +2948,56 @@ function mapSequenceTree(node,visit){
   if(node.disj)out.disj=node.disj.map(function(d){return {ops:d.ops.slice(),parts:d.parts.map(function(p){return mapSequenceTree(p,visit);})};});
   return out;
 }
+function hasSequenceTerm(node){
+  var found=false;mapSequenceTree(node,function(term){found=true;return term;});return found;
+}
+// Unknown sequence terms are real-valued symbols, not failed numeric calls.
+// Distinct indices retain distinct symbols; their signs are never assumed.
+function sequenceSymbolicPair(left,right,cfg){
+  var vars=(cfg.vars||[]).slice(),bank=[],available="zyxwvutsrqponmlkjihgfdcb".split("").filter(function(v){return vars.indexOf(v)<0&&!varsOf(left)[v]&&!varsOf(right)[v];});
+  function atom(term){
+    var key=expressionSource(term),at=bank.indexOf(key);if(at<0){at=bank.length;bank.push(key);}
+    if(!available[at])throw new ParseError("בחרו פחות איברים בצעד אחד.");
+    return {t:"var",n:available[at]};
+  }
+  var a=mapSequenceTree(left,atom),b=mapSequenceTree(right,atom),assumption=cfg.assumption&&relationSource(mapSequenceTree(parseRelation(cfg.assumption),atom));
+  return {left:a,right:b,cfg:Object.assign({},cfg,{vars:vars.concat(available.slice(0,bank.length)),assumption:assumption})};
+}
 function sequenceTermFormula(term,cfg){
   var definition=(cfg.sequenceDefinitions||{})[term.name];
   if(!definition)throw new ParseError("הסדרה "+term.name+" אינה מוגדרת בתרגיל הזה.");
-  var variables=Object.keys(varsOf(term.a)),variable=variables[0],index=term.a;
-  if(variables.length>1||variables.some(function(v){return cfg.vars.indexOf(v)<0||(cfg.positive||[]).indexOf(v)<0;}))throw new ParseError("האינדקס צריך להיות מספר טבעי או ביטוי באינדקס החיובי של התרגיל.");
-  if(variable&&variable!=="n"){
-    function rename(n){if(n.t==="var"&&n.n===variable)return {t:"var",n:"n"};var o=Object.assign({},n);["a","b"].forEach(function(k){if(n[k])o[k]=rename(n[k]);});return o;}
-    index=rename(index);
-  }
-  try{
-    var polynomial=sequenceRational(index,"n"),denominator=polynomial.q;
-    if(denominator.length!==1||!denominator[0][0]||polynomial.p.some(function(c){var q=fractionOp(c,denominator[0],"div");return !q||q[1]!==1;})||sequenceTailSign(index,1).some(function(sign){return sign<=0;}))throw new Error();
-  }catch(_){throw new ParseError("לא הצלחתי לוודא שהאינדקס הוא מספר טבעי חיובי בכל התרגיל. אפשר להציב למשל n, n+1, 2n או מספר טבעי חיובי.");}
+  verifySequenceIndex(term.a,cfg);
   function substitute(node){
     if(node.t==="var"&&node.n===definition.index)return term.a;
     var out=Object.assign({},node);["a","b","n","base"].forEach(function(k){if(node[k]&&typeof node[k]==="object")out[k]=substitute(node[k]);});return out;
   }
   return substitute(parseExpr(definition.formula));
 }
+function verifySequenceIndex(index,cfg){
+  var symbols=[];
+  function natural(node){
+    var key;
+    if(node.t==="fn"&&node.f==="seq"){
+      if((cfg.indexSequences||[]).indexOf(node.name)<0)throw new Error();
+      verifySequenceIndex(node.a,cfg);key=expressionSource(node);
+    }else if(node.t==="var"){
+      if(cfg.vars.indexOf(node.n)<0||(cfg.positive||[]).indexOf(node.n)<0)throw new Error();
+      key=node.n;
+    }
+    if(key!==undefined){if(symbols.indexOf(key)<0)symbols.push(key);return {t:"var",n:"n"};}
+    var out=Object.assign({},node);["a","b","n","base"].forEach(function(k){if(node[k]&&typeof node[k]==="object")out[k]=natural(node[k]);});return out;
+  }
+  try{
+    var normalized=natural(index),polynomial=sequenceRational(normalized,"n"),denominator=polynomial.q;
+    // Do not identify two independent indices with the same dummy variable.
+    if(symbols.length>1||denominator.length!==1||!denominator[0][0]||polynomial.p.some(function(c){var q=fractionOp(c,denominator[0],"div");return !q||q[1]!==1;})||sequenceTailSign(normalized,1).some(function(sign){return sign<=0;}))throw new Error();
+  }catch(_){throw new ParseError("הסימון תקין, אך לצורך ההצבה צריך לוודא שהאינדקס טבעי וחיובי לפי נתוני התרגיל. לאיבר כמו n_k נדרש נתון שזו סדרת אינדקסים טבעיים.");}
+}
 function expandSequenceTerms(node,cfg){return mapSequenceTree(node,function(term){return sequenceTermFormula(term,cfg);});}
 function sequenceRelation(src,cfg){return expandSequenceTerms(inCase(typeof src==="string"?parseRelation(src):src,cfg),cfg);}
 function sequenceJustifiedShape(want,got,cfg){
-  var bank=[],available="zyxwvutsrqponmlkjihgfdcb".split("").filter(function(v){return cfg.vars.indexOf(v)<0;});
-  function atom(term){
-    var key=expressionSource(term),at=bank.indexOf(key);if(at<0){at=bank.length;bank.push(key);}
-    if(!available[at])throw new ParseError("בחרו פחות איברים בצעד אחד.");
-    return {t:"var",n:available[at]};
-  }
-  var a=mapSequenceTree(want,atom),b=mapSequenceTree(got,atom);
-  return justifiedShape(a,b,Object.assign({},cfg,{vars:cfg.vars.concat(available.slice(0,bank.length))}));
+  var pair=sequenceSymbolicPair(want,got,cfg);
+  return justifiedShape(pair.left,pair.right,pair.cfg);
 }
 function substituteSequenceTerms(src,action,cfg){
   var selected=parseExpr(action.value||"");
@@ -3235,7 +3259,10 @@ function checkJustifiedStep(src,next,actions,cfg){
       if((a.op==="mul"||a.op==="div")&&knownPositiveScaling(parseRelation(before),a.op,parseExpr(a.value||""),cfg)){
         certifiedScaling=true;return;
       }
-      var verdict=relSets(sequenceRelation(before,cfg),sequenceRelation(expected,cfg),cfg.solve,cfg.vars.filter(function(v){return v!==cfg.solve;}),cfg.positive||[]);
+      var pair=sequenceSymbolicPair(inCase(parseRelation(before),cfg),inCase(parseRelation(expected),cfg),cfg);
+      // Substitution has already checked the given formula and the index.
+      if(a.op==="sequence"||a.op==="replace")return;
+      var verdict=relSets(pair.left,pair.right,cfg.solve,pair.cfg.vars.filter(function(v){return v!==cfg.solve;}),cfg.positive||[]);
       if(!verdict.ok)throw new ParseError("הפעולה אינה שומרת על הפתרונות או על תחום ההגדרה. בדקו את התנאים להפעלתה.");
     });
     var got=parseRelation(next),want=parseRelation(expected);
@@ -3247,7 +3274,8 @@ function checkJustifiedStep(src,next,actions,cfg){
     // identical, while still being a genuine written step for the student.
     var explicitSubstitution=actions.some(function(a){return a.op==="sequence"||a.op==="replace";})&&relationSource(parseRelation(src))!==relationSource(got);
     var scaledChange=certifiedScaling&&relationSource(parseRelation(src))!==relationSource(got);
-    var v=widened||explicitSubstitution||scaledChange?{ok:true}:judgeStep(sequenceRelation(src,cfg),sequenceRelation(got,cfg),null,cfg);if(!v.ok)return v;
+    var pair=sequenceSymbolicPair(inCase(parseRelation(src),cfg),inCase(got,cfg),cfg);
+    var v=widened||explicitSubstitution||scaledChange?{ok:true}:judgeStep(pair.left,pair.right,null,pair.cfg);if(!v.ok)return v;
     v.reason=actionReason(actions,{source:src,cfg:cfg});return v;
   }catch(e){return {ok:false,msg:errMsg(e),expected:expected,got:next};}
 }
@@ -3541,14 +3569,14 @@ function checkSequenceSetup(kind,expected,entered,cfg){
     if(kind==="distance"){
       function parts(src){
         var r=parseRelation(src),d=r.disj[0];
-        if(r.disj.length!==1||d.ops.length!==1||["<",">"].indexOf(d.ops[0])<0)throw new ParseError("כתבו אי־שוויון: המרחק מן הגבול קטן מסף השגיאה.");
+        if(r.disj.length!==1||d.ops.length!==1||["<",">"].indexOf(d.ops[0])<0)throw new ParseError("כתבו אי־שוויון: המרחק מן הגבול קטן מ ε.");
         var distance=d.parts[d.ops[0]==="<"?0:1],error=d.parts[d.ops[0]==="<"?1:0];
-        if(distance.t!=="fn"||distance.f!=="abs"||hasVar(error))throw new ParseError("כתבו את המרחק בעזרת ערך מוחלט ואת סף השגיאה באגף השני. את הפישוט נעשה אחר כך.");
+        if(distance.t!=="fn"||distance.f!=="abs"||hasVar(error))throw new ParseError("כתבו את המרחק בערך מוחלט ואת ε באגף השני. את הפישוט נעשה אחר כך.");
         return {distance:distance.a,error:error};
       }
       var want=parts(expected),got=parts(entered);
       if(cfg){want.distance=expandSequenceTerms(want.distance,cfg);got.distance=expandSequenceTerms(got.distance,cfg);}
-      if(!sequenceExactSame(want.error,got.error)||!(sequenceExactSame(want.distance,got.distance)||sequenceExactSame(want.distance,{t:"neg",a:got.distance})))throw new ParseError("בדקו את האיבר, את המספר שממנו מודדים את המרחק ואת סף השגיאה.");
+      if(!sequenceExactSame(want.error,got.error)||!(sequenceExactSame(want.distance,got.distance)||sequenceExactSame(want.distance,{t:"neg",a:got.distance})))throw new ParseError("בדקו את האיבר, את המועמד לגבול ואת ε.");
       sequenceTailSign(got.distance,1);
     }else{
       if(kind!=="ratio"&&kind!=="difference")throw new ParseError("בחרו הפרש או מנה.");
@@ -3577,16 +3605,16 @@ function sequenceKnownBound(rule,argument,v){
 }
 function sequenceBoundChain(src){
   var r=parseRelation(src),d=r.disj[0];
-  if(r.disj.length!==1||d.parts.length!==3)throw new ParseError("סיימו באי־שוויון עם שלושה אגפים: חסם תחתון, הביטוי שחוסמים, וחסם עליון.");
+  if(r.disj.length!==1||d.parts.length!==3)throw new ParseError("סיימו באי־שוויון עם שלושה אגפים: חסם מלרע, הביטוי שחוסמים, וחסם מלעיל.");
   if(d.ops.every(function(op){return op===">="||op===">";}))d=reverseChain(d);
-  if(!d.ops.every(function(op){return op==="<="||op==="<";}))throw new ParseError("כתבו חסם תחתון משמאל וחסם עליון מימין, או את אותה השוואה בסדר הפוך.");
+  if(!d.ops.every(function(op){return op==="<="||op==="<";}))throw new ParseError("כתבו חסם מלרע משמאל וחסם מלעיל מימין, או את אותה השוואה בסדר הפוך.");
   return d;
 }
 function sequenceWidenBound(src,action,cfg){
   if(!cfg.boundProof)throw new ParseError("הרחבת חסם משמשת לבניית אי־שוויון נובע, ולא לפתרון אי־שוויון שקול.");
   var d=sequenceBoundChain(src),newBound=actionOperand(action.value),lower=action.op==="lowerBound",at=lower?0:2;
   var gap={t:"sub",a:lower?d.parts[at]:newBound,b:lower?newBound:d.parts[at]};
-  if(!sequenceSignFits(sequenceTailSign(gap,1),">="))throw new ParseError("לא ניתן לאמת שהחסם החדש רחב מספיק לכל אינדקס. חסם תחתון מותר להקטין; חסם עליון מותר להגדיל.");
+  if(!sequenceSignFits(sequenceTailSign(gap,1),">="))throw new ParseError("לא ניתן לאמת שהחסם החדש רחב מספיק לכל אינדקס. חסם מלרע מותר להקטין; חסם מלעיל מותר להגדיל.");
   d.parts[at]=newBound;d.ops[lower?0:1]="<=";return relationSource({t:"rel",disj:[d]});
 }
 function checkSequenceBoundProof(proof,term,lower,upper,v,absolute){
@@ -3599,8 +3627,8 @@ function checkSequenceBoundProof(proof,term,lower,upper,v,absolute){
   if(!seqSame(d.parts[1],term,v).ok)throw new ParseError("הנימוק מסתיים בחסימה של ביטוי אחר. צריך לחסום את \\("+tex(term)+"\\).");
   if(absolute){
     if(!sequenceSignFits(sequenceTailSign({t:"sub",a:d.parts[0],b:lower},1),">=")||!sequenceSignFits(sequenceTailSign({t:"sub",a:upper,b:d.parts[2]},1),">="))throw new ParseError("האי־שוויון שנימקתם אינו נותן את החסם שבחרתם לערך המוחלט. התאימו את החסם או הרחיבו את הנימוק.");
-    if(!seqSame(d.parts[0],lower,v).ok&&!seqSame(d.parts[2],upper,v).ok)throw new ParseError("החסם שבחרתם רחב יותר מהחסימות שבסוף הנימוק. הבחירה יכולה להיות נכונה; נמקו את ההרחבה בעזרת הקטנת חסם תחתון או הגדלת חסם עליון, או בחרו את החסם שכבר נובע מקצות האי־השוויון.");
-  }else if(!seqSame(d.parts[0],lower,v).ok||!seqSame(d.parts[2],upper,v).ok)throw new ParseError("החסימות שנכתבו אינן החסימות שבסוף הנימוק. אפשר לעדכן אותן, או להשתמש בהקטנת חסם תחתון ובהגדלת חסם עליון בתוך הנימוק.");
+    if(!seqSame(d.parts[0],lower,v).ok&&!seqSame(d.parts[2],upper,v).ok)throw new ParseError("החסם שבחרתם רחב יותר מהחסימות שבסוף הנימוק. הבחירה יכולה להיות נכונה; נמקו את ההרחבה בעזרת הקטנת חסם מלרע או הגדלת חסם מלעיל, או בחרו את החסם שכבר נובע מקצות האי־השוויון.");
+  }else if(!seqSame(d.parts[0],lower,v).ok||!seqSame(d.parts[2],upper,v).ok)throw new ParseError("החסימות שנכתבו אינן החסימות שבסוף הנימוק. אפשר לעדכן אותן, או להשתמש בהקטנת חסם מלרע ובהגדלת חסם מלעיל בתוך הנימוק.");
   return {start:start,entries:proof.entries,last:last,rule:proof.rule};
 }
 function sequenceEnvelopeLimit(n,lower,upper,v){
@@ -3757,7 +3785,10 @@ function hasSequenceLimit(n){
   return !!n&&(n.t==="fn"&&n.f==="lim"||["a","b","n","base"].some(function(k){return n[k]&&typeof n[k]==="object"&&hasSequenceLimit(n[k]);}));
 }
 function sequenceNotationSame(a,b,v){
-  if(!hasSequenceLimit(a)&&!hasSequenceLimit(b))return seqSame(a,b,v).ok;
+  if(!hasSequenceLimit(a)&&!hasSequenceLimit(b)){
+    if(!hasVar(a)&&!hasVar(b))return sameLim(constLim(a),constLim(b));
+    return seqSame(a,b,v).ok;
+  }
   if(a.t!==b.t)return false;
   if(a.t==="fn"&&(a.f!==b.f||a.f==="lim"&&(a.index||"n")!==(b.index||"n")))return false;
   return ["a","b","n","base"].every(function(k){
@@ -3930,14 +3961,75 @@ function checkSequenceStep(src,next,action,v){
     return Object.assign(result,{ok:true});
   }catch(e){return {ok:false,msg:errMsg(e)};}
 }
+// An equality is student work, not a visual prefix on a replacement expression.
+// Keep its local claim separate from the resulting whole calculation expression.
+function sequenceEquality(src,next,action,v){
+  var part=resolveFragment(src,{before:action.before===undefined?src:action.before,path:action.path},"expr");
+  var right=resolveFragment(next,{path:part.path},"expr").node;
+  return {equality:expressionSource(part.node)+"="+expressionSource(right),
+    equalityKind:hasSequenceLimit(part.node)||hasSequenceLimit(right)||!hasVar(part.node)?"target":"expressions"};
+}
+// Concrete substitutions used by an arithmetic limit step, in dependency order.
+function sequenceLimitExplanation(node,v){
+  var rows=[],seen=Object.create(null);
+  function visit(n){
+    var result=sequenceLimit(n,v),key=expressionSource(n);
+    if(seen[key])return result.node;seen[key]=true;
+    var known=sequenceStandard(n,v),substitution=null,label="גבול מוכר",condition="",ref=result.refs[result.refs.length-1];
+    if(known){
+      if(!hasVar(n))label="גבול של סדרה קבועה";
+      else if(n.t==="fn"&&n.f==="root"){label="שורש מסדר משתנה של מספר חיובי קבוע";condition=tex(n.a)+">0";}
+      else if(n.t==="pow"&&n.b.t==="var"&&n.b.n===v&&Math.abs(ev(n.a,{}))<1){condition="\\left|"+tex(n.a)+"\\right|<1";label="הבסיס של החזקה קבוע וערכו המוחלט קטן מאחת";}
+      else if(n.t==="div"&&n.a.t==="num"&&n.a.v===1)label="גבול של הופכי חזקה חיובית של האינדקס";
+    }else if(n.t==="div"&&!hasVar(n.a)&&isFinite(ev(n.a,{}))&&ev(sequenceLimit(n.b,v).node,{})===Infinity){
+      var reciprocal={t:"div",a:algebraNumber(1),b:n.b};
+      substitution={t:"mul",a:n.a,b:visit(reciprocal)};label="כפל בגבול של ההופכי";
+    }else if(["add","sub","mul","div"].indexOf(n.t)>=0){
+      var a=visit(n.a),b=visit(n.b);
+      substitution={t:n.t,a:a,b:b};label={add:"מציבים את גבולות שני המחוברים",sub:"מציבים את גבולות שני האיברים בהפרש",mul:"מציבים את גבולות שני הגורמים",div:"מציבים את גבולות המונה והמכנה"}[n.t];
+      if(n.t==="div")condition=tex(b)+"\\ne0";
+    }else if(n.t==="fn"&&n.f==="sqrt"){
+      var a=visit(n.a);substitution={t:"fn",f:"sqrt",a:a};label="מוציאים שורש מגבול הביטוי שמתחת לשורש";condition=tex(a)+"\\ge0";
+    }else if(n.t==="pow"){
+      substitution={t:"pow",a:visit(n.a),b:n.b};label="מעלים את הגבול בחזקה הקבועה";
+    }else if(n.t==="neg"){
+      substitution={t:"neg",a:visit(n.a)};label="מחליפים את סימן הגבול";
+    }
+    var formula=tex({t:"fn",f:"lim",index:v,a:n})+"=";
+    if(substitution&&expressionSource(substitution)!==expressionSource(result.node))formula+=tex(substitution)+"=";
+    formula+=tex(result.node);
+    rows.push({formula:formula,label:label,condition:condition,ref:ref});return result.node;
+  }
+  visit(node);return rows;
+}
+function checkSequenceEquality(src,statement,action,v,kind){
+  try{
+    if(kind!=="target"&&kind!=="expressions")throw new ParseError("בחרו סוג צעד: שוויון בין ביטויים או שוויון בין ביטויי החישוב.");
+    var relation=parseRelation(statement),d=relation.disj[0];
+    if(relation.disj.length!==1||d.parts.length!==2||d.ops.length!==1||d.ops[0]!=="=")throw new ParseError("כתבו שוויון מלא בין שני ביטויים: אגף שמאל, סימן = ואגף ימין.");
+    var part=resolveFragment(src,{before:action.before===undefined?src:action.before,path:action.path},"expr");
+    if(expressionSource(d.parts[0])!==expressionSource(part.node))throw new ParseError("אגף שמאל צריך להיות הביטוי שבחרתם משורת המקור: \\("+tex(part.node)+"\\).");
+    if(kind==="expressions"&&(hasSequenceLimit(d.parts[0])||hasSequenceLimit(d.parts[1])||SEQUENCE_ACTIONS[action.op]&&SEQUENCE_ACTIONS[action.op].group==="limits"))throw new ParseError("שוויון בין ביטויים מתאר זהות אלגברית, ללא מעבר לגבול. לשוויון הכולל גבולות בחרו שוויון בין ביטויי החישוב.");
+    var next=expressionSource(sequenceReplace(parseExpr(src),part.path,d.parts[1]));
+    var result=checkSequenceStep(src,next,action,v);
+    if(!result.ok)return result;
+    // A local replacement must leave the surrounding expression defined.
+    function defined(n){
+      if(n.t==="div"&&!hasVar(n.b)&&!hasSequenceLimit(n.b)&&ev(n.b,{})===0)throw new ParseError("ההחלפה יוצרת חילוק באפס בביטוי שסביבה. אי אפשר להסיק כאן שוויון בעזרת ההחלפה הזאת.");
+      ["a","b","n","base"].forEach(function(k){if(n[k]&&typeof n[k]==="object")defined(n[k]);});
+    }
+    defined(parseExpr(next));
+    return Object.assign(result,{text:next,equality:relationSource(relation),equalityKind:kind});
+  }catch(e){return {ok:false,msg:errMsg(e)};}
+}
 function checkSequenceProof(start,entries,v,goal){
   var records=[{id:"start",text:start}],results=[];
   for(var i=0;i<entries.length;i++){
     var entry=entries[i],source=records.filter(function(r){return r.id===entry.source;})[0];
     var forbidden=goal&&entry.action&&SEQUENCE_ACTIONS[entry.action.op]&&SEQUENCE_ACTIONS[entry.action.op].group==="limits";
-    var r=forbidden?{ok:false,msg:"כאן מפשטים ביטוי לכל אינדקס, ולא מחשבים גבול."}:source?checkSequenceStep(source.text,entry.text,entry.action,v):{ok:false,msg:"שורת המקור חסרה או שעדיין לא נבדקה. בחרו שורה קודמת תקינה."};
+    var r=forbidden?{ok:false,msg:"כאן מפשטים ביטוי לכל אינדקס, ולא מחשבים גבול."}:source?(entry.equality!==undefined?checkSequenceEquality(source.text,entry.equality,entry.action,v,entry.equalityKind):checkSequenceStep(source.text,entry.text,entry.action,v)):{ok:false,msg:"שורת המקור חסרה או שעדיין לא נבדקה. בחרו שורה קודמת תקינה."};
     results.push(r);if(!r.ok)return {results:results,done:false,records:records};
-    records.push({id:entry.id,text:entry.text});
+    records.push({id:entry.id,text:r.text||entry.text,equality:r.equality,equalityKind:r.equalityKind});
   }
   var last=records[records.length-1].text,n=parseExpr(last),simplified=sequenceSimplify(n,v);
   var done=entries.length>0&&!hasVar(n)&&constLim(n)&&expressionSource(n)===expressionSource(simplified);
@@ -4110,7 +4202,7 @@ function checkSequenceBound(formula,claim,gap,side,N){
     sequenceTailSign(sequenceLeft?left:right,N);
     if(!isFinite(ev(bound,{})))throw new ParseError("החסם צריך להיות מספר ממשי קבוע.");
     var upper=sequenceLeft?(op==="<"||op==="<="):(op===">"||op===">=");
-    if(side!==(upper?"upper":"lower"))throw new ParseError("אי־השוויון שכתבתם מתאר חסם "+(upper?"עליון":"תחתון")+". התאימו את סוג החסם.");
+    if(side!==(upper?"upper":"lower"))throw new ParseError("אי־השוויון שכתבתם מתאר חסם "+(upper?"מלעיל":"מלרע")+". התאימו את סוג החסם.");
     var difference={t:"sub",a:upper?bound:a,b:upper?a:bound},evidence=parseExpr(gap);
     if(!sequenceExactSame(difference,evidence))throw new ParseError("נמקו באמצעות ההפרש: הגדול פחות הקטן. הביטוי שכתבתם אינו שווה להפרש בין האגפים בסדר הזה.");
     if(!sequenceSignFits(sequenceTailSign(evidence,N),op==="<"||op===">"?">":">="))throw new ParseError("לא ניתן לאשר שההפרש הוא בסימן הדרוש לכל \\(n\\ge"+N+"\\). בדקו את החסם ואת הנימוק.");
@@ -4120,7 +4212,7 @@ function checkSequenceBound(formula,claim,gap,side,N){
 function checkSequenceConvergence(monotonicity,bound,rule,answer){
   if(!monotonicity||!monotonicity.ok||!bound||!bound.ok)return {ok:false,msg:"השלימו ובדקו גם את טיעון המונוטוניות וגם את טיעון החסימות."};
   if(rule!=="monotone-bounded")return {ok:false,msg:"חסימות לבדה או מונוטוניות לבדה אינן מספיקות. בחרו את המשפט שמשתמש בשתי התכונות."};
-  if(monotonicity.direction!=="constant"&&bound.side!==(monotonicity.direction==="up"?"upper":"lower"))return {ok:false,msg:"לסדרה עולה צריך חסם עליון; לסדרה יורדת צריך חסם תחתון. החסם שהוכחתם אינו בצד הדרוש."};
+  if(monotonicity.direction!=="constant"&&bound.side!==(monotonicity.direction==="up"?"upper":"lower"))return {ok:false,msg:"לסדרה עולה צריך חסם מלעיל; לסדרה יורדת צריך חסם מלרע. החסם שהוכחתם אינו בצד הדרוש."};
   if(answer!=="yes")return {ok:false,msg:"שתי התכונות שהוכחתם, עם החסם בצד המתאים, מבטיחות התכנסות."};
   return {ok:true,N:Math.max(monotonicity.N,bound.N)};
 }
@@ -4128,6 +4220,7 @@ function checkSequenceConvergence(monotonicity,bound,rule,answer){
 if (typeof document === "undefined") {
   if (typeof module !== "undefined") module.exports = {
     parseExpr: parseExpr, parseRelation: parseRelation, parseSet: parseSet, ev: ev, tex: tex, texChain: texChain,
+    checkSequenceEquality:checkSequenceEquality,sequenceEquality:sequenceEquality,sequenceLimitExplanation:sequenceLimitExplanation,
     setTex: setTex, setInputTex: setInputTex, setEq: setEq, solveSet: solveSet, checkAnswer: checkAnswer, guessKind: guessKind, judgeStep: judgeStep,
     classifyStep: classifyStep, isSolved: isSolved, fmtNum: fmtNum, nodes: nodes, ParseError: ParseError,
     investigationModel:investigationModel,relationModel:relationModel,sequenceModel:sequenceModel,authoredAction:authoredAction,checkSequenceSetup:checkSequenceSetup,sequenceKnownBound:sequenceKnownBound,checkSequenceBoundProof:checkSequenceBoundProof,sequenceBoundConfig:sequenceBoundConfig,sequenceNext:sequenceNext, sequenceComparisonStart:sequenceComparisonStart, sequenceTailSign:sequenceTailSign, checkSequenceMonotonicity:checkSequenceMonotonicity, checkSequenceBound:checkSequenceBound, checkSequenceConvergence:checkSequenceConvergence, sequenceAction:sequenceAction, checkSequenceStep:checkSequenceStep, checkSequenceProof:checkSequenceProof, sequenceLimit:sequenceLimit, sequenceParts:sequenceParts, SEQUENCE_ACTIONS:SEQUENCE_ACTIONS,
@@ -4238,16 +4331,18 @@ function markOr(input) {
 }
 var KEYSETS = {
   "letter-order": [["<", "<"]],
-  lim: [["n", "n"], ["שבר", "/"], ["חזקה", "^"], ["√", "√()"], ["( )", "()"], ["∞", "∞"], ["e", "e"], ["!", "!"], ["π", "π"], ["sin", "sin()"], ["cos", "cos()"]],
+  lim: [["אינדקס", "_"], ["n", "n"], ["שבר", "/"], ["חזקה", "^"], ["√", "√()"], ["( )", "()"], ["∞", "∞"], ["e", "e"], ["!", "!"], ["π", "π"], ["sin", "sin()"], ["cos", "cos()"]],
   num: [["שבר", "/"], ["חזקה", "^"], ["√", "√()"], ["∛", "cbrt()"], ["π", "π"], ["log", "log_()"]],
   set: [["∞", "∞"], ["−∞", "-∞"], ["∪", " ∪ "], ["∩", " ∩ "], ["∖", " ∖ "], ["( )", "()"], ["[ ]", "[]"], ["[ )", "[)"], ["( ]", "(]"], ["{ }", "{}"], ["{x ∣ …}", "{x|}"], ["<", "<"], ["≤", "≤"], [">", ">"], ["≥", "≥"], ["=", "="], ["≠", "≠"], ["או", " או "], ["וגם", " וגם "], ["ולא", " ולא "], ["לא", " לא "], ["∅", "∅"], ["ℝ", "ℝ"], ["שבר", "/"], ["חזקה", "^"], ["√", "√()"], ["π", "π"]],
-  expr: [["x", "x"], ["שבר", "/"], ["חזקה", "^"], ["√", "√()"], ["∛", "cbrt()"], ["שורש", "root()"], ["( )", "()"], ["| |", "||"], ["π", "π"], ["log", "log_()"]],
-  rel: [["<", "<"], [">", ">"], ["≤", "≤"], ["≥", "≥"], ["=", "="], ["≠", "≠"], ["או", " או "], ["וגם", " וגם "], ["שבר", "/"], ["חזקה", "^"], ["√", "√()"], ["∛", "cbrt()"], ["| |", "||"], ["log", "log_()"]]
+  expr: [["אינדקס", "_"], ["x", "x"], ["שבר", "/"], ["חזקה", "^"], ["√", "√()"], ["∛", "cbrt()"], ["שורש", "root()"], ["( )", "()"], ["| |", "||"], ["π", "π"], ["log", "log_()"]],
+  rel: [["אינדקס", "_"], ["<", "<"], [">", ">"], ["≤", "≤"], ["≥", "≥"], ["=", "="], ["≠", "≠"], ["או", " או "], ["וגם", " וגם "], ["שבר", "/"], ["חזקה", "^"], ["√", "√()"], ["∛", "cbrt()"], ["| |", "||"], ["log", "log_()"]]
 };
 function keyRow(keys, target) {
   return el("div", { class: "ix-keys", role: "group", "aria-label": "סימנים" }, keys.map(function (k) {
     var labels = { "/": '<span class="ix-frac"><span>a</span><span>b</span></span>', "^": 'x<sup>□</sup>', "_n": '□<sub>n</sub>', "root()": '<sup>n</sup>√', "log_()": 'log<sub>□</sub>' };
+    labels["lim()"]='<span class="ix-limit" dir="ltr"><span>lim</span><small>n → ∞</small></span>';
     var names = { "/":"שבר", "^":"חזקה", "_n":"הוספת אינדקס n", "||":"ערך מוחלט", "≠":"לא שווה", "√()":"שורש ריבועי", "cbrt()":"שורש שלישי", "root()":"שורש מסדר כללי", "log_()":"לוגריתם עם בסיס", "floor()":"החלק השלם", "ε":"אפסילון", "∞":"אינסוף", "-∞":"מינוס אינסוף", "π":"פאי", " ∪ ":"איחוד", " ∩ ":"חיתוך", " ∖ ":"הפרש קבוצות" };
+    names["lim()"]="גבול כאשר n שואף לאינסוף";
     var props = { type: "button", class: "ix-key", "aria-label": names[k[1]] || k[0], title: names[k[1]] || k[0],
       onpointerdown: function (e) { if (e.button === 0) e.preventDefault(); },
       onclick: function () { var t = target(); if (t) insertAtCaret(t, k[1]); } };
@@ -4421,7 +4516,7 @@ function initGroup(G) {
       vars: (attr(sp, "vars") || "").split(",").map(function (s) { return s.trim(); }).filter(Boolean),
       miss: parseMiss(attr(sp, "miss")),
       opts: { boundSequence:attr(sp,"bound-sequence"),boundSide:attr(sp,"bound-side"),form: attr(sp, "form"), calculation:attr(sp,"calculation"), minAnswer:attr(sp,"min-answer"), integerAnswer:attr(sp,"integer-answer")==="true", checkAt: attr(sp, "check-at"), integers: (attr(sp,"integer") || "").split(",").filter(Boolean), allowExpression: attr(sp,"allow-expression")==="true", positive: (attr(sp, "positive") || "").split(",").map(function (s) { return s.trim(); }).filter(Boolean) } };
-    input.addEventListener("focus", function () { if (isMathInput(input) && pv) pv.innerHTML = ""; });
+    input.addEventListener("focus", function () { preview(it); });
     input.addEventListener("keydown", function (e) {
       if (e.key === "Enter" && !e.isComposing) { e.preventDefault(); checkOne(it, true); allDone(); }
     }, true);
@@ -4500,15 +4595,14 @@ function initGroup(G) {
   function preview(it) {
     var pv = it.preview;
     if(it.kind==="text"){pv.innerHTML="";return;}
-    if (isMathInput(it.input)) { pv.innerHTML = ""; return; }
-    var v = it.input.value.trim();
+    var v;try{v=readInput(it.input).trim();}catch(_){pv.innerHTML="";return;}
     if (!v || it.kind === "num" && /^-?\d+(\.\d+)?$/.test(v)) { pv.innerHTML = ""; return; }
     if (!it.schedulePreview) it.schedulePreview = debounce(function (value) { renderPreview(it, value); }, 350);
     it.schedulePreview(v);
   }
   function renderPreview(it, v) {
     var pv = it.preview;
-    if (it.input.hidden || isMathInput(it.input) || v !== it.input.value.trim()) return;
+    try{if(it.input.hidden||v!==readInput(it.input).trim())return;}catch(_){return;}
     if (it.kind === "set") {
       try { showParsed(pv, "\\(" + setInputTex(v) + "\\)", true); }
       catch (_) { pv.innerHTML = ""; }
@@ -4654,12 +4748,12 @@ function initSequenceClassify(box) {
     input.addEventListener("input",function(){
       blank.classList.remove("ok","bad","warn");input.removeAttribute("aria-invalid");mark.textContent="";say(msg,"");if(model)model.hidden=true;
       preview.innerHTML="";
-      if(!isMathInput(input)&&readInput(input).trim()){
+      try{if(input.value.trim()){
         var parsed=parsedSoFar(readInput(input),parseExpr);
         if(parsed)showParsed(preview,"\\("+tex(parsed.node)+"\\)",parsed.whole);
-      }
+      }}catch(_){}
     });
-    input.addEventListener("focus",function(){if(isMathInput(input))preview.innerHTML="";});
+
     input.addEventListener("keydown",function(e){if(e.key==="Enter"&&!e.isComposing){e.preventDefault();check();}});
   }
   function build(kind) {
@@ -4863,6 +4957,9 @@ function cleanExplanation(step){
   var override=attr(step,"clean");
   if(override!==null){
     var text=override.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    // Authored clean prose may cite a box, just like ordinary chapter prose.
+    // Only local stable-box links are accepted here, never arbitrary HTML/URLs.
+    text=text.replace(/\[([^\]\n]+)\]\(((?:[0-9]{2}-[A-Za-z-]+\.(?:qmd|html))?#box-[\w-]+)\)/g,function(_,label,href){return '<a href="'+href.replace(/\.qmd#/g,'.html#')+'" target="_blank" rel="noopener">'+label+'</a>';});
     return el("div",{class:"as-clean-reason",html:mx(text.replace(/\$([^$]+)\$/g,function(_,math){return "\\("+math+"\\)";}))});
   }
   var copy=step.cloneNode(true);copy.className="as-clean-reason";copy.removeAttribute("id");
@@ -4875,13 +4972,13 @@ function modelRows(solution,rows,format,reason,cleanReason){
     var why=reason(row,i),reasonNode=typeof why==="string"?el("div",{class:"as-reason",dir:"rtl",html:why}):why;
     transcript.appendChild(el("div",{class:"pw-row "+(i?"as-step as-model-step":"as-given")},[
       el("span",{class:"as-step-label",text:"שורה "+(i+1)}),el("div",{class:"as-compact"},[
-        el("div",{class:"as-formula pw-example",dir:"ltr",html:format(row.text)}),reasonNode
+        el("div",{class:"as-formula pw-example",dir:"ltr",html:format(row.text,i)}),reasonNode
       ])
     ]));
     if(cleanReason){
       var explanation=cleanReason(row,i),paragraph=el("div",{class:"as-clean-paragraph"});
       if(explanation)paragraph.appendChild(typeof explanation==="string"?el("div",{class:"as-clean-reason",html:explanation}):explanation);
-      if(row.text)paragraph.appendChild(el("div",{class:"as-clean-formula",dir:"ltr",html:format(row.text)}));
+      if(row.text)paragraph.appendChild(el("div",{class:"as-clean-formula",dir:"ltr",html:format(row.text,i)}));
       prose.appendChild(paragraph);
     }
   });
@@ -4906,6 +5003,7 @@ function initRelationPractice(box,options) {
   var vars=(attr(box,"vars")||"").split(",").map(function(v){return v.trim();}).filter(Boolean),target=path[path.length-1]||start;
   if(!vars.length)vars=Object.keys(varsOf(parseRelation(start))).sort();
   var cfg=Object.assign({mode:"rel",vars:vars,solve:attr(box,"solve")||(vars.indexOf("x")>=0?"x":vars[0]),positive:(attr(box,"positive")||"").split(",").filter(Boolean),verify:false},options.cfg||{},{requireJustification:true,explicitCases:true});vars=cfg.vars;
+  if(attr(box,"index-sequences"))cfg.indexSequences=attr(box,"index-sequences").split(",").map(function(s){return s.trim();}).filter(Boolean);
   var sequenceName=attr(box,"sequence-name"),sequenceFormula=attr(box,"sequence-formula");
   if(sequenceName&&sequenceFormula){cfg.sequenceDefinitions=Object.assign({},cfg.sequenceDefinitions);cfg.sequenceDefinitions[sequenceName]={index:cfg.solve,formula:sequenceFormula};}
   var paper=el("div",{class:"pw-paper"}),status=el("div",{class:"ix-msg","aria-live":"polite"});
@@ -4918,7 +5016,7 @@ function initRelationPractice(box,options) {
   var usesPi=tokenize(start).some(function(t){return t.k==="pi";});
   var keys=vars.map(function(v){return [v,v];}).concat(KEYSETS.rel,usesPi?[["π","π"]]:[]);
   Object.keys(cfg.sequenceDefinitions||{}).forEach(function(name){keys.unshift([name+"ₙ",name+"_("+cfg.sequenceDefinitions[name].index+")"]);});
-  if(cfg.sequenceDefinitions)keys.push(["_n","_n"],["אינדקס","_"]);
+  if(cfg.sequenceDefinitions)keys.push(["_n","_n"]);
   function formula(src){return mx(htmlRel(parseRelation(src)));}
   function absoluteMethodLabel(){
     var target=document.getElementById("box-key-abs-solving"),heading=target&&target.querySelector("strong");
@@ -4964,7 +5062,7 @@ function initRelationPractice(box,options) {
     function render(){
       if(!operandPreview)return;
       operandPreview.innerHTML="";
-      if(!isMathInput(input)&&input.value.trim())try{operandPreview.innerHTML=mx("\\("+tex(parseExpr(readInput(input)))+"\\)");typeset(operandPreview);}catch(_){}
+      if(input.value.trim())try{operandPreview.innerHTML=mx("\\("+tex(parseExpr(readInput(input)))+"\\)");typeset(operandPreview);}catch(_){}
     }
     if(kind==="expr"){
       operandPreview=el("span",{class:"as-field-preview",dir:"ltr"});host.appendChild(operandPreview);
@@ -5067,7 +5165,7 @@ function initRelationPractice(box,options) {
   }
   function preview(r){
     r.preview.innerHTML="";
-    if(!isMathInput(r.input)&&r.input.value.trim())try {r.preview.innerHTML=formula(r.input.value);typeset(r.preview);}catch(_){}
+    if(r.input.value.trim())try {r.preview.innerHTML=formula(readInput(r.input));typeset(r.preview);}catch(_){}
   }
   function accept(r,verdict){
     var src=readInput(r.input);r.valid=true;r.summary.replaceChildren();
@@ -5277,7 +5375,7 @@ function initRelationPractice(box,options) {
           });typeset(matches);
         }catch(e){say(msg,errMsg(e),"bad");}
       }
-      f.input.addEventListener("input",function(){pending=!!readInput(f.input).trim();matches.replaceChildren();highlight([]);say(msg,"");changed();});
+      f.input.addEventListener("input",function(){pending=!!f.input.value.trim();matches.replaceChildren();highlight([]);say(msg,"");changed();});
       f.input.addEventListener("keydown",function(e){if(e.key==="Enter"&&!e.isComposing){e.preventDefault();find();}});
       host.appendChild(button("בחירת החלק",find));host.appendChild(msg);host.appendChild(matches);
       return {host:host,clear:clear,selected:selected,guard:function(){if(pending)throw new ParseError("לחצו על בחירת החלק שהקלדתם, או נקו את שדה הבחירה.");}};
@@ -5411,8 +5509,8 @@ function initRelationPractice(box,options) {
       return select;
     }
     function domainNote(host,value){
-      host.replaceChildren();if(!value.trim())return;
-      try{var rules=exclusionDomain(value,cfgFor(r));if(rules.length){host.innerHTML="תנאי התחום: "+rules.map(function(rule){return formula(relationSource(rule));}).join(" וגם ");typeset(host);}}catch(_){}
+      host.replaceChildren();
+      try{value=typeof value==="string"?value:readInput(value);if(!value.trim())return;var rules=exclusionDomain(value,cfgFor(r));if(rules.length){host.innerHTML="תנאי התחום: "+rules.map(function(rule){return formula(relationSource(rule));}).join(" וגם ");typeset(host);}}catch(_){}
     }
     function conditionSelection(){
       conditionBank.forEach(function(b){b.input.disabled=!b.input.checked&&conditionSelected.some(function(s){return conditionOverlap(s.part,b.part);});});changed();
@@ -5494,7 +5592,7 @@ function initRelationPractice(box,options) {
         domain.hidden=reason.value!=="domain";resultLabel.hidden=f.host.hidden=covered;help.hidden=covered;
         evidenceLabel.textContent=reason.value==="domain"?"הביטוי שאינו מוגדר:":reason.value==="contradiction"?"התנאי הסותר:":"המכנה שמתאפס:";
         evidence.input.setAttribute("aria-label",evidenceLabel.textContent);
-        if(reason.value==="domain")domainNote(domain,readInput(evidence.input));
+        if(reason.value==="domain")domainNote(domain,evidence.input);
         help.open=false;suggestions.replaceChildren();say(msg,"");changed();
       }
       reason.addEventListener("change",reasonChanged);evidence.input.addEventListener("input",reasonChanged);evidenceSource.addEventListener("change",reasonChanged);
@@ -5572,7 +5670,7 @@ function initRelationPractice(box,options) {
         c.domain.hidden=c.reason.value!=="domain";
         c.evidenceLabel.textContent=c.reason.value==="domain"?"הביטוי שאינו מוגדר:":c.reason.value==="contradiction"?"התנאי הסותר:":"המכנה שמתאפס:";
         c.evidence.input.setAttribute("aria-label",c.evidenceLabel.textContent);
-        if(c.reason.value==="domain")domainNote(c.domain,readInput(c.evidence.input));
+        if(c.reason.value==="domain")domainNote(c.domain,c.evidence.input);
       });typeset(caseList);
     }
     function labelCases(){caseFields.forEach(function(c,i){c.label.textContent="מקרה "+(i+1);c.field.input.setAttribute("aria-label","התנאי למקרה "+(i+1));c.remove.disabled=caseFields.length<=2;});refreshCaseEvidence();}
@@ -5841,7 +5939,7 @@ function initRelationPractice(box,options) {
       el("div",{class:"ix-bar as-actions"},[r.checkButton,button("רמז",function(){nextHint(r,false);}),button("הצגת צעד אפשרי",function(){nextHint(r,true);})]),r.msg,r.hint]);
     r.row=el("div",{class:"pw-row as-step"},[r.label,r.summary,r.editor]);rows.push(r);paper.appendChild(r.row);labelRows();updateSource(r);
     r.input.addEventListener("input",function(){r.reason="";invalidate(rows.indexOf(r));preview(r);});
-    r.input.addEventListener("focus",function(){if(isMathInput(r.input))r.preview.innerHTML="";});
+    r.input.addEventListener("focus",function(){preview(r);});
     r.input.addEventListener("keydown",function(e){if(e.key==="Enter"&&!e.isComposing){e.preventDefault();check(rows.indexOf(r),true);}},true);
     if(focus)r.input.focus();return r;
   }
@@ -5887,7 +5985,7 @@ function initRelationPractice(box,options) {
     proofWork.hidden=true;
     setupField.input.addEventListener("input",function(){proofWork.hidden=true;say(setupMsg,"");});
     setup=el("div",{class:"seq-student-setup"},[el("p",{text:"כתבו תחילה את הדרישה למרחק בעזרת ערך מוחלט. לאחר בדיקתה תוכלו לפתור את אי־השוויון בעוזר."}),setupField.host,button("בדיקת נקודת המוצא",function(){
-      var value=readInput(setupField.input),result=checkSequenceSetup("distance",expectedSetup,value,cfg);
+      var value,result;try{value=readInput(setupField.input);result=checkSequenceSetup("distance",expectedSetup,value,cfg);}catch(e){say(setupMsg,errMsg(e),"bad");return;}
       if(!result.ok){say(setupMsg,result.msg,"bad");return;}
       if(start!==value){start=value;initialLine.querySelector(".as-formula").innerHTML=formula(start);reset();}
       proofWork.hidden=false;say(setupMsg,"✓ הדרישה למרחק כתובה נכון. עכשיו אפשר לפתור את אי־השוויון.","good");typeset(initialLine);
@@ -5945,8 +6043,7 @@ function initPractice(box) {
     input.addEventListener("focus", function () { lastInput = input; });
     input.addEventListener("input", function () {
       invalidate();
-      if (isMathInput(input)) { preview.textContent = ""; return; }
-      try { preview.innerHTML = mx(math(input.value)); typeset(preview); } catch (e) { preview.textContent = ""; }
+      try { preview.innerHTML = mx(math(readInput(input))); typeset(preview); } catch (e) { preview.textContent = ""; }
     });
     input.addEventListener("keydown", function (e) { if (e.key === "Enter" && !e.isComposing) { e.preventDefault(); if (e.ctrlKey || e.metaKey) check(); else add(true); } }, true);
     if (focus) input.focus();
@@ -6009,16 +6106,16 @@ function initSequenceInvestigation(box){
     var input=mathInput({class:"blank-input si-"+name,dir:"ltr","aria-label":description,autocomplete:"off"},kind),preview=el("span",{class:"as-field-preview",dir:"ltr"});
     var host=el("span",{class:"as-field as-expr-field"},[input,preview]);bindInputKeys(input,[["n","n"]].concat(KEYSETS[kind]||KEYSETS.expr),true);
     input.addEventListener("input",function(){
-      preview.replaceChildren();if(!isMathInput(input)&&readInput(input).trim())try{preview.innerHTML=kind==="rel"?mx(htmlRel(parseRelation(readInput(input)))):mx("\\("+tex(parseExpr(readInput(input)))+"\\)");typeset(preview);}catch(e){}
+      preview.replaceChildren();if(input.value.trim())try{preview.innerHTML=kind==="rel"?mx(htmlRel(parseRelation(readInput(input)))):mx("\\("+tex(parseExpr(readInput(input)))+"\\)");typeset(preview);}catch(e){}
       invalidate();
     });
-    input.addEventListener("focus",function(){if(isMathInput(input))preview.replaceChildren();});
+
     return {input:input,host:host,preview:preview};
   }
   var method=select("method",[["","בחרו הפרש או מנה"],["difference","הפרש האיבר הבא והאיבר הנוכחי"],["ratio","מנת האיבר הבא באיבר הנוכחי"]]);
   var op=select("comparison",[["","בחרו השוואה"],[">",">"],[">=","≥"],["<","<"],["<=","≤"],["=","="]]);op.dir="ltr";
   var direction=select("direction",[["","בחרו מסקנה"],["up","עולה"],["down","יורדת"],["constant","קבועה"]]);
-  var side=select("side",[["","בחרו סוג חסם"],["upper","חסם עליון"],["lower","חסם תחתון"]]);
+  var side=select("side",[["","בחרו סוג חסם"],["upper","חסם מלעיל"],["lower","חסם מלרע"]]);
   var rule=select("rule",[["","בחרו משפט"],["monotone-bounded","מונוטוניות וחסם בצד המתאים"],["bounded","חסימות בלבד"],["monotone","מונוטוניות בלבד"]]);
   var answer=select("answer",[["","בחרו מסקנה"],["yes","הסדרה מתכנסת"],["unknown","אין די מידע כדי להסיק התכנסות"]]);
   var tail=el("input",{type:"checkbox",class:"si-tail","aria-label":"לעבוד החל מאינדקס מסוים"}),N=el("input",{type:"number",class:"si-index",value:String(startIndex),min:String(startIndex),step:"1","aria-label":"האינדקס ההתחלתי N"});
@@ -6037,7 +6134,7 @@ function initSequenceInvestigation(box){
     var work=state(),r=indexError()||(work.ok?checkSequenceMonotonicity(formula,method.value,work.expression,op.value,direction.value,index()):work);
     if(talk)say(monoMsg,r.ok?"✓ טיעון המונוטוניות נכון החל מהאינדקס שבחרתם.":r.msg,r.ok?"good":"bad");return r;
   }
-  function checkBound(talk){var r=indexError()||checkSequenceBound(formula,readInput(claim.input),readInput(gap.input),side.value,index());if(talk)say(boundMsg,r.ok?"✓ אי־השוויון והנימוק לחסם נכונים בכל הזנב.":r.msg,r.ok?"good":"bad");return r;}
+  function checkBound(talk){var r;try{r=indexError()||checkSequenceBound(formula,readInput(claim.input),readInput(gap.input),side.value,index());}catch(e){r={ok:false,msg:errMsg(e)};}if(talk)say(boundMsg,r.ok?"✓ אי־השוויון והנימוק לחסם נכונים בכל הזנב.":r.msg,r.ok?"good":"bad");return r;}
   function finish(){
     var m=checkMono(true),b=checkBound(true),r=checkSequenceConvergence(m,b,rule.value,answer.value);
     clearSolutionFinish(box);if(r.ok)box.setAttribute("data-solution-complete","true");
@@ -6046,7 +6143,7 @@ function initSequenceInvestigation(box){
   }
   var setupRequired=attr(box,"setup-required")==="true",setupField=field("setup","ההפרש או המנה לפני הפישוט","expr"),setupMsg=el("div",{class:"ix-msg","aria-live":"polite"});
   var setupBox=el("div",{class:"si-setup-box"},[el("p",{text:"כתבו את ההפרש או המנה שבחרתם. הציבו n+1 בנוסחה לאיבר הבא, והשאירו את האיבר הנוכחי עם n."}),setupField.host,button("בדיקת ההצבה",function(){
-    var entered=readInput(setupField.input),r=checkSequenceSetup(method.value,formula,entered);
+    var entered,r;try{entered=readInput(setupField.input);r=checkSequenceSetup(method.value,formula,entered);}catch(e){say(setupMsg,errMsg(e),"bad");return;}
     if(!r.ok){say(setupMsg,r.msg,"bad");return;}
     chooseMethod(entered);say(setupMsg,"✓ ההצבה נכונה. אפשר להמשיך לפשט.","good");
   }),setupMsg]);setupBox.hidden=true;
@@ -6089,7 +6186,7 @@ function initSequenceInvestigation(box){
   var solution=el("section",{class:"pw-solution"});if(model)model.remove();
   lazyModel(solution,function(){
     var spec={difference:attr(box,"difference"),direction:attr(box,"model-direction"),side:attr(box,"model-side"),bound:attr(box,"model-bound"),gap:attr(box,"model-gap"),startIndex:startIndex},checked=investigationModel(formula,spec);
-    var directionName=spec.direction==="up"?"עולה":"יורדת",sideName=spec.side==="upper"?"חסם עליון":"חסם תחתון";
+    var directionName=spec.direction==="up"?"עולה":"יורדת",sideName=spec.side==="upper"?"חסם מלעיל":"חסם מלרע";
     var rows=[
       {text:"a_n="+formula,reason:"נקודת מוצא; משתמשים בנוסחה החל מאינדקס "+startIndex},
       {text:checked.start,reason:"בדיקת מונוטוניות ← הפרש האיבר הבא והאיבר הנוכחי. מציבים את האיבר הבא ואת הנוכחי בסדר הזה."},
@@ -6140,35 +6237,70 @@ function initSequenceBoundArgument(host,onChange){
 function initSequencePractice(box,settings){
   settings=settings||{};
   var start=attr(box,"start"),isLimit=!!attr(box,"limit"),v=attr(box,"limit")||"n",steps=childDivs(box,"step"),hints=childDivs(box,"hint"),rows=[],serial=0;
-  var path=steps.map(function(s){return prepLine(attr(s,"line")).full;});
+  // Legacy authored steps omit the outer limit. Keep that shorthand readable,
+  // but use the displayed, explicit limit throughout the student's transcript.
+  function notation(src,initial){
+    if(!isLimit)return src;
+    src=String(src).replace(/^\s*=\s*/,"");if(!src.trim())return src;
+    var n=parseExpr(src);
+    return !hasSequenceLimit(n)&&(initial||hasVar(n,v))?"lim("+(v==="n"?"":v+",")+src+")":src;
+  }
+  start=notation(start,true);
+  var path=steps.map(function(s){return notation(prepLine(attr(s,"line")).full);});
   var paper=el("div",{class:"pw-paper"}),status=el("div",{class:"ix-msg","aria-live":"polite"});
-  function math(src){var n=parseExpr(src);return mx("\\("+(isLimit&&hasVar(n,v)&&!hasSequenceLimit(n)?"\\lim_{"+v+"\\to\\infty}\\left("+tex(n)+"\\right)":tex(n))+"\\)");}
+  function math(src){return mx("\\("+tex(parseExpr(notation(src)))+"\\)");}
+  function equalityMath(src){return mx(htmlRel(parseRelation(src)));}
+  function resultText(r){return isLimit?r.checkedText:notation(readInput(r.result.input));}
+  function stepMath(src,next,a){return isLimit?equalityMath(sequenceEquality(src,next,a,v).equality):math(next);}
   function expression(src){return mx("\\("+tex(parseExpr(src))+"\\)");}
   function btn(text,fn,cls){return el("button",{type:"button",class:"ix-btn "+(cls||"ix-quiet"),text:text,onclick:fn});}
-  function input(label,cls){
-    var field=mathInput({type:"text",class:"blank-input "+(cls||""),dir:"ltr","aria-label":label,autocomplete:"off",spellcheck:"false"},"expr");
+  function input(label,cls,kind){
+    kind=kind||"expr";
+    var field=mathInput({type:"text",class:"blank-input "+(cls||""),dir:"ltr","aria-label":label,autocomplete:"off",spellcheck:"false"},kind);
     var preview=el("span",{class:"as-field-preview",dir:"ltr"}),host=el("span",{class:"as-field as-expr-field"},[field,preview]);
-    function render(){preview.innerHTML="";if(!isMathInput(field)&&field.value.trim())try{preview.innerHTML=expression(readInput(field));typeset(preview);}catch(e){}}
+    function render(){preview.innerHTML="";if(field.value.trim())try{preview.innerHTML=kind==="rel"?equalityMath(readInput(field)):expression(readInput(field));typeset(preview);}catch(e){}}
     field.addEventListener("input",render);field.addEventListener("focus",render);bindInputKeys(field,[[v,v]].concat(isLimit?[["lim","lim()"]]:[],KEYSETS.lim.filter(function(k){return k[0]!==v;})),true);
-    return {input:field,host:host,render:render,set:function(value){field.value=isMathInput(field)?inputLatex(value,"expr"):value;render();}};
+    return {input:field,host:host,render:render,set:function(value){field.value=isMathInput(field)?inputLatex(value,kind):value;render();}};
   }
   function label(text,node){return el("label",{class:"seq-editor-field"},[el("span",{text:text}),node]);}
   function references(ids){var refs=Array.from(new Set(ids||[]));return el("span",{class:"as-rule-links"},refs.map(function(id,i){var target=document.getElementById(id),title=target&&target.querySelector("strong");return el("a",{href:"#"+id,text:(i?" · ":"")+(title?title.textContent:"הכלל בספר")});}));}
   function reason(action,result,sourceNumber){
     var host=el("div",{class:"as-reason"},[el("span",{text:SEQUENCE_ACTIONS[action.op].label+" · לפי שורה "+sourceNumber})]);
-    if(action.value)host.appendChild(el("div",{html:expression(action.value)}));
-    if(result.part&&result.part.path!=="0.0")host.appendChild(el("div",{html:"על הביטוי "+expression(result.part.source)}));
-    if(result.certificate)host.appendChild(el("div",{html:mx(result.certificate)}));
+    var detail=el("details",{class:"seq-action-explanation"},[el("summary",{text:"מה נעשה בצעד הזה?"})]);
+    if(isLimit&&result.equalityKind)detail.appendChild(el("p",{text:"סוג הצעד: "+(result.equalityKind==="expressions"?"שוויון בין ביטויים":"שוויון בין ביטויי החישוב")}));
+    if(result.part)detail.appendChild(el("div",{class:"seq-action-argument",html:"הביטוי שעליו פועלים: "+expression(result.part.source)}));
+    if(result.part&&result.expected)try{
+      var equality=result.equality||result.part.source+"="+expressionSource(resolveFragment(result.expected,{path:result.part.path},"expr").node);
+      detail.appendChild(el("div",{class:"seq-applied-transition",dir:"ltr",html:equalityMath(equality)}));
+    }catch(e){/* A certificate below describes operations without an expression result. */}
+    if(action.value)detail.appendChild(el("div",{html:(action.op==="divide"?"מחלקים כל מחובר במונה ובמכנה ב ":"מוציאים כגורם משותף את ")+expression(action.value)+"; הביטוי שונה מאפס."}));
+    if(action.op==="conjugate"&&result.part){
+      var selected=result.part.node;if(selected.t==="fn"&&selected.f==="lim")selected=selected.a;
+      if(selected.t==="sub")detail.appendChild(el("div",{html:"כופלים ומחלקים בסכום "+expression(expressionSource({t:"add",a:selected.a,b:selected.b}))+". במונה מתקבל הפרש ריבועים."}));
+    }
+    if(action.op==="simplify")detail.appendChild(el("p",{text:"מפשטים אלגברית את הביטוי שנבחר; שאר חלקי החישוב נשארים במקומם."}));
+    if(action.op==="compute")detail.appendChild(el("p",{text:"מחשבים את הפעולות המספריות בביטוי שנבחר."}));
+    if(action.op==="limitOut"||action.op==="limitIn")detail.appendChild(el("p",{text:action.op==="limitOut"?"מעבירים את הפעולה מחוץ לגבול ומשאירים גבול על הביטויים שעליהם היא פועלת. התנאים הדרושים נבדקים עבורם:":"מכניסים את הפעולה לתוך גבול אחד. התנאים הדרושים נבדקים עבור הביטויים המשתתפים:"}));
+    if(result.part&&(action.op==="arithmetic"||action.op==="standard"))try{
+      var selected=result.part.node;if(selected.t==="fn"&&selected.f==="lim")selected=selected.a;
+      var list=el("ol",{class:"seq-limit-transitions"});
+      sequenceLimitExplanation(selected,v).forEach(function(row){
+        list.appendChild(el("li",{},[el("div",{text:row.label}),el("div",{dir:"ltr",html:mx("\\("+row.formula+"\\)")}),row.condition?el("div",{html:"התנאי מתקיים: "+mx("\\("+row.condition+"\\)")}):null,references([row.ref])]));
+      });detail.appendChild(list);
+    }catch(e){/* Other operations retain their explicit certificates below. */}
+    if(result.certificate)detail.appendChild(el("div",{html:mx(result.certificate)}));
     if(result.boundProof){
       var proof=result.boundProof,list=el("ol",{class:"seq-bound-transcript"});
       list.appendChild(el("li",{},[el("div",{html:mx(htmlRel(parseRelation(proof.start)))}),el("span",{text:SEQUENCE_BOUND_RULES[proof.rule]})]));
       proof.entries.forEach(function(e){list.appendChild(el("li",{},[el("div",{html:mx(htmlRel(parseRelation(e.text)))}),el("div",{html:mx(actionReason(e.actions,{math:true,source:e.source===1?proof.start:proof.entries[e.source-2].text,cfg:sequenceBoundConfig(v)}))})]));});
-      host.appendChild(el("p",{text:"נימוק לחסימות:"}));host.appendChild(list);host.appendChild(references(["box-known-sequence-inequalities"]));
+      detail.appendChild(el("p",{text:"נימוק לחסימות:"}));detail.appendChild(list);detail.appendChild(references(["box-known-sequence-inequalities"]));
     }
-    host.appendChild(references(result.refs));return host;
+    detail.appendChild(references(result.refs));host.appendChild(detail);return host;
   }
-  var given=el("div",{class:"as-given"},[el("span",{class:"as-step-label",text:"שורה 1"}),el("div",{class:"as-compact"},[el("div",{class:"as-formula",html:math(start)}),el("div",{class:"as-reason",text:"נקודת מוצא"})])]);paper.appendChild(given);
-  function source(r){if(r.source.value==="start")return start;var found=rows.filter(function(x){return x.id===r.source.value&&x.valid;})[0];if(!found)throw new ParseError("שורת המקור אינה זמינה. בחרו שורה קודמת שנבדקה.");return readInput(found.result.input);}
+  var setup=el("div",{class:"seq-problem-setup"});
+  if(attr(box,"given"))setup.appendChild(el("div",{class:"seq-problem-givens"},[el("strong",{text:"נתונים: "}),el("span",{html:equalityMath(attr(box,"given"))})]));
+  var given=el("div",{class:"as-given"},[el("span",{class:"as-step-label",text:"שורה 1"}),el("div",{class:"as-compact"},[el("div",{class:"as-reason",text:isLimit?"לחישוב":"נקודת מוצא"}),el("div",{class:"as-formula",html:math(start)})])]);paper.appendChild(given);
+  function source(r){if(r.source.value==="start")return start;var found=rows.filter(function(x){return x.id===r.source.value&&x.valid;})[0];if(!found)throw new ParseError("שורת המקור אינה זמינה. בחרו שורה קודמת שנבדקה.");return resultText(found);}
   function action(r){
     var a={op:r.op.value,before:readInput(r.fragment.input)};
     if(r.selectedPath!==null)a.path=r.selectedPath;
@@ -6176,9 +6308,9 @@ function initSequencePractice(box,settings){
     if(a.op==="bounded"||a.op==="squeeze")a.boundProof=r.bounds.snapshot();
     return a;
   }
-  function entry(r){return {id:r.id,source:r.source.value,text:readInput(r.result.input),action:action(r)};}
+  function entry(r){return Object.assign({id:r.id,source:r.source.value,action:action(r)},isLimit?{equality:readInput(r.result.input),equalityKind:r.kind.value}:{text:resultText(r)});}
   function state(){
-    var active=rows.filter(function(r){return readInput(r.result.input).trim()||r.op.value;});
+    var active=rows.filter(function(r){return r.result.input.value.trim()||r.op.value;});
     if(!active.length||active.some(function(r){return !r.valid;}))return {ok:false,msg:"כתבו ובדקו לפחות צעד חישוב אחד. תקנו או מחקו שורה שעדיין לא נבדקה."};
     var verdict=checkSequenceProof(start,active.map(entry),v,isLimit?null:settings.embedded?start:path[path.length-1]);
     return {ok:verdict.results.every(function(r){return r.ok;}),expression:verdict.records[verdict.records.length-1].text};
@@ -6216,8 +6348,10 @@ function initSequencePractice(box,settings){
     verdict.results.forEach(function(result,i){var x=rows[i];x.valid=result.ok;
       if(!result.ok){x.editor.hidden=false;x.summary.hidden=true;say(x.msg,result.msg,"bad");return;}
       x.editor.hidden=true;x.summary.hidden=false;x.row.classList.add("as-accepted");
+      x.checkedText=verdict.records[i+1].text;
       var sourceIndex=entries[i].source==="start"?1:rows.findIndex(function(t){return t.id===entries[i].source;})+2;
-      x.summary.replaceChildren(el("div",{class:"as-formula",html:math(entries[i].text)}),reason(entries[i].action,result,sourceIndex),btn("עריכה",function(){invalidate(x);x.result.input.focus();}));
+      x.summary.replaceChildren(el("div",{class:"as-formula",dir:"ltr",html:isLimit?equalityMath(entries[i].equality):math(entries[i].text)}),reason(entries[i].action,result,sourceIndex),btn("עריכה",function(){invalidate(x);x.result.input.focus();}));
+      if(isLimit&&result.part.path!=="0.0")x.summary.appendChild(el("div",{class:"seq-current-target",html:"הביטוי לחישוב כעת: "+math(x.checkedText)}));
       say(x.msg,"✓ הצעד נכון!", "good");typeset(x.summary);
     });
     if(verdict.results.some(function(x){return !x.ok;})){say(status,"תקנו את השורה המסומנת ואז בדקו שוב.","info");return false;}
@@ -6233,9 +6367,9 @@ function initSequencePractice(box,settings){
       // An exact algebraic simplification is offered, with the selected operation retained.
       var check=checkSequenceStep(source(r),candidate,a,v);
       if(!check.ok)throw new ParseError(check.msg);
-      r.suggestion.appendChild(el("div",{class:"as-formula",html:math(candidate)}));
+      r.suggestion.appendChild(el("div",{class:"as-formula",dir:"ltr",html:stepMath(source(r),candidate,a)}));
       r.suggestion.appendChild(reason(a,res,r.source.value==="start"?1:rows.findIndex(function(x){return x.id===r.source.value;})+2));
-      r.suggestion.appendChild(btn("יישום הצעד והמשך",function(){r.result.set(candidate);invalidate(r);commit(r,true);},"ix-main"));typeset(r.suggestion);
+      r.suggestion.appendChild(btn("יישום הצעד והמשך",function(){setResult(r,source(r),candidate,a);invalidate(r);commit(r,true);},"ix-main"));typeset(r.suggestion);
     }catch(e){say(r.suggestion,errMsg(e),"info");}
   }
   function propose(r){
@@ -6265,11 +6399,11 @@ function initSequencePractice(box,settings){
         var target=next||res.expected;if(checkSequenceStep(src,target,a,v).ok){suggestion={action:a,text:target,result:res};break;}
       }
       if(!suggestion){say(r.suggestion,"אפשר לבחור חלק מהביטוי ולפשט אותו. הפתרון לדוגמה מציג דרך אפשרית נוספת.","info");return;}
-      r.suggestion.appendChild(el("div",{class:"as-formula",html:math(suggestion.text)}));
+      r.suggestion.appendChild(el("div",{class:"as-formula",dir:"ltr",html:stepMath(src,suggestion.text,suggestion.action)}));
       r.suggestion.appendChild(reason(suggestion.action,suggestion.result,r.source.value==="start"?1:rows.findIndex(function(x){return x.id===r.source.value;})+2));
       r.suggestion.appendChild(btn("יישום הצעד והמשך",function(){
         var a=suggestion.action;r.category.value=SEQUENCE_ACTIONS[a.op].group;fillActions(r);r.op.value=a.op;configure(r);
-        r.fragment.set(a.before===undefined?src:a.before);r.selectedPath=a.path===undefined?(a.before===undefined?"0.0":null):a.path;Object.keys(r.fields).forEach(function(k){r.fields[k].field.set(a[k]||"");});if(a.boundProof)r.bounds.load(a.boundProof);r.result.set(suggestion.text);commit(r,true);
+        r.fragment.set(a.before===undefined?src:a.before);r.selectedPath=a.path===undefined?(a.before===undefined?"0.0":null):a.path;Object.keys(r.fields).forEach(function(k){r.fields[k].field.set(a[k]||"");});if(a.boundProof)r.bounds.load(a.boundProof);setResult(r,src,suggestion.text,a);commit(r,true);
       },"ix-main"));typeset(r.suggestion);
     }catch(e){say(r.suggestion,errMsg(e),"info");}
   }
@@ -6280,6 +6414,10 @@ function initSequencePractice(box,settings){
     }catch(e){say(r.suggestion,errMsg(e),"info");}
   }
   function fillActions(r){r.op.replaceChildren(el("option",{value:"",text:"בחרו פעולה"}));Object.keys(SEQUENCE_ACTIONS).filter(function(op){return SEQUENCE_ACTIONS[op].group===r.category.value;}).forEach(function(op){r.op.appendChild(el("option",{value:op,text:SEQUENCE_ACTIONS[op].label}));});r.op.value="";}
+  function setResult(r,src,next,a){
+    if(!isLimit){r.result.set(next);return;}
+    var claim=sequenceEquality(src,next,a,v);r.kind.value=claim.equalityKind;r.result.set(claim.equality);
+  }
   function add(focus){
     if(box.getAttribute("data-solution-complete")==="true")say(status,"");
     clearSolutionFinish(box);
@@ -6289,16 +6427,18 @@ function initSequencePractice(box,settings){
     r.category=el("select",{class:"seq-category","aria-label":"סוג הפעולה"},[el("option",{value:"",text:"בחרו סוג פעולה"}),el("option",{value:"algebra",text:"שינוי אלגברי"}),el("option",{value:"limits",text:"כללי גבולות"}),el("option",{value:"numbers",text:"חישוב מספרי"})]);
     if(!isLimit)r.category.querySelector('option[value="limits"]').remove();
     r.op=el("select",{class:"seq-action","aria-label":"הפעולה"});fillActions(r);
-    r.fragment=input("הביטוי שעליו פועלים","seq-fragment");r.fragment.set(last?readInput(last.result.input):start);
-    r.result=input("תוצאת הצעד","pw-input");r.msg=el("div",{class:"ix-msg","aria-live":"polite"});r.rule=el("div",{class:"as-model-references"});
+    r.fragment=input("הביטוי שעליו פועלים","seq-fragment");r.fragment.set(last?resultText(last):start);
+    r.result=input(isLimit?"השוויון בצעד הזה":"תוצאת הצעד","pw-input",isLimit?"rel":"expr");r.msg=el("div",{class:"ix-msg","aria-live":"polite"});r.rule=el("div",{class:"as-model-references"});
+    r.kind=el("select",{class:"seq-equality-kind","aria-label":"סוג הצעד"},[el("option",{value:"",text:"בחרו סוג צעד"}),el("option",{value:"expressions",text:"שוויון בין ביטויים"}),el("option",{value:"target",text:"שוויון בין ביטויי החישוב"})]);
+    r.kind.addEventListener("change",function(){invalidate(r);});
     r.suggestion=el("div",{class:"pw-hints","aria-live":"polite"});r.parts=el("div",{class:"seq-parts"});r.matches=el("div",{class:"seq-parts"});
     r.picker=el("details",{class:"seq-picker"},[el("summary",{text:"בחירת חלק מהביטוי"}),label("אפשר להקליד את הביטוי",r.fragment.host),r.matches,r.parts]);
     var operands=el("div",{class:"seq-operands"});
-    var labels={value:"הביטוי שבו מחלקים או שמוציאים כגורם",factor:"הגורם החסום",bound:"חסם לערך המוחלט שלו",lower:"סדרה חוסמת מלמטה",upper:"סדרה חוסמת מלמעלה"};
+    var labels={value:"הביטוי שבו מחלקים או שמוציאים כגורם",factor:"הגורם החסום",bound:"חסם לערך המוחלט שלו",lower:"סדרה חוסמת מלרע",upper:"סדרה חוסמת מלעיל"};
     Object.keys(labels).forEach(function(k){var f=input(labels[k],"seq-"+k),l=label(labels[k],f.host);r.fields[k]={field:f,label:l};l.hidden=true;f.input.addEventListener("input",function(){invalidate(r);});operands.appendChild(l);});
     r.boundHost=el("details",{class:"seq-bound-proof",open:true},[el("summary",{text:"נימוק לחסימות"})]);r.boundHost.hidden=true;
     r.bounds=initSequenceBoundArgument(r.boundHost,function(){if(rows.indexOf(r)>=0)invalidate(r);});
-    r.editor=el("div",{class:"as-editor"},[el("div",{class:"seq-controls"},[label("שורת מקור",r.source),label("סוג פעולה",r.category),label("פעולה",r.op)]),r.picker,operands,r.boundHost,r.rule,label("תוצאת הצעד",r.result.host),el("div",{class:"ix-bar"},[
+    r.editor=el("div",{class:"as-editor"},[el("div",{class:"seq-controls"},[label("שורת מקור",r.source),isLimit?label("סוג צעד",r.kind):null,label("סוג פעולה",r.category),label("פעולה",r.op)]),r.picker,operands,r.boundHost,r.rule,label(isLimit?"כתבו את השוויון, כולל שני האגפים וסימן =":"תוצאת הצעד",r.result.host),el("div",{class:"ix-bar"},[
       btn("בדיקת הצעד והמשך",function(){commit(r,true);},"ix-main"),btn("הצגת התוצאה הצפויה",function(){preview(r);}),btn("רמז",function(){hint(r);}),btn("הצגת צעד אפשרי",function(){propose(r);}),btn("מחיקת הצעד",function(){var i=rows.indexOf(r);rows.splice(i,1);r.row.remove();clearSolutionFinish(box);if(rows[i])invalidate(rows[i]);rows.forEach(function(x,j){x.number.textContent="שורה "+(j+2);sourceOptions(x);});say(status,"");if(!rows.length)add(false);if(settings.onChange)settings.onChange({ok:false});})
     ]),r.suggestion]);
     r.summary=el("div",{class:"as-compact"});r.summary.hidden=true;r.number=el("span",{class:"as-step-label",text:"שורה "+(rows.length+2)});
@@ -6308,14 +6448,22 @@ function initSequencePractice(box,settings){
     r.fragment.input.addEventListener("input",function(){r.selectedPath=null;invalidate(r);r.matches.replaceChildren();try{var matches=fragmentMatches(source(r),readInput(r.fragment.input),"expr");if(matches.length>1)matches.forEach(function(p,i){r.matches.appendChild(btn("מופע "+(i+1),function(){choosePart(r,p);}));});}catch(e){}});
     if(focus)r.result.input.focus();typeset(r.row);
   }
-  var help=el("details",{class:"pw-help"},[el("summary",{text:"איך משתמשים בעוזר הפתרון?"}),el("p",{text:"בחרו שורת מקור ופעולה, כתבו את התוצאה ובדקו את הצעד. אפשר לפשט את כל הביטוי או לבחור חלק ממנו. בחילוק מציינים במה מחלקים; בכלל הסנדוויץ׳ ובכלל של גורם חסום, בוחרים גם אי־שוויון מוכר ומנמקים את החסימות בעוזר האי־שוויונות. כדי להשתמש בחסמים רחבים יותר, בוחרים הקטנת חסם תחתון או הגדלת חסם עליון."}),el("p",{text:"בסיום העבודה לחצו על סיום פתרון; אישור של צעד אינו מסיים את הפתרון. רמז אינו משנה את העבודה. הצגת צעד אפשרי מציעה תוצאה ונימוק; הם ייכנסו לפתרון רק אחרי יישום. אפשר לערוך שורות, לחזור לשורה קודמת ולהשוות לפתרון לדוגמה."})]);
+  var help=el("details",{class:"pw-help"},[el("summary",{text:"איך משתמשים בעוזר הפתרון?"}),el("p",{text:"בחרו שורת מקור ופעולה, כתבו את התוצאה ובדקו את הצעד. אפשר לפשט את כל הביטוי או לבחור חלק ממנו. בחילוק מציינים במה מחלקים; בכלל הסנדוויץ׳ ובכלל של גורם חסום, בוחרים גם אי־שוויון מוכר ומנמקים את החסימות בעוזר האי־שוויונות. כדי להשתמש בחסמים רחבים יותר, בוחרים הקטנת חסם מלרע או הגדלת חסם מלעיל."}),el("p",{text:"בסיום העבודה לחצו על סיום פתרון; אישור של צעד אינו מסיים את הפתרון. רמז אינו משנה את העבודה. הצגת צעד אפשרי מציעה תוצאה ונימוק; הם ייכנסו לפתרון רק אחרי יישום. אפשר לערוך שורות, לחזור לשורה קודמת ולהשוות לפתרון לדוגמה."})]);
   var solution=el("section",{class:"pw-solution"});
   steps.forEach(function(step){step.remove();});hints.forEach(function(h){h.remove();});
   lazyModel(solution,function(){
-    var model=sequenceModel(start,steps.map(modelStepData),v,isLimit?null:path[path.length-1]);
-    modelRows(solution,model.state.records,math,function(record,i){
-      if(!i)return "נקודת מוצא";
-      return reason(model.entries[i-1].action,model.state.results[i-1],i);
+    var modelSteps=steps.map(function(step,i){return Object.assign({},modelStepData(step),{line:path[i]});});
+    var model=sequenceModel(start,modelSteps,v,isLimit?null:path[path.length-1]);
+    if(isLimit){
+      model.entries.forEach(function(entry,i){Object.assign(entry,sequenceEquality(model.state.records[i].text,entry.text,entry.action,v));});
+      model.state=checkSequenceProof(start,model.entries,v);
+      var bad=model.state.results.filter(function(r){return !r.ok;})[0];if(bad)throw new ParseError(bad.msg);
+    }
+    modelRows(solution,model.state.records,function(src,i){return isLimit&&i?equalityMath(model.entries[i-1].equality):math(src);},function(record,i){
+      if(!i)return isLimit?"לחישוב":"נקודת מוצא";
+      var why=reason(model.entries[i-1].action,model.state.results[i-1],i);
+      if(isLimit&&model.state.results[i-1].part.path!=="0.0")why.appendChild(el("div",{class:"seq-current-target",html:"הביטוי לחישוב כעת: "+math(record.text)}));
+      return why;
     },function(record,i){
       if(!i)return null;
       var prose=el("div",{class:"as-clean-reason"}),explanation=cleanExplanation(steps[model.entries[i-1].note]);
@@ -6325,8 +6473,10 @@ function initSequencePractice(box,settings){
       if(bounds){prose.appendChild(el("p",{text:"נימוק לחסימות:"}));bounds.classList.add("as-clean-bounds");prose.appendChild(bounds);}
       prose.appendChild(references(model.state.results[i-1].refs));return prose;
     });
+    if(attr(box,"given"))solution.insertBefore(setup.cloneNode(true),solution.firstChild);
   });
-  var ui=el("div",{class:"pw sequence-work"},[settings.embedded?null:help,paper,el("div",{class:"ix-bar"},[btn("הוספת שורה",function(){add(true);}),btn(settings.embedded?"בדיקת החישוב":"סיום פתרון",function(){
+  if(isLimit)help.appendChild(el("p",{text:"בחרו סוג צעד וכתבו שוויון מלא. שוויון בין ביטויים מצדיק שינוי אלגברי; שוויון בין ביטויי החישוב יכול לכלול גבולות. כשבוחרים חלק מהביטוי, השוויון מתייחס לחלק הזה בלבד. בפירוט המקופל של צעד שנבדק מופיעים הפעולה והביטויים שעליהם פעלה."}));
+  var ui=el("div",{class:"pw sequence-work"},[setup,settings.embedded?null:help,paper,el("div",{class:"ix-bar"},[btn("הוספת שורה",function(){add(true);}),btn(settings.embedded?"בדיקת החישוב":"סיום פתרון",function(){
       clearSolutionFinish(box);
       var active=rows.slice();
       while(active.length&&!active[active.length-1].result.input.value.trim()){
@@ -6811,9 +6961,9 @@ function initComposition(box){
     inputs.appendChild(el("label",{class:"composition-field",dir:"ltr"},[el("span",{html:mx("\\("+name+"(x)=\\)")}),entry]));
     function renderPreview(){
       preview.innerHTML="";
-      if(isMathInput(input)||!input.value.trim())return;
-      var parsed=parsedSoFar(readInput(input),parseExpr);
-      if(parsed)showParsed(preview,"\\("+tex(parsed.node)+"\\)",parsed.whole);
+      if(!input.value.trim())return;
+      try{var parsed=parsedSoFar(readInput(input),parseExpr);
+      if(parsed)showParsed(preview,"\\("+tex(parsed.node)+"\\)",parsed.whole);}catch(_){}
     }
     input.addEventListener("input",function(){say(msg,"");result.replaceChildren();renderPreview();});
     input.addEventListener("focus",renderPreview);

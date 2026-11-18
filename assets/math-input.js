@@ -44,6 +44,7 @@
       if(m==="to"||m==="rightarrow")return "->";
       if(m==="lim"){
         space();var index="n";
+        var placement=/^\\(?:limits|nolimits)(?![a-zA-Z])/.exec(s.slice(at));if(placement){at+=placement[0].length;space();}
         if(s[at]==="_"){at++;var bound=argument().replace(/\s/g,"");var match=/^([a-z])->inf$/.exec(bound);if(!match)throw new Error("כאן מחשבים גבול כשהאינדקס שואף לאינסוף.");index=match[1];}
         space();var body=s[at]==="("?group("(",")"):argument();
         return "lim("+(index!=="n"?index+",":"")+body+")";
@@ -107,7 +108,7 @@
     return String(source||"").replace(/\\class\{course-logic\}\{\\text\{\s*(וגם|ולא|או|לא)\s*\}\}|\\text\{\s*(וגם|ולא|או|לא)\s*\}/g,function(_,wrapped,plain){return logicalLatex(wrapped||plain);});
   }
   var templates = {
-    "lim()":"\\lim_{n\\to\\infty}\\left(#0\\right)",
+    "lim()":"\\lim\\limits_{n\\to\\infty}\\left(#0\\right)",
     "_":"#@_{#?}",
     "_n":"#@_{n}",
     "{x|}":"\\left\\{x\\mid #0\\right\\}",
@@ -134,7 +135,11 @@
       libraryBase=libraryBases[index];
       var script = document.createElement("script");script.async=true;
       script.src=libraryBase+"mathlive.min.js";
-      script.addEventListener("load",function(){if(activeReady)activeReady();});
+      script.addEventListener("load",function(){
+        if(activeReady)activeReady();
+        // The script can finish before the custom element is registered.
+        if(root.customElements&&root.customElements.whenDefined)root.customElements.whenDefined("math-field").then(function(){if(activeReady)activeReady();});
+      });
       script.addEventListener("error",function(){
         script.remove();
         // One bounded fallback; failed downloads never block exercise initialization.
@@ -163,11 +168,15 @@
     var logicStyle=document.createElement("style");
     logicStyle.textContent=".course-logic{direction:rtl;unicode-bidi:isolate;display:inline-block;white-space:nowrap}.course-logic *{direction:inherit}";
     input.appendChild(logicStyle);
-    input.menuItems = [];
-    input.inlineShortcuts = Object.assign({}, input.inlineShortcuts, {
-      inf:"\\infty", infinity:"\\infty", sqrt:"\\sqrt{#0}", cbrt:"\\sqrt[3]{#0}", pi:"\\pi", eps:"\\varepsilon", epsilon:"\\varepsilon",
-      "או":templates[" או "], "וגם":templates[" וגם "], "ולא":templates[" ולא "], "לא":templates[" לא "]
-    });
+    // Use the typed character, rather than a US keyboard's physical key.
+    // MathLive's implicit argument (#@) preserves the preceding term/selection.
+    input.addEventListener("keydown",function(e){
+      if(e.isComposing||e.ctrlKey||e.metaKey||e.altKey||input.mode&&input.mode!=="math")return;
+      var key=e.key==="√"?"sqrt()":e.key;
+      if(["/","^","_","sqrt()"].indexOf(key)<0)return;
+      e.preventDefault();e.stopPropagation();if(e.stopImmediatePropagation)e.stopImmediatePropagation();
+      input.insert(templates[key],{format:"latex",mode:"math",selectionMode:"placeholder"});
+    },true);
     input.addEventListener("paste", function (e) {
       var text = e.clipboardData && e.clipboardData.getData("text/plain");
       // A plain set difference uses a backslash too; it is not a LaTeX command.
@@ -180,8 +189,18 @@
     }, true);
     return input;
   }
+  function configureMounted(input) {
+    // These MathLive accessors throw until its internal editor is mounted.
+    // Appending to our wrapper alone is insufficient: it may still be detached.
+    input.menuItems = [];
+    input.inlineShortcuts = Object.assign({}, input.inlineShortcuts, {
+      inf:"\\infty", infinity:"\\infty", sqrt:"\\sqrt{#0}", cbrt:"\\sqrt[3]{#0}", pi:"\\pi", eps:"\\varepsilon", epsilon:"\\varepsilon",
+      lim:templates["lim()"], "->":"\\to",
+      "או":templates[" או "], "וגם":templates[" וגם "], "ולא":templates[" ולא "], "לא":templates[" לא "]
+    });
+  }
   function create(props, kind) {
-    var host = document.createElement("span"), active = document.createElement("input"), failed = false;
+    var host = document.createElement("span"), active = document.createElement("input"), pending = null, failed = false;
     host.setAttribute("class", (props.class || "") + " mi-control");
     host.setAttribute("dir", "ltr");
     Object.keys(props).forEach(function (k) { if (k !== "class") active.setAttribute(k, props[k]); });
@@ -228,12 +247,13 @@
       });
       control.addEventListener("input", function (e) {
         e.stopPropagation();
+        if (control !== active) return;
         host.dispatchEvent(new Event("input", { bubbles:true }));
       });
       control.addEventListener("keydown",function(e){
         if(control!==active||isMath(control)||e.isComposing||e.ctrlKey||e.metaKey||e.altKey)return;
-        if(e.key==="/"||e.key==="^"){
-          e.preventDefault();e.stopPropagation();insert(host,e.key);
+        if(e.key==="/"||e.key==="^"||e.key==="_"||e.key==="√"){
+          e.preventDefault();e.stopPropagation();insert(host,e.key==="√"?"sqrt()":e.key);
         }else if(e.key==="Tab"){
           var at=control.selectionStart,slots=[],m,re=/\(\s*\)/g;
           while((m=re.exec(control.value)))slots.push(m.index+1);
@@ -245,36 +265,89 @@
       });
       // Keydown bubbles naturally, including the exercise's Enter shortcuts.
     }
+    function selectedDraft() {
+      return active.value && typeof active.selectionStart === "number" &&
+        (active.selectionStart !== active.value.length || active.selectionEnd !== active.value.length);
+    }
+    function addKeyboardButton() {
+      if (!root.mathVirtualKeyboard || host.querySelector(".mi-keyboard-button") ||
+          active.getAttribute("disabled") !== null || active.getAttribute("readonly") !== null) return;
+      var button = document.createElement("button");
+      button.setAttribute("type", "button");
+      button.setAttribute("class", "mi-keyboard-button");
+      button.setAttribute("aria-label", "פתיחת מקלדת מתמטית");
+      button.setAttribute("title", "פתיחת מקלדת מתמטית");
+      var icon = document.createElement("span");
+      icon.setAttribute("aria-hidden", "true");
+      icon.textContent = "⌨";
+      button.appendChild(icon);
+      // Keep the selection in the mathfield when tapping its adjacent control.
+      button.addEventListener("pointerdown", function (event) { event.preventDefault(); });
+      button.addEventListener("click", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        active.focus();
+        root.mathVirtualKeyboard.show();
+      });
+      host.classList.add("mi-with-keyboard");
+      host.appendChild(button);
+    }
     function upgrade() {
-      if (isMath(active) || failed || !ready()) return;
+      if (isMath(active) || pending || failed || !ready()) return;
       // A toolbar click after a delayed download must still act on the selected
       // native text. We cannot reliably map that selection into the math editor.
-      if (active.value && typeof active.selectionStart === "number" &&
-          (active.selectionStart !== active.value.length || active.selectionEnd !== active.value.length)) return;
-      var latex;
-      try { latex = isolateLogicalLatex(toLatex(active.value, kind)); }
+      if (selectedDraft()) return;
+      try { toLatex(active.value, kind); }
       catch (_) { return; } // Keep incomplete drafts intact until the next focus.
       var rich;
+      function cancel(error) {
+        pending = null;
+        if (rich) rich.remove();
+        if (error) {
+          failed = true;
+          if (root.console && root.console.warn) root.console.warn("Visual math input initialization failed:", error);
+        }
+      }
       try {
         rich = createRich(props, kind);
-        ["aria-label", "aria-invalid", "aria-describedby"].forEach(function (name) {
-          var value = active.getAttribute(name);
-          if (value !== null) rich.setAttribute(name, value);
+        pending = rich;
+        rich.hidden = true;
+        rich.addEventListener("mount", function () {
+          if (pending !== rich) return;
+          // Mount is asynchronous. Re-read the current draft and selection;
+          // an edit made while waiting must never be replaced by an older value.
+          if (selectedDraft()) { cancel(); return; }
+          var latex;
+          try { latex = isolateLogicalLatex(toLatex(active.value, kind)); }
+          catch (_) { cancel(); return; }
+          try {
+            configureMounted(rich);
+            ["aria-label", "aria-invalid", "aria-describedby"].forEach(function (name) {
+              var value = active.getAttribute(name);
+              if (value !== null) rich.setAttribute(name, value);
+              else rich.removeAttribute(name);
+            });
+            rich.value = latex;
+          } catch (error) { cancel(error); return; }
+          // Keep the usable native input until mounting AND configuration succeed.
+          var previous = active, focused = document.activeElement === previous;
+          active = rich;
+          pending = null;
+          rich.hidden = false;
+          previous.remove();
+          addKeyboardButton();
+          if (focused) {
+            rich.focus();
+            if (rich.executeCommand) rich.executeCommand("moveToMathfieldEnd");
+          }
         });
-        rich.value = latex;
         events(rich);
         host.appendChild(rich);
-        // Native input stays in place until construction and mounting succeed.
-        var previous = active;
-        active = rich;
-        previous.remove();
-      } catch (_) {
-        if (rich) rich.remove();
-        failed = true;
-      }
+      } catch (error) { cancel(error); }
     }
     events(active);
     host.appendChild(active);
+    upgrade();
     return host;
   }
   function control(input) { return input && (input.control || input); }

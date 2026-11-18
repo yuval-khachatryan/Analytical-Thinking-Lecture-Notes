@@ -3,6 +3,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>משפחות של גבולות</title>
+<link rel="stylesheet" href="limit-activities.css">
 <style>
 body{margin:0;font:15px/1.5 Arial,sans-serif;color:#1f2937;background:transparent}
 .w{padding:.6rem;border:1px solid #cbd5e1;background:white;border-radius:8px}
@@ -18,8 +19,8 @@ label{display:inline-flex;align-items:center;gap:.4rem}input{direction:ltr;width
   <canvas id="plot" width="760" height="270" aria-label="איברי הסדרה והגבול"></canvas>
   <div class="controls">
     <label id="q-control">הבסיס <span class="m">q</span><input id="q" type="range"><output class="m" id="q-value"></output></label>
-    <label id="a-control">המספר הקבוע <span class="m">a</span><select id="a"><option value="0.25">¼</option><option value="1">1</option><option value="2">2</option><option value="4" selected>4</option><option value="16">16</option></select></label>
-    <label id="p-control">המעריך <span class="m">p</span><select id="p"><option>1</option><option>2</option><option>3</option></select></label>
+    <label id="a-control">המספר הקבוע <span class="m">a</span><select id="a"><option value="0.0625">1/16</option><option value="0.25">1/4</option><option value="1">1</option><option value="2">2</option><option value="4">4</option><option value="16" selected>16</option></select><span id="a-options"></span></label>
+    <label id="p-control">המעריך <span class="m">p</span><select id="p"><option>0</option><option>1</option><option selected>2</option><option>3</option></select></label>
     <label>מספר האיברים<select id="count"><option>12</option><option selected>24</option><option>48</option><option>96</option><option>192</option></select></label>
   </div>
   <p class="note" id="readout" aria-live="polite"></p>
@@ -35,6 +36,7 @@ label{display:inline-flex;align-items:center;gap:.4rem}input{direction:ltr;width
   </div>
 </div>
 <script src="../shared/autosize.js"></script>
+<script src="limit-activities.js"></script>
 <script>
 (function(){
   'use strict';
@@ -45,14 +47,19 @@ label{display:inline-flex;align-items:center;gap:.4rem}input{direction:ltr;width
   document.getElementById('a-control').hidden=kind!=='roots';
   document.getElementById('p-control').hidden=kind!=='ratio';
   document.getElementById('root-prediction').hidden=kind!=='roots';
-  q.min=kind==='ratio'?'1.2':'-1.2';q.max=kind==='ratio'?'4':'1.2';q.step='0.1';q.value=kind==='ratio'?'2':'0.5';
+  q.min=kind==='ratio'?'1':'-2';q.max=kind==='ratio'?'4':'2';q.step='0.1';q.value=kind==='ratio'?'2':'0.5';
   function family(kind,q,a,p){
     if(kind==='roots')return {term:function(n){return Math.pow(a,1/n);},limit:1,note:'המספר שמתחת לשורש קבוע; סדר השורש גדל.'};
-    if(kind==='ratio')return {term:function(n){return Math.pow(n,p)/Math.pow(q,n);},limit:0,note:'המנה יכולה לגדול בתחילה. הגדילו את מספר האיברים כדי לראות את ההמשך.'};
+    if(kind==='ratio')return {term:function(n){return Math.pow(n,p)/Math.pow(q,n);},limit:q===1?(p===0?1:null):0,note:q===1?(p===0?'כל האיברים שווים ל 1.':'כשהבסיס הוא 1, המכנה נשאר 1 והמונה גדל. האיברים אינם מתקרבים לאפס.'):p===0?'כשהמעריך הוא 0, מתקבלת סדרה הנדסית ששואפת לאפס, אף שכלל ההשוואה בטבלה אינו חל.':'המנה יכולה לגדול בתחילה. הגדילו את מספר האיברים כדי לראות את ההתקרבות לאפס בהמשך.'};
     var converges=Math.abs(q)<1||q===1;
     return {term:function(n){return Math.pow(q,n);},limit:converges?(q===1?1:0):null,note:q===0?'כל האיברים שווים לאפס.':Math.abs(q)<1?'הערך המוחלט קטן בכל צעד. בסיס שלילי גורם גם לחילופי סימן.':q===1?'כל האיברים שווים לאחת: הגבול הוא אחת, ולא אפס.':q===-1?'האיברים מתחלפים בין אחת למינוס אחת: אין גבול.':'הערכים המוחלטים גדלים: הסדרה אינה מתכנסת למספר.'};
   }
-  function number(value){return Math.abs(value)>=10000?value.toExponential(1):Number(value.toPrecision(3)).toString();}
+  function number(value){
+    var denominator=10000,numerator=Math.round(value*denominator),a=Math.abs(numerator),b=denominator;
+    while(b){var r=a%b;a=b;b=r;}
+    return [numerator/a,denominator/a];
+  }
+  function fraction(value){var f=number(value),sign=f[0]<0?'−':'';return sign+LimitActivities.fraction(Math.abs(f[0]),f[1]);}
   var side=document.getElementById('root-side'),feedback=document.getElementById('root-feedback');
   function rootAnswer(){
     var constant=Number(a.value);
@@ -68,6 +75,13 @@ label{display:inline-flex;align-items:center;gap:.4rem}input{direction:ltr;width
   });
   document.getElementById('root-reveal').addEventListener('click',function(){feedback.textContent=rootAnswer().text;feedback.className='note';});
   function text(s,x,y,align,color){ctx.direction='ltr';ctx.font='12px Arial';ctx.textAlign=align||'center';ctx.textBaseline='middle';ctx.fillStyle=color||'#475569';ctx.fillText(s,x,y);}
+  function tickLabel(numerator,denominator,x,y){
+    var a=Math.abs(numerator),b=denominator;while(b){var r=a%b;a=b;b=r;}
+    if(denominator===a){text(String(numerator/a).replace('-','−'),x,y,'right');return;}
+    var top=String(numerator/a).replace('-','−'),bottom=String(denominator/a),width=Math.max(top.length,bottom.length)*7;
+    text(top,x-width/2,y-8);text(bottom,x-width/2,y+8);
+    ctx.strokeStyle='#475569';ctx.beginPath();ctx.moveTo(x-width-2,y);ctx.lineTo(x+2,y);ctx.stroke();
+  }
   function draw(){
     var base=Number(q.value),constant=Number(a.value),power=Number(p.value),N=Number(count.value),S=family(kind,base,constant,power);
     var values=Array.from({length:N},function(_,i){return S.term(i+1);}),target=S.limit===null?0:S.limit;
@@ -77,18 +91,31 @@ label{display:inline-flex;align-items:center;gap:.4rem}input{direction:ltr;width
     function X(n){return left+(n-.5)/N*(W-left-right);}
     function Y(v){return top+(hi-v)/(hi-lo)*(H-top-bottom);}
     ctx.clearRect(0,0,W,H);ctx.strokeStyle='#94a3b8';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(left,top);ctx.lineTo(left,H-bottom);ctx.lineTo(W-right,H-bottom);ctx.stroke();
-    for(var j=0;j<=4;j++){var value=lo+j*(hi-lo)/4;text(number(value),left-7,Y(value),'right');}
+    var raw=(hi-lo)/4,exponent=Math.floor(Math.log10(raw)),unit=Math.pow(10,exponent),scaled=raw/unit,factor=scaled<=1?1:scaled<=2?2:scaled<=5?5:10,step=factor*unit;
+    for(var j=Math.ceil(lo/step);j<=Math.floor(hi/step);j++){
+      var value=j*step;
+      if(exponent>=4&&j!==0){
+        var power=String(exponent).replace(/[0-9]/g,function(d){return '⁰¹²³⁴⁵⁶⁷⁸⁹'[Number(d)];});
+        text(String(j*factor).replace('-','−')+'×10'+power,left-7,Y(value),'right');
+      }else tickLabel(exponent<0?j*factor:Math.round(value),exponent<0?Math.pow(10,-exponent):1,left-7,Y(value));
+    }
     var tick=N<=24?1:N<=48?5:N<=96?10:20;
     for(var n=1;n<=N;n++)if(n===1||n%tick===0){ctx.beginPath();ctx.moveTo(X(n),H-bottom);ctx.lineTo(X(n),H-bottom+4);ctx.stroke();text(String(n),X(n),H-bottom+15);}
     text('n',W-right,H-8,'right');
     if(S.limit!==null){ctx.strokeStyle='#64748b';ctx.setLineDash([5,4]);ctx.beginPath();ctx.moveTo(left,Y(target));ctx.lineTo(W-right,Y(target));ctx.stroke();ctx.setLineDash([]);text('L = '+target,W-right-5,Y(target)-10,'right','#4338ca');}
     ctx.fillStyle='#4f46e5';values.forEach(function(value,i){ctx.beginPath();ctx.arc(X(i+1),Y(value),N>96?2:3.2,0,2*Math.PI);ctx.fill();});
-    document.getElementById('q-value').textContent=String(base);
-    var expression=kind==='geometric'?(base<0?'('+base+')':base)+'<sup><i>n</i></sup>':kind==='roots'?'<sup><i>n</i></sup>√<span class="root">'+(constant===.25?'¼':constant)+'</span>':'<span class="fr"><span><i>n</i>'+(power===1?'':'<sup>'+power+'</sup>')+'</span><span>'+base+'<sup><i>n</i></sup></span></span>';
+    document.getElementById('q-value').innerHTML=fraction(base);
+    var baseFormula=number(base)[1]!==1||base<0?'('+fraction(base)+')':fraction(base);
+    var expression=kind==='geometric'?baseFormula+'<sup><i>n</i></sup>':kind==='roots'?'<sup><i>n</i></sup>√<span class="root">'+fraction(constant)+'</span>':'<span class="fr"><span><i>n</i>'+(power===1?'':'<sup>'+power+'</sup>')+'</span><span>'+baseFormula+'<sup><i>n</i></sup></span></span>';
     document.getElementById('formula').innerHTML='<i>a</i><sub><i>n</i></sub> = '+expression+(S.limit===null?'':' → '+S.limit);
-    document.getElementById('readout').innerHTML=S.note+' באינדקס <span class="m">n = '+N+'</span> מתקבל <span class="m">a<sub>'+N+'</sub> ≈ '+Number(values[N-1].toPrecision(4))+'</span>. הציור מציג רק מספר סופי של איברים.';
+    document.getElementById('readout').textContent=S.note+' הציור מציג את '+N+' האיברים הראשונים בלבד.';
   }
   [q,a,p,count].forEach(function(control){control.addEventListener('input',draw);control.addEventListener('change',draw);});draw();
+  if(kind==='roots'){
+    var picker=document.getElementById('a-options');LimitActivities.fractionPicker(a,picker);
+    picker.querySelector('[role="combobox"]').setAttribute('aria-label','בחירת המספר הקבוע a');
+    picker.querySelector('[role="listbox"]').setAttribute('aria-label','בחירת המספר הקבוע a');
+  }
 })();
 </script>
 </html>

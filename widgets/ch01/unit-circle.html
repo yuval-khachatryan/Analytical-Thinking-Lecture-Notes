@@ -40,7 +40,7 @@
     <button type="button" data-k="24">π</button>
     <button type="button" data-k="36">3π/2</button>
     <button type="button" data-k="48">2π</button>
-    <label><input type="checkbox" id="showcos"> להציג גם את <span class="num">cos θ</span> בגרף</label>
+    <label><input type="checkbox" id="showcos"> להציג גם את <span class="num">cos(θ)</span> בגרף</label>
   </div>
 </div>
 <script src="../shared/autosize.js"></script>
@@ -127,7 +127,7 @@
       ctx.font = "italic 16px 'Cambria Math', 'Times New Roman', serif";
       tag("θ", CX + rl * Math.cos(a), CY - rl * Math.sin(a), second ? C_TURN2 : C_ARC, "center");
     }
-    // the coordinates as projections: drop to the x-axis (cos θ), across to the y-axis (sin θ)
+    // the coordinates as projections: drop to the x-axis (cos(θ)), across to the y-axis (sin(θ))
     ctx.setLineDash([5, 4]); ctx.lineWidth = 1.5;
     ctx.strokeStyle = C_COS; ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(px, CY); ctx.stroke();
     ctx.strokeStyle = C_SIN; ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(CX, py); ctx.stroke();
@@ -138,15 +138,15 @@
     ctx.fillStyle = C_COS; ctx.beginPath(); ctx.arc(px, CY, 4, 0, TAU); ctx.fill();
     ctx.fillStyle = C_SIN; ctx.beginPath(); ctx.arc(CX, py, 4, 0, TAU); ctx.fill();
     ctx.font = "italic 15px 'Cambria Math', 'Times New Roman', serif";
-    if (Math.abs(c) > 0.15) tag("cos θ", px, CY + (s >= 0 ? 15 : -15), C_COS, "center");
-    // sin θ at the foot on the y-axis, or halfway up when the point itself is near the y-axis
-    if (Math.abs(s) > 0.15) tag("sin θ", CX + (c >= 0 ? -8 : 8), Math.abs(c) < 0.35 ? (CY + py) / 2 : py,
+    if (Math.abs(c) > 0.15) tag("cos(θ)", px, CY + (s >= 0 ? 15 : -15), C_COS, "center");
+    // sin(θ) at the foot on the y-axis, or halfway up when the point itself is near the y-axis
+    if (Math.abs(s) > 0.15) tag("sin(θ)", CX + (c >= 0 ? -8 : 8), Math.abs(c) < 0.35 ? (CY + py) / 2 : py,
       C_SIN, c >= 0 ? "right" : "left");
     ctx.fillStyle = "#0f172a"; ctx.beginPath(); ctx.arc(CX + R, CY, 3.5, 0, TAU); ctx.fill();
     ctx.fillStyle = C_PT; ctx.beginPath(); ctx.arc(px, py, 6.5, 0, TAU); ctx.fill();
-    // the point itself is (cos θ, sin θ)
+    // the point itself is (cos(θ), sin(θ))
     ctx.font = "italic 15px 'Cambria Math', 'Times New Roman', serif";
-    var lab = "(cos θ, sin θ)", lw = ctx.measureText(lab).width;
+    var lab = "(cos(θ), sin(θ))", lw = ctx.measureText(lab).width;
     var lx = Math.max(lw / 2 + 4, Math.min(GX0 - 24 - lw / 2, px)), ly = py + (s >= 0 ? -17 : 18);
     tag(lab, lx, ly, C_PT, "center");
     ctx.font = "13px Arial";
@@ -190,7 +190,7 @@
       : " ≈ (<b class='c'>" + n3(c) + "</b>, <b class='s'>" + n3(s) + "</b>)";
     document.getElementById("same").innerHTML = "<b class='t'>" + piLabel(k) + "</b>";
     read.innerHTML = "<span class='read'><b class='t'>θ = " + piLabel(k) + "</b>" +
-      " &nbsp; → &nbsp; (<b class='c'>cos θ</b>, <b class='s'>sin θ</b>)" + vals + "</span>" +
+      " &nbsp; → &nbsp; (<b class='c'>cos(θ)</b>, <b class='s'>sin(θ)</b>)" + vals + "</span>" +
       (turns >= 1 ? " <span class='hint'>(" + turnsTxt + ")</span>" : "");
   }
 
