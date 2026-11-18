@@ -4044,27 +4044,22 @@ b_3&amp;=a_6=\frac16,\quad\ldots
 </section>
 <section id="sec-boundedness" class="level2" data-number="2.4">
 <h2 data-number="2.4" class="anchored" data-anchor-id="sec-boundedness"><span class="header-section-number">2.4</span> חסימות</h2>
-<p>סדרה חסומה היא סדרה שכל איבריה נשארים בין שני מספרים קבועים. נלמד לזהות חסימות ולמצוא חסמים; בהמשך נשלב חסימות עם מונוטוניות כדי להבטיח התכנסות.</p>
+<p>מלבד התכנסות, לסדרות יש תכונות חשובות נוספות שנחקור. נתחיל בחסימות.</p>
 <div id="box-def-bounded" class="thmbox thmbox-definition" title="סדרה חסומה">
 <p><strong>הגדרה 2.4.1 — סדרה חסומה.</strong></p>
 <p>סדרה <span class="math inline">\((a_n)_{n=1}^{\infty}\)</span> <span class="term"><strong>חסומה מלעיל</strong></span> אם קיים מספר קבוע <span class="math inline">\(M\)</span> כך שלכל <span class="math inline">\(n\ge1\)</span> מתקיים <span class="math display">\[a_n\le M.\]</span> המספר <span class="math inline">\(M\)</span> נקרא <span class="term"><strong>חסם מלעיל</strong></span> של הסדרה.</p>
 <p>סדרה <span class="math inline">\((a_n)_{n=1}^{\infty}\)</span> <span class="term"><strong>חסומה מלרע</strong></span> אם קיים מספר קבוע <span class="math inline">\(m\)</span> כך שלכל <span class="math inline">\(n\ge1\)</span> מתקיים <span class="math display">\[m\le a_n.\]</span> המספר <span class="math inline">\(m\)</span> נקרא <span class="term"><strong>חסם מלרע</strong></span> של הסדרה.</p>
 <p>סדרה היא <span class="term"><strong>חסומה</strong></span> אם היא חסומה גם מלעיל וגם מלרע. כלומר, כל איבריה נמצאים בין שני מספרים קבועים: <span class="math display">\[m\le a_n\le M.\]</span></p>
-<p>ה<span class="term"><strong>חסם העליון</strong></span> של הסדרה, <strong>סופרמום</strong> (supremum), הוא החסם מלעיל הקטן ביותר. מסמנים אותו <span class="math inline">\(\sup_{n\ge1}a_n\)</span>.</p>
-<p>ה<span class="term"><strong>חסם התחתון</strong></span> של הסדרה, <strong>אינפימום</strong> (infimum), הוא החסם מלרע הגדול ביותר. מסמנים אותו <span class="math inline">\(\inf_{n\ge1}a_n\)</span>.</p>
 </div>
-<p>תכונת ״אין חורים״ של המספרים הממשיים מבטיחה שלסדרה חסומה מלעיל קיים חסם עליון, ולסדרה חסומה מלרע קיים חסם תחתון.</p>
-<div id="box-exm-sequence-bounds" class="thmbox thmbox-example" title="אילו מספרים יכולים לשמש חסמים?">
-<p><strong>דוגמה 2.4.2 — אילו מספרים יכולים לשמש חסמים?</strong></p>
-<p>בסדרה <span class="math inline">\(a_n=\frac1n\)</span> מתקיים <span class="math display">\[0\le\frac1n\le1.\]</span> <strong><span class="math inline">\(0\)</span> הוא החסם התחתון (האינפימום):</strong> הוא חסם מלרע, ושום מספר חיובי <span class="math inline">\(c\)</span> אינו חסם מלרע, כי עבור <span class="math inline">\(n&gt;\frac{1}{c}\)</span> מתקיים <span class="math inline">\(\frac{1}{n}&lt;c\)</span>.</p>
-<p><strong><span class="math inline">\(1\)</span> הוא החסם העליון (הסופרמום):</strong> הוא חסם מלעיל, ואי אפשר לבחור חסם מלעיל קטן ממנו, כי <span class="math inline">\(a_1=1\)</span>.</p>
-<p>לכן <span class="math inline">\(\inf_{n\ge1}a_n=0\)</span> ו <span class="math inline">\(\sup_{n\ge1}a_n=1\)</span>. <strong>חסם תחתון או עליון אינו חייב להיות איבר בסדרה:</strong> כאן <span class="math inline">\(0\)</span> אינו איבר, ואילו <span class="math inline">\(1\)</span> הוא האיבר הראשון.</p>
-<p>גם <span class="math inline">\(-5\)</span> הוא חסם מלרע, וגם <span class="math inline">\(10\)</span> הוא חסם מלעיל. הם מתאימים משום שכל האיברים ביניהם, אבל הם אינם החסם התחתון והחסם העליון.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="figures/ch02-bounded-reciprocal.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="הסדרה אחת חלקי n: החסם התחתון הוא אפס והחסם העליון הוא אחת. האיבר הראשון שווה לחסם העליון, והאיברים מתקרבים לאפס בלי להיות שווים לו." width="520"></p>
-</figure>
+<div id="box-insight-any-bound" class="thmbox thmbox-key-point thmicon-idea" title="מחפשים חסם גדול מספיק או קטן מספיק">
+<p><strong>תובנה חשובה — מחפשים חסם גדול מספיק או קטן מספיק.</strong></p>
+<p><strong>כדי להוכיח חסימות, מחפשים מספר קבוע גדול מספיק שכל האיברים יהיו קטנים ממנו או שווים לו, ומספר קבוע קטן מספיק שכל האיברים יהיו גדולים ממנו או שווים לו.</strong></p>
+<p><strong>אין צורך למצוא את החסמים הטובים ביותר.</strong> עדיף חסם נוח שקל להצדיק, גם אם הוא רחוק מאוד מהאיברים. החסמים חייבים להתאים לכל האינדקסים, ולא להשתנות עם <span class="math inline">\(n\)</span>.</p>
 </div>
+<div id="box-exm-sequence-bounds" class="thmbox thmbox-example" title="חסמים נוחים מספיקים להוכחת חסימות">
+<p><strong>דוגמה 2.4.2 — חסמים נוחים מספיקים להוכחת חסימות.</strong></p>
+<p>נתונה הסדרה <span class="math inline">\(a_n=\frac{1}{n}\)</span>, עבור <span class="math inline">\(n\ge1\)</span>. מכיוון ש <span class="math inline">\(n\ge1\)</span>, <span class="math display">\[0&lt;\frac{1}{n}\le1.\]</span> לכן <span class="math inline">\(0\)</span> הוא חסם מלרע ו <span class="math inline">\(1\)</span> הוא חסם מלעיל, והסדרה חסומה.</p>
+<p>גם הבחירה <span class="math inline">\(m=-5\)</span>, <span class="math inline">\(M=100\)</span> מתאימה: <span class="math display">\[-5\le0&lt;\frac{1}{n}\le1\le100.\]</span> <strong>החסמים <span class="math inline">\(-5\)</span> ו <span class="math inline">\(100\)</span> מספיקים באותה מידה להוכחת חסימות.</strong> אין צורך לצמצם את התחום שמצאנו.</p>
 <div class="fill">
 <p>בסדרה <span class="math inline">\(b_n=2+\frac1n\)</span>, השלימו את האי־שוויון שמתקבל מהוספת <span class="math inline">\(2\)</span> לכל האגפים:</p>
 <div class="eqline" dir="ltr">
@@ -4121,10 +4116,6 @@ b_3&amp;=a_6=\frac16,\quad\ldots
 </div>
 </div>
 </div>
-<div id="box-warn-bounded-not-convergent" class="thmbox thmbox-warning" title="טעות נפוצה — חסימות אינה מבטיחה התכנסות">
-<p><strong>שימו לב — טעות נפוצה — חסימות אינה מבטיחה התכנסות.</strong></p>
-<p><strong>איברי סדרה יכולים להישאר בין שני חסמים בלי להתקרב למספר אחד.</strong> <a href="#box-exm-absolute-bound" data-xref="02-Sequences.html#box-exm-absolute-bound" target="_blank" rel="noopener">הסדרה <span class="math inline">\(a_n=(-1)^n\)</span> שבדוגמה</a> חסומה, אבל <a href="#box-exm-alternating-diverges" data-xref="02-Sequences.html#box-exm-alternating-diverges" target="_blank" rel="noopener">אינה מתכנסת</a>.</p>
-</div>
 <div class="thmbox thmbox-self-check" title="מה קורה כשהחסמים מתלכדים?">
 <p><strong>בדיקה עצמית — מה קורה כשהחסמים מתלכדים?</strong></p>
 <div class="fill">
@@ -4154,8 +4145,30 @@ b_3&amp;=a_6=\frac16,\quad\ldots
 <iframe class="widget-frame" src="widgets/ch02/unbounded.html" loading="lazy" title="חוסר חסימות: בחירת חסם מוצע והצגת איברים שחורגים ממנו">
 </iframe>
 </div>
+<p>לצורך הוכחת חסימות מספיק למצוא חסמים כלשהם. לשני החסמים ההדוקים ביותר יש שמות שנשתמש בהם בהמשך לתיאור גבול של סדרה מונוטונית.</p>
+<div id="box-def-sup-inf" class="thmbox thmbox-definition" title="חסם עליון וחסם תחתון">
+<p><strong>הגדרה 2.4.5 — חסם עליון וחסם תחתון.</strong></p>
+<p>לסדרה <span class="math inline">\((a_n)_{n=1}^{\infty}\)</span>:</p>
+<ul>
+<li><span class="term"><strong>חסם עליון — סופרמום (supremum)</strong></span> הוא <strong>החסם מלעיל הקטן ביותר</strong>, אם קיים. מסמנים <span class="math inline">\(\sup_{n\ge1}a_n\)</span>.</li>
+<li><span class="term"><strong>חסם תחתון — אינפימום (infimum)</strong></span> הוא <strong>החסם מלרע הגדול ביותר</strong>, אם קיים. מסמנים <span class="math inline">\(\inf_{n\ge1}a_n\)</span>.</li>
+</ul>
+</div>
+<div id="box-rem-existence-extrema" class="thmbox thmbox-remark" title="קיום החסם העליון והתחתון">
+<p><strong>הערה 2.4.6 — קיום החסם העליון והתחתון.</strong></p>
+<p>תכונת ״אין חורים״ של המספרים הממשיים מבטיחה שלסדרה חסומה מלעיל קיים חסם עליון, ולסדרה חסומה מלרע קיים חסם תחתון. <strong>אין צורך למצוא אותם כדי להוכיח חסימות.</strong> חסם מלעיל יכול להיות גדול בהרבה מהסופרמום, וחסם מלרע קטן בהרבה מהאינפימום.</p>
+</div>
+<div id="box-exm-reciprocal-extrema" class="thmbox thmbox-example" title="החסם העליון והתחתון של הסדרה $\frac{1}{n}$">
+<p><strong>דוגמה 2.4.7 — החסם העליון והתחתון של הסדרה <span class="math inline">\(\frac{1}{n}\)</span>.</strong></p>
+<p>בסדרה <span class="math inline">\(a_n=\frac{1}{n}\)</span>, עבור <span class="math inline">\(n\ge1\)</span>, החסם העליון הוא <span class="math inline">\(1\)</span>: כל האיברים קטנים ממנו או שווים לו, והאיבר הראשון שווה לו. החסם התחתון הוא <span class="math inline">\(0\)</span>: כל האיברים חיוביים, ולכל <span class="math inline">\(c&gt;0\)</span> בחירת <span class="math inline">\(n&gt;\frac{1}{c}\)</span> נותנת <span class="math inline">\(a_n&lt;c\)</span>. לכן <span class="math inline">\(\sup_{n\ge1}a_n=1\)</span> ו <span class="math inline">\(\inf_{n\ge1}a_n=0\)</span>. החסם התחתון כאן אינו איבר בסדרה.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/ch02-bounded-reciprocal.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="הסדרה אחת חלקי n: החסם התחתון הוא אפס והחסם העליון הוא אחת. האיבר הראשון שווה לחסם העליון, והאיברים מתקרבים לאפס בלי להיות שווים לו." width="520"></p>
+</figure>
+</div>
+</div>
 <div id="box-rem-bounded-sets" class="thmbox thmbox-remark" title="גם קבוצות יכולות להיות חסומות">
-<p><strong>הערה 2.4.5 — גם קבוצות יכולות להיות חסומות.</strong></p>
+<p><strong>הערה 2.4.8 — גם קבוצות יכולות להיות חסומות.</strong></p>
 <p>אפשר להגדיר חסימות גם לקבוצה <span class="math inline">\(A\subseteq\mathbb{R}\)</span>. משתמשים באותן הגדרות, עם <span class="math inline">\(x\in A\)</span> במקום איברי הסדרה:</p>
 <ul>
 <li><strong>חסם מלעיל</strong> הוא מספר <span class="math inline">\(M\)</span> שעבורו <span class="math inline">\(x\le M\)</span> לכל <span class="math inline">\(x\in A\)</span>.</li>
@@ -4164,7 +4177,7 @@ b_3&amp;=a_6=\frac16,\quad\ldots
 <p>הקבוצה <strong>חסומה</strong> אם קיימים לה חסמים משני הצדדים. ה<strong>חסם העליון</strong>, <span class="math inline">\(\sup A\)</span>, הוא החסם מלעיל הקטן ביותר; ה<strong>חסם התחתון</strong>, <span class="math inline">\(\inf A\)</span>, הוא החסם מלרע הגדול ביותר. לקבוצה לא ריקה הם קיימים כאשר היא חסומה מהצד המתאים.</p>
 </div>
 <div id="box-exm-open-interval-bounds" class="thmbox thmbox-example" title="חסם עליון ותחתון של קטע פתוח">
-<p><strong>דוגמה 2.4.6 — חסם עליון ותחתון של קטע פתוח.</strong></p>
+<p><strong>דוגמה 2.4.9 — חסם עליון ותחתון של קטע פתוח.</strong></p>
 <p>נתונה הקבוצה <span class="math inline">\(A=(0,1)\)</span>. לכל <span class="math inline">\(x\in A\)</span> מתקיים <span class="math inline">\(0&lt;x&lt;1\)</span>, ולכן <span class="math inline">\(0\)</span> חסם מלרע ו <span class="math inline">\(1\)</span> חסם מלעיל. אי אפשר להקטין את החסם מלעיל מתחת ל <span class="math inline">\(1\)</span>, כי בקטע יש מספרים קרובים ל <span class="math inline">\(1\)</span> כרצוננו. באופן דומה, אי אפשר להגדיל את החסם מלרע מעל <span class="math inline">\(0\)</span>. לכן <span class="math inline">\(\inf A=0\)</span> ו <span class="math inline">\(\sup A=1\)</span>, אף ששני המספרים אינם שייכים לקבוצה.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -4194,15 +4207,17 @@ b_3&amp;=a_6=\frac16,\quad\ldots
 </div>
 </div>
 <div id="box-thm-convergent-bounded" class="thmbox thmbox-theorem" title="התכנסות גוררת חסימות">
-<p><strong>משפט 2.4.7 — התכנסות גוררת חסימות.</strong></p>
+<p><strong>משפט 2.4.10 — התכנסות גוררת חסימות.</strong></p>
 <p>כל סדרה מתכנסת היא חסומה.</p>
 </div>
-<div id="box-exp-convergent-bounded" class="thmbox thmbox-key-point thmicon-idea" title="מדוע גם האיברים הראשונים ניתנים לחסימה?">
-<p><strong>הסבר — מדוע גם האיברים הראשונים ניתנים לחסימה?</strong></p>
-<p>מאינדקס מסוים האיברים נשארים בתחום קטן סביב הגבול. לפניו יש רק מספר סופי של איברים, ואפשר להרחיב את התחום כך שיכלול גם אותם.</p>
+<div id="box-exp-convergent-bounded" class="thmbox thmbox-key-point thmicon-idea" title="מדוע סדרה מתכנסת חסומה?">
+<p><strong>הסבר — מדוע סדרה מתכנסת חסומה?</strong></p>
+<p>נניח שהסדרה <span class="math inline">\((a_n)_{n=1}^{\infty}\)</span> מתכנסת למספר <span class="math inline">\(L\)</span>. נרצה למצוא שני מספרים קבועים שביניהם נמצאים <strong>כל</strong> איבריה.</p>
+<p><strong>תחילה חוסמים את הזנב.</strong> לפי <a href="#box-def-limit" data-xref="02-Sequences.html#box-def-limit" target="_blank" rel="noopener">הגדרת הגבול</a>, עבור <span class="math inline">\(\varepsilon=1\)</span> קיים אינדקס <span class="math inline">\(N\)</span> כך שלכל <span class="math inline">\(n\ge N\)</span> מתקיים <span class="math display">\[|a_n-L|&lt;1,\qquad\text{כלומר}\qquad L-1&lt;a_n&lt;L+1.\]</span> מצאנו חסמים קבועים לכל האיברים מאינדקס <span class="math inline">\(N\)</span> והלאה.</p>
+<p><strong>כעת כוללים גם את ההתחלה.</strong> לפני <span class="math inline">\(N\)</span> יש רק מספר סופי של איברים. לכן אפשר להרחיב את הקטע <span class="math inline">\([L-1,L+1]\)</span>, אם צריך, עד שיכלול גם אותם. נסמן את קצות הקטע שהתקבל ב <span class="math inline">\(m\)</span> ו <span class="math inline">\(M\)</span>. כעת <span class="math display">\[m\le a_n\le M\qquad\text{לכל }n\ge1,\]</span> ולכן הסדרה <a href="#box-def-bounded" data-xref="02-Sequences.html#box-def-bounded" target="_blank" rel="noopener">חסומה</a>. אין צורך שהחסמים שבחרנו יהיו ההדוקים ביותר.</p>
 </div>
 <div id="box-exm-convergent-bounded-prefix" class="thmbox thmbox-example" title="חוסמים גם את האיברים הראשונים">
-<p><strong>דוגמה 2.4.8 — חוסמים גם את האיברים הראשונים.</strong></p>
+<p><strong>דוגמה 2.4.11 — חוסמים גם את האיברים הראשונים.</strong></p>
 <p>נתונה הסדרה <span class="math inline">\(a_1=-3\)</span>, <span class="math inline">\(a_2=5\)</span> ו <span class="math inline">\(a_n=\frac{1}{n}\)</span> לכל <span class="math inline">\(n\ge3\)</span>. היא מתכנסת לאפס לפי <a href="#box-thm-standard" data-xref="02-Sequences.html#box-thm-standard" target="_blank" rel="noopener">הגבול של <span class="math inline">\(\frac{1}{n}\)</span></a> ו<a href="#box-prp-limit-tail" data-xref="02-Sequences.html#box-prp-limit-tail" target="_blank" rel="noopener">הטענה על שינוי מספר סופי של איברים</a>. בזנב מתקיים <span class="math inline">\(0&lt;a_n\le\frac{1}{3}\)</span>. כדי לחסום את <strong>כל</strong> הסדרה, כוללים גם את שני האיברים הראשונים: <span class="math display">\[-3\le a_n\le5\qquad(n\ge1).\]</span></p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -4211,8 +4226,8 @@ b_3&amp;=a_6=\frac16,\quad\ldots
 </div>
 </div>
 <div id="box-exm-unbounded-divergent" class="thmbox thmbox-example" title="חוסר חסימות שולל התכנסות">
-<p><strong>דוגמה 2.4.9 — חוסר חסימות שולל התכנסות.</strong></p>
-<p>ממשפט <a href="#box-thm-convergent-bounded" data-xref="02-Sequences.html#box-thm-convergent-bounded" target="_blank" rel="noopener">משפט 2.4.7</a> נובעת דרך קצרה לשלול התכנסות: <strong>אם סדרה אינה חסומה, היא אינה מתכנסת למספר ממשי.</strong></p>
+<p><strong>דוגמה 2.4.12 — חוסר חסימות שולל התכנסות.</strong></p>
+<p>ממשפט <a href="#box-thm-convergent-bounded" data-xref="02-Sequences.html#box-thm-convergent-bounded" target="_blank" rel="noopener">משפט 2.4.10</a> נובעת דרך קצרה לשלול התכנסות: <strong>אם סדרה אינה חסומה, היא אינה מתכנסת למספר ממשי.</strong></p>
 <p><strong>(א)</strong> הסדרה <span class="math inline">\(a_n=n\)</span> אינה חסומה מלעיל. לכל חסם מוצע <span class="math inline">\(M\)</span>, אפשר לבחור אינדקס טבעי <span class="math inline">\(n&gt;M\)</span>, ואז <span class="math inline">\(a_n&gt;M\)</span>. לכן הסדרה אינה מתכנסת.</p>
 <p><strong>(ב)</strong> בסדרה <span class="math inline">\(b_n=(-1)^n n\)</span> האיברים הם <span class="math display">\[-1,2,-3,4,-5,6,\ldots\]</span> הסימן מתחלף, אבל הערכים המוחלטים הם <span class="math inline">\(|b_n|=n\)</span>. הם עולים מעבר לכל חסם, ולכן גם הסדרה הזאת אינה חסומה ואינה מתכנסת.</p>
 <p>מה אפשר להסיק על <span class="math inline">\(c_n=-n\)</span>, שאינה חסומה מלרע?</p>
@@ -4227,11 +4242,11 @@ b_3&amp;=a_6=\frac16,\quad\ldots
 </div>
 <section id="sec-bounds-inequalities" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="sec-bounds-inequalities">חסימות בעזרת אי־שוויונות מוכרים</h3>
-<p><strong>המטרה: למצוא שני חסמים קבועים, שאינם תלויים ב <span class="math inline">\(n\)</span>.</strong> נתחיל מחסמי הסינוס והקוסינוס, נלמד לפעול עליהם, ואחר כך נשתמש בחסמי פונקציות נוספות ובאי־שוויונות אלגבריים.</p>
+<p>נכיר כמה אי־שוויונות מוכרים ושימושיים להוכחת חסימות. בדומה ל<a href="#box-exm-limit-scalar" data-xref="02-Sequences.html#box-exm-limit-scalar" target="_blank" rel="noopener">חישוב גבולות באמצעות פעולות על גבולות מוכרים</a>, נשתמש כאן בחסמים מוכרים וב<a href="./01-Introduction.html#box-thm-inequalities" data-xref="01-Introduction.html#box-thm-inequalities" target="_blank" rel="noopener">כללי האי־השוויונים</a> כדי למצוא חסמים לסדרות.</p>
 <section id="סינוס-וקוסינוס-מהחסימה-המוכרת-לסדרה" class="level4 unnumbered">
 <h4 class="unnumbered anchored" data-anchor-id="סינוס-וקוסינוס-מהחסימה-המוכרת-לסדרה">סינוס וקוסינוס: מהחסימה המוכרת לסדרה</h4>
 <div id="box-known-sequence-inequalities" class="thmbox thmbox-key-point" title="חסמי הסינוס והקוסינוס — תזכורת">
-<p><strong>כלל 2.4.10 — חסמי הסינוס והקוסינוס — תזכורת.</strong></p>
+<p><strong>כלל 2.4.13 — חסמי הסינוס והקוסינוס — תזכורת.</strong></p>
 <p>לכל <span class="math inline">\(t\in\mathbb{R}\)</span>:</p>
 <table class="caption-top table">
 <thead>
@@ -4257,7 +4272,7 @@ b_3&amp;=a_6=\frac16,\quad\ldots
 <p>אלה החסימות שהתקבלו ממעגל היחידה ב<a href="./01-Introduction.html#box-thm-trig-props" data-xref="01-Introduction.html#box-thm-trig-props" target="_blank" rel="noopener">תכונות הסינוס והקוסינוס, סעיף (ב)</a>.</p>
 </div>
 <div id="box-exm-bound-shifted-cosine" class="thmbox thmbox-example" title="חסימת הסדרה $2+\cos(n)$">
-<p><strong>דוגמה 2.4.11 — חסימת הסדרה <span class="math inline">\(2+\cos(n)\)</span>.</strong></p>
+<p><strong>דוגמה 2.4.14 — חסימת הסדרה <span class="math inline">\(2+\cos(n)\)</span>.</strong></p>
 <p>נחסום את הסדרה <span class="math inline">\(a_n=2+\cos(n)\)</span>, עבור <span class="math inline">\(n\ge1\)</span>.</p>
 <p>לפי <a href="#box-known-sequence-inequalities" data-xref="02-Sequences.html#box-known-sequence-inequalities" target="_blank" rel="noopener">חסמי הקוסינוס</a>, <span class="math display">\[-1\le\cos(n)\le1.\]</span> נוסיף <span class="math inline">\(2\)</span> לכל שלושת האגפים, בהתאם ל<a href="./01-Introduction.html#box-thm-inequalities" data-xref="01-Introduction.html#box-thm-inequalities" target="_blank" rel="noopener">כללי האי־שוויונים</a>: <span class="math display">\[1\le2+\cos(n)\le3.\]</span> מצאנו שני מספרים קבועים: <span class="math inline">\(1\)</span> הוא חסם מלרע ו <span class="math inline">\(3\)</span> הוא חסם מלעיל. לכן הסדרה חסומה.</p>
 <p>אפשר גם להשתמש ב<a href="./01-Introduction.html#box-thm-abs-props" data-xref="01-Introduction.html#box-thm-abs-props" target="_blank" rel="noopener">אי־שוויון המשולש</a> וב<a href="#box-known-sequence-inequalities" data-xref="02-Sequences.html#box-known-sequence-inequalities" target="_blank" rel="noopener">חסם הקוסינוס</a>: <span class="math display">\[|a_n|=|2+\cos(n)|\le2+|\cos(n)|\le3.\]</span> לפי <a href="#box-exp-absolute-bound" data-xref="02-Sequences.html#box-exp-absolute-bound" target="_blank" rel="noopener">האפיון באמצעות ערך מוחלט</a>, גם זו דרך להראות שהסדרה חסומה.</p>
@@ -4268,7 +4283,8 @@ b_3&amp;=a_6=\frac16,\quad\ldots
 </div>
 </div>
 <div id="box-method-choose-bound" class="thmbox thmbox-key-point" title="מוצאים חסימה מתוך אי־שוויון מוכר">
-<p><strong>שיטת פתרון 2.4.12 — מוצאים חסימה מתוך אי־שוויון מוכר.</strong></p>
+<p><strong>שיטת פתרון 2.4.15 — מוצאים חסימה מתוך אי־שוויון מוכר.</strong></p>
+<p><strong>המטרה היא למצוא חסם קבוע גדול מספיק וחסם קבוע קטן מספיק, שקל להצדיק. אין צורך בחסמים ההדוקים ביותר.</strong></p>
 <ol type="1">
 <li>בוחרים אי־שוויון שמתאים לביטוי שבסדרה.</li>
 <li>בודקים את תנאיו ומציבים בו את הביטוי המתאים.</li>
@@ -4303,15 +4319,15 @@ b_3&amp;=a_6=\frac16,\quad\ldots
 <p>אסור לחלק באפס. <strong>מותר גם להרחיב חסימה:</strong> מקטינים את החסם מלרע או מגדילים את החסם מלעיל. זו מסקנה מהחסימה הקודמת, ולא טענה שקולה לה.</p>
 </div>
 <div id="box-exm-divide-bound" class="thmbox thmbox-example" title="חילוק חסמי הקוסינוס בביטוי חיובי">
-<p><strong>דוגמה 2.4.13 — חילוק חסמי הקוסינוס בביטוי חיובי.</strong></p>
+<p><strong>דוגמה 2.4.16 — חילוק חסמי הקוסינוס בביטוי חיובי.</strong></p>
 <p>נתונה <span class="math inline">\(a_n=\frac{\cos(n)}{n+1}\)</span>, עבור <span class="math inline">\(n\ge1\)</span>. לפי <a href="#box-known-sequence-inequalities" data-xref="02-Sequences.html#box-known-sequence-inequalities" target="_blank" rel="noopener">חסמי הקוסינוס</a>, <span class="math inline">\(-1\le\cos(n)\le1\)</span>. המכנה <span class="math inline">\(n+1\)</span> חיובי, ולכן לפי <a href="./01-Introduction.html#box-thm-inequalities" data-xref="01-Introduction.html#box-thm-inequalities" target="_blank" rel="noopener">כללי האי־שוויונים</a> אפשר לחלק בלי להפוך את הכיוונים: <span class="math display">\[-\frac{1}{n+1}\le a_n\le\frac{1}{n+1}.\]</span> מכיוון ש <span class="math inline">\(n+1\ge2\)</span>, נקבל גם את החסמים הקבועים <span class="math inline">\(-\frac{1}{2}\le a_n\le\frac{1}{2}\)</span>.</p>
 </div>
 <div id="box-exm-widen-bound" class="thmbox thmbox-example" title="הרחבת חסימה של הקוסינוס">
-<p><strong>דוגמה 2.4.14 — הרחבת חסימה של הקוסינוס.</strong></p>
+<p><strong>דוגמה 2.4.17 — הרחבת חסימה של הקוסינוס.</strong></p>
 <p>נתונה הסדרה <span class="math inline">\(b_n=\cos(n)\)</span>, עבור <span class="math inline">\(n\ge1\)</span>. מ<a href="#box-known-sequence-inequalities" data-xref="02-Sequences.html#box-known-sequence-inequalities" target="_blank" rel="noopener">חסמי הקוסינוס</a> נקבל <span class="math display">\[-2\le-1\le b_n\le1\le2.\]</span> לכן גם <span class="math inline">\(-2\le b_n\le2\)</span> היא חסימה נכונה. היא פחות מדויקת, אך עדיין מוכיחה חסימות.</p>
 </div>
 <div id="box-exm-bound-operations" class="thmbox thmbox-worked-question" title="מתרגלים בניית חסימות">
-<p><strong>שאלה פתורה 2.4.15 — מתרגלים בניית חסימות.</strong></p>
+<p><strong>שאלה פתורה 2.4.18 — מתרגלים בניית חסימות.</strong></p>
 <p>הגיעו בכל סעיף לחסימה המבוקשת בעזרת עוזר האי־שוויונות. בחרו פעולה, כתבו את התוצאה ובדקו את הצעד. אפשר להיעזר בהצגת התוצאה הצפויה.</p>
 <p><strong>(א)</strong> התחילו מ <span class="math inline">\(-1\le\cos(n)\le1\)</span> והראו כי <span class="math inline">\(3\le4+\cos(n)\le5\)</span>.</p>
 <div class="derive" data-vars="n" data-positive="n" data-bound-rule="cos" start="-1<=cos(n)<=1">
@@ -4368,12 +4384,12 @@ b_3&amp;=a_6=\frac16,\quad\ldots
 <section id="חסימת-הסינוס-בעזרת-הקלט" class="level4 unnumbered">
 <h4 class="unnumbered anchored" data-anchor-id="חסימת-הסינוס-בעזרת-הקלט">חסימת הסינוס בעזרת הקלט</h4>
 <div id="box-rule-sine-input-bound" class="thmbox thmbox-theorem" title="הסינוס אינו גדול מהקלט בערך מוחלט">
-<p><strong>משפט 2.4.16 — הסינוס אינו גדול מהקלט בערך מוחלט.</strong></p>
+<p><strong>משפט 2.4.19 — הסינוס אינו גדול מהקלט בערך מוחלט.</strong></p>
 <p>לכל <span class="math inline">\(x\in\mathbb{R}\)</span>, כאשר הזווית נמדדת ברדיאנים, <span class="math display">\[|\sin(x)|\le|x|.\]</span> לכל <span class="math inline">\(x&gt;0\)</span> מתקיים גם <span class="math inline">\(\sin(x)&lt;x\)</span>.</p>
 </div>
 <p>נשתמש באי־השוויון ללא הוכחה. הוא מועיל במיוחד כשהקלט קטן בערך מוחלט: הוא נותן חסימה קטנה יותר מהחסם <span class="math inline">\(1\)</span>.</p>
 <div id="box-exm-sine-input-bound" class="thmbox thmbox-example" title="חסימת הסדרה $n\sin\left(\frac{1}{n}\right)$">
-<p><strong>דוגמה 2.4.17 — חסימת הסדרה <span class="math inline">\(n\sin\left(\frac{1}{n}\right)\)</span>.</strong></p>
+<p><strong>דוגמה 2.4.20 — חסימת הסדרה <span class="math inline">\(n\sin\left(\frac{1}{n}\right)\)</span>.</strong></p>
 <p>נחסום את הסדרה <span class="math inline">\(a_n=n\sin\left(\frac{1}{n}\right)\)</span>, עבור <span class="math inline">\(n\ge1\)</span>.</p>
 <p>נציב <span class="math inline">\(x=\frac{1}{n}\)</span> ב<a href="#box-rule-sine-input-bound" data-xref="02-Sequences.html#box-rule-sine-input-bound" target="_blank" rel="noopener">חסימת הסינוס בעזרת הקלט</a>: <span class="math display">\[\left|\sin\left(\frac{1}{n}\right)\right|\le\frac{1}{n}.\]</span> נכפול ב <span class="math inline">\(n&gt;0\)</span>. לפי <a href="./01-Introduction.html#box-thm-abs-props" data-xref="01-Introduction.html#box-thm-abs-props" target="_blank" rel="noopener">תכונת הערך המוחלט של מכפלה</a>, <span class="math display">\[|a_n|=n\left|\sin\left(\frac{1}{n}\right)\right|\le1.\]</span> זהו חסם קבוע, ולכן הסדרה חסומה. שימוש בחסם <span class="math inline">\(|\sin(x)|\le1\)</span> בלבד היה נותן כאן <span class="math inline">\(|a_n|\le n\)</span>, שאינו חסם קבוע.</p>
 <div class="quarto-figure quarto-figure-center">
@@ -4383,7 +4399,7 @@ b_3&amp;=a_6=\frac16,\quad\ldots
 </div>
 </div>
 <div id="box-rule-trig-comparisons" class="thmbox thmbox-theorem" title="עוד שתי חסימות טריגונומטריות">
-<p><strong>משפט 2.4.18 — עוד שתי חסימות טריגונומטריות.</strong></p>
+<p><strong>משפט 2.4.21 — עוד שתי חסימות טריגונומטריות.</strong></p>
 <p>הזוויות נמדדות ברדיאנים.</p>
 <table class="caption-top table">
 <thead>
@@ -4406,11 +4422,11 @@ b_3&amp;=a_6=\frac16,\quad\ldots
 </div>
 <p>נקבל גם את החסימות האלה ללא הוכחה. <strong>בודקים את התנאי לפני שמציבים:</strong> בשורה הראשונה <span class="math inline">\(x=0\)</span> אסור, ויש גם הגבלה על גודל הקלט.</p>
 <div id="box-exm-sine-ratio-bound" class="thmbox thmbox-example" title="שתי חסימות לסינוס חלקי הקלט">
-<p><strong>דוגמה 2.4.19 — שתי חסימות לסינוס חלקי הקלט.</strong></p>
+<p><strong>דוגמה 2.4.22 — שתי חסימות לסינוס חלקי הקלט.</strong></p>
 <p>נתונה הסדרה <span class="math inline">\(a_n=\frac{\sin\left(\frac{1}{n}\right)}{\frac{1}{n}}\)</span>, עבור <span class="math inline">\(n\ge1\)</span>. הקלט <span class="math inline">\(x=\frac{1}{n}\)</span> מקיים <span class="math inline">\(0&lt;x\le1&lt;\frac{\pi}{2}\)</span>, ולכן אפשר להציבו ב<a href="#box-rule-trig-comparisons" data-xref="02-Sequences.html#box-rule-trig-comparisons" target="_blank" rel="noopener">חסימה הטריגונומטרית</a>: <span class="math display">\[\cos\left(\frac{1}{n}\right)&lt;a_n&lt;1.\]</span> <a href="#box-known-sequence-inequalities" data-xref="02-Sequences.html#box-known-sequence-inequalities" target="_blank" rel="noopener">חסם הקוסינוס</a> נותן גם <span class="math inline">\(-1\le\cos\left(\frac{1}{n}\right)\)</span>, ולכן <span class="math inline">\(-1&lt;a_n&lt;1\)</span>. מצאנו שני חסמים קבועים.</p>
 </div>
 <div id="box-exm-cosine-small-input" class="thmbox thmbox-example" title="חסימת הסדרה $n^2\left(1-\cos\left(\frac{1}{n}\right)\right)$">
-<p><strong>דוגמה 2.4.20 — חסימת הסדרה <span class="math inline">\(n^2\left(1-\cos\left(\frac{1}{n}\right)\right)\)</span>.</strong></p>
+<p><strong>דוגמה 2.4.23 — חסימת הסדרה <span class="math inline">\(n^2\left(1-\cos\left(\frac{1}{n}\right)\right)\)</span>.</strong></p>
 <p>נחסום את <span class="math inline">\(b_n=n^2\left(1-\cos\left(\frac{1}{n}\right)\right)\)</span>, עבור <span class="math inline">\(n\ge1\)</span>.</p>
 <p>נציב <span class="math inline">\(x=\frac{1}{n}\)</span> ב<a href="#box-rule-trig-comparisons" data-xref="02-Sequences.html#box-rule-trig-comparisons" target="_blank" rel="noopener">חסימה להפרש <span class="math inline">\(1-\cos(x)\)</span></a>: <span class="math display">\[0\le1-\cos\left(\frac{1}{n}\right)\le\frac{1}{2n^2}.\]</span> נכפול ב <span class="math inline">\(n^2&gt;0\)</span>: <span class="math display">\[0\le b_n\le\frac{1}{2}.\]</span> שני החסמים קבועים, ולכן הסדרה חסומה.</p>
 <div class="quarto-figure quarto-figure-center">
@@ -4424,7 +4440,7 @@ b_3&amp;=a_6=\frac16,\quad\ldots
 <h4 class="unnumbered anchored" data-anchor-id="הפונקציות-הטריגונומטריות-ההפוכות">הפונקציות הטריגונומטריות ההפוכות</h4>
 <p>בפונקציות הטריגונומטריות ההפוכות משתמשים בטווחי הערכים מתוך <a href="./01-Introduction.html#box-def-inverse-trig" data-xref="01-Introduction.html#box-def-inverse-trig" target="_blank" rel="noopener">ההגדרה בפרק 1</a>. <strong>לפני שחוסמים את הערך, בודקים שהביטוי שבתוך הפונקציה שייך לתחום ההגדרה.</strong></p>
 <div id="box-rule-inverse-trig-bounds" class="thmbox thmbox-key-point" title="חסמי הפונקציות הטריגונומטריות ההפוכות">
-<p><strong>כלל 2.4.21 — חסמי הפונקציות הטריגונומטריות ההפוכות.</strong></p>
+<p><strong>כלל 2.4.24 — חסמי הפונקציות הטריגונומטריות ההפוכות.</strong></p>
 <p>החסימות נובעות מ<a href="./01-Introduction.html#box-def-inverse-trig" data-xref="01-Introduction.html#box-def-inverse-trig" target="_blank" rel="noopener">הגדרת הפונקציות בפרק 1</a>.</p>
 <table class="caption-top table">
 <colgroup>
@@ -4459,7 +4475,7 @@ b_3&amp;=a_6=\frac16,\quad\ldots
 </table>
 </div>
 <div id="box-exm-inverse-trig-bounds" class="thmbox thmbox-example" title="חסימת סדרות בעזרת טווחי הפונקציות הטריגונומטריות ההפוכות">
-<p><strong>דוגמה 2.4.22 — חסימת סדרות בעזרת טווחי הפונקציות הטריגונומטריות ההפוכות.</strong></p>
+<p><strong>דוגמה 2.4.25 — חסימת סדרות בעזרת טווחי הפונקציות הטריגונומטריות ההפוכות.</strong></p>
 <p><strong>(א)</strong> בסדרה <span class="math inline">\(a_n=\arcsin\left(\frac{(-1)^n}{n}\right)\)</span>, עבור <span class="math inline">\(n\ge1\)</span>, הקלט מקיים <span class="math display">\[\left|\frac{(-1)^n}{n}\right|=\frac{1}{n}\le1.\]</span> לכן כל האיברים מוגדרים, ו<a href="#box-rule-inverse-trig-bounds" data-xref="02-Sequences.html#box-rule-inverse-trig-bounds" target="_blank" rel="noopener">חסמי <span class="math inline">\(\arcsin\)</span></a> נותנים <span class="math display">\[-\frac{\pi}{2}\le a_n\le\frac{\pi}{2}.\]</span> כלומר, <span class="math inline">\(|a_n|\le\frac{\pi}{2}\)</span>. אפשר לבחור <span class="math inline">\(M=\frac{\pi}{2}\)</span>, ואין צורך לחשב כל איבר בנפרד.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -4496,23 +4512,23 @@ b_3&amp;=a_6=\frac16,\quad\ldots
 <h4 class="unnumbered anchored" data-anchor-id="אישוויונות-אלגבריים-ריבוע-וממוצעים">אי־שוויונות אלגבריים: ריבוע וממוצעים</h4>
 <p><strong>ריבוע אי־שלילי.</strong></p>
 <div id="box-rule-nonnegative-square" class="thmbox thmbox-key-point" title="ריבוע אי־שלילי">
-<p><strong>כלל 2.4.23 — ריבוע אי־שלילי.</strong></p>
+<p><strong>כלל 2.4.26 — ריבוע אי־שלילי.</strong></p>
 <p>לכל <span class="math inline">\(x\in\mathbb{R}\)</span> מתקיים <span class="math inline">\(x^2\ge0\)</span>.</p>
 </div>
 <div id="box-exm-square-reciprocal-bound" class="thmbox thmbox-example" title="חסימת הסדרה $\frac{1}{n^2+1}$">
-<p><strong>דוגמה 2.4.24 — חסימת הסדרה <span class="math inline">\(\frac{1}{n^2+1}\)</span>.</strong></p>
+<p><strong>דוגמה 2.4.27 — חסימת הסדרה <span class="math inline">\(\frac{1}{n^2+1}\)</span>.</strong></p>
 <p>בסדרה <span class="math inline">\(a_n=\frac{1}{n^2+1}\)</span>, עבור <span class="math inline">\(n\ge1\)</span>, <a href="#box-rule-nonnegative-square" data-xref="02-Sequences.html#box-rule-nonnegative-square" target="_blank" rel="noopener">אי־שליליות הריבוע</a> נותנת <span class="math inline">\(n^2+1\ge1\)</span>. לפי <a href="./01-Introduction.html#box-thm-inequalities" data-xref="01-Introduction.html#box-thm-inequalities" target="_blank" rel="noopener">כלל ההופכיים החיוביים</a>, <span class="math display">\[0&lt;a_n=\frac{1}{n^2+1}\le1.\]</span> לכן הסדרה חסומה.</p>
 </div>
 <p><strong>אי־שוויון הממוצעים.</strong></p>
 <p>נגדיר את שני הממוצעים כדי לנסח את האי־שוויון ולהשתמש בו לחסימת סדרות.</p>
 <div id="box-def-arithmetic-geometric-means" class="thmbox thmbox-definition" title="ממוצע חשבוני וממוצע הנדסי">
-<p><strong>הגדרה 2.4.25 — ממוצע חשבוני וממוצע הנדסי.</strong></p>
+<p><strong>הגדרה 2.4.28 — ממוצע חשבוני וממוצע הנדסי.</strong></p>
 <p>יהיו <span class="math inline">\(n\ge1\)</span> מספר טבעי ו <span class="math inline">\(x_1,\ldots,x_n\)</span> מספרים ממשיים. <span class="term"><strong>הממוצע החשבוני</strong></span> שלהם הוא <span class="math display">\[A=\frac{x_1+\cdots+x_n}{n}.\]</span></p>
 <p>אם <span class="math inline">\(x_1,\ldots,x_n\ge0\)</span>, <span class="term"><strong>הממוצע ההנדסי</strong></span> שלהם הוא <span class="math display">\[G=\sqrt[n]{x_1\cdots x_n}.\]</span></p>
 </div>
 <p>בממוצע החשבוני מחברים ומחלקים במספר הנתונים. בממוצע ההנדסי כופלים ומוציאים שורש שסדרו כמספר הנתונים.</p>
 <div id="box-exm-arithmetic-geometric-means" class="thmbox thmbox-example" title="חישוב ממוצע חשבוני וממוצע הנדסי">
-<p><strong>דוגמה 2.4.26 — חישוב ממוצע חשבוני וממוצע הנדסי.</strong></p>
+<p><strong>דוגמה 2.4.29 — חישוב ממוצע חשבוני וממוצע הנדסי.</strong></p>
 <p><strong>(א)</strong> עבור שני המספרים <span class="math inline">\(1,9\)</span>, הממוצע החשבוני הוא <span class="math display">\[A=\frac{1+9}{2}=5.\]</span> הממוצע ההנדסי הוא <span class="math display">\[G=\sqrt{1\cdot9}=3.\]</span></p>
 <p><strong>(ב)</strong> עבור שלושת המספרים <span class="math inline">\(1,2,4\)</span>, הממוצע החשבוני הוא <span class="math display">\[A=\frac{1+2+4}{3}=\frac{7}{3}.\]</span> הממוצע ההנדסי הוא <span class="math display">\[G=\sqrt[3]{1\cdot2\cdot4}=2.\]</span></p>
 </div>
@@ -4544,7 +4560,7 @@ b_3&amp;=a_6=\frac16,\quad\ldots
 </div>
 </div>
 <div id="box-rule-square-amgm" class="thmbox thmbox-theorem" title="אי־שוויון הממוצעים (AM–GM)">
-<p><strong>משפט 2.4.27 — אי־שוויון הממוצעים (AM–GM).</strong></p>
+<p><strong>משפט 2.4.30 — אי־שוויון הממוצעים (AM–GM).</strong></p>
 <p>לכל מספר טבעי <span class="math inline">\(n\ge1\)</span> ולכל <span class="math inline">\(x_1,\ldots,x_n\ge0\)</span>, הממוצע ההנדסי אינו גדול מהממוצע החשבוני: <span class="math display">\[\sqrt[n]{x_1\cdots x_n}\le\frac{x_1+\cdots+x_n}{n}.\]</span> שוויון מתקיים בדיוק כאשר <span class="math inline">\(x_1=\cdots=x_n\)</span>.</p>
 </div>
 <div id="box-insight-amgm-equality" class="thmbox thmbox-key-point thmicon-idea" title="מתי שני הממוצעים שווים?">
@@ -4552,16 +4568,16 @@ b_3&amp;=a_6=\frac16,\quad\ldots
 <p>לפי <a href="#box-rule-square-amgm" data-xref="02-Sequences.html#box-rule-square-amgm" target="_blank" rel="noopener">אי־שוויון הממוצעים</a>, <strong>שוויון מתקיים אם ורק אם כל המספרים שווים זה לזה.</strong> אם לפחות שניים מהמספרים שונים, מתקיים <span class="math inline">\(G&lt;A\)</span>.</p>
 </div>
 <div id="box-exm-amgm-equal" class="thmbox thmbox-example" title="ממוצעים של שלושה מספרים שווים">
-<p><strong>דוגמה 2.4.28 — ממוצעים של שלושה מספרים שווים.</strong></p>
+<p><strong>דוגמה 2.4.31 — ממוצעים של שלושה מספרים שווים.</strong></p>
 <p>נתונים המספרים <span class="math inline">\(2,2,2\)</span>. לפי <a href="#box-def-arithmetic-geometric-means" data-xref="02-Sequences.html#box-def-arithmetic-geometric-means" target="_blank" rel="noopener">הגדרות הממוצעים</a>, <span class="math display">\[A=\frac{2+2+2}{3}=2,\qquad G=\sqrt[3]{2\cdot2\cdot2}=2.\]</span> מתקבל <span class="math inline">\(A=G\)</span>, בהתאם לתנאי השוויון ב<a href="#box-rule-square-amgm" data-xref="02-Sequences.html#box-rule-square-amgm" target="_blank" rel="noopener">אי־שוויון הממוצעים</a>.</p>
 </div>
 <div id="box-exm-amgm-numbers" class="thmbox thmbox-example" title="אי־שוויון הממוצעים במספרים">
-<p><strong>דוגמה 2.4.29 — אי־שוויון הממוצעים במספרים.</strong></p>
+<p><strong>דוגמה 2.4.32 — אי־שוויון הממוצעים במספרים.</strong></p>
 <p>עבור המספרים <span class="math inline">\(6,24\)</span>, הממוצע ההנדסי הוא <span class="math display">\[G=\sqrt{6\cdot24}=12.\]</span> הממוצע החשבוני הוא <span class="math display">\[A=\frac{6+24}{2}=15.\]</span> ואכן, <span class="math inline">\(12\le15\)</span>, בהתאם ל<a href="#box-rule-square-amgm" data-xref="02-Sequences.html#box-rule-square-amgm" target="_blank" rel="noopener">אי־שוויון הממוצעים</a>.</p>
 <p>גם ב<a href="#box-exm-arithmetic-geometric-means" data-xref="02-Sequences.html#box-exm-arithmetic-geometric-means" target="_blank" rel="noopener">דוגמה שבה חישבנו את הממוצעים של <span class="math inline">\(1,9\)</span> ושל <span class="math inline">\(1,2,4\)</span></a>, הממוצע ההנדסי קטן מהממוצע החשבוני.</p>
 </div>
 <div id="box-exm-amgm-bound" class="thmbox thmbox-example" title="חוסמים מנה בעזרת אי־שוויון הממוצעים">
-<p><strong>דוגמה 2.4.30 — חוסמים מנה בעזרת אי־שוויון הממוצעים.</strong></p>
+<p><strong>דוגמה 2.4.33 — חוסמים מנה בעזרת אי־שוויון הממוצעים.</strong></p>
 <p>נחסום את הסדרה <span class="math inline">\(a_n=\frac{\sqrt n}{n+1}\)</span>, עבור <span class="math inline">\(n\ge1\)</span>.</p>
 <p>כדי להשוות בין המונה למכנה, נפעיל את <a href="#box-rule-square-amgm" data-xref="02-Sequences.html#box-rule-square-amgm" target="_blank" rel="noopener">אי־שוויון הממוצעים</a> על שני המספרים <span class="math inline">\(n\)</span> ו <span class="math inline">\(1\)</span>. שניהם חיוביים, ולכן <span class="math display">\[\sqrt n\le\frac{n+1}{2}.\]</span> נחלק ב <span class="math inline">\(n+1&gt;0\)</span>: <span class="math display">\[\frac{\sqrt n}{n+1}\le\frac{1}{2}.\]</span> המונה והמכנה חיוביים, ולכן <span class="math display">\[0&lt;a_n\le\frac{1}{2}.\]</span> מכאן <span class="math inline">\(|a_n|\le\frac{1}{2}\)</span>. האיבר הראשון שווה לחסם, וזה מותר.</p>
 <div class="quarto-figure quarto-figure-center">
@@ -4578,7 +4594,7 @@ b_3&amp;=a_6=\frac16,\quad\ldots
 <p><span class="math inline">\(\ln(x)=\log_e(x)\)</span> הוא הלוגריתם בבסיס <span class="math inline">\(e\)</span>, קבוע שערכו בקירוב <span class="math inline">\(2.71828\)</span>. <a href="#box-def-e" data-xref="02-Sequences.html#box-def-e" target="_blank" rel="noopener">הגדרת <span class="math inline">\(e\)</span> באמצעות גבול</a> תופיע בהמשך.</p>
 </div>
 <div id="box-rule-log-exp-bounds" class="thmbox thmbox-theorem" title="חסימות ללוגריתם ולמעריכית">
-<p><strong>משפט 2.4.31 — חסימות ללוגריתם ולמעריכית.</strong></p>
+<p><strong>משפט 2.4.34 — חסימות ללוגריתם ולמעריכית.</strong></p>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -4601,7 +4617,7 @@ b_3&amp;=a_6=\frac16,\quad\ldots
 </div>
 <p>נשתמש גם כאן בתוצאות ללא הוכחה. ל<a href="#box-rule-log-exp-bounds" data-xref="02-Sequences.html#box-rule-log-exp-bounds" target="_blank" rel="noopener">חסימת הלוגריתם</a> יש צורה נוחה נוספת: מציבים <span class="math inline">\(x=1+t\)</span>, ולכן עבור <span class="math inline">\(t&gt;-1\)</span> מתקיים <span class="math display">\[\frac{t}{1+t}\le\ln(1+t)\le t.\]</span></p>
 <div id="box-exm-logarithm-bound" class="thmbox thmbox-example" title="חסימת הסדרה $n\ln\left(1+\frac{1}{n}\right)$">
-<p><strong>דוגמה 2.4.32 — חסימת הסדרה <span class="math inline">\(n\ln\left(1+\frac{1}{n}\right)\)</span>.</strong></p>
+<p><strong>דוגמה 2.4.35 — חסימת הסדרה <span class="math inline">\(n\ln\left(1+\frac{1}{n}\right)\)</span>.</strong></p>
 <p>נחסום את <span class="math inline">\(a_n=n\ln\left(1+\frac{1}{n}\right)\)</span>, עבור <span class="math inline">\(n\ge1\)</span>.</p>
 <p>נציב <span class="math inline">\(t=\frac{1}{n}&gt;0\)</span> ב<a href="#box-rule-log-exp-bounds" data-xref="02-Sequences.html#box-rule-log-exp-bounds" target="_blank" rel="noopener">חסמי הלוגריתם</a>: <span class="math display">\[\frac{1}{n+1}\le\ln\left(1+\frac{1}{n}\right)\le\frac{1}{n}.\]</span> נכפול ב <span class="math inline">\(n&gt;0\)</span>: <span class="math display">\[\frac{n}{n+1}\le a_n\le1.\]</span> החסם מלרע עדיין תלוי ב <span class="math inline">\(n\)</span>, אבל הוא חיובי. נרחיב את החסימה ונקבל שני חסמים קבועים: <span class="math display">\[0\le a_n\le1.\]</span></p>
 <div class="quarto-figure quarto-figure-center">
@@ -4611,7 +4627,7 @@ b_3&amp;=a_6=\frac16,\quad\ldots
 </div>
 </div>
 <div id="box-exm-exponential-bound" class="thmbox thmbox-example" title="חסימת הסדרה $ne^{-n}$">
-<p><strong>דוגמה 2.4.33 — חסימת הסדרה <span class="math inline">\(ne^{-n}\)</span>.</strong></p>
+<p><strong>דוגמה 2.4.36 — חסימת הסדרה <span class="math inline">\(ne^{-n}\)</span>.</strong></p>
 <p>נתונה <span class="math inline">\(a_n=ne^{-n}=\frac{n}{e^n}\)</span>, עבור <span class="math inline">\(n\ge1\)</span>. נציב <span class="math inline">\(x=n\)</span> ב<a href="#box-rule-log-exp-bounds" data-xref="02-Sequences.html#box-rule-log-exp-bounds" target="_blank" rel="noopener">אי־השוויון <span class="math inline">\(e^x\ge1+x\)</span></a>. המונה והמכנים חיוביים, ולכן <span class="math display">\[0&lt;a_n=\frac{n}{e^n}\le\frac{n}{n+1}&lt;1.\]</span> הסדרה חסומה מלרע על ידי <span class="math inline">\(0\)</span> ומלעיל על ידי <span class="math inline">\(1\)</span>.</p>
 </div>
 </section>
@@ -4620,7 +4636,7 @@ b_3&amp;=a_6=\frac16,\quad\ldots
 <h3 class="unnumbered anchored" data-anchor-id="sec-bounds-induction">חסימות בעזרת אינדוקציה</h3>
 <p>דרך נוספת להוכיח חסימות היא באמצעות <em>אינדוקציה</em> — שיטת הוכחה שנציג כעת.</p>
 <div id="box-def-induction" class="thmbox thmbox-definition" title="אינדוקציה">
-<p><strong>הגדרה 2.4.34 — אינדוקציה.</strong></p>
+<p><strong>הגדרה 2.4.37 — אינדוקציה.</strong></p>
 <p><span class="term"><strong>אינדוקציה</strong></span> היא שיטת הוכחה המאפשרת להוכיח טענה עבור כל המספרים הטבעיים, בלי לבדוק כל מספר בנפרד. כדי להוכיח טענה לכל <span class="math inline">\(n\ge1\)</span>, מוכיחים שני דברים:</p>
 <ol type="1">
 <li><strong>בסיס האינדוקציה:</strong> הטענה נכונה עבור <span class="math inline">\(n=1\)</span>.</li>
@@ -4644,7 +4660,7 @@ b_3&amp;=a_6=\frac16,\quad\ldots
 <p>נשתמש באינדוקציה כדי להוכיח תכונות של סדרות לכל האינדקסים. למשל, כדי להראות שסדרה <span class="math inline">\((a_n)_{n=1}^{\infty}\)</span> חסומה בין שני מספרים קבועים <span class="math inline">\(m\)</span> ו <span class="math inline">\(M\)</span>, הטענה באינדקס <span class="math inline">\(n\)</span> היא <span class="math inline">\(m\le a_n\le M\)</span>. בסדרה רקורסיבית, כלל הרקורסיה מאפשר לקשר בין האיבר <span class="math inline">\(a_n\)</span> לאיבר <span class="math inline">\(a_{n+1}\)</span>.</p>
 </div>
 <div id="box-exm-induction-bound" class="thmbox thmbox-example" title="חוסמים סדרה רקורסיבית באינדוקציה">
-<p><strong>דוגמה 2.4.35 — חוסמים סדרה רקורסיבית באינדוקציה.</strong></p>
+<p><strong>דוגמה 2.4.38 — חוסמים סדרה רקורסיבית באינדוקציה.</strong></p>
 <p>נתונה הסדרה <span class="math display">\[a_1=0,\qquad a_{n+1}=\frac{a_n+2}{2}.\]</span> נראה כיצד להוכיח ש <span class="math inline">\(0\le a_n\le2\)</span> <strong>לכל</strong> <span class="math inline">\(n\ge1\)</span>.</p>
 <p><strong>פתרון.</strong> תחילה נחשב כמה איברים: <span class="math display">\[a_1=0,\qquad a_2=\frac{0+2}{2}=1,\]</span> <span class="math display">\[a_3=\frac{1+2}{2}=\frac{3}{2},\qquad a_4=\frac{\frac{3}{2}+2}{2}=\frac{7}{4}.\]</span> כל איבר חדש הוא <a href="#box-def-arithmetic-geometric-means" data-xref="02-Sequences.html#box-def-arithmetic-geometric-means" target="_blank" rel="noopener">הממוצע החשבוני</a> של האיבר הקודם ושל <span class="math inline">\(2\)</span>. האיברים שחישבנו נמצאים בין <span class="math inline">\(0\)</span> לבין <span class="math inline">\(2\)</span>, אבל <strong>בדיקת כמה איברים אינה מוכיחה חסימות של כל הסדרה</strong>. לשם כך נשתמש ב<a href="#box-def-induction" data-xref="02-Sequences.html#box-def-induction" target="_blank" rel="noopener">עקרון האינדוקציה</a>.</p>
 <p><strong>מתחילים באיבר הראשון.</strong> מתקיים <span class="math inline">\(a_1=0\)</span>, ולכן <span class="math inline">\(0\le a_1\le2\)</span>.</p>
@@ -4657,7 +4673,7 @@ b_3&amp;=a_6=\frac16,\quad\ldots
 </div>
 </div>
 <div id="box-method-induction" class="thmbox thmbox-key-point" title="בחירת חסמים ובדיקתם באינדוקציה">
-<p><strong>שיטת פתרון 2.4.36 — בחירת חסמים ובדיקתם באינדוקציה.</strong></p>
+<p><strong>שיטת פתרון 2.4.39 — בחירת חסמים ובדיקתם באינדוקציה.</strong></p>
 <p>כדי לחסום סדרה רקורסיבית <span class="math inline">\((a_n)_{n=1}^{\infty}\)</span>, מחפשים קטע <span class="math inline">\([m,M]\)</span> שמכיל את האיבר הראשון ושכלל הרקורסיה משאיר בו גם את האיבר הבא.</p>
 <ol type="1">
 <li><strong>מציעים חסמים קבועים.</strong> אם <span class="math inline">\(m,M\)</span> לא נתונים, נעזרים בכלל הרקורסיה ובאיברים הראשונים כדי להציע אותם. החסמים אינם תלויים ב <span class="math inline">\(n\)</span>, ואין צורך שיהיו ההדוקים ביותר.</li>
@@ -4668,7 +4684,7 @@ b_3&amp;=a_6=\frac16,\quad\ldots
 </div>
 <p><strong>בהנחה משתמשים רק באינדקס הנוכחי; את הטענה על כל האינדקסים מקבלים בסוף, מן הבסיס ומצעד האינדוקציה יחד.</strong></p>
 <div id="box-exm-induction-root-bound" class="thmbox thmbox-example" title="חסימת סדרה רקורסיבית עם שורש">
-<p><strong>דוגמה 2.4.37 — חסימת סדרה רקורסיבית עם שורש.</strong></p>
+<p><strong>דוגמה 2.4.40 — חסימת סדרה רקורסיבית עם שורש.</strong></p>
 <p>נתונה הסדרה <span class="math inline">\((b_n)_{n=1}^{\infty}\)</span>: <span class="math display">\[b_1=1,\qquad b_{n+1}=\sqrt{6+b_n}\quad(n\ge1).\]</span> נראה ש <span class="math inline">\(0\le b_n\le3\)</span> לכל <span class="math inline">\(n\ge1\)</span>, בעזרת <a href="#box-method-induction" data-xref="02-Sequences.html#box-method-induction" target="_blank" rel="noopener">שיטת החסימה באינדוקציה</a>.</p>
 <p><strong>בחירת החסמים.</strong> השורש אי־שלילי, ולכן ננסה חסם מלרע <span class="math inline">\(0\)</span>. ננסה חסם מלעיל <span class="math inline">\(3\)</span>: כאשר <span class="math inline">\(b_n\le3\)</span>, הביטוי בשורש אינו גדול מ <span class="math inline">\(6+3=9=3^2\)</span>. כעת צריך לבדוק שהבחירה אכן מתאימה לכל האיברים.</p>
 <p><strong>בסיס.</strong> <span class="math inline">\(b_1=1\)</span>, ולכן <span class="math inline">\(0\le b_1\le3\)</span>.</p>
@@ -4681,7 +4697,7 @@ b_3&amp;=a_6=\frac16,\quad\ldots
 <section id="שימוש-באישוויונות-מוכרים" class="level4 unnumbered">
 <h4 class="unnumbered anchored" data-anchor-id="שימוש-באישוויונות-מוכרים">שימוש באי־שוויונות מוכרים</h4>
 <div id="box-q-bounds-trig" class="thmbox thmbox-question" title="בונים חסימות שלב אחר שלב">
-<p><strong>תרגיל 2.4.38 — בונים חסימות שלב אחר שלב.</strong></p>
+<p><strong>תרגיל 2.4.41 — בונים חסימות שלב אחר שלב.</strong></p>
 <p>בכל הסעיפים <span class="math inline">\(n\ge1\)</span>.</p>
 <p><strong>(א)</strong> נתונה <span class="math inline">\(a_n=3-2\cos(n)\)</span>. התחילו מ<a href="#box-known-sequence-inequalities" data-xref="02-Sequences.html#box-known-sequence-inequalities" target="_blank" rel="noopener">חסמי הקוסינוס</a> ומצאו חסמים לסדרה.</p>
 <div class="derive" data-vars="n" data-positive="n" data-bound-rule="cos" start="-1<=cos(n)<=1">
@@ -4718,7 +4734,7 @@ b_3&amp;=a_6=\frac16,\quad\ldots
 </div>
 </div>
 <div id="box-q-bounds-inverse" class="thmbox thmbox-question" title="תחום ההגדרה וטווח הערכים">
-<p><strong>תרגיל 2.4.39 — תחום ההגדרה וטווח הערכים.</strong></p>
+<p><strong>תרגיל 2.4.42 — תחום ההגדרה וטווח הערכים.</strong></p>
 <p>בכל הסעיפים <span class="math inline">\(n\ge1\)</span>.</p>
 <p><strong>(א)</strong> נתונה <span class="math inline">\(a_n=\arccos\left(\frac{n-1}{n+1}\right)\)</span>.</p>
 <div class="fill">
@@ -4746,7 +4762,7 @@ b_3&amp;=a_6=\frac16,\quad\ldots
 </div>
 </div>
 <div id="box-q-bounds-algebra" class="thmbox thmbox-question" title="ריבוע אי־שלילי ואי־שוויון הממוצעים בפעולה">
-<p><strong>תרגיל 2.4.40 — ריבוע אי־שלילי ואי־שוויון הממוצעים בפעולה.</strong></p>
+<p><strong>תרגיל 2.4.43 — ריבוע אי־שלילי ואי־שוויון הממוצעים בפעולה.</strong></p>
 <p>בכל הסעיפים <span class="math inline">\(n\ge1\)</span>.</p>
 <p><strong>(א)</strong> נחסום את <span class="math inline">\(a_n=\frac{\sqrt n}{n+4}\)</span> באמצעות <a href="#box-rule-square-amgm" data-xref="02-Sequences.html#box-rule-square-amgm" target="_blank" rel="noopener">אי־שוויון הממוצעים</a>.</p>
 <div class="fill">
@@ -4790,7 +4806,7 @@ b_3&amp;=a_6=\frac16,\quad\ldots
 <section id="אינדוקציה" class="level4 unnumbered">
 <h4 class="unnumbered anchored" data-anchor-id="אינדוקציה">אינדוקציה</h4>
 <div id="box-q-induction-bound" class="thmbox thmbox-question" title="מתרגלים את הבסיס ואת המעבר">
-<p><strong>תרגיל 2.4.41 — מתרגלים את הבסיס ואת המעבר.</strong></p>
+<p><strong>תרגיל 2.4.44 — מתרגלים את הבסיס ואת המעבר.</strong></p>
 <p>נתונה הסדרה <span class="math display">\[b_1=1,\qquad b_{n+1}=\frac{b_n+3}{2}.\]</span> הראו בעזרת <a href="#box-method-induction" data-xref="02-Sequences.html#box-method-induction" target="_blank" rel="noopener">אינדוקציה</a> ש <span class="math inline">\(1\le b_n\le3\)</span> לכל <span class="math inline">\(n\ge1\)</span>.</p>
 <div class="fill">
 <p><strong>בסיס.</strong> האיבר הראשון הוא <span class="fill-ltr"><span class="math inline">\(b_1=\)</span> <span class="blank" data-ans="1"><span class="math inline">\(1\)</span></span></span>, ולכן הוא בקטע <span class="math inline">\([1,3]\)</span>.</p>
@@ -4957,7 +4973,7 @@ a_{n+1}-a_n&amp;=\frac1{n+1}-\frac1n\\
 </div>
 <div id="box-exp-monotone-extremum" class="thmbox thmbox-key-point thmicon-idea" title="מדוע הגבול הוא החסם העליון או התחתון?">
 <p><strong>הסבר — מדוע הגבול הוא החסם העליון או התחתון?</strong></p>
-<p>בסדרה עולה וחסומה מלעיל, נסמן ב <span class="math inline">\(S\)</span> את <a href="#box-def-bounded" data-xref="02-Sequences.html#box-def-bounded" target="_blank" rel="noopener">החסם העליון</a>. כל האיברים מקיימים <span class="math inline">\(a_n\le S\)</span>. לכל <span class="math inline">\(\varepsilon&gt;0\)</span>, המספר <span class="math inline">\(S-\varepsilon\)</span> אינו חסם מלעיל: אחרת <span class="math inline">\(S\)</span> לא היה החסם מלעיל הקטן ביותר. לכן קיים איבר <span class="math inline">\(a_N&gt;S-\varepsilon\)</span>. מכיוון שהסדרה עולה, לכל <span class="math inline">\(n\ge N\)</span> מתקיים <span class="math display">\[S-\varepsilon&lt;a_N\le a_n\le S.\]</span> כל האיברים האלה נמצאים ברצועה סביב <span class="math inline">\(S\)</span>, ולכן <span class="math inline">\(a_n\to S\)</span> לפי <a href="#box-def-limit" data-xref="02-Sequences.html#box-def-limit" target="_blank" rel="noopener">הגדרת הגבול</a>.</p>
+<p>בסדרה עולה וחסומה מלעיל, נסמן ב <span class="math inline">\(S\)</span> את <a href="#box-def-sup-inf" data-xref="02-Sequences.html#box-def-sup-inf" target="_blank" rel="noopener">החסם העליון</a>. כל האיברים מקיימים <span class="math inline">\(a_n\le S\)</span>. לכל <span class="math inline">\(\varepsilon&gt;0\)</span>, המספר <span class="math inline">\(S-\varepsilon\)</span> אינו חסם מלעיל: אחרת <span class="math inline">\(S\)</span> לא היה החסם מלעיל הקטן ביותר. לכן קיים איבר <span class="math inline">\(a_N&gt;S-\varepsilon\)</span>. מכיוון שהסדרה עולה, לכל <span class="math inline">\(n\ge N\)</span> מתקיים <span class="math display">\[S-\varepsilon&lt;a_N\le a_n\le S.\]</span> כל האיברים האלה נמצאים ברצועה סביב <span class="math inline">\(S\)</span>, ולכן <span class="math inline">\(a_n\to S\)</span> לפי <a href="#box-def-limit" data-xref="02-Sequences.html#box-def-limit" target="_blank" rel="noopener">הגדרת הגבול</a>.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="figures/ch02-monotone-supremum.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="בסדרה עולה, כל האיברים מתחת לסופרמום S. מרגע שאיבר a_N עבר את S פחות אפסילון, כל האיברים שאחריו נשארים בין S פחות אפסילון לבין S." width="520"></p>
@@ -4987,6 +5003,10 @@ a_{n+1}-a_n&amp;=\frac1{n+1}-\frac1n\\
 <p><img src="figures/ch02-decreasing-infimum.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="איברי אחת ועוד אחת חלקי n יורדים אל אחת, האינפימום והגבול. אפס הוא חסם מלרע נוסף, אך אינו הגבול." width="520"></p>
 </figure>
 </div>
+</div>
+<div id="box-warn-bounded-not-convergent" class="thmbox thmbox-warning" title="טעות נפוצה — חסימות אינה מבטיחה התכנסות">
+<p><strong>שימו לב — טעות נפוצה — חסימות אינה מבטיחה התכנסות.</strong></p>
+<p><strong>איברי סדרה יכולים להישאר בין שני חסמים בלי להתקרב למספר אחד.</strong> <a href="#box-exm-absolute-bound" data-xref="02-Sequences.html#box-exm-absolute-bound" target="_blank" rel="noopener">הסדרה <span class="math inline">\(a_n=(-1)^n\)</span> שבדוגמה</a> חסומה, אבל <a href="#box-exm-alternating-diverges" data-xref="02-Sequences.html#box-exm-alternating-diverges" target="_blank" rel="noopener">אינה מתכנסת</a>.</p>
 </div>
 <div id="box-warn-bounds-versus-limit" class="thmbox thmbox-warning" title="חסם שבחרנו אינו בהכרח הגבול">
 <p><strong>שימו לב — חסם שבחרנו אינו בהכרח הגבול.</strong></p>
