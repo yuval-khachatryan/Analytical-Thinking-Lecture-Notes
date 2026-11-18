@@ -151,6 +151,7 @@ iframe.widget-frame {
 .thmbox-proof       { border-color: #64748b; background: #f8fafc; }
 .thmbox-proof > p:first-child > strong { font-weight: 600; color: #64748b; }
 .thmbox-remark      { border-color: #94a3b8; background: #f8fafc; }
+.remark-emphasis { color: #b91c1c; }
 .thmbox-remark > p:first-child > strong { font-weight: 600; color: #64748b; }
 /* Warning (.thmwarn, red) and key point (.thmkey, blue): ported from the BGU book with
    this course's own hues. Thicker edge, because they mark what students must not miss. */
@@ -654,7 +655,15 @@ span.blank.warn .blank-mark { color: #b45309; }
 .sequence-work .as-editor > .seq-editor-field .as-field { width: 100%; }
 .seq-result-field { display: flex; align-items: flex-start; gap: .5rem; min-width: 0; width: 100%; }
 .seq-result-field > .as-field { flex: 1; min-width: 0; }
-.seq-equals { flex: none; font: 1.35rem 'Cambria Math', serif; padding-top: .3rem; }
+.seq-action-explanation { margin-block: .35rem; }
+.seq-action-explanation > summary { cursor: pointer; color: #4338ca; }
+.seq-action-explanation > div, .seq-action-explanation > p { margin-block: .45rem; }
+.seq-action-explanation .seq-limit-transitions { padding-inline-start: 1.5rem; }
+.seq-limit-transitions > li { margin-block: .65rem; }
+.seq-limit-transitions > li > div { margin-block: .25rem; }
+.seq-current-target { grid-column: 1 / -1; margin-block: .35rem; }
+.seq-problem-setup:empty { display: none; }
+.seq-problem-givens { margin-block: .4rem; }
 .ix-limit { display: inline-flex; flex-direction: column; align-items: center; line-height: 1.1; font-family: 'Cambria Math', serif; }
 .ix-limit small { font-size: .65em; white-space: nowrap; }
 .sequence-work .seq-step > .ix-msg { grid-column: 2; margin: 0; }

@@ -42,7 +42,7 @@ for(const rich of [false,true]){
  type(outer,'.seq-lower','2/n^2');type(outer,'.seq-upper','4/n^2');
  const resultField=Array.from(outerEditor.querySelectorAll('.pw-input')).find(f=>!f.closest('.seq-bound-proof'));
  const outerCheck=Array.from(outerEditor.querySelectorAll('button')).find(b=>b.textContent==='בדיקת הצעד והמשך'&&!b.closest('.seq-bound-proof'));
- if(rich)resultField.focus();input(resultField,'0');outerCheck.click();assert.equal(outerEditor.hidden,false);
+ if(rich)resultField.focus();change(outer.querySelector('.seq-equality-kind'),'target');input(resultField,'lim((3+sin(n))/n^2)=0');outerCheck.click();assert.equal(outerEditor.hidden,false);
  change(outer.querySelector('.seq-bound-rule'),'sin');button(outer,'התחלת הנימוק').click();const work=outer.querySelector('.seq-bound-working');
  function argumentStep(index,op,value,result){const r=work.querySelectorAll('.as-step')[index];assert.ok(r,'argument row');const f=selectAction(r,op).querySelector('.as-justification-value');if(rich)f.focus();input(f,value);type(r,'.pw-input',result);button(r,'בדיקת הצעד והמשך').click();assert.equal(r.querySelector('.as-editor').hidden,true,r.textContent);return r;}
  const first=argumentStep(0,'add','3','2<=3+sin(n)<=4');argumentStep(1,'div','n^2','2/n^2<=(3+sin(n))/n^2<=4/n^2');

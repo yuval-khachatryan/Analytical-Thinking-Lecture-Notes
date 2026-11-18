@@ -125,6 +125,29 @@
   function configure(opts) { if (opts.toLatex) toLatex = opts.toLatex; }
   function mathfieldClass() { return root.MathfieldElement || (root.MathLive && root.MathLive.MathfieldElement) || (root.customElements && root.customElements.get("math-field")); }
   function ready() { return !!(mathfieldClass() && root.customElements && root.customElements.get("math-field")); }
+  // MathLive 0.111.4 dispatches local keyboard commands as MessageEvents. Its
+  // same-origin receiver rejects the opaque "null" origin of file:// notes.
+  // Deliver ONLY same-window commands to our focused, mounted field. Do not
+  // weaken MathLive's origin checks, accept iframe messages, or relay settings.
+  // Capture and consume the command so it cannot be inserted twice if a later
+  // MathLive version also accepts local-file messages.
+  if (root.location && root.location.protocol === "file:" && root.top === root && root.addEventListener) {
+    root.addEventListener("message", function (event) {
+      var data = event.data;
+      if (event.source !== root || event.origin !== "null" || !data ||
+          data.type !== "mathlive#virtual-keyboard-message" || data.action !== "execute-command") return;
+      var command = data.command;
+      if (typeof command !== "string" && !(Array.isArray(command) && typeof command[0] === "string")) return;
+      var field = document.activeElement;
+      var host = field && field.closest && field.closest(".mi-control");
+      if (!host || host.control !== field || !isMath(field) || !field.isConnected ||
+          field.disabled || field.readOnly || field.getAttribute("disabled") !== null ||
+          field.getAttribute("readonly") !== null || field.getAttribute("read-only") !== null ||
+          !root.mathVirtualKeyboard || !root.mathVirtualKeyboard.visible) return;
+      event.stopImmediatePropagation();
+      field.executeCommand(command);
+    }, true);
+  }
   var loading = false;
   function load() {
     if (loading || ready()) return;

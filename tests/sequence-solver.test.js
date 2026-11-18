@@ -118,12 +118,12 @@ for(const rich of [false,true]){
  for(const file of ['assets/math-input.js','assets/interactive.js'])E.run(fs.readFileSync(file,'utf8'));
  E.document.dispatchEvent({type:'DOMContentLoaded'});
  if(rich){E.context.MathfieldElement=function(){};E.context.customElements={get:()=>true};}
- button(d,'כתיבת פתרון').click();assert.equal(d.querySelector('.as-given').textContent.includes('נקודת מוצא'),true);
+ button(d,'כתיבת פתרון').click();assert.equal(d.querySelector('.as-given').textContent.includes('לחישוב'),true);
  function row(i){return d.querySelectorAll('.seq-step')[i];}
  function choose(r,group,action){const cat=r.querySelector('.seq-category');cat.value=group;cat.dispatchEvent({type:'change'});const a=r.querySelector('.seq-action');a.value=action;a.dispatchEvent({type:'change'});}
  function type(r,selector,value){const f=r.querySelector(selector);if(rich)f.focus();input(f,value);}
- let r=row(0);type(r,'.pw-input','3');button(r,'בדיקת הצעד והמשך').click();assert.match(r.textContent,/בחרו סוג פעולה/);
- choose(r,'algebra','divide');type(r,'.seq-value','n^2');type(r,'.pw-input',normal);button(r,'בדיקת הצעד והמשך').click();
+ let r=row(0);type(r,'.pw-input','3');button(r,'בדיקת הצעד והמשך').click();assert.match(r.textContent,/בחרו סוג צעד/);
+ choose(r,'algebra','divide');const kind=r.querySelector('.seq-equality-kind');kind.value='target';kind.dispatchEvent({type:'change'});type(r,'.seq-value','n^2');type(r,'.pw-input','lim('+ratio+')=lim('+normal+')');button(r,'בדיקת הצעד והמשך').click();
  assert.equal(r.querySelector('.as-editor').hidden,true);assert.match(r.textContent,/הצעד נכון/);
  r=row(1);choose(r,'limits','arithmetic');button(r,'הצגת התוצאה הצפויה').click();button(r.querySelector('.pw-hints'),'יישום הצעד והמשך').click();
  button(d,'סיום פתרון').click();assert.match(d.textContent,/✓ הפתרון נכון/);

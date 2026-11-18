@@ -31,11 +31,12 @@ for(const rich of [false,true])for(const start of ['3+1/n','lim(3+1/n)']){
  function row(i){return d.querySelectorAll('.seq-step')[i];}
  function type(field,text){field.focus();input(field,rich?M.tex(M.parseExpr(text)):text);}
  function choose(r,op){
+  const kind=r.querySelector('.seq-equality-kind');kind.value='target';kind.dispatchEvent({type:'change'});
   const category=r.querySelector('.seq-category');category.value=op==='compute'?'numbers':'limits';category.dispatchEvent({type:'change'});
   const action=r.querySelector('.seq-action');action.value=op;action.dispatchEvent({type:'change'});
  }
  assert.match(d.querySelector('.as-given').querySelector('.as-formula').innerHTML,/\\lim_\{n\\to\\infty\}/);
- assert.doesNotMatch(d.querySelector('.as-given').querySelector('.as-formula').innerHTML,/\\\(= /);
+ assert.doesNotMatch(d.querySelector('.as-given').querySelector('.as-formula').innerHTML,/= /);
  const field=row(0).querySelector('.pw-input');field.focus();
  const key=row(0).querySelector('[aria-label="גבול כאשר n שואף לאינסוף"]');
  assert.ok(key);assert.match(key.innerHTML,/n → ∞/);
@@ -51,24 +52,26 @@ for(const rich of [false,true])for(const start of ['3+1/n','lim(3+1/n)']){
  assert.equal(row(0).querySelector('.as-editor').hidden,false,'empty body cannot pass a step');
  for(let i=0;i<steps.length;i++){
   const [next,op,before]=steps[i],r=row(i);choose(r,op);
-  assert.equal(r.querySelector('.seq-equals').textContent,'=','equality visible before typing');
+  assert.equal(r.querySelector('.seq-equals'),null,'no equality inserted outside the input');
   if(before)type(r.querySelector('.seq-fragment'),before);
   const result=r.querySelector('.pw-input');result.focus();
-  input(result,'= '+(rich?M.tex(M.parseExpr(next)):next));
+  const previous=i?steps[i-1][0]:'lim(3+1/n)';
+  const claim=M.sequenceEquality(previous,next,{op,before},'n').equality;
+  input(result,rich?M.texChain(M.parseRelation(claim).disj[0]):claim);
   button(r,'בדיקת הצעד והמשך').click();
   assert.equal(r.querySelector('.as-editor').hidden,true,r.textContent);
-  assert.match(r.querySelector('.as-compact').querySelector('.as-formula').innerHTML,/\\\(= /,'accepted step retains equality');
+  assert.match(r.querySelector('.as-compact').querySelector('.as-formula').innerHTML,/= /,'accepted step records both sides of the equality');
  }
  button(d,'סיום פתרון').click();assert.equal(d.getAttribute('data-solution-complete'),'true');
  button(d,'פתרון לדוגמה').click();
  const model=d.querySelector('.pw-solution');assert.equal(model.getAttribute('data-model-checked'),'true');
  const formulas=model.querySelectorAll('.as-formula');assert.equal(formulas.length,5);
- formulas.slice(1).forEach(f=>assert.match(f.innerHTML,/\\\(= /));
- model.querySelectorAll('.as-clean-formula').slice(1).forEach(f=>assert.match(f.innerHTML,/\\\(= /));
+ formulas.slice(1).forEach(f=>assert.match(f.innerHTML,/= /));
+ model.querySelectorAll('.as-clean-formula').slice(1).forEach(f=>assert.match(f.innerHTML,/= /));
  button(d,'כתיבת פתרון').click();button(row(0),'עריכה').click();
  assert.notEqual(d.getAttribute('data-solution-complete'),'true','edits invalidate completion');
  button(d,'מההתחלה').click();assert.equal(row(0).querySelector('.pw-input').value,'');
- assert.equal(row(0).querySelector('.seq-equals').textContent,'=');
+ assert.equal(row(0).querySelector('.seq-equals'),null);
 }
 
 // The same visible formula can be typed back during algebraic limit steps.
@@ -80,13 +83,14 @@ for(const rich of [false,true]){
  E.document.dispatchEvent({type:'DOMContentLoaded'});
  if(rich){E.context.MathfieldElement=function(){};E.context.customElements={get:()=>true};}
  button(d,'כתיבת פתרון').click();const r=d.querySelector('.seq-step');
- const category=r.querySelector('.seq-category');category.value='algebra';category.dispatchEvent({type:'change'});
+ const kind=r.querySelector('.seq-equality-kind');kind.value='target';kind.dispatchEvent({type:'change'});
+  const category=r.querySelector('.seq-category');category.value='algebra';category.dispatchEvent({type:'change'});
  const action=r.querySelector('.seq-action');action.value='divide';action.dispatchEvent({type:'change'});
  const operand=r.querySelector('.seq-value');operand.focus();input(operand,'n');
  const field=r.querySelector('.pw-input');field.focus();
- const result='lim((1+2/n)/(1+4/n))';input(field,rich?M.tex(M.parseExpr(result)):result);
+ const result='lim((n+2)/(n+4))=lim((1+2/n)/(1+4/n))';input(field,rich?M.texChain(M.parseRelation(result).disj[0]):result);
  button(r,'בדיקת הצעד והמשך').click();assert.equal(r.querySelector('.as-editor').hidden,true,r.textContent);
- assert.match(r.querySelector('.as-compact').querySelector('.as-formula').innerHTML,/\\\(= \\lim/);
+ assert.match(r.querySelector('.as-compact').querySelector('.as-formula').innerHTML,/= \\lim/);
 }
 // Replay every authored limit model through the actual UI normalization too.
 // Pure checker tests alone cannot catch differences between displayed limits
@@ -108,7 +112,7 @@ for(const rich of [false,true]){
  for(const d of models){
   button(d,'פתרון לדוגמה').click();const solution=d.querySelector('.pw-solution');
   assert.equal(solution.getAttribute('data-model-checked'),'true',d.getAttribute('start')+': '+solution.textContent);
-  solution.querySelectorAll('.as-formula').slice(1).forEach(f=>assert.match(f.innerHTML,/\\\(= /));
+  solution.querySelectorAll('.as-formula').slice(1).forEach(f=>assert.match(f.innerHTML,/= /));
  }
  console.log('All '+models.length+' authored limit models render checked equality steps.');
 }
