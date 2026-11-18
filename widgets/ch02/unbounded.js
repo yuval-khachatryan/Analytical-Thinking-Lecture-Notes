@@ -1,11 +1,11 @@
 (function(root){
 'use strict';
-function value(kind,n){return kind==='alternating'?(n%2?-1:1):kind==='negative'?-n:n;}
+function value(kind,n){return kind==='alternating'?(n%2?-n:n):kind==='negative'?-n:n;}
 function state(kind,M){
- var N=kind==='alternating'?12:Math.floor(M)+1;
+ var N=Math.floor(M)+1;
  var terms=Array.from({length:N},function(_,i){var n=i+1,a=value(kind,n);return {n:n,a:a,outside:Math.abs(a)>M};});
  var first=terms.find(function(t){return t.outside;});
- return {terms:terms,N:N,firstOutside:first?first.n:null,extent:Math.max(2,M,kind==='alternating'?1:N)+2};
+ return {terms:terms,N:N,firstOutside:first?first.n:null,extent:Math.max(2,M,N)+2};
 }
 if(typeof module==='object'&&module.exports){module.exports={value:value,state:state};return;}
 var A=root.LimitActivities,$=function(id){return document.getElementById(id);};
@@ -50,12 +50,8 @@ function draw(){
   var first=s.terms[s.firstOutside-1];
   add('circle',{cx:X(first.n),cy:Y(first.a),r:8,fill:'none',stroke:'#b72e46','stroke-width':1.5,'data-first-outside':String(first.n)});
  }
- $('read').className='read bound-read '+(s.firstOutside===null?'good':'bad');
- if(kind==='alternating'){
-  $('read').innerHTML=M>=1?'<p><strong>הסדרה חסומה.</strong> לכל אינדקס מתקיים <span class="m">|a<sub>n</sub>| = 1 ≤ M</span>, ולכן כל האיברים בתוך הרצועה או על שפתה, גם מעבר למוצג.</p><p>הקטינו את <span class="m">M</span> לאפס: החסם הזה כבר אינו מתאים.</p>':'<p>לכל אינדקס מתקיים <span class="m">|a<sub>n</sub>| = 1 &gt; M</span>, ולכן כל האיברים מחוץ לרצועה.</p><p><strong>רק החסם שנבחר נכשל; הסדרה עצמה חסומה.</strong> הגדילו את <span class="m">M</span> לאחת.</p>';
- }else{
-  $('read').innerHTML='<p>נבחר אוטומטית <span class="m">N = M + 1 = '+N+'</span>. האיבר המסומן באדום מקיים <strong class="m">|a<sub>'+N+'</sub>| = '+N+' &gt; '+M+' = M</strong>.</p><p>הגדילו את <span class="m">M</span>: האינדקס יתעדכן, ושוב יופיע איבר מחוץ לרצועה.</p>';
- }
+ $('read').className='read bound-read bad';
+ $('read').innerHTML='<p>נבחר אוטומטית <span class="m">N = M + 1 = '+N+'</span>. האיבר המסומן באדום מקיים <strong class="m">|a<sub>'+N+'</sub>| = '+N+' &gt; '+M+' = M</strong>.</p><p>הגדילו את <span class="m">M</span>: האינדקס יתעדכן, ושוב יופיע איבר מחוץ לרצועה.</p>';
 }
 $('bound').addEventListener('input',draw);
 $('sequence').addEventListener('change',draw);root.addEventListener('resize',draw);draw();
