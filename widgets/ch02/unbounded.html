@@ -5,12 +5,12 @@
 <title>בודקים חסם מוצע</title>
 <link rel="stylesheet" href="limit-activities.css">
 <style>
-.bound-controls{display:grid;gap:.5rem;margin:.5rem 0}.bound-controls label{display:flex;align-items:center;flex-wrap:wrap;gap:.5rem}.bound-controls input{flex:1;min-width:8rem;max-width:20rem}.bound-controls output{min-width:3rem}.inside-key{color:#2563a6}.outside-key{color:#b72e46}.bound-read{border-inline-start:3px solid #b72e46}.bound-read.good{border-color:#27814c;background:#eef8f0;color:#205c38}
+.bound-controls{display:grid;gap:.5rem;margin:.5rem 0}.bound-controls label{display:flex;align-items:center;flex-wrap:wrap;gap:.5rem}.bound-controls input{flex:1;min-width:8rem;max-width:20rem}.bound-controls output{min-width:3rem}.inside-key{color:#2563a6}.outside-key{color:#b72e46}.bound-read{border-inline-start:3px solid #b72e46}
 </style>
 </head>
 <body><div class="w">
 <div class="bound-controls">
-<label>הסדרה <select id="sequence" dir="ltr" aria-label="בחירת סדרה"><option value="positive">aₙ = n</option><option value="negative">aₙ = −n</option><option value="alternating">aₙ = (−1)ⁿ</option></select></label>
+<label>הסדרה <select id="sequence" dir="ltr" aria-label="בחירת סדרה"><option value="positive">aₙ = n</option><option value="negative">aₙ = −n</option><option value="alternating">aₙ = (−1)ⁿ n</option></select></label>
 <label><span class="m">M</span><input id="bound" type="range" min="0" max="20" step="1" value="5" aria-label="החסם המוצע M"><output id="bound-value" for="bound" class="m"></output></label>
 </div>
 <p class="legend"><span class="inside-key">● כחול: <span class="m">|a<sub>n</sub>| ≤ M</span></span> · <span class="outside-key">● אדום: <span class="m">|a<sub>n</sub>| &gt; M</span></span></p>

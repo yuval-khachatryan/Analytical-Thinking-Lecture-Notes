@@ -1,7 +1,7 @@
 const assert=require('node:assert/strict'),fs=require('node:fs');
 const U=require('../widgets/ch02/unbounded.js');
 // Equality is allowed; the next natural index supplies a counterexample.
-for(const kind of ['positive','negative'])for(const M of [0,1,5,20,2.5]){
+for(const kind of ['positive','negative','alternating'])for(const M of [0,1,5,20,2.5]){
  const first=Math.floor(M)+1,s=U.state(kind,M);
  assert.equal(s.N,first);assert.equal(s.terms.length,first);
  assert.equal(s.firstOutside,first);
@@ -10,14 +10,10 @@ for(const kind of ['positive','negative'])for(const M of [0,1,5,20,2.5]){
  assert.equal(Math.abs(s.terms[first-1].a),first);
  if(Number.isInteger(M)&&M>0)assert.equal(s.terms[M-1].outside,false);
 }
-for(const M of [0,.5,1,5,20]){
- const s=U.state('alternating',M);
- assert.equal(s.N,12);assert.equal(s.firstOutside,M<1?1:null);
- assert.ok(s.terms.every(t=>Math.abs(t.a)===1&&t.outside===(M<1)));
-}
+assert.deepEqual(Array.from({length:6},(_,i)=>U.value('alternating',i+1)),[-1,2,-3,4,-5,6]);
 const html=fs.readFileSync('widgets/ch02/unbounded.html','utf8');
 assert.equal((html.match(/type="range"/g)||[]).length,1);
-assert.ok(!html.includes('id="count'));assert.ok(html.includes('value="alternating"'));
+assert.ok(!html.includes('id="count'));assert.ok(html.includes('value="alternating">aₙ = (−1)ⁿ n</option>'));
 const smoke=fs.readFileSync('tests/interaction-smoke.test.js','utf8');
 const {env,node}=new Function('require',smoke.slice(0,smoke.indexOf('// A stalled/failed'))+';return {env,node};')(require);
 const E=env(),$=id=>E.document.getElementById(id),resize=[];
@@ -35,19 +31,16 @@ for(const width of [320,480,720]){
  for(const kind of ['positive','negative','alternating']){
   set('sequence',kind);
   for(let M=0;M<=20;M++){
-   const N=kind==='alternating'?12:M+1;
+   const N=M+1;
    set('bound',M);
    assert.equal($('bound-value').textContent,String(M));
    const points=$('plot').querySelectorAll('[data-index]');
    assert.equal(points.length,N);
    const marked=$('plot').querySelector('[data-first-outside]');
-   const first=kind==='alternating'?(M<1?1:null):M+1;
+   const first=M+1;
    assert.equal(Boolean(marked),first!==null);
    if(marked)assert.equal(marked.getAttribute('data-first-outside'),String(first));
-   if(kind==='alternating'){
-    assert.equal($('read').className.includes('good'),M>=1);
-    assert.ok(!$('read').innerHTML.includes('N = M + 1'));
-   }
+   assert.ok($('read').innerHTML.includes('N = M + 1 = '+N));
    for(const p of points){
     const n=+p.getAttribute('data-index'),value=U.value(kind,n),outside=Math.abs(value)>M;
     assert.equal(p.getAttribute('data-outside'),String(outside));
