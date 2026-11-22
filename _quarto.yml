@@ -1,6 +1,8 @@
 project:
   type: book
   output-dir: _book
+  pre-render:
+    - python3 tools/build-proof-curriculum.py
   # The visualisers are standalone HTML pages under widgets/<chapter>/ pulled
   # into the page with an <iframe>. Quarto only copies files it knows about, so
   # the folder has to be declared here or the iframes 404 in _book/.

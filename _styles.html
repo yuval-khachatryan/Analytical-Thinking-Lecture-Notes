@@ -637,6 +637,9 @@ span.blank.warn .blank-mark { color: #b45309; }
 .as-compact { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; align-items: center; gap: .4rem .8rem; direction: ltr; }
 .as-formula { min-width: 0; overflow-x: auto; direction: ltr; text-align: left; }
 .as-reason { color: #64748b; font-size: .82rem; direction: rtl; unicode-bidi: isolate; text-align: right; min-width: 0; margin: .2rem 0; }
+.as-given .as-step-label, .as-given .as-reason, .as-given .as-formula { color: #000; }
+.as-manual-rewrite { margin-block: .4rem; }
+.as-manual-rewrite > summary { cursor: pointer; font-size: .9rem; padding-block: .3rem; }
 .as-reason-line { display: block; }
 .as-reason-line + .as-reason-line { margin-top: .2rem; }
 .as-model-references { font-size: .85rem; margin: .2rem 0 .5rem; }
@@ -657,6 +660,18 @@ span.blank.warn .blank-mark { color: #b45309; }
 .seq-result-field > .as-field { flex: 1; min-width: 0; }
 .seq-action-explanation { margin-block: .35rem; }
 .seq-action-explanation > summary { cursor: pointer; color: #4338ca; }
+.proof-goal { margin-block: .35rem .6rem; font-weight: 600; }
+.proof-context-controls, .proof-tools, .proof-step-help { margin-block: .3rem; font-size: .9rem; }
+.proof-context-controls > summary, .proof-tools > summary, .proof-step-help > summary { cursor: pointer; color: #4338ca; }
+.proof-context-controls[open] { padding-block-end: .4rem; }
+.proof-context-controls > label { display: inline-flex; flex-direction: column; margin-inline-end: .7rem; }
+.proof-tools-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: .2rem 1rem; }
+.proof-step-help > button { margin: .3rem .2rem; }
+.proof-step-help summary { min-height: 2.5rem; display: flex; align-items: center; }
+@media (max-width: 480px) {
+  .proof-tools-list { grid-template-columns: 1fr; }
+  .proof-step-help > button { min-height: 2.75rem; }
+}
 .seq-action-explanation > div, .seq-action-explanation > p { margin-block: .45rem; }
 .seq-action-explanation .seq-limit-transitions { padding-inline-start: 1.5rem; }
 .seq-limit-transitions > li { margin-block: .65rem; }
@@ -911,6 +926,7 @@ a.xref-open { background: #ede9fe; border-radius: 3px; }
 <script src="assets/math-input.js" defer></script>
 <script src="widgets/shared/intervals.js" defer></script>
 <script src="assets/set-plot.js" defer></script>
+<script src="assets/proof-curriculum.js" defer></script>
 <script src="assets/interactive.js" defer></script>
 <script>
 /* ---------------------------------------------------------------------------

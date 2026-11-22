@@ -90,11 +90,11 @@ for(const rich of [false,true]){
 }
 {
  const t=exercise('3-2x<7',false);t.action(2,'sub','3');t.commit(2);
- t.source(3,1);justify(t.row(3),[{op:'sub',value:'3'},{op:'div',value:'-2'}]);t.commit(3);
+ t.source(3,1);t.action(3,'div','-2');t.commit(3);t.action(4,'add','3/2');t.commit(4);
  assert.match(t.row(3).querySelector('.as-compact').textContent,/לפי שורה 1/);
  button(t.row(2),'עריכה').click();button(t.row(2),'מחיקת הצעד').click();
  // Stable source IDs still cite the original start, not a shifted row number.
- button(t.row(2),'בדיקת הצעד והמשך').click();button(t.d,'סיום פתרון').click();assert.match(t.d.textContent,/✓ הפתרון נכון/);
+ button(t.row(2),'בדיקת הצעד והמשך').click();button(t.row(3),'בדיקת הצעד והמשך').click();button(t.d,'סיום פתרון').click();assert.match(t.d.textContent,/✓ הפתרון נכון/);
 }
 {
  const t=exercise('|2x-3|=5',false);
