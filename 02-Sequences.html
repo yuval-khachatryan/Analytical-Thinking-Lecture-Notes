@@ -5960,7 +5960,7 @@ a_{n+1}-a_n
 </tr>
 </tbody>
 </table>
-<p>כללים אלה אינם מתירים להציב גבול בבסיס כאשר המעריך עצמו משתנה עם <span class="math inline">\(n\)</span>.</p>
+<p>כללים אלה אינם מתירים להציב גבול בבסיס כאשר המעריך עצמו משתנה עם <span class="math inline">\(n\)</span>. בפרט, <a href="#box-warn-one-infinity" data-xref="02-Sequences.html#box-warn-one-infinity" target="_blank" rel="noopener">הצורה <span class="math inline">\(1^\infty\)</span> אינה קובעת גבול</a>.</p>
 </div>
 <div id="box-warn-infinite-forms" class="thmbox thmbox-warning" title="אינסוף אינו מספר שמציבים בחשבון רגיל">
 <p><strong>שימו לב — אינסוף אינו מספר שמציבים בחשבון רגיל.</strong></p>
@@ -6250,10 +6250,21 @@ v_n=(n+4)\frac{1}{(n+4)^2}.\]</span> בשני המקרים הגורם הראשו
 </section>
 <section id="המספר-e" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="המספר-e">המספר e</h3>
-<p>מעריך ששואף לאינסוף אינו מחייב שהחזקה תשאף לאינסוף. בסדרה הבאה גם הבסיס וגם המעריך משתנים, והגבול סופי: <span class="math display">\[a_n=\left(1+\frac1n\right)^n.\]</span> סדרה זו מתכנסת למספר <span class="math inline">\(e\)</span>, שכבר פגשנו בבסיס של הפונקציה המעריכית. נקבל כאן את ההתכנסות ללא הוכחה.</p>
+<p>מה קורה כאשר הבסיס מתקרב ל <span class="math inline">\(1\)</span>, אבל מספר הגורמים במכפלה גדל ללא גבול? בסדרה <span class="math display">\[a_n=\left(1+\frac{1}{n}\right)^n,\qquad n\ge1,\]</span> כל גורם מתקרב ל <span class="math inline">\(1\)</span>, ובו בזמן כופלים יותר ויותר גורמים. כדי לחשב את הגבול צריך להביא בחשבון את שני השינויים יחד.</p>
+<div id="box-warn-one-infinity" class="thmbox thmbox-warning" title="הצורה $1^\infty$ אינה קובעת גבול">
+<p><strong>שימו לב — הצורה <span class="math inline">\(1^\infty\)</span> אינה קובעת גבול.</strong></p>
+<p>כאשר <span class="math inline">\(b_n&gt;0\)</span>, <span class="math inline">\(b_n\to1\)</span> ו <span class="math inline">\(c_n\to\infty\)</span>, אומרים שהחזקה <span class="math inline">\(b_n^{c_n}\)</span> היא מהצורה <span class="math inline">\(1^\infty\)</span>.</p>
+<p>הסימון מתאר את <strong>גבולות הבסיס והמעריך</strong>; הוא אינו ערך שאפשר להציב במקום הגבול. <a href="#box-prp-limit-powers" data-xref="02-Sequences.html#box-prp-limit-powers" target="_blank" rel="noopener">כלל החזקה</a> דורש מעריך קבוע, ולכן אינו חל כאן.</p>
+<p>אם הבסיס שווה בדיוק ל <span class="math inline">\(1\)</span>, אז <span class="math inline">\(1^n=1\)</span> לכל <span class="math inline">\(n\)</span>. בסיס שרק מתקרב ל <span class="math inline">\(1\)</span> אינו מבטיח אותה תוצאה.</p>
+</div>
+<p>לסדרה <span class="math inline">\(\left(1+\frac{1}{n}\right)^n\)</span> יש גבול סופי ושונה מ <span class="math inline">\(1\)</span>. נקבל כאן את התכנסותה ללא הוכחה; הגבול הזה הוא המספר <span class="math inline">\(e\)</span>.</p>
 <div id="box-def-e" class="thmbox thmbox-definition" title="המספר e">
 <p><strong>הגדרה 2.7.26 — המספר e.</strong></p>
 <p>הגבול של הסדרה <span class="math inline">\(\left(\left(1+\frac1n\right)^n\right)_{n=1}^{\infty}\)</span> נקרא <span class="math inline">\(e\)</span>: <span class="math display">\[\lim_{n\to\infty}\left(1+\frac1n\right)^n=e\approx2.71828.\]</span></p>
+</div>
+<div id="box-exp-e-use" class="thmbox thmbox-key-point thmicon-idea" title="מזהים סדרה שלמה שגבולה ידוע">
+<p><strong>הסבר — מזהים סדרה שלמה שגבולה ידוע.</strong></p>
+<p>ב<a href="#box-def-e" data-xref="02-Sequences.html#box-def-e" target="_blank" rel="noopener">גבול המגדיר את <span class="math inline">\(e\)</span></a> לא מחליפים את הבסיס ב <span class="math inline">\(1\)</span>. מתייחסים לכל הביטוי <span class="math display">\[\left(1+\frac{1}{n}\right)^n\]</span> כסדרה בעלת גבול ידוע. אם אפשר לכתוב ביטוי אחר כחזקה קבועה שלה או כהופכי שלה, <a href="#box-thm-limit-arithmetic" data-xref="02-Sequences.html#box-thm-limit-arithmetic" target="_blank" rel="noopener">כללי החשבון</a> ו<a href="#box-prp-limit-powers" data-xref="02-Sequences.html#box-prp-limit-powers" target="_blank" rel="noopener">כלל החזקה הקבועה</a> מאפשרים לחשב גם את גבולו.</p>
 </div>
 <div id="box-exm-e-terms" class="thmbox thmbox-example" title="איברים בסדרה המגדירה את e">
 <p><strong>דוגמה 2.7.27 — איברים בסדרה המגדירה את e.</strong></p>
@@ -6265,9 +6276,29 @@ v_n=(n+4)\frac{1}{(n+4)^2}.\]</span> בשני המקרים הגורם הראשו
 </div>
 <p>הגרף ממחיש את העלייה אל <span class="math inline">\(e\)</span>. הקו בגובה <span class="math inline">\(3\)</span> הוא חסם מלעיל נוסף; הוא אינו הגבול. לפי <a href="#box-thm-monotone-bounded" data-xref="02-Sequences.html#box-thm-monotone-bounded" target="_blank" rel="noopener">משפט המונוטוניות והחסימות</a>, החסם העליון של הסדרה הוא <span class="math inline">\(e\)</span>.</p>
 </div>
-<div class="thmbox thmbox-warning" title="הבסיס והמעריך משתנים יחד">
-<p><strong>שימו לב — הבסיס והמעריך משתנים יחד.</strong></p>
-<p>אמנם <span class="math inline">\(1+\frac1n\to1\)</span>, אבל המעריך <span class="math inline">\(n\)</span> אינו קבוע. <a href="#box-prp-limit-powers" data-xref="02-Sequences.html#box-prp-limit-powers" target="_blank" rel="noopener">כלל החזקה</a> אינו חל, ולכן אי אפשר להחליף את הבסיס ב <span class="math inline">\(1\)</span> ולהסיק שהגבול הוא <span class="math inline">\(1\)</span>.</p>
+<div id="box-exm-e-double-exponent" class="thmbox thmbox-example" title="מעריך כפול: הופכים לחזקה קבועה">
+<p><strong>דוגמה 2.7.28 — מעריך כפול: הופכים לחזקה קבועה.</strong></p>
+<p>עבור אינדקסים <span class="math inline">\(n\ge1\)</span>, נחשב את <span class="math display">\[\lim_{n\to\infty}\left(1+\frac{1}{n}\right)^{2n}.\]</span> הבסיס שואף ל <span class="math inline">\(1\)</span> והמעריך לאינסוף. נכתוב את הביטוי כריבוע של הסדרה המגדירה את <span class="math inline">\(e\)</span>: <span class="math display">\[\begin{aligned}
+\lim_{n\to\infty}\left(1+\frac{1}{n}\right)^{2n}
+&amp;=\lim_{n\to\infty}\left[\left(1+\frac{1}{n}\right)^n\right]^2\\
+&amp;=\left[\lim_{n\to\infty}\left(1+\frac{1}{n}\right)^n\right]^2\\
+&amp;=e^2.
+\end{aligned}\]</span> השוויון הראשון הוא <a href="./01-Introduction.html#box-thm-exp-laws" data-xref="01-Introduction.html#box-thm-exp-laws" target="_blank" rel="noopener">חוק חזקה של חזקה</a>. בשוויון השני המעריך החיצוני <span class="math inline">\(2\)</span> <strong>קבוע</strong>, ולכן <a href="#box-prp-limit-powers" data-xref="02-Sequences.html#box-prp-limit-powers" target="_blank" rel="noopener">כלל החזקה</a> חל. לבסוף השתמשנו ב<a href="#box-def-e" data-xref="02-Sequences.html#box-def-e" target="_blank" rel="noopener">הגדרת <span class="math inline">\(e\)</span></a>.</p>
+</div>
+<div id="box-exm-e-reciprocal-power" class="thmbox thmbox-example" title="בסיס שמתקרב לאחת מלמטה">
+<p><strong>דוגמה 2.7.29 — בסיס שמתקרב לאחת מלמטה.</strong></p>
+<p>נחשב את <span class="math display">\[\lim_{n\to\infty}\left(\frac{n}{n+1}\right)^n.\]</span> לכל <span class="math inline">\(n\ge1\)</span>, <span class="math display">\[\frac{n}{n+1}=\frac{1}{1+\frac{1}{n}}&lt;1,\]</span> ולפי <a href="#box-thm-limit-arithmetic" data-xref="02-Sequences.html#box-thm-limit-arithmetic" target="_blank" rel="noopener">כלל המנה</a>, <span class="math display">\[\begin{aligned}
+\lim_{n\to\infty}\frac{n}{n+1}
+&amp;=\lim_{n\to\infty}\frac{1}{1+\frac{1}{n}}\\
+&amp;=\frac{1}{1+\lim_{n\to\infty}\frac{1}{n}}\\
+&amp;=\frac{1}{1+0}=1.
+\end{aligned}\]</span> גם כאן מתקבלת הצורה <span class="math inline">\(1^\infty\)</span>. נשתמש ב<a href="./01-Introduction.html#box-thm-exp-laws" data-xref="01-Introduction.html#box-thm-exp-laws" target="_blank" rel="noopener">חוקי החזקות</a> כדי לחשוף את הסדרה המוכרת במכנה: <span class="math display">\[\begin{aligned}
+\lim_{n\to\infty}\left(\frac{n}{n+1}\right)^n
+&amp;=\lim_{n\to\infty}\frac{1}{\left(1+\frac{1}{n}\right)^n}\\
+&amp;=\frac{1}{\lim_{n\to\infty}\left(1+\frac{1}{n}\right)^n}\\
+&amp;=\frac{1}{e}.
+\end{aligned}\]</span> לפי <a href="#box-def-e" data-xref="02-Sequences.html#box-def-e" target="_blank" rel="noopener">הגדרת <span class="math inline">\(e\)</span></a>, גבול המכנה הוא <span class="math inline">\(e&gt;0\)</span>, ולכן <a href="#box-thm-limit-arithmetic" data-xref="02-Sequences.html#box-thm-limit-arithmetic" target="_blank" rel="noopener">כלל המנה</a> חל.</p>
+<p>ב<a href="#box-exm-e-double-exponent" data-xref="02-Sequences.html#box-exm-e-double-exponent" target="_blank" rel="noopener">דוגמת המעריך הכפול</a> התקבל <span class="math inline">\(e^2\)</span>, וכאן <span class="math inline">\(\frac{1}{e}\)</span>. לשתי החזקות אותה צורה <span class="math inline">\(1^\infty\)</span>, אך גבולות שונים.</p>
 </div>
 <div class="thmbox thmbox-self-check" title="האם אפשר להשתמש בכלל החזקה?">
 <p><strong>בדיקה עצמית — האם אפשר להשתמש בכלל החזקה?</strong></p>
@@ -6286,7 +6317,7 @@ v_n=(n+4)\frac{1}{(n+4)^2}.\]</span> בשני המקרים הגורם הראשו
 <h3 class="unnumbered anchored" data-anchor-id="תרגילים-5">תרגילים</h3>
 <p>בשאלות חישוב עבדו ללא מחשבון. תנו תשובות מדויקות ומצומצמות, ללא כתיב עשרוני.</p>
 <div id="box-q-e-arithmetic" class="thmbox thmbox-question">
-<p><strong>תרגיל 2.7.28.</strong></p>
+<p><strong>תרגיל 2.7.30.</strong></p>
 <p>חשבו את <span class="math display">\[\lim_{n\to\infty}\left(2\left(1+\frac1n\right)^n+\frac1n\right).\]</span></p>
 <div class="derive" data-limit="n" start="2*(1+1/n)^n+1/n">
 <div class="step" data-line="2*[e]+[0]" data-allow-expression="true">
@@ -6298,7 +6329,7 @@ v_n=(n+4)\frac{1}{(n+4)^2}.\]</span> בשני המקרים הגורם הראשו
 </div>
 </div>
 <div id="box-q-to-infinity" class="thmbox thmbox-question">
-<p><strong>תרגיל 2.7.29.</strong></p>
+<p><strong>תרגיל 2.7.31.</strong></p>
 <p>בכל הסעיפים <span class="math inline">\(n\ge1\)</span>. בסעיפים (א)–(ב) כתבו את הגבול האינסופי. בסעיף (ג) בדקו אם קיים גבול אינסופי.</p>
 <div class="fill">
 <p><strong>(א)</strong> <span class="fill-ltr"><span class="math inline">\(n^3\to\)</span> <span class="blank" data-ans="inf"><span class="math inline">\(\infty\)</span></span></span></p>
@@ -6312,7 +6343,7 @@ v_n=(n+4)\frac{1}{(n+4)^2}.\]</span> בשני המקרים הגורם הראשו
 </div>
 </div>
 <div id="box-q-infinite-meaning" class="thmbox thmbox-question">
-<p><strong>תרגיל 2.7.30.</strong></p>
+<p><strong>תרגיל 2.7.32.</strong></p>
 <p>נתונה <span class="math inline">\(a_n=2n-1\)</span>, עבור <span class="math inline">\(n\ge1\)</span>. מצאו אינדקס טבעי <span class="math inline">\(N\)</span> כך שלכל <span class="math inline">\(n\ge N\)</span> יתקיים <span class="math inline">\(a_n&gt;100\)</span>.</p>
 <div class="derive" data-vars="n" data-solve="n" data-positive="n" data-integer="n" start="2n-1>100">
 <div class="step" data-line="2n>[101]">
