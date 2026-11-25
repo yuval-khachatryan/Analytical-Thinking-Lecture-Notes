@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>חזקות וחציית סף</title><link rel="stylesheet" href="limit-activities.css">
+<style>.formula{text-align:center;margin:.5rem}.read .m{margin:.2rem}output{min-width:3rem}.key-blue{color:#2563a6}.key-red{color:#b72e46}</style></head>
+<body><div class="w">
+<p class="formula"><span class="m" id="formula"></span></p>
+<div class="controls">
+<label>הבסיס <span class="m">q</span><input id="q" type="range" min="-4" max="4" step="1" value="3" aria-label="הבסיס q"><output id="q-value" class="m" for="q"></output></label>
+<label>הסף <span class="m">M</span><input id="threshold" type="range" min="1" max="20" step="1" value="5" aria-label="הסף M"><output id="threshold-value" class="m" for="threshold"></output></label>
+</div>
+<p class="legend"><span class="key-blue">● כחול: מעל הסף</span> · <span class="key-red">● אדום: לא מעל הסף</span></p>
+<svg id="plot" role="img" aria-label="איברי סדרה הנדסית ביחס לסף M"></svg>
+<div id="read" class="read" aria-live="polite"></div>
+<p class="caption">הציור מציג קטע סופי של הסדרה. הנימוק שמתחתיו מתייחס גם לאיברים שאינם מצוירים.</p>
+</div><script src="../shared/autosize.js"></script><script src="limit-activities.js"></script><script src="infinite-powers.js"></script></body></html>
